@@ -10,6 +10,14 @@
   },
   "dependencies": {
     "@apphosting/astro-adapter": "^0.0.1",
-    "astro": "^5.14.4"
+    "@astrojs/react": "^4.4.0",
+    "@fhdamd/threads": "workspace:^",
+    "astro": "^5.14.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1"
   }
 }
