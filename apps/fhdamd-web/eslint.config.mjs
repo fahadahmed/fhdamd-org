@@ -23,7 +23,6 @@ export default [
         ecmaVersion: 'latest',
         sourceType: 'module',
         project: './tsconfig.json',
-        // tsconfigRootDir: process.cwd(),
       },
       globals: {
         process: 'readonly',
