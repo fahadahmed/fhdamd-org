@@ -1,0 +1,33 @@
+{
+  "name": "@fhdamd/tooling",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "This package contains various tooling configurations and utilities for the monorepo, including ESLint configurations and TypeScript settings.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "static-code-analysis",
+    "tools",
+    "eslint",
+    "typescript"
+  ],
+  "author": "Fahad Ahmed",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^9.34.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "prettier": "^3.6.2"
+  },
+  "exports": {
+    "./prettier": {
+      "import": "./prettier/index.js",
+      "types": "./prettier/index.d.ts"
+    }
+  }
+}
