@@ -1,7 +1,41 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
+import tseslint from 'typescript-eslint';
+import * as reactPlugin from 'eslint-plugin-react';
+import * as reactHooksPlugin from 'eslint-plugin-react-hooks';
 
-import { config } from "@repo/eslint-config/react-internal";
+export default tseslint.config(
+  // 🔹 TypeScript + React for source files
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    plugins: {
+      react: reactPlugin,
+      'react-hooks': reactHooksPlugin,
+    },
+    rules: {
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+    },
+  },
 
-/** @type {import("eslint").Linter.Config} */
-export default config;
+  // 🔹 Simple TS parser (no project) for config, tests, Storybook, etc.
+  {
+    files: [
+      'vitest.config.ts',
+      'vitest.setup.ts',
+      'vitest.shims.d.ts',
+      '.storybook/**/*.ts',
+    ],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        sourceType: 'module',
+      },
+    },
+  }
+);
