@@ -16,6 +16,8 @@
   "author": "Fahad Ahmed",
   "license": "ISC",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/parser": "^8.46.2",
     "eslint": "^9.34.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
@@ -28,6 +30,8 @@
     "./prettier": {
       "import": "./prettier/index.js",
       "types": "./prettier/index.d.ts"
-    }
+    },
+    "./eslint": "./eslint/index.js",
+    "./eslint/react": "./eslint/react.js"
   }
 }
