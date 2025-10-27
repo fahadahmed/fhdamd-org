@@ -6,7 +6,8 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "turbo run format",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "commit": "cz"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.1.0",
