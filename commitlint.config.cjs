@@ -7,6 +7,6 @@ module.exports = {
       "always",
       ["feat", "fix", "chore", "docs", "style", "refactor", "perf", "test"],
     ],
-    "scope-empty": [2, "never"], // optional
+    "scope-empty": [2, "never"], // required
   },
 };
