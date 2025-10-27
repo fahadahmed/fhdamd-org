@@ -10,7 +10,7 @@ export default [
       'react-hooks': reactHooks,
     },
     rules: {
-      ...baseConfig[1].rules,
+      ...Object.assign({}, ...baseConfig.map(cfg => cfg.rules || {})),
       // add react-specific rules here if needed
     },
     settings: {
