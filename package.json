@@ -5,16 +5,37 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
+    "format": "turbo run format",
+    "prepare": "husky install",
+    "commit": "cz"
   },
   "devDependencies": {
-    "prettier": "^3.6.2",
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.6",
+    "prettier-plugin-astro": "^0.14.1",
     "turbo": "^2.5.8",
     "typescript": "5.9.2"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
     "node": ">=18"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{md,json}": [
+      "prettier --write"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   }
 }
