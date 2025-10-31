@@ -26,13 +26,15 @@ jobs:
           repository: ${{ github.repository }}.wiki
           path: wiki
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Sync docs to wiki
         run: |
-          rsync -av --delete --exclude '_Sidebar.md' --exclude '_Footer.md' docs/ wiki/
+          mkdir -p wiki
+          rsync -av --delete docs/ wiki/
           cd wiki
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "chore(docs): sync /docs to wiki" || echo "No changes to commit"
-          git push
+          git push origin master || git push origin main || echo "Push failed"
