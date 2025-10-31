@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout main repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Checkout Wiki
+      - name: Checkout Wiki repo
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository }}.wiki
@@ -28,13 +28,22 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Sync docs to wiki
+      - name: Sync /docs to Wiki (preserve .git)
         run: |
-          mkdir -p wiki
-          rsync -av --delete docs/ wiki/
+          # Copy Markdown files only, preserve .git directory
+          rsync -av --delete --exclude='.git' docs/ wiki/
+
           cd wiki
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Ensure main branch exists
+          if ! git rev-parse --verify main >/dev/null 2>&1; then
+            git checkout -b main
+          else
+            git checkout main
+          fi
+
           git add .
           git commit -m "chore(docs): sync /docs to wiki" || echo "No changes to commit"
-          git push origin master || git push origin main || echo "Push failed"
+          git push origin main
