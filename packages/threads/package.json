@@ -1,0 +1,25 @@
+{
+  "name": "@fhdamd/threads",
+  "version": "0.0.1",
+  "description": "Design System UI components for fhdamd.org",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --dts --format esm,cjs --sourcemap --clean"
+  },
+  "keywords": [],
+  "author": "Fahad Ahmed",
+  "license": "ISC",
+  "packageManager": "pnpm@10.20.0",
+  "devDependencies": {
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1",
+    "tsup": "^8.5.0",
+    "typescript": "5.9.2"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  }
+}
