@@ -12,6 +12,8 @@
     "@apphosting/astro-adapter": "^0.0.1",
     "@astrojs/react": "^4.4.0",
     "astro": "^5.15.3",
+    "firebase": "^12.5.0",
+    "firebase-admin": "^13.5.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   }
