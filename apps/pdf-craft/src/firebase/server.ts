@@ -24,7 +24,6 @@ export async function initializeFirebaseAdminApp() {
               import.meta.env.PUBLIC_FIREBASE_SERVICEACCOUNT_KEY
             ) as ServiceAccount
           );
-      // const credential = applicationDefault();
       _app = initializeApp({
         credential,
         storageBucket,
