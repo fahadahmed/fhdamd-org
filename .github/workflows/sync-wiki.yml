@@ -1,0 +1,51 @@
+name: Sync Docs to Wiki
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "docs/**"
+
+permissions:
+  contents: write
+
+jobs:
+  sync-wiki:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout wiki repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}.wiki
+          path: wiki
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Sync /docs → wiki (preserve .git)
+        run: |
+          echo "🪶 Syncing docs/ to wiki/"
+          rsync -av --delete --exclude='.git' docs/ wiki/
+
+          cd wiki
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Ensure we're on master branch
+          if ! git show-ref --quiet refs/heads/master; then
+            echo "Creating master branch for wiki"
+            git checkout -b master
+          else
+            git checkout master
+          fi
+
+          echo "✅ Using wiki branch: master"
+          git add .
+          git commit -m "chore(docs): sync /docs to wiki" || echo "No changes to commit"
+          git push origin master
