@@ -1,0 +1,13 @@
+---
+import AuthenticatedLayout from '../layouts/AuthenticatedLayout.astro'
+// import { Dashboard as DashboardView } from '../components'
+
+if (!Astro.cookies.has('__session')) {
+  return Astro.redirect('/signin')
+}
+---
+
+<AuthenticatedLayout>
+  <!-- <DashboardView client:load /> -->
+  <h1>Dashboard</h1>
+</AuthenticatedLayout>

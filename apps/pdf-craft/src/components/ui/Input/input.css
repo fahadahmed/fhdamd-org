@@ -1,0 +1,13 @@
+.input-container {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-weight: bold;
+  }
+
+  input {
+    padding: 0.5em;
+    font-size: 1.2em;
+  }
+}

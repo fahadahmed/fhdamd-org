@@ -1,16 +1,23 @@
 ---
-
+import Layout from "../layouts/Layout.astro"
+import { Button } from "../components";
 ---
+<Layout>
+  <div class="container">
+    <h1>PDF Craft</h1>
+    <h2>A complete online PDF management tool</h2>
+    <div class="button-container">
+      <Button type="linkButton" text="Sign-in" url="/signin" />
+      <Button type="linkButton" text="Sign-up" url="/signup" />
+    </div>
+  </div>
+</Layout>
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>PDF Craft | Merge PDFs</title>
-	</head>
-	<body>
-		<h1>PDF Craft</h1>
-	</body>
-</html>
+<style>
+  .button-container {
+    margin: 2em 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+  }
+</style>
