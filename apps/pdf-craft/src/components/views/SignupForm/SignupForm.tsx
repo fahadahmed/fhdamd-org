@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { actions } from 'astro:actions'
 import { Button, Input } from '../../../components'
 
@@ -9,24 +9,49 @@ export default function SignupForm() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.src = `https://www.google.com/recaptcha/api.js?render=${import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY}`
+    script.async = true
+    document.body.appendChild(script)
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const formData = new FormData()
-    formData.append('name', name)
-    formData.append('email', email)
-    formData.append('password', password)
+    // Wait for reCAPTCHA to be available
+    if (!window.grecaptcha) {
+      setError("Captcha failed to load. Try again.")
+      return
+    }
+
+    // Execute reCAPTCHA
+    let captchaToken = ""
+    await new Promise(resolve => {
+      window.grecaptcha.ready(async () => {
+        captchaToken = await window.grecaptcha.execute(
+          import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY,
+          { action: "signup" }
+        )
+        resolve(true)
+      })
+    })
 
     try {
-      const response = await actions.user.createUser(formData)
+      const response = await actions.user.createUser({
+        name,
+        email,
+        password,
+        captchaToken
+      })
+
       if (response.data?.success) {
         window.location.href = '/signin'
       } else {
         setError(response.data?.error || 'An unknown error occurred')
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      setError(error.message)
+    } catch (err: any) {
+      setError(err.message)
     }
   }
   return (

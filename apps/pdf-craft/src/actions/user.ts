@@ -13,18 +13,49 @@ const SignUpSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
+  captchaToken: z.string().min(10, 'Captcha token is required'),
 });
 
 const VerifyUserSchema = z.object({
   idToken: z.string(),
+  captchaToken: z.string().min(10, 'Captcha token is required'),
 });
+
+async function verifyRecaptcha(token: string) {
+  const secret = import.meta.env.PUBLIC_RECAPTCHA_SECRET_KEY;
+  const formData = new URLSearchParams();
+  formData.append('secret', secret);
+  formData.append('response', token);
+
+  const response = await fetch(
+    'https://www.google.com/recaptcha/api/siteverify',
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+
+  const data = await response.json();
+
+  return data.success === true && data.score >= 0.5;
+}
 
 export const user = {
   createUser: defineAction({
-    accept: 'form',
+    accept: 'json',
     input: SignUpSchema,
     handler: async (input, _ctx) => {
-      const { name, email, password } = input;
+      const { name, email, password, captchaToken } = input;
+      // 🔐 Verify reCAPTCHA before doing anything else
+      const isHuman = await verifyRecaptcha(captchaToken);
+
+      if (!isHuman) {
+        return {
+          success: false,
+          error: 'Captcha verification failed. Try again.',
+        };
+      }
+
       try {
         const auth = await getFirebaseAuth();
         const firestore = await getFirebaseFirestore();
@@ -86,10 +117,20 @@ export const user = {
   }),
 
   verifyUser: defineAction({
-    accept: 'form',
+    accept: 'json',
     input: VerifyUserSchema,
     handler: async (input, context) => {
-      const { idToken } = input;
+      const { idToken, captchaToken } = input;
+      // 🔐 Verify reCAPTCHA before doing anything else
+      const isHuman = await verifyRecaptcha(captchaToken);
+
+      if (!isHuman) {
+        return {
+          success: false,
+          error: 'Captcha verification failed. Try again.',
+        };
+      }
+
       const auth = await getFirebaseAuth();
       try {
         try {
@@ -131,15 +172,23 @@ export const user = {
   }),
 
   signOutUser: defineAction({
-    accept: 'form',
-    handler: async (_input, context) => {
-      const auth = await getFirebaseAuth();
-      context.cookies.delete('__session');
-      return {
-        success: true,
-        redirected: true,
-        url: '/',
-      };
+    accept: 'json',
+    input: z.object({
+      captchaToken: z.string().min(10, 'Captcha token is required'),
+    }),
+    handler: async (input, context) => {
+      const { captchaToken } = input;
+      // 🔐 Verify reCAPTCHA before doing anything else
+      const isHuman = await verifyRecaptcha(captchaToken);
+
+      if (!isHuman) {
+        return {
+          success: false,
+          error: 'Captcha verification failed. Try again.',
+        };
+      }
+      context.cookies.delete('__session', { path: '/' });
+      return { success: true };
     },
   }),
 };
