@@ -43,7 +43,6 @@ export default function SigninForm() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
       const idToken = await userCredential.user.getIdToken()
-      console.log(idToken)
       const response = await actions.user.verifyUser({ idToken, captchaToken })
       if (response.data?.redirected) {
         window.location.assign(response.data?.url)
