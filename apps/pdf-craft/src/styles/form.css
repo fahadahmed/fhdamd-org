@@ -1,0 +1,7 @@
+.form {
+  display: grid;
+  grid-template-columns: 1fr;
+  text-align: left;
+  gap: 1em;
+  min-width: 450px;
+}
