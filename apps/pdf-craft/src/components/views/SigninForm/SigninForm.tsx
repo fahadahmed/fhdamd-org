@@ -34,7 +34,7 @@ export default function SigninForm() {
       window.grecaptcha.ready(async () => {
         captchaToken = await window.grecaptcha.execute(
           import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY,
-          { action: "signup" }
+          { action: "signin" }
         )
         resolve(true)
       })
