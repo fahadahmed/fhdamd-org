@@ -6,7 +6,7 @@ export default function Footer() {
 
   return (
     <footer className="footer-container">
-      <small>copyrighted &copy; {today} - PDF Craft</small>
+      <small>Copyright &copy; {today} - PDF Craft</small>
     </footer>
   )
 }
