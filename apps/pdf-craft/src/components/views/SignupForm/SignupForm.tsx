@@ -1,41 +1,23 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { actions } from 'astro:actions'
 import { Button, Input } from '../../../components'
+import { useRecaptcha } from '../../../utils'
 
 export default function SignupForm() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    const script = document.createElement('script')
-    script.src = `https://www.google.com/recaptcha/api.js?render=${import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY}`
-    script.async = true
-    document.body.appendChild(script)
-  }, []);
+  const captchaToken = useRecaptcha('signup');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Wait for reCAPTCHA to be available
-    if (!window.grecaptcha) {
-      setError("Captcha failed to load. Try again.")
+    if (!captchaToken) {
+      setError('Captcha verification failed. Try again.')
       return
     }
-
-    // Execute reCAPTCHA
-    let captchaToken = ""
-    await new Promise(resolve => {
-      window.grecaptcha.ready(async () => {
-        captchaToken = await window.grecaptcha.execute(
-          import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY,
-          { action: "signup" }
-        )
-        resolve(true)
-      })
-    })
 
     try {
       const response = await actions.user.createUser({

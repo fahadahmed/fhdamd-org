@@ -4,9 +4,9 @@ export type InputProps = {
   type: string
   name: string
   id: string
-  value: string | number
+  value: any
   labelText?: string
-  setValue: React.Dispatch<React.SetStateAction<string | number>>
+  setValue: React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function Input({ type, name, id, value, labelText, setValue }: InputProps) {

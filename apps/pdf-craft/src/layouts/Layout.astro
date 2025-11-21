@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css'
+const SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY
 ---
 
 <!doctype html>
@@ -11,6 +12,7 @@ import '../styles/global.css'
     <meta name="generator" content={Astro.generator} />
     <title>PDF Craft</title>
     <meta name="google-site-verification" content="RTymfG9lAPowVx8zPgKlrhrccN8Ysk_Mbc7Kp_hfDUA" />
+    <script src={`https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`} defer></script>
   </head>
   <body>
     <div class="app">
