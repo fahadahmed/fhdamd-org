@@ -4,7 +4,7 @@ export type InputProps = {
   type: string
   name: string
   id: string
-  value: any
+  value: string
   labelText?: string
   setValue: React.Dispatch<React.SetStateAction<string>>
 }
