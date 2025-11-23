@@ -1,0 +1,8 @@
+.multi-pdf-uploader {
+  padding: 4em;
+}
+.dropzone-container {
+  border: 2px dashed #aaa;
+  text-align: center;
+  padding: 2em;
+}
