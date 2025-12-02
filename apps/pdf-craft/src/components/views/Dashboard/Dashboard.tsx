@@ -45,7 +45,27 @@ export default function Dashboard() {
     return () => unsubscribe();
   }, []);
 
-  console.log('User profile:', profile);
+  const handleBuyCredits = async () => {
+    const formData = new FormData();
+    formData.append("credits", "5");
+    const token = await auth.currentUser?.getIdToken();
+
+    const paymentResponse = await fetch('http://127.0.0.1:5001/pdf-craft-dev/us-central1/processPayment', { // Convert URL to environment variable later
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    const paymentData = await paymentResponse.json();
+    if (!paymentData.url) {
+      console.error('Payment URL not found in response');
+      return;
+    } else {
+      window.location.href = paymentData.url;
+    }
+  }
   return (
     <div className="dashboard-container">
       <div className='dashboard-header'>
@@ -57,7 +77,7 @@ export default function Dashboard() {
           {profile.credits !== undefined && (
             <p><strong>Available Credits:</strong> {profile.credits}</p>
           )}
-          <button>Buy Credits</button>
+          <button onClick={handleBuyCredits}>Buy Credits</button>
         </div>
       </div>
       <div>

@@ -44,3 +44,5 @@ storybook-static
 firestore-debug.log
 .firebase
 firebase-debug.log
+
+serviceAccountKey.json
