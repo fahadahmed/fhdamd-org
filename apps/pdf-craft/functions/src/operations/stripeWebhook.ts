@@ -13,7 +13,6 @@ export const stripeWebhook = onRequest(
   async (request, response) => {
     const sig = request.headers['stripe-signature'] as string;
     let event: Stripe.Event;
-    console.log('🔔 Stripe webhook received:', request.rawBody);
     const rawBody = request.rawBody;
     try {
       event = stripe.webhooks.constructEvent(
@@ -22,7 +21,6 @@ export const stripeWebhook = onRequest(
         process.env.STRIPE_WEBHOOK_SECRET!
       );
     } catch (err: any) {
-      console.error('❌ Webhook signature verification failed.', err.message);
       response.status(400).send(`Webhook Error: ${err.message}`);
       return;
     }
@@ -31,7 +29,7 @@ export const stripeWebhook = onRequest(
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
       console.log('✅ Event received:', event.id);
-      console.log('Session details:', session);
+      console.log('Session details:', session.metadata);
 
       // const db = getFirestore();
 
