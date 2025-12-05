@@ -65,7 +65,8 @@ export const processPayment = onRequest(async (request, response) => {
           success_url: `${process.env.BASE_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${process.env.BASE_URL}/payment-cancel?session_id={CHECKOUT_SESSION_ID}`,
           metadata: {
-            userId: userEmail,
+            userId: userId,
+            userEmail: userEmail,
             credits: credits,
           },
         });

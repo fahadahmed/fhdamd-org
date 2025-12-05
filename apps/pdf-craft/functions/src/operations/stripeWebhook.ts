@@ -1,6 +1,8 @@
 import { onRequest } from 'firebase-functions/v2/https';
-// import { getFirestore } from 'firebase-admin/firestore';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import Stripe from 'stripe';
+
+const db = getFirestore();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET!, {
   apiVersion: '2025-11-17.clover',
@@ -31,27 +33,21 @@ export const stripeWebhook = onRequest(
       console.log('✅ Event received:', event.id);
       console.log('Session details:', session.metadata);
 
-      // const db = getFirestore();
-
-      // if (session.metadata?.userId && session.metadata?.credits) {
-      //   const userRef = db.collection('users').doc(session.metadata.userId);
-      //   const userDoc = await userRef.get();
-
-      //   if (userDoc.exists) {
-      //     const userData = userDoc.data();
-      //     const currentCredits = userData?.profile?.credits || 0;
-      //     const purchasedCredits = parseInt(session.metadata.credits, 10);
-
-      //     await userRef.update({
-      //       'profile.credits': currentCredits + purchasedCredits,
-      //       'profile.isSubscriber': true,
-      //     });
-
-      //     console.log(
-      //       `✅ Updated user ${session.metadata.userId} with ${purchasedCredits} credits.`
-      //     );
-      //   }
-      // }
+      const userId = session.metadata?.userId;
+      const credits = parseInt(session.metadata?.credits || '0', 10);
+      console.log(`User ID: ${userId}, Credits to add: ${credits}`);
+      if (userId && credits > 0) {
+        const userRef = db.collection('users').doc(userId);
+        console.log(userRef);
+        try {
+          await userRef.update({
+            'profile.credits': FieldValue.increment(credits),
+          });
+          console.log(`✅ Updated user ${userId} with ${credits} credits.`);
+        } catch (err) {
+          console.error('❌ Error updating user credits:', err);
+        }
+      }
     }
     // Acknowledge immediately so Stripe doesn’t retry
     response.status(200).send('ok');
