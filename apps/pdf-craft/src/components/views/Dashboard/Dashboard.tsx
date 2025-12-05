@@ -8,9 +8,10 @@ import { UserFileList } from '../../slices';
 
 const tasks = [
   { name: 'Merge PDFs', link: '/mergepdf' },
-  { name: 'Split PDF', link: '/splitpdf' },
-  { name: 'Sign PDF', link: '/esignpdf' },
-  { name: 'Summarise PDF', link: '/summarisepdf' },
+  { name: 'JPG to PDF', link: '/jpegtopdf' },
+  { name: 'PDF to JPG', link: '/pdftojpeg' },
+  { name: 'PNG to PDF', link: '/pngtopdf' },
+  { name: 'PDF to PNG', link: '/pdftopng' },
 ];
 
 export default function Dashboard() {
@@ -45,7 +46,33 @@ export default function Dashboard() {
     return () => unsubscribe();
   }, []);
 
-  console.log('User profile:', profile);
+  const handleBuyCredits = async () => {
+    const token = await auth.currentUser?.getIdToken();
+
+    const paymentResponse = await fetch('http://127.0.0.1:5001/pdf-craft-dev/us-central1/processPayment', { // Convert URL to environment variable later
+      method: 'POST',
+      body: JSON.stringify({
+        credits: 5,
+        amount: 149,
+        quantity: 1,
+        currency: 'usd',
+        productName: 'PCD-Craft Credits Basic',
+        userId: auth.currentUser?.uid,
+        userEmail: auth.currentUser?.email
+      }),
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    const paymentData = await paymentResponse.json();
+    if (!paymentData.url) {
+      console.error('Payment URL not found in response');
+      return;
+    } else {
+      window.location.href = paymentData.url;
+    }
+  }
   return (
     <div className="dashboard-container">
       <div className='dashboard-header'>
@@ -57,7 +84,7 @@ export default function Dashboard() {
           {profile.credits !== undefined && (
             <p><strong>Available Credits:</strong> {profile.credits}</p>
           )}
-          <button>Buy Credits</button>
+          <button onClick={handleBuyCredits}>Buy Credits</button>
         </div>
       </div>
       <div>

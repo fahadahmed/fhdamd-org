@@ -1,0 +1,5 @@
+---
+if (Astro.cookies.has('__session')) {
+  return Astro.redirect('/dashboard')
+}
+---
