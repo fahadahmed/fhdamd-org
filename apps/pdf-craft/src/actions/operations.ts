@@ -3,6 +3,7 @@ import { z } from 'astro:schema';
 import { PDFDocument } from 'pdf-lib';
 import { FieldValue } from 'firebase-admin/firestore';
 import admin from 'firebase-admin';
+import { v4 as uuidv4 } from 'uuid';
 import { getFirebaseAuth, getFirebaseApp } from '../firebase/server';
 
 getFirebaseApp();
@@ -61,14 +62,22 @@ export const operations = {
         const storagePath = `users/${userId}/${mergedFileName}`;
         const fileRef = bucket.file(storagePath);
 
+        const downloadToken = uuidv4();
+
         await fileRef.save(Buffer.from(mergedPdfBytes), {
-          metadata: { contentType: 'application/pdf' },
+          metadata: {
+            contentType: 'application/pdf',
+            metadata: {
+              firebaseStorageDownloadTokens: downloadToken,
+            },
+          },
         });
 
-        const [url] = await fileRef.getSignedUrl({
-          action: 'read',
-          expires: '03-01-2030',
-        });
+        const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${
+          bucket.name
+        }/o/${encodeURIComponent(
+          storagePath
+        )}?alt=media&token=${downloadToken}`;
 
         // Save file metadata inside Firestore under user's `files` collection
         await firestore
@@ -79,7 +88,7 @@ export const operations = {
           .set({
             fileId,
             fileName: mergedFileName,
-            fileUrl: url,
+            fileUrl,
             operation: 'merge',
             createdAt: FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp(),
@@ -88,7 +97,7 @@ export const operations = {
         return {
           success: true,
           message: 'Files merged successfully',
-          data: { fileUrl: url },
+          data: { fileUrl },
         };
       } catch (error) {
         console.error(error);
