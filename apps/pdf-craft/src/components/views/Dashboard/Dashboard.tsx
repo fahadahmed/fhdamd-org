@@ -8,10 +8,8 @@ import { UserFileList } from '../../slices';
 
 const tasks = [
   { name: 'Merge PDFs', link: '/mergepdf' },
-  { name: 'JPG to PDF', link: '/jpegtopdf' },
-  { name: 'PDF to JPG', link: '/pdftojpeg' },
-  { name: 'PNG to PDF', link: '/pngtopdf' },
-  { name: 'PDF to PNG', link: '/pdftopng' },
+  { name: 'Image to PDF', link: '/imagetopdf' },
+  { name: 'PDF to Image', link: '/pdftoimage' },
 ];
 
 export default function Dashboard() {
