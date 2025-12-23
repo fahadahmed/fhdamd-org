@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react"
 import { useDropzone } from "react-dropzone-esm"
-import { DndContext, useSensors, useSensor, PointerSensor, closestCenter } from '@dnd-kit/core'
+import { DndContext, useSensors, useSensor, PointerSensor, closestCenter, type DragEndEvent } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { actions } from 'astro:actions'
@@ -27,7 +27,7 @@ function SortableItem({ id, children }: SortableItemProps) {
 }
 
 export default function MultiImageUploader() {
-  const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [isConverting, setIsConverting] = useState(false);
   const [downloadLink, setDownloadLink] = useState<string | null>(null);
   const [buttonLabel, setButtonLabel] = useState('Convert to PDF');
@@ -37,7 +37,7 @@ export default function MultiImageUploader() {
       'image/png': ['.png'],
       'image/jpeg': ['.jpg', '.jpeg']
     },
-    onDrop: (acceptedFiles: any) => {
+    onDrop: (acceptedFiles: File[]) => {
       setUploadedFiles(prevFiles => [...prevFiles, ...acceptedFiles]);
     }
   })
@@ -46,7 +46,7 @@ export default function MultiImageUploader() {
     useSensor(PointerSensor),
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
   )
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (active.id !== over?.id) {
       const oldIndex = uploadedFiles.findIndex((file) => file.name === active.id)
@@ -70,7 +70,6 @@ export default function MultiImageUploader() {
       setButtonLabel('Converting images...');
       const formData = new FormData();
       uploadedFiles.forEach((file) => formData.append('images', file));
-      console.log('FormData prepared with files:', uploadedFiles);
       try {
         const convertResponse = await actions.operations.imageToPdf(formData);
         if (convertResponse.data) {

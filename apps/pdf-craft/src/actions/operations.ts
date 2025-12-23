@@ -171,8 +171,6 @@ export const operations = {
           } else if (imageFile.type === 'image/png') {
             pdfImage = await pdfDoc.embedPng(imageBytes);
           }
-          console.log(pdfImage?.size(), 'pdfImage size');
-          console.log(imageFile.type, 'imageFile type');
 
           if (pdfImage) {
             const page = pdfDoc.addPage();

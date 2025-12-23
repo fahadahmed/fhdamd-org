@@ -5,25 +5,15 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Attach by Process ID",
-      "processId": "${command:PickProcess}",
-      "request": "attach",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "type": "node"
-    },
-    {
+      "name": "Debug Astro (Server)",
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
-      "skipFiles": [
-        "<node_internals>/**"
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
       ],
-      "program": "${workspaceFolder}/apps/pdf-craft/src/actions/operations.ts",
-      "outFiles": [
-        "${workspaceFolder}/**/*.js"
-      ]
+      "autoAttachChildProcesses": true
     }
   ]
 }
