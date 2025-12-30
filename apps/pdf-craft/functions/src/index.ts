@@ -15,6 +15,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-11-17.clover',
 });
 
+const baseUrl = process.env.APP_BASE_URL;
+
 const corsHandler = cors({
   origin: [
     'http://localhost:4321',
@@ -43,6 +45,10 @@ const processPayment = onRequest(async (request, response) => {
     }
 
     const idToken = authHeader.split('Bearer ')[1];
+
+    if (!baseUrl) {
+      throw new Error('BASE_URL is not configured');
+    }
 
     try {
       // Verify token with Firebase Admin
@@ -80,8 +86,8 @@ const processPayment = onRequest(async (request, response) => {
                 quantity: quantity,
               },
             ],
-            success_url: `${process.env.BASE_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.BASE_URL}/payment-cancel?session_id={CHECKOUT_SESSION_ID}`,
+            success_url: `${baseUrl}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${baseUrl}/payment-cancel?session_id={CHECKOUT_SESSION_ID}`,
             metadata: {
               userId: userId,
               userEmail: userEmail,
