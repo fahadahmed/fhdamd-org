@@ -31,6 +31,10 @@ env:
     secret: recaptchaSiteKey
   - variable: PUBLIC_RECAPTCHA_SECRET_KEY
     secret: recaptchaSecretKey
+  - variable: PUBLIC_BASE_APP_URL
+    secret: baseAppUrl
+  - variable: PUBLIC_BASE_FUNCTIONS_URL
+    secret: baseFunctionsUrl
   # Grant access to secrets in Cloud Secret Manager.
   # See https://firebase.google.com/docs/app-hosting/configure#secret-parameters
   # - variable: MY_SECRET
