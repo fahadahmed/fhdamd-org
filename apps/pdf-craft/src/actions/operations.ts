@@ -108,7 +108,7 @@ export const operations = {
           fileId,
           fileName: mergedFileName,
           fileUrl,
-          eventType: 'pdf-merged',
+          eventType: 'pdf-merge',
           timestamp: Date.now(),
         });
         return {
