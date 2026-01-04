@@ -19,6 +19,7 @@
     "dotenv": "^17.2.3",
     "firebase-admin": "^12.7.0",
     "firebase-functions": "^7.0.2",
+    "resend": "^6.6.0",
     "stripe": "^20.0.0",
     "uuid": "^13.0.0"
   },

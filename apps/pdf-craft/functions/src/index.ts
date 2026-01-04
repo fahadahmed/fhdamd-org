@@ -6,6 +6,8 @@ import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { defineSecret } from 'firebase-functions/params';
 import Stripe from 'stripe';
 import cors from 'cors';
+import { AppEventPayload } from './events/types';
+import { eventHandlers } from './events/handlers';
 
 admin.initializeApp();
 
@@ -179,46 +181,33 @@ const stripeWebhook = onRequest(
   }
 );
 
-const onAppEvent = onMessagePublished(
-  {
-    topic: 'app-event',
-  },
-  async (event) => {
-    const message = event.data.message;
+const onAppEvent = onMessagePublished({ topic: 'app-event' }, async (event) => {
+  const message = event.data.message;
 
-    if (!message?.data) {
-      logger.warn('Received Pub/Sub message without data');
-      return;
-    }
+  if (!message?.data) {
+    logger.warn('Received Pub/Sub message without data');
+    return;
+  }
 
-    // 1. base64 → Buffer
+  try {
     const buffer = Buffer.from(message.data, 'base64');
-
-    // 2. Buffer → string
-    const jsonString = buffer.toString('utf8');
-
-    // 3. string → object
-    const payload = JSON.parse(jsonString);
+    const payload = JSON.parse(buffer.toString('utf8')) as AppEventPayload;
 
     logger.info('Received Pub/Sub payload', payload);
 
-    // // Here you can handle different event types accordingly
-    // switch (data.eventType) {
-    //   case 'pdf-merged':
-    //     logger.info(
-    //       `PDF merged for user ${data.userId}, file: ${data.fileName}`
-    //     );
-    //     // Additional processing can be done here
-    //     break;
-    //   case 'image-to-pdf':
-    //     logger.info(
-    //       `Image to PDF conversion for user ${data.userId}, file: ${data.fileName}`
-    //     );
-    //     // Additional processing can be done here
-    //     break;
-    //   default:
-    //     logger.warn(`Unhandled event type: ${data.eventType}`);
-    // }
+    const handler = eventHandlers[payload.eventType];
+
+    if (!handler) {
+      logger.warn(`No handler registered for eventType: ${payload.eventType}`);
+      return;
+    }
+
+    await handler(payload);
+
+    logger.info(`Successfully processed eventType: ${payload.eventType}`);
+  } catch (error) {
+    logger.error('Failed processing Pub/Sub event', error);
+    throw error; // important → enables retry
   }
-);
+});
 export { processPayment, stripeWebhook, onAppEvent };
