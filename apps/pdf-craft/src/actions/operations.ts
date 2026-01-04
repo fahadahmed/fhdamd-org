@@ -5,6 +5,7 @@ import { FieldValue } from 'firebase-admin/firestore';
 import admin from 'firebase-admin';
 import { v4 as uuidv4 } from 'uuid';
 import { getFirebaseAuth, getFirebaseApp } from '../firebase/server';
+import { publish } from '../server/pubsub/publisher';
 
 getFirebaseApp();
 const firestore = admin.firestore();
@@ -100,6 +101,16 @@ export const operations = {
             updatedAt: FieldValue.serverTimestamp(),
           });
 
+        // Publish a message to Pub/Sub about the new merged file
+        await publish('app-event', {
+          userId,
+          userEmail: decodedToken.email,
+          fileId,
+          fileName: mergedFileName,
+          fileUrl,
+          eventType: 'pdf-merged',
+          timestamp: Date.now(),
+        });
         return {
           success: true,
           message: 'Files merged successfully',
@@ -234,6 +245,17 @@ export const operations = {
             createdAt: FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp(),
           });
+
+        // Publish a message to Pub/Sub about the new image-to-PDF file
+        await publish('app-event', {
+          userId,
+          userEmail: decodedToken.email,
+          fileId,
+          fileName: pdfFileName,
+          fileUrl,
+          eventType: 'image-to-pdf',
+          timestamp: Date.now(),
+        });
 
         return {
           success: true,

@@ -10,6 +10,8 @@ interface ImportMetaEnv {
   readonly PUBLIC_FIREBASE_SERVICEACCOUNT_KEY: string;
   readonly PUBLIC_RECAPTCHA_SITE_KEY: string;
   readonly PUBLIC_RECAPTCHA_SECRET_KEY: string;
+  readonly PUBLIC_BASE_FUNCTIONS_URL: string;
+  readonly VITE_PROJECT_ID: string;
 }
 
 interface ImportMeta {

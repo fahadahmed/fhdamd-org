@@ -1,4 +1,5 @@
 import { onRequest } from 'firebase-functions/v2/https';
+import { onMessagePublished } from 'firebase-functions/v2/pubsub';
 import * as logger from 'firebase-functions/logger';
 import * as admin from 'firebase-admin';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
@@ -178,4 +179,46 @@ const stripeWebhook = onRequest(
   }
 );
 
-export { processPayment, stripeWebhook };
+const onAppEvent = onMessagePublished(
+  {
+    topic: 'app-event',
+  },
+  async (event) => {
+    const message = event.data.message;
+
+    if (!message?.data) {
+      logger.warn('Received Pub/Sub message without data');
+      return;
+    }
+
+    // 1. base64 → Buffer
+    const buffer = Buffer.from(message.data, 'base64');
+
+    // 2. Buffer → string
+    const jsonString = buffer.toString('utf8');
+
+    // 3. string → object
+    const payload = JSON.parse(jsonString);
+
+    logger.info('Received Pub/Sub payload', payload);
+
+    // // Here you can handle different event types accordingly
+    // switch (data.eventType) {
+    //   case 'pdf-merged':
+    //     logger.info(
+    //       `PDF merged for user ${data.userId}, file: ${data.fileName}`
+    //     );
+    //     // Additional processing can be done here
+    //     break;
+    //   case 'image-to-pdf':
+    //     logger.info(
+    //       `Image to PDF conversion for user ${data.userId}, file: ${data.fileName}`
+    //     );
+    //     // Additional processing can be done here
+    //     break;
+    //   default:
+    //     logger.warn(`Unhandled event type: ${data.eventType}`);
+    // }
+  }
+);
+export { processPayment, stripeWebhook, onAppEvent };
