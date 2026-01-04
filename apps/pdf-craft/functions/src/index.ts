@@ -1,10 +1,13 @@
 import { onRequest } from 'firebase-functions/v2/https';
+import { onMessagePublished } from 'firebase-functions/v2/pubsub';
 import * as logger from 'firebase-functions/logger';
 import * as admin from 'firebase-admin';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { defineSecret } from 'firebase-functions/params';
 import Stripe from 'stripe';
 import cors from 'cors';
+import { AppEventPayload } from './events/types';
+import { eventHandlers } from './events/handlers';
 
 admin.initializeApp();
 
@@ -178,4 +181,33 @@ const stripeWebhook = onRequest(
   }
 );
 
-export { processPayment, stripeWebhook };
+const onAppEvent = onMessagePublished({ topic: 'app-event' }, async (event) => {
+  const message = event.data.message;
+
+  if (!message?.data) {
+    logger.warn('Received Pub/Sub message without data');
+    return;
+  }
+
+  try {
+    const buffer = Buffer.from(message.data, 'base64');
+    const payload = JSON.parse(buffer.toString('utf8')) as AppEventPayload;
+
+    logger.info('Received Pub/Sub payload', payload);
+
+    const handler = eventHandlers[payload.eventType];
+
+    if (!handler) {
+      logger.warn(`No handler registered for eventType: ${payload.eventType}`);
+      return;
+    }
+
+    await handler(payload);
+
+    logger.info(`Successfully processed eventType: ${payload.eventType}`);
+  } catch (error) {
+    logger.error('Failed processing Pub/Sub event', error);
+    throw error; // important → enables retry
+  }
+});
+export { processPayment, stripeWebhook, onAppEvent };
