@@ -6,6 +6,8 @@ import { fetchCms } from "../utils/lib/cms";
 type Faq = {
   title: string;
   content: string;
+  id: string;
+  _createdAt: string;
 };
 
 type FaqResponse = {
@@ -19,11 +21,13 @@ const faqs = faqResponse.data.allFaqs;
 ---
 <Layout>
   <div class="container">
-    <h1>PDF Craft</h1>
-    <h2>A complete online PDF management tool</h2>
-    <div class="button-container">
-      <Button type="linkButton" text="Sign-in" url="/signin" />
-      <Button type="linkButton" text="Sign-up" url="/signup" />
+    <div class="login-container">
+      <h1>PDF Craft</h1>
+      <h2>A complete online PDF management tool</h2>
+      <div class="button-container">
+        <Button type="linkButton" text="Sign-in" url="/signin" />
+        <Button type="linkButton" text="Sign-up" url="/signup" />
+      </div>
     </div>
     <div>
       <h2>Frequently Asked Questions</h2>
@@ -38,10 +42,21 @@ const faqs = faqResponse.data.allFaqs;
 </Layout>
 
 <style>
+  .container {
+    text-align: center;
+    display: grid;
+    place-items: center;
+  }
+  .login-container {
+    padding-top: 20em;
+    padding-bottom: 20em;
+  }
   .button-container {
     margin: 2em 0;
     display: flex;
     flex-direction: column;
     gap: 1em;
+    min-width: 500px;
+    max-width: 500px;
   }
 </style>
