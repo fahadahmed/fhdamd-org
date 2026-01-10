@@ -27,7 +27,7 @@ const faqs = faqResponse.data.allFaqs;
     </div>
     <div>
       <h2>Frequently Asked Questions</h2>
-      {faqs && faqs.map((faq) => (
+      {faqs.map((faq) => (
         <div>
           <h3>{faq.title}</h3>
           <p>{faq.content}</p>

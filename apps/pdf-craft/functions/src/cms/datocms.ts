@@ -7,7 +7,7 @@ const DATOCMS_ENDPOINT = 'https://graphql.datocms.com/';
 
 export async function fetchCMSData(
   query: string,
-  variables: Record<string, any> = {}
+  variables: Record<string, unknown> = {}
 ) {
   const response = await fetch(DATOCMS_ENDPOINT, {
     method: 'POST',

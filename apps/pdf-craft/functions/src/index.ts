@@ -217,7 +217,7 @@ const cms = onRequest(
   async (request, response) => {
     corsHandler(request, response, async () => {
       if (request.method === 'OPTIONS') {
-        response.set(204).send('');
+        response.status(204).send('');
         return;
       }
       if (request.method !== 'POST') {
