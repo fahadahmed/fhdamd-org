@@ -1,6 +1,21 @@
 ---
 import Layout from "../layouts/Layout.astro"
 import { Button } from "../components";
+import { fetchCms } from "../utils/lib/cms";
+
+type Faq = {
+  title: string;
+  content: string;
+};
+
+type FaqResponse = {
+  data: {
+    allFaqs: Faq[];
+  }
+};
+
+const faqResponse: FaqResponse = await fetchCms<FaqResponse>('faqs');
+const faqs = faqResponse.data.allFaqs;
 ---
 <Layout>
   <div class="container">
@@ -9,6 +24,15 @@ import { Button } from "../components";
     <div class="button-container">
       <Button type="linkButton" text="Sign-in" url="/signin" />
       <Button type="linkButton" text="Sign-up" url="/signup" />
+    </div>
+    <div>
+      <h2>Frequently Asked Questions</h2>
+      {faqs && faqs.map((faq) => (
+        <div>
+          <h3>{faq.title}</h3>
+          <p>{faq.content}</p>
+        </div>
+      ))}
     </div>
   </div>
 </Layout>

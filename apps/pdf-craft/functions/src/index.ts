@@ -8,6 +8,7 @@ import Stripe from 'stripe';
 import cors from 'cors';
 import { AppEventPayload } from './events/types';
 import { eventHandlers } from './events/handlers';
+import { fetchCMSData, getCmsQuery, datocmsApiToken, datocmsEnv } from './cms';
 
 admin.initializeApp();
 
@@ -23,7 +24,7 @@ function getStripe() {
     throw new Error('STRIPE_SECRET_KEY is not configured');
   }
   return new Stripe(secretKey, {
-    apiVersion: '2025-11-17.clover',
+    apiVersion: '2025-12-15.clover',
   });
 }
 
@@ -210,4 +211,36 @@ const onAppEvent = onMessagePublished({ topic: 'app-event' }, async (event) => {
     throw error; // important → enables retry
   }
 });
-export { processPayment, stripeWebhook, onAppEvent };
+
+const cms = onRequest(
+  { secrets: [datocmsApiToken, datocmsEnv] },
+  async (request, response) => {
+    corsHandler(request, response, async () => {
+      if (request.method === 'OPTIONS') {
+        response.set(204).send('');
+        return;
+      }
+      if (request.method !== 'POST') {
+        response.status(405).send('Method not allowed');
+        return;
+      }
+
+      try {
+        const data =
+          typeof request.body === 'string'
+            ? JSON.parse(request.body)
+            : request.body;
+        const { queryKey, variables } = data;
+
+        const query = getCmsQuery(queryKey);
+        const cmsData = await fetchCMSData(query, variables);
+
+        response.status(200).json(cmsData);
+      } catch (error) {
+        logger.error('CMS request error', error);
+        response.status(500).json({ error: 'CMS request failed' });
+      }
+    });
+  }
+);
+export { processPayment, stripeWebhook, onAppEvent, cms };
