@@ -6,7 +6,7 @@ export default function Footer() {
 
   return (
     <footer className="footer-container">
-      <h6 className="footer-logo">pdf <small>craft</small></h6>
+      <div className="footer-logo">pdf <small>craft</small></div>
       <ul className="footer-links">
         <li><a href="/terms">Terms & Conditions</a></li>
         <li><a href="/privacy">Privacy Policy</a></li>
