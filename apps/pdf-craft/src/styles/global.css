@@ -1,10 +1,26 @@
+@font-face {
+  font-family: "Josefin Slab";
+  src: url(/fonts/josefin_slab/JosefinSlab-VariableFont_wght.ttf)
+    format("truetype");
+  font-weight: 100 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Instrument Sans";
+  src: url(/fonts/instrument_sans/InstrumentSans-VariableFont_wdth\,wght.ttf)
+    format("truetype");
+  font-weight: 100 400 700;
+  font-style: normal;
+}
 html,
 body {
   margin: 0;
   padding: 0;
   font-family: Arial, Helvetica, sans-serif;
   min-width: 100%;
-  height: 100%;
+  min-height: 100dvh;
+  background-color: #fefef4;
 }
 
 h1,
@@ -14,12 +30,31 @@ h2 {
 
 .app {
   display: grid;
+  grid-template-rows: 1fr 80px;
   place-items: center;
-  height: 100vh;
+  min-height: 100dvh;
+  padding: 0 3em;
 }
 
 .container {
   display: grid;
   justify-content: center;
   text-align: center;
+  border: 2px solid #091f80;
+  padding: 4em 6em;
+  border-radius: 8px;
+  max-width: 500px;
+}
+
+.container-heading {
+  color: #091f80;
+  font-size: 48px;
+  font-family: "Josefin Slab", serif;
+  font-weight: 700;
+}
+
+.container-subheading {
+  color: #091f80;
+  font-size: 18px;
+  font-family: "Instrument Sans", sans-serif;
 }

@@ -1,38 +1,42 @@
 ---
-import Layout from "../layouts/Layout.astro"
-import { SigninForm } from '../components'
-import { getFirebaseAuth } from '../firebase/server';
+import Layout from "../layouts/Layout.astro";
+import { Footer, SigninForm } from "../components";
+import { getFirebaseAuth } from "../firebase/server";
 
 const auth = await getFirebaseAuth();
 
-if (Astro.cookies.has('__session')) {
-  const sessionCookie = Astro.cookies.get('__session')?.value;
+if (Astro.cookies.has("__session")) {
+  const sessionCookie = Astro.cookies.get("__session")?.value;
 
   if (sessionCookie) {
     try {
       const decodedCookie = await auth.verifySessionCookie(sessionCookie, true);
-      console.log('Decoded session cookie:', decodedCookie);
+      console.log("Decoded session cookie:", decodedCookie);
 
       if (decodedCookie) {
         // valid session → redirect to dashboard
-        return Astro.redirect('/dashboard');
+        return Astro.redirect("/dashboard");
       }
     } catch (error: any) {
       // Session cookie invalid/expired → delete it
-      Astro.cookies.delete('__session', {
-        path: '/',
+      Astro.cookies.delete("__session", {
+        path: "/",
         httpOnly: true,
-        secure: import.meta.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        secure: import.meta.env.NODE_ENV === "production",
+        sameSite: "strict",
       });
     }
   }
 }
 ---
+
 <Layout>
   <div class="container">
-    <h2>Sign-in to PDF-Craft</h2>
-    <p>New to the app? <a href="/signup">Sign-up for an account</a></p>
+    <h2 class="container-heading">Sign-in to PDF-Craft</h2>
+    <p class="container-subheading">
+      New to the app? <a href="/signup">Sign-up for an account</a>
+    </p>
     <SigninForm client:only />
   </div>
+  <Footer />
 </Layout>

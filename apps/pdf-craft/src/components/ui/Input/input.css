@@ -4,10 +4,16 @@
 
   label {
     font-weight: bold;
+    color: #091f80;
+    font-family: "Instrument Sans", sans-serif;
+    margin-bottom: 0.5em;
   }
 
   input {
-    padding: 0.5em;
+    padding: 1em;
     font-size: 1.2em;
+    font-family: "Instrument Sans", sans-serif;
+    border: 2px solid #091f80;
+    border-radius: 8px;
   }
 }
