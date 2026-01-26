@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { SigninForm } from "../components";
+import { Footer, SigninForm } from "../components";
 import { getFirebaseAuth } from "../firebase/server";
 
 const auth = await getFirebaseAuth();
@@ -38,4 +38,5 @@ if (Astro.cookies.has("__session")) {
     </p>
     <SigninForm client:only />
   </div>
+  <Footer />
 </Layout>

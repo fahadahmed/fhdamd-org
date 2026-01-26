@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { SignupForm } from "../components";
+import { Footer, SignupForm } from "../components";
 ---
 
 <Layout>
@@ -11,4 +11,5 @@ import { SignupForm } from "../components";
     </p>
     <SignupForm client:load />
   </div>
+  <Footer />
 </Layout>
