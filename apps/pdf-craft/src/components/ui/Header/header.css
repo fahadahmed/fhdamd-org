@@ -1,8 +1,19 @@
 .header {
-  background-color: #efefef;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   padding: 1em 2em;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+}
+
+.header-logo {
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 32px;
+  font-weight: bold;
+  color: #091f80;
+  a {
+    color: #091f80;
+    text-decoration: none;
+  }
 }
