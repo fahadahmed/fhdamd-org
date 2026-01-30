@@ -46,3 +46,7 @@
     text-decoration: underline;
   }
 }
+
+.xl {
+  font-size: 1.5em;
+}

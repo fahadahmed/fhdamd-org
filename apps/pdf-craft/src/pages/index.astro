@@ -1,28 +1,36 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { Button, Footer, Header } from "../components";
+import { HomeCta, Footer, Header } from "../components";
 import { fetchCms } from "../utils/lib/cms";
 
-type Faq = {
-  title: string;
-  content: string;
-  id: string;
-  _createdAt: string;
-};
+// type Faq = {
+//   title: string;
+//   content: string;
+//   id: string;
+//   _createdAt: string;
+// };
 
-type FaqResponse = {
-  data: {
-    allFaqs: Faq[];
-  };
-};
+// type FaqResponse = {
+//   data: {
+//     allFaqs: Faq[];
+//   };
+// };
 
-const faqResponse: FaqResponse = await fetchCms<FaqResponse>("faqs");
-const faqs = faqResponse.data.allFaqs;
+// const faqResponse: FaqResponse = await fetchCms<FaqResponse>("faqs");
+// const faqs = faqResponse.data.allFaqs;
 ---
 
 <Layout>
   <Header client:load />
-  <div>Home page content here</div>
+  <div class="container">
+    <HomeCta />
+    <div class="alternate">Home Operations Component</div>
+    <div>Testimonials Component</div>
+    <div class="alternate">How It Works Component</div>
+    <div>Pricing Component</div>
+    <div class="alternate">Faq Component</div>
+  </div>
+  <Footer />
   <!-- <div class="container">
     <div class="login-container">
       <h1>PDF Craft</h1>
@@ -44,18 +52,11 @@ const faqs = faqResponse.data.allFaqs;
       }
     </div> -->
 </Layout>
-<Footer />
 
 <style>
   .container {
-    text-align: center;
     display: grid;
-  }
-  .login-container {
-    padding-top: 20em;
-    padding-bottom: 20em;
-    display: grid;
-    place-items: center;
+    width: 100%;
   }
   .button-container {
     margin: 2em 0;

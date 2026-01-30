@@ -5,11 +5,12 @@ export type ButtonProps = {
   text: string
   url?: string
   kind?: 'primary' | 'secondary' | 'tertiary'
+  size?: 'sm' | 'md' | 'lg' | 'xl'
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-export default function Button({ type, text, url, kind = 'primary', onClick }: ButtonProps) {
-  const className = `btn ${kind}`
+export default function Button({ type, text, url, kind = 'primary', size = 'md', onClick }: ButtonProps) {
+  const className = `btn ${kind} ${size}`
 
   return type === 'linkButton' ? (
     <a href={url} className={className}>
