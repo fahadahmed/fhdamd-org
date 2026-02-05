@@ -1,13 +1,29 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { actions } from 'astro:actions'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { useRecaptcha } from '../../../utils'
 import { Button } from '../../'
+import { auth } from '../../../firebase/client'
 import './header.css'
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const captchaToken = useRecaptcha('logout');
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("User is logged in:", user.email)
+        setIsLoggedIn(true)
+      } else {
+        console.log("No user session found.")
+        setIsLoggedIn(false)
+      }
+    })
+
+    return () => unsubscribe()
+  }, [])
 
   const handleLogout = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -18,6 +34,7 @@ export default function Header() {
     }
 
     try {
+      await signOut(auth)
       const response = await actions.user.signOutUser({ captchaToken })
       if (response.data?.success) {
         window.location.href = '/'
