@@ -49,7 +49,7 @@ export default function Header() {
       <div className="header-logo"><a href="/">pdf <small>craft</small></a></div>
       {isLoggedIn ? (
         <form onSubmit={handleLogout}>
-          <button type="submit">Logout</button>
+          <Button kind="secondary" type="submit" size="sm" text="Logout" />
         </form>
       ) : (
         <div className="header-links">
