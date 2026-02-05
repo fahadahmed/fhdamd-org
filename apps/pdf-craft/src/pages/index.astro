@@ -1,26 +1,46 @@
 ---
-import Layout from "../layouts/Layout.astro"
-import { Button } from "../components";
+import Layout from "../layouts/Layout.astro";
+import {
+  HomeCta,
+  Footer,
+  Header,
+  Operations,
+  Pricing,
+  Testimonials,
+  HowItWorks,
+  Faqs,
+} from "../components";
 import { fetchCms } from "../utils/lib/cms";
-
-type Faq = {
-  title: string;
-  content: string;
-  id: string;
-  _createdAt: string;
-};
+import { type Faq } from "../utils";
 
 type FaqResponse = {
   data: {
     allFaqs: Faq[];
-  }
+  };
 };
 
-const faqResponse: FaqResponse = await fetchCms<FaqResponse>('faqs');
+const faqResponse: FaqResponse = await fetchCms<FaqResponse>("faqs");
 const faqs = faqResponse.data.allFaqs;
 ---
+
 <Layout>
+  <Header client:load />
   <div class="container">
+    <HomeCta />
+    <div class="alternate">
+      <Operations />
+    </div>
+    <Testimonials />
+    <div class="alternate">
+      <HowItWorks />
+    </div>
+    <Pricing />
+    <div class="alternate">
+      <Faqs client:load items={faqs} />
+    </div>
+  </div>
+  <Footer />
+  <!-- <div class="container">
     <div class="login-container">
       <h1>PDF Craft</h1>
       <h2>A complete online PDF management tool</h2>
@@ -31,26 +51,21 @@ const faqs = faqResponse.data.allFaqs;
     </div>
     <div class="faq-container">
       <h2>Frequently Asked Questions</h2>
-      {faqs.map((faq) => (
-        <div>
-          <h3>{faq.title}</h3>
-          <p>{faq.content}</p>
-        </div>
-      ))}
-    </div>
-  </div>
+      {
+        faqs.map((faq) => (
+          <div>
+            <h3>{faq.title}</h3>
+            <p>{faq.content}</p>
+          </div>
+        ))
+      }
+    </div> -->
 </Layout>
 
 <style>
   .container {
-    text-align: center;
     display: grid;
-  }
-  .login-container {
-    padding-top: 20em;
-    padding-bottom: 20em;
-    display: grid;
-    place-items: center;;
+    width: 100%;
   }
   .button-container {
     margin: 2em 0;

@@ -1,32 +1,52 @@
-.link-button {
+.btn {
   min-width: 80px;
-  padding: 1em 1.5em;
-  background: #efefef;
+  padding: 1em 2.5em;
   border-radius: 0.375em;
-  text-decoration: none;
-  font-size: 1.5em;
+  font-size: 1em;
   font-weight: bold;
-  color: #000;
-
-  &:hover {
-    text-decoration: underline;
-    background-color: #eaeaea;
-  }
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: "Instrument Sans", sans-serif;
 }
 
+/* Primary */
 .primary {
   background: #091f80;
   color: #fefef4;
-  border: none;
-  border-radius: 0.375em;
-  padding: 1em 1.5em;
-  font-family: "Instrument Sans", sans-serif;
-  font-size: 1.5em;
-  font-weight: bold;
   border: 2px solid #091f80;
 
   &:hover {
     background: #fefef4;
     color: #091f80;
   }
+}
+
+/* Secondary */
+.secondary {
+  background: #fefef4;
+  color: #091f80;
+  border: 2px solid #091f80;
+
+  &:hover {
+    background: #091f80;
+    color: #fefef4;
+  }
+}
+
+/* Tertiary */
+.tertiary {
+  background: transparent;
+  color: #091f80;
+  border: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.xl {
+  font-size: 1.5em;
 }

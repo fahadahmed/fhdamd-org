@@ -1,0 +1,41 @@
+.accordion {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.accordion-item {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.accordion-header {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 1rem 0;
+  color: #091f80;
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  text-align: left;
+}
+
+.accordion-icon {
+  font-size: 1.5rem;
+  transition: transform 0.2s ease;
+}
+
+.accordion-icon.open {
+  transform: rotate(45deg);
+}
+
+.accordion-content {
+  padding: 0.5rem 0 1rem;
+  color: #091f80;
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 1.25rem;
+}

@@ -30,13 +30,13 @@ h2 {
 
 .app {
   display: grid;
-  grid-template-rows: 1fr 80px;
+  grid-template-rows: 100px 1fr 80px;
   place-items: center;
   min-height: 100dvh;
-  padding: 0 3em;
+  padding: 0 12em;
 }
 
-.container {
+.form-container {
   display: grid;
   justify-content: center;
   text-align: center;
@@ -57,4 +57,9 @@ h2 {
   color: #091f80;
   font-size: 18px;
   font-family: "Instrument Sans", sans-serif;
+}
+
+.alternate {
+  background-color: #fbfbe3;
+  padding: 3em 6em;
 }
