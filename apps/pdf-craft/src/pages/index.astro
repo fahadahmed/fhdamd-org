@@ -1,34 +1,43 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { HomeCta, Footer, Header } from "../components";
+import {
+  HomeCta,
+  Footer,
+  Header,
+  Operations,
+  Pricing,
+  Testimonials,
+  HowItWorks,
+  Faqs,
+} from "../components";
 import { fetchCms } from "../utils/lib/cms";
+import { type Faq } from "../utils";
 
-// type Faq = {
-//   title: string;
-//   content: string;
-//   id: string;
-//   _createdAt: string;
-// };
+type FaqResponse = {
+  data: {
+    allFaqs: Faq[];
+  };
+};
 
-// type FaqResponse = {
-//   data: {
-//     allFaqs: Faq[];
-//   };
-// };
-
-// const faqResponse: FaqResponse = await fetchCms<FaqResponse>("faqs");
-// const faqs = faqResponse.data.allFaqs;
+const faqResponse: FaqResponse = await fetchCms<FaqResponse>("faqs");
+const faqs = faqResponse.data.allFaqs;
 ---
 
 <Layout>
   <Header client:load />
   <div class="container">
     <HomeCta />
-    <div class="alternate">Home Operations Component</div>
-    <div>Testimonials Component</div>
-    <div class="alternate">How It Works Component</div>
-    <div>Pricing Component</div>
-    <div class="alternate">Faq Component</div>
+    <div class="alternate">
+      <Operations />
+    </div>
+    <Testimonials />
+    <div class="alternate">
+      <HowItWorks />
+    </div>
+    <Pricing />
+    <div class="alternate">
+      <Faqs client:load items={faqs} />
+    </div>
   </div>
   <Footer />
   <!-- <div class="container">

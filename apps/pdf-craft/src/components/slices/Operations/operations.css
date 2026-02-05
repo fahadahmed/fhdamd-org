@@ -1,0 +1,65 @@
+.operations-slice {
+  text-align: center;
+
+  .operations-heading {
+    color: #091f80;
+    font-size: 64px;
+    font-family: "Josefin Slab", serif;
+    font-weight: 700;
+    margin: 1em 0;
+  }
+
+  .operations-container {
+    display: flex;
+    justify-content: center;
+    gap: 4em;
+    flex-wrap: wrap;
+    padding-bottom: 6em;
+  }
+
+  .operation-card {
+    background-color: #ffffff;
+    border: 2px solid #091f80;
+    border-radius: 8px;
+    padding: 2em;
+    min-width: 200px;
+    max-width: 250px;
+    text-align: left;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+
+    img {
+      min-height: 84px;
+      max-width: 84px;
+    }
+
+    h3 {
+      color: #091f80;
+      font-size: 24px;
+      font-family: "Instrument Sans", sans-serif;
+      font-weight: 700;
+      margin-bottom: 0.5em;
+    }
+
+    h4 {
+      color: #091f80;
+      font-size: 20px;
+      font-family: "Instrument Sans", sans-serif;
+      font-weight: 600;
+      margin: 0.5em 0;
+    }
+
+    p {
+      color: #091f80;
+      font-size: 20px;
+      font-family: "Instrument Sans", sans-serif;
+      margin-bottom: 3em;
+      min-height: 72px;
+    }
+  }
+  .disabled {
+    background-color: #fefef4;
+    box-shadow: none;
+  }
+}

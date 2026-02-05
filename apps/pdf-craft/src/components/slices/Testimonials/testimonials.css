@@ -1,0 +1,55 @@
+.testimonials-slice {
+  display: flex;
+  flex-direction: column;
+  margin-top: 5em;
+  margin-bottom: 5em;
+  place-items: center;
+}
+
+.testimonials-heading {
+  color: #091f80;
+  font-size: 64px;
+  font-family: "Josefin Slab", serif;
+  font-weight: 700;
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+.testimonials-container {
+  display: flex;
+  justify-content: center;
+  gap: 4em;
+  flex-wrap: wrap;
+}
+
+.testimonial-card {
+  max-width: 600px;
+  display: flex;
+  flex-direction: row;
+  gap: 4em;
+
+  img {
+    min-height: 64px;
+    max-width: 64px;
+    align-self: self-start;
+    padding: 1em 0;
+  }
+
+  p {
+    color: #091f80;
+    font-size: 20px;
+    font-family: "Instrument Sans", sans-serif;
+    font-weight: 400;
+    margin-bottom: 0;
+  }
+
+  h4 {
+    color: #091f80;
+    font-size: 20px;
+    font-family: "Instrument Sans", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    margin-top: 0.5em;
+    margin-bottom: 2em;
+  }
+}

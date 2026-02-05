@@ -1,0 +1,93 @@
+.pricing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .pricing-heading {
+    color: #091f80;
+    font-size: 64px;
+    font-family: "Josefin Slab", serif;
+    font-weight: 700;
+    margin: 1.5em 0 0.25em 0;
+    text-align: center;
+  }
+
+  .pricing-byline {
+    color: #091f80;
+    font-size: 32px;
+    font-family: "Instrument Sans", sans-serif;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 2.5em;
+  }
+}
+
+.pricing-cards {
+  display: flex;
+  justify-content: center;
+  gap: 4em;
+  flex-wrap: wrap;
+  padding-bottom: 6em;
+}
+
+.pricing-card {
+  background-color: #ffffff;
+  border: 2px solid #091f80;
+  border-radius: 8px;
+  padding: 2em;
+  min-width: 400px;
+  max-width: 500px;
+  text-align: left;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  h3 {
+    color: #091f80;
+    font-size: 64px;
+    font-family: "Instrument Sans", sans-serif;
+    font-weight: 700;
+    margin: 1em 0 0 0;
+    text-align: center;
+  }
+
+  h4 {
+    color: #091f80;
+    font-size: 20px;
+    font-family: "Instrument Sans", sans-serif;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  p {
+    color: #091f80;
+    font-size: 20px;
+    font-family: "Instrument Sans", sans-serif;
+    margin-bottom: 1em;
+    text-align: center;
+  }
+
+  ul {
+    list-style-type: none;
+    padding-left: 20px;
+    margin: 4em 2em;
+
+    li {
+      color: #091f80;
+      font-size: 20px;
+      font-family: "Instrument Sans", sans-serif;
+      margin-bottom: 0.5em;
+      line-height: 1.75em;
+    }
+    li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.3em;
+      width: 1rem;
+      height: 1rem;
+      background: url("/icons/icon-tick.svg") no-repeat center / contain;
+    }
+  }
+}
