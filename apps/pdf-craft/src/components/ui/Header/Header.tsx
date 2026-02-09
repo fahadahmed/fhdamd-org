@@ -5,6 +5,7 @@ import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { useRecaptcha } from '../../../utils'
 import { Button } from '../../'
 import { auth } from '../../../firebase/client'
+import BuyIcon from '../../../../public/icons/icon-buy.svg'
 import './header.css'
 
 export default function Header() {
@@ -34,8 +35,8 @@ export default function Header() {
     }
 
     try {
-      await signOut(auth)
       const response = await actions.user.signOutUser({ captchaToken })
+      await signOut(auth)
       if (response.data?.success) {
         window.location.href = '/'
       }
@@ -44,13 +45,44 @@ export default function Header() {
     }
   }
 
+  const handleBuyCredits = async () => {
+    const token = await auth.currentUser?.getIdToken();
+
+    const paymentResponse = await fetch(`${import.meta.env.PUBLIC_BASE_FUNCTIONS_URL}/processPayment`, { // Convert URL to environment variable later
+      method: 'POST',
+      body: JSON.stringify({
+        credits: 5,
+        amount: 149,
+        quantity: 1,
+        currency: 'usd',
+        productName: 'PCD-Craft Credits Basic',
+        userId: auth.currentUser?.uid,
+        userEmail: auth.currentUser?.email
+      }),
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
+
+    const paymentData = await paymentResponse.json();
+    if (!paymentData.url) {
+      console.error('Payment URL not found in response');
+      return;
+    } else {
+      window.location.href = paymentData.url;
+    }
+  }
+
   return (
     <div className="header">
       <div className="header-logo"><a href="/">pdf <small>craft</small></a></div>
       {isLoggedIn ? (
-        <form onSubmit={handleLogout}>
-          <Button kind="secondary" type="submit" size="sm" text="Logout" />
-        </form>
+        <div className="header-links">
+          <Button kind="secondary" size="sm" type="button" text="Buy Credits" onClick={handleBuyCredits} />
+          <form onSubmit={handleLogout}>
+            <Button kind="secondary" type="submit" size="sm" text="Logout" />
+          </form>
+        </div>
       ) : (
         <div className="header-links">
           <Button kind="tertiary" type="linkButton" url="/signin" text="Login" />

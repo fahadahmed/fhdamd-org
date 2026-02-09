@@ -1,37 +1,70 @@
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 20px 0;
+  margin: 20px 0px;
   font-size: 16px;
-  font-family: sans-serif;
-  color: #333;
+  font-family: "Instrument Sans", sans-serif;
+  color: #091f80;
   table-layout: fixed;
   width: 100%;
-  border: 1px solid #ddd;
+  border: 1px solid #091f80;
 
   thead {
-    background-color: #f2f2f2;
-    color: #333;
+    background-color: #fbfbe3;
+    color: #091f80;
     th {
       padding: 12px;
       text-align: left;
-      border-bottom: 2px solid #ddd;
+      border-bottom: 2px solid #091f80;
       font-weight: bold;
     }
   }
   tbody {
     tr {
       &:nth-child(even) {
-        background-color: #f9f9f9;
+        background-color: #ffffff;
       }
       &:hover {
-        background-color: #f1f1f1;
+        background-color: #fbfbe3;
       }
       td {
         padding: 12px;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid #091f80;
         text-align: left;
       }
     }
   }
+}
+
+.data-table-wrapper {
+  width: 100%;
+}
+
+.data-table-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  color: #091f80;
+  font-family: "Instrument Sans", sans-serif;
+}
+
+.data-table-pagination button {
+  padding: 6px 12px;
+  cursor: pointer;
+  background-color: #091f80;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.data-table-pagination button:hover:not(:disabled) {
+  background-color: #0b2a99;
+}
+
+.data-table-pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

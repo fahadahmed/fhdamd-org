@@ -1,13 +1,28 @@
 .dashboard-container {
   display: grid;
-  grid-template-rows: 2fr 2fr 8fr;
 }
 
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: 2em 0;
+
+  h1 {
+    color: #091f80;
+    font-size: 64px;
+    font-family: "Josefin Slab", serif;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  p {
+    color: #091f80;
+    font-size: 20px;
+    font-family: "Instrument Sans", sans-serif;
+    font-weight: 400;
+    margin: 0.5em 0 0 0;
+  }
 }
 
 .task-container {
@@ -27,4 +42,74 @@
 
 .task-tile:hover {
   transform: scale(1.05);
+}
+
+.dashboard-tasks {
+  display: flex;
+  justify-content: start;
+  flex-wrap: wrap;
+  padding-bottom: 2em;
+  width: 100%;
+  flex-direction: column;
+  h2 {
+    color: #091f80;
+    font-size: 20px;
+    font-family: "Instrument Sans", sans-serif;
+    font-weight: 600;
+    margin-bottom: 1em;
+  }
+}
+
+.operations-container {
+  display: flex;
+  justify-content: start;
+  gap: 2em;
+  flex-wrap: wrap;
+}
+
+.operation-card {
+  background-color: #ffffff;
+  border: 2px solid #091f80;
+  border-radius: 8px;
+  padding: 1em;
+  /* min-width: 200px;
+  max-width: 250px; */
+  text-align: left;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+
+  img {
+    min-height: 48px;
+    max-width: 48px;
+  }
+
+  h3 {
+    color: #091f80;
+    font-size: 20px;
+    font-family: "Instrument Sans", sans-serif;
+    font-weight: 700;
+    margin: 0.5em 0 00;
+  }
+
+  h4 {
+    color: #091f80;
+    font-size: 20px;
+    font-family: "Instrument Sans", sans-serif;
+    font-weight: 600;
+    margin: 0.5em 0 0 0;
+  }
+
+  p {
+    color: #091f80;
+    font-size: 18px;
+    font-family: "Instrument Sans", sans-serif;
+    min-height: 48px;
+  }
+}
+.disabled {
+  background-color: #fefef4;
+  box-shadow: none;
 }

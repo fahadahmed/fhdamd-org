@@ -12,16 +12,36 @@
   font-family: "Instrument Sans", sans-serif;
 }
 
+/* Content wrapper for text + icon */
+.btn-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+/* Icon wrapper */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+}
+
+/* Default icon sizing */
+.btn-icon svg {
+  width: 1em;
+  height: 1em;
+}
+
 /* Primary */
 .primary {
   background: #091f80;
   color: #fefef4;
   border: 2px solid #091f80;
+}
 
-  &:hover {
-    background: #fefef4;
-    color: #091f80;
-  }
+.primary:hover {
+  background: #fefef4;
+  color: #091f80;
 }
 
 /* Secondary */
@@ -29,11 +49,11 @@
   background: #fefef4;
   color: #091f80;
   border: 2px solid #091f80;
+}
 
-  &:hover {
-    background: #091f80;
-    color: #fefef4;
-  }
+.secondary:hover {
+  background: #091f80;
+  color: #fefef4;
 }
 
 /* Tertiary */
@@ -41,12 +61,34 @@
   background: transparent;
   color: #091f80;
   border: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
 }
 
+.tertiary:hover {
+  text-decoration: underline;
+}
+
+/* Sizes */
 .xl {
   font-size: 1.5em;
+}
+
+.sm {
+  padding: 0.5em 2.5em;
+}
+
+/* Icon size tuning per button size */
+.btn.xl .btn-icon svg {
+  width: 1.25em;
+  height: 1.25em;
+}
+
+.btn.sm .btn-icon svg {
+  width: 0.875em;
+  height: 0.875em;
+}
+
+/* Optional: icon-only button (future use) */
+.btn.icon-only {
+  min-width: auto;
+  padding: 0.75em;
 }

@@ -1,4 +1,5 @@
 import { DataTable, type TableHeader } from '../../ui'
+import './userFileList.css'
 
 interface UserFileListProps {
   files?: any[];
@@ -21,7 +22,10 @@ export default function UserFileList({ files = [] }: UserFileListProps) {
     createdAt: file.createdAt.toDate().toLocaleString(),
     actions: (
       <div>
-        <a href={file.fileUrl} target="_blank">Download</a>
+        <a href={file.fileUrl} target="_blank">
+          <img src="/icons/icon-download.svg" alt="Download" />
+          <span style={{ marginLeft: '8px' }}>Download</span>
+        </a>
       </div>
     )
   }));

@@ -1,7 +1,6 @@
 .header {
   display: flex;
   flex-direction: row;
-  padding: 1em 2em;
   align-items: center;
   justify-content: space-between;
   width: 100%;
@@ -16,4 +15,9 @@
     color: #091f80;
     text-decoration: none;
   }
+}
+
+.header-links {
+  display: flex;
+  gap: 1em;
 }
