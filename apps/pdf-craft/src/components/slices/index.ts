@@ -7,4 +7,5 @@ export { default as Pricing } from "./Pricing";
 export { default as Testimonials } from "./Testimonials";
 export { default as UserFileList } from "./UserFileList";
 export * from "./MultiPdfUploader";
+export * from "./Operations";
 export * from "./UserFileList";

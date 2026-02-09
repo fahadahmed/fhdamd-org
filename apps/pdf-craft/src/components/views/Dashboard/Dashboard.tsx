@@ -4,13 +4,7 @@ import { useEffect, useState } from 'react';
 import { db, auth } from '../../../firebase/client';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
-import { UserFileList } from '../../slices';
-
-const tasks = [
-  { name: 'Merge PDFs', link: '/mergepdf' },
-  { name: 'Image to PDF', link: '/imagetopdf' },
-  { name: 'PDF to Image', link: '/pdftoimage' },
-];
+import { UserFileList, OperationsContainer } from '../../slices';
 
 export default function Dashboard() {
   const [files, setFiles] = useState<any[]>([]);
@@ -44,33 +38,6 @@ export default function Dashboard() {
     return () => unsubscribe();
   }, []);
 
-  const handleBuyCredits = async () => {
-    const token = await auth.currentUser?.getIdToken();
-
-    const paymentResponse = await fetch(`${import.meta.env.PUBLIC_BASE_FUNCTIONS_URL}/processPayment`, { // Convert URL to environment variable later
-      method: 'POST',
-      body: JSON.stringify({
-        credits: 5,
-        amount: 149,
-        quantity: 1,
-        currency: 'usd',
-        productName: 'PCD-Craft Credits Basic',
-        userId: auth.currentUser?.uid,
-        userEmail: auth.currentUser?.email
-      }),
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      }
-    });
-
-    const paymentData = await paymentResponse.json();
-    if (!paymentData.url) {
-      console.error('Payment URL not found in response');
-      return;
-    } else {
-      window.location.href = paymentData.url;
-    }
-  }
   return (
     <div className="dashboard-container">
       <div className='dashboard-header'>
@@ -82,20 +49,13 @@ export default function Dashboard() {
           {profile.credits !== undefined && (
             <p><strong>Available Credits:</strong> {profile.credits}</p>
           )}
-          <button onClick={handleBuyCredits}>Buy Credits</button>
         </div>
       </div>
-      <div>
+      <div className="dashboard-tasks">
         <h2>Tasks</h2>
-        <div className="task-container">
-          {tasks.map((task) => (
-            <div key={task.name} className="task-tile">
-              <a href={task.link}><strong>{task.name}</strong></a>
-            </div>
-          ))}
-        </div>
+        <OperationsContainer />
       </div>
-      <div>
+      <div className="dashboard-files">
         {loading ? (
           <p>Loading...</p>
         ) : (

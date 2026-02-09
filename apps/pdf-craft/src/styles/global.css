@@ -30,7 +30,7 @@ h2 {
 
 .app {
   display: grid;
-  grid-template-rows: 100px 1fr 80px;
+  grid-template-rows: 100px 1fr;
   place-items: center;
   min-height: 100dvh;
   padding: 0 12em;
