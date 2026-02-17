@@ -1,5 +1,5 @@
 ---
-import AuthenticatedLayout from "../layouts/AuthenticatedLayout.astro";
+import Layout from "../layouts/Layout.astro";
 import { MultiPdfUploader } from "../components";
 
 if (!Astro.cookies.has('__session')) {
@@ -7,9 +7,6 @@ if (!Astro.cookies.has('__session')) {
 }
 ---
 
-<AuthenticatedLayout>
-  <div>
-    <h1>Merge PDF Files</h1>
-    <MultiPdfUploader client:load />
-  </div>
-</AuthenticatedLayout>
+<Layout>
+  <MultiPdfUploader client:load />
+</Layout>

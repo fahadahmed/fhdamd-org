@@ -5,7 +5,8 @@ import { DndContext, useSensors, useSensor, PointerSensor, closestCenter } from 
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { actions } from 'astro:actions'
-import './multiPdfUploader.css'
+import { Button } from "../../ui"
+import '../../../styles/operations.css'
 
 type SortableItemProps = {
   id: string
@@ -96,15 +97,18 @@ export default function MultiPdfUploader() {
 
   }
   return (
-    <div className="multi-pdf-uploader">
+    <div className="container">
+      <div className="container-heading">
+        <h1>Merge Files</h1>
+        <p><a href="/dashboard" className="back-to-dashboard">Back to Dashboard</a></p>
+      </div>
       {downloadLink ? (
         <div>
           <a href={downloadLink} download>Download Merged PDF</a>
-          <a href="/dashboard">Back to Dashboard</a>
         </div>
       ) : (
-        <>
-          <a href="/dashboard" className="back-to-dashboard">Back to Dashboard</a>
+        <div>
+
           {uploadedFiles.length < 5 ? (
             <div {...getRootProps()} className="dropzone-container">
               <input {...getInputProps()} />
@@ -112,6 +116,12 @@ export default function MultiPdfUploader() {
             </div>
           ) : <div>You can merge a maximum of 5 files at a time.</div>}
           <div>
+            {uploadedFiles.length > 0 && (
+              <>
+                <h2>Uploaded Files</h2>
+                <p>Drag the files up & down to change the order in the merged file.</p>
+              </>
+            )}
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
@@ -121,20 +131,10 @@ export default function MultiPdfUploader() {
                 {uploadedFiles.map((file) => (
                   <SortableItem key={file.name} id={file.name}>
                     <div
-                      style={{
-                        padding: '10px',
-                        margin: '5px 0',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                        background: '#f9f9f9',
-                        display: 'flex',
-                        justifyContent: 'space-between'
-                      }}
+                      className="sortable-item"
                     >
                       {file.name}
-                      <button onClick={() => handleDelete(file.name)} style={{ marginLeft: '10px', cursor: 'pointer' }}>
-                        ❌
-                      </button>
+                      <Button type="button" kind="tertiary" size='sm' onClick={() => handleDelete(file.name)} text="❌" />
                     </div>
                   </SortableItem>
                 ))}
@@ -143,12 +143,10 @@ export default function MultiPdfUploader() {
           </div>
           {uploadedFiles.length > 0 && (
             <form onSubmit={handleSubmit}>
-              <button type='submit' disabled={isMerging}>
-                {buttonLabel}
-              </button>
+              <Button type="submit" kind="primary" size="xl" disabled={isMerging} text={buttonLabel} />
             </form>
           )}
-        </>
+        </div>
       )}
     </div>
   )

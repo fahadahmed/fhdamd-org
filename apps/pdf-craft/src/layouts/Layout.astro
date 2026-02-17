@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { Header, Footer } from '../components'
 const SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 ---
 
@@ -21,7 +22,9 @@ const SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
   </head>
   <body>
     <div class="app">
+      <Header client:load/>
       <slot />
+      <Footer />
     </div>
   </body>
 </html>

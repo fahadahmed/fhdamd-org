@@ -12,3 +12,7 @@ h2 {
   font-weight: 700;
   margin: 1em 0;
 }
+
+.responsive-image {
+  width: 100%;
+}

@@ -5,7 +5,6 @@ import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { useRecaptcha } from '../../../utils'
 import { Button } from '../../'
 import { auth } from '../../../firebase/client'
-import BuyIcon from '../../../../public/icons/icon-buy.svg'
 import './header.css'
 
 export default function Header() {
