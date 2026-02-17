@@ -3,6 +3,7 @@ import './button.css'
 export type ButtonProps = {
   type: 'button' | 'linkButton' | 'submit'
   text: string
+  disabled?: boolean
   url?: string
   kind?: 'primary' | 'secondary' | 'tertiary'
   size?: 'sm' | 'md' | 'lg' | 'xl'
@@ -11,7 +12,7 @@ export type ButtonProps = {
   iconPosition?: 'left' | 'right'
 }
 
-export default function Button({ type, text, url, kind = 'primary', size = 'md', onClick, icon, iconPosition = 'left' }: ButtonProps) {
+export default function Button({ type, text, url, kind = 'primary', size = 'md', onClick, icon, iconPosition = 'left', disabled = false }: ButtonProps) {
   const className = `btn ${kind} ${size}`
 
   const content = (
@@ -33,7 +34,7 @@ export default function Button({ type, text, url, kind = 'primary', size = 'md',
       {content}
     </a>
   ) : (
-    <button type={type} className={className} onClick={onClick}>
+    <button type={type} className={className} onClick={onClick} disabled={disabled}>
       {content}
     </button>
   )

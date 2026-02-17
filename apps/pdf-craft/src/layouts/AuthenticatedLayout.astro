@@ -1,15 +1,15 @@
 ---
 import Layout from "./Layout.astro";
-import { Header, Footer } from '../components'
-import '../styles/layout.css'
+import { Header, Footer } from "../components";
+import "../styles/layout.css";
 ---
 
 <Layout>
   <div class="authenticated-container">
     <Header client:load />
     <div class="app-container">
-      <slot/>
-      <Footer />
+      <slot />
     </div>
+    <Footer />
   </div>
 </Layout>

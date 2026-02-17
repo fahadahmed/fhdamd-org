@@ -1,14 +1,12 @@
 ---
-import AuthenticatedLayout from "../layouts/AuthenticatedLayout.astro";
+import Layout from "../layouts/Layout.astro";
 import { ImageToPdf } from "../components";
 
-if (!Astro.cookies.has('__session')) {
-  return Astro.redirect('/signin')
+if (!Astro.cookies.has("__session")) {
+  return Astro.redirect("/signin");
 }
 ---
-<AuthenticatedLayout>
-  <div>
-    <h1>Convert Images to PDF</h1>
-    <ImageToPdf client:load/>
-  </div>
-</AuthenticatedLayout>
+
+<Layout>
+  <ImageToPdf client:load />
+</Layout>

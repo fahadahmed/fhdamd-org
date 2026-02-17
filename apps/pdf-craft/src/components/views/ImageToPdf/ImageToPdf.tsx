@@ -5,7 +5,8 @@ import { DndContext, useSensors, useSensor, PointerSensor, closestCenter, type D
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { actions } from 'astro:actions'
-import './imageToPdf.css'
+import '../../../styles/operations.css'
+import { Button } from "../../ui"
 
 type SortableItemProps = {
   id: string
@@ -89,15 +90,17 @@ export default function MultiImageUploader() {
   }
 
   return (
-    <div className="multi-image-uploader">
+    <div className="container">
+      <div className="container-heading">
+        <h1>Convert to PDF</h1>
+        <p><a href="/dashboard" className="back-to-dashboard">Back to Dashboard</a></p>
+      </div>
       {downloadLink ? (
         <div>
           <a href={downloadLink} download>Download PDF</a>
-          <a href="/dashboard">Back to Dashboard</a>
         </div>
       ) : (
         <>
-          <a href="/dashboard" className="back-to-dashboard">Back to Dashboard</a>
           {uploadedFiles.length < 10 ? (
             <div {...getRootProps()} className="dropzone-container">
               <input {...getInputProps()} />
@@ -105,6 +108,12 @@ export default function MultiImageUploader() {
             </div>
           ) : <div>You can upload a maximum of 10 images at a time.</div>}
           <div>
+            {uploadedFiles.length > 0 && (
+              <>
+                <h2>Uploaded Files</h2>
+                <p>Drag the files up & down to change the order in the merged file.</p>
+              </>
+            )}
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
@@ -114,20 +123,10 @@ export default function MultiImageUploader() {
                 {uploadedFiles.map((file) => (
                   <SortableItem key={file.name} id={file.name}>
                     <div
-                      style={{
-                        padding: '10px',
-                        margin: '5px 0',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                        background: '#f9f9f9',
-                        display: 'flex',
-                        justifyContent: 'space-between'
-                      }}
+                      className="sortable-item"
                     >
                       {file.name}
-                      <button onClick={() => handleDelete(file.name)} style={{ marginLeft: '10px', cursor: 'pointer' }}>
-                        ❌
-                      </button>
+                      <Button type="button" kind="tertiary" size='sm' onClick={() => handleDelete(file.name)} text="❌" />
                     </div>
                   </SortableItem>
                 ))}
@@ -136,9 +135,7 @@ export default function MultiImageUploader() {
           </div>
           {uploadedFiles.length > 0 && (
             <form onSubmit={handleSubmit}>
-              <button type='submit' disabled={isConverting}>
-                {buttonLabel}
-              </button>
+              <Button type="submit" kind="primary" size="xl" disabled={isConverting} text={buttonLabel} />
             </form>
           )}
         </>

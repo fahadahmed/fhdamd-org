@@ -1,5 +1,5 @@
 ---
-import AuthenticatedLayout from '../layouts/AuthenticatedLayout.astro'
+import Layout from '../layouts/Layout.astro'
 import { Dashboard as DashboardView } from '../components'
 
 if (!Astro.cookies.has('__session')) {
@@ -7,6 +7,6 @@ if (!Astro.cookies.has('__session')) {
 }
 ---
 
-<AuthenticatedLayout>
+<Layout>
   <DashboardView client:load />
-</AuthenticatedLayout>
+</Layout>

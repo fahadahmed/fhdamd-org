@@ -24,7 +24,6 @@ const faqs = faqResponse.data.allFaqs;
 ---
 
 <Layout>
-  <Header client:load />
   <div class="container">
     <HomeCta />
     <div class="alternate">
@@ -39,45 +38,4 @@ const faqs = faqResponse.data.allFaqs;
       <Faqs client:load items={faqs} />
     </div>
   </div>
-  <Footer />
-  <!-- <div class="container">
-    <div class="login-container">
-      <h1>PDF Craft</h1>
-      <h2>A complete online PDF management tool</h2>
-      <div class="button-container">
-        <Button type="linkButton" text="Sign-in" url="/signin" />
-        <Button type="linkButton" text="Sign-up" url="/signup" />
-      </div>
-    </div>
-    <div class="faq-container">
-      <h2>Frequently Asked Questions</h2>
-      {
-        faqs.map((faq) => (
-          <div>
-            <h3>{faq.title}</h3>
-            <p>{faq.content}</p>
-          </div>
-        ))
-      }
-    </div> -->
 </Layout>
-
-<style>
-  .container {
-    display: grid;
-    width: 100%;
-  }
-  .button-container {
-    margin: 2em 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    min-width: 500px;
-    max-width: 500px;
-  }
-  .faq-container {
-    max-width: 800px;
-    margin-bottom: 5em;
-    text-align: left;
-  }
-</style>
