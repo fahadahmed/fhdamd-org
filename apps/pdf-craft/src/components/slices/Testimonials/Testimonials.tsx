@@ -1,9 +1,10 @@
+import { Heading } from '../../ui'
 import './testimonials.css'
 export default function Testimonials() {
   return (
     <div className="testimonials-slice">
-      <img src="/icons/icon-testimonials.svg" alt="" />
-      <h2 className="testimonials-heading">What our people are saying about us?</h2>
+      <img src="/icons/icon-testimonials.svg" alt="Stars" />
+      <Heading variant="section">What our people are saying about us?</Heading>
       <div className="testimonials-container">
         <div className="testimonial-card">
           <img src="/icons/icon-user.svg" alt="User Profile" />

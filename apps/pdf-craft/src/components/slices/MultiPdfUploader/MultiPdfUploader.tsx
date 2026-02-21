@@ -5,7 +5,7 @@ import { DndContext, useSensors, useSensor, PointerSensor, closestCenter } from 
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { actions } from 'astro:actions'
-import { Button } from "../../ui"
+import { Button, Heading } from "../../ui"
 import '../../../styles/operations.css'
 
 type SortableItemProps = {
@@ -99,7 +99,7 @@ export default function MultiPdfUploader() {
   return (
     <div className="container">
       <div className="container-heading">
-        <h1>Merge Files</h1>
+        <Heading level="h1" variant='section'>Merge Files</Heading>
         <p><a href="/dashboard" className="back-to-dashboard">Back to Dashboard</a></p>
       </div>
       {downloadLink ? (
@@ -118,7 +118,7 @@ export default function MultiPdfUploader() {
           <div>
             {uploadedFiles.length > 0 && (
               <>
-                <h2>Uploaded Files</h2>
+                <Heading variant='subsection'>Uploaded Files</Heading>
                 <p>Drag the files up & down to change the order in the merged file.</p>
               </>
             )}

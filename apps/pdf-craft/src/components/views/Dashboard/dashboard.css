@@ -10,14 +10,6 @@
   align-items: center;
   padding: 2em 0;
 
-  h1 {
-    color: #091f80;
-    font-size: 64px;
-    font-family: "Josefin Slab", serif;
-    font-weight: 700;
-    margin: 0;
-  }
-
   p {
     color: #091f80;
     font-size: 20px;
@@ -53,13 +45,6 @@
   padding-bottom: 2em;
   width: 100%;
   flex-direction: column;
-  h2 {
-    color: #091f80;
-    font-size: 20px;
-    font-family: "Instrument Sans", sans-serif;
-    font-weight: 600;
-    margin-bottom: 1em;
-  }
 }
 
 .operations-container {
