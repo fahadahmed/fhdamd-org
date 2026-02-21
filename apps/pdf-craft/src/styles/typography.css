@@ -1,0 +1,177 @@
+/* =========================
+  DESIGN TOKENS
+  ========================= */
+:root {
+  /* Heading / Display token */
+  --font-display-family: "Josefin Slab", serif;
+  --font-display-weight: 700;
+  --font-display-size-mobile: 48px;
+  --font-display-size-tablet: 72px;
+  --font-display-size-desktop: 96px;
+  --color-display-text: #091f80;
+
+  /* Section / Page / Caption Tokens */
+  --font-section-family: "Josefin Slab", serif;
+  --font-section-weight: 700;
+  --font-section-size-mobile: 32px;
+  --font-section-size-tablet: 48px;
+  --font-section-size-desktop: 64px;
+  --color-section-text: #091f80;
+
+  /* Sub-Section */
+  --font-subsection-family: "Instrument Sans", serif;
+  --font-subsection-weight: 700;
+  --font-subsection-size-mobile: 16px;
+  --font-subsection-size-tablet: 20px;
+  --font-subsection-size-desktop: 24px;
+  --color-subsection-text: #091f80;
+
+  /* Text Tokens */
+  --font-body-family: "Instrument Sans", sans-serif;
+  --font-body-weight: 400;
+  --font-body-size-mobile: 16px;
+  --font-body-size-tablet: 18px;
+  --font-body-size-desktop: 20px;
+  --font-body-text: #091f80;
+
+  --font-caption-family: "Instrument Sans", sans-serif;
+  --font-caption-weight: 400;
+  --font-caption-size-mobile: 24px;
+  --font-caption-size-tablet: 30px;
+  --font-caption-size-desktop: 36px;
+  --color-caption-text: #091f80;
+}
+
+/* HEADING STYLES */
+.heading {
+  margin: 0;
+  line-height: 1.2;
+  font-family: var(--font-section-family);
+  font-weight: var(--font-section-weight);
+  color: var(--color-section-text);
+}
+
+.heading--display {
+  font-family: var(--font-display-family);
+  font-weight: var(--font-display-weight);
+  font-size: var(--font-display-size-mobile);
+  color: var(--color-display-text);
+}
+
+.heading--section {
+  font-size: var(--font-section-size-mobile);
+  margin: 0 0 1em 0;
+}
+.heading--page {
+  font-size: calc(var(--font-section-size-mobile) * 1.25);
+}
+.heading--subsection {
+  font-family: var(--font-subsection-family);
+  font-size: var(--font-subsection-size-mobile);
+}
+.heading--caption {
+  font-size: calc(var(--font-section-size-mobile) * 0.75);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .heading--display {
+    font-size: var(--font-display-size-tablet);
+  }
+  .heading--section {
+    font-size: var(--font-section-size-tablet);
+  }
+  .heading--page {
+    font-size: calc(var(--font-section-size-tablet) * 1.25);
+  }
+  .heading--subsection {
+    font-size: var(--font-subsection-size-tablet);
+  }
+  .heading--caption {
+    font-size: calc(var(--font-section-size-tablet) * 0.75);
+  }
+}
+
+/* Desktop */
+@media (min-width: 1200px) {
+  .heading--display {
+    font-size: var(--font-display-size-desktop);
+  }
+  .heading--section {
+    font-size: var(--font-section-size-desktop);
+  }
+  .heading--page {
+    font-size: calc(var(--font-section-size-desktop) * 1.25);
+  }
+  .heading--subsection {
+    font-size: var(--font-subsection-size-desktop);
+  }
+  .heading--caption {
+    font-size: calc(var(--font-section-size-desktop) * 0.75);
+  }
+}
+
+/* =========================
+   TEXT STYLES
+   ========================= */
+.text {
+  margin: 0;
+  line-height: 1.5;
+  font-family: var(--font-body-family);
+  font-weight: var(--font-body-weight);
+  color: var(--color-body-text);
+}
+
+.text--body {
+  font-size: var(--font-body-size-mobile);
+}
+.text--label {
+  font-size: var(--font-body-size-mobile);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.text--small {
+  font-size: calc(var(--font-body-size-mobile) * 0.875);
+}
+
+.text--caption {
+  font-family: var(--font-caption-family);
+  font-weight: var(--font-caption-weight);
+  font-size: var(--font-caption-size-mobile);
+  color: var(--color-caption-text);
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .text--body {
+    font-size: var(--font-body-size-tablet);
+  }
+  .text--label {
+    font-size: var(--font-body-size-tablet);
+  }
+  .text--small {
+    font-size: calc(var(--font-body-size-tablet) * 0.875);
+  }
+  .text--caption {
+    font-size: var(--font-caption-size-tablet);
+  }
+}
+
+/* Desktop */
+@media (min-width: 1200px) {
+  .text--body {
+    font-size: var(--font-body-size-desktop);
+  }
+  .text--label {
+    font-size: var(--font-body-size-desktop);
+  }
+  .text--small {
+    font-size: calc(var(--font-body-size-desktop) * 0.875);
+  }
+  .text--caption {
+    font-size: var(--font-caption-size-desktop);
+  }
+}

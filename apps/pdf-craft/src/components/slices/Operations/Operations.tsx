@@ -1,9 +1,9 @@
-import { Button } from '../../ui'
+import { Button, Heading } from '../../ui'
 import './operations.css'
 export default function Operations() {
   return (
     <div className="operations-slice">
-      <h2 className="operations-heading">Start editing your PDF</h2>
+      <Heading variant='section'>Start editing your PDF</Heading>
       <OperationsContainer />
     </div>
   )

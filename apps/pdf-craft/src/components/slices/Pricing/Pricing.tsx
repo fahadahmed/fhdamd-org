@@ -1,9 +1,9 @@
-import { Button } from '../../ui';
+import { Button, Heading } from '../../ui';
 import './pricing.css'
 
 export default function Pricing() {
   return <div className="pricing">
-    <h2 className='pricing-heading'>Simple Pricing</h2>
+    <Heading variant='section'>Simple Pricing</Heading>
     <p className='pricing-byline'>Buy credits once, use them anytime. No subscriptions, no expiry.</p>
     <div className="pricing-cards">
       <div className="pricing-card">

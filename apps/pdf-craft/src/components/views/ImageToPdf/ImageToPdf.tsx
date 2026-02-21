@@ -6,7 +6,7 @@ import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { actions } from 'astro:actions'
 import '../../../styles/operations.css'
-import { Button } from "../../ui"
+import { Button, Heading } from "../../ui"
 
 type SortableItemProps = {
   id: string
@@ -92,7 +92,7 @@ export default function MultiImageUploader() {
   return (
     <div className="container">
       <div className="container-heading">
-        <h1>Convert to PDF</h1>
+        <Heading level="h1" variant='section'>Convert to PDF</Heading>
         <p><a href="/dashboard" className="back-to-dashboard">Back to Dashboard</a></p>
       </div>
       {downloadLink ? (
@@ -110,7 +110,7 @@ export default function MultiImageUploader() {
           <div>
             {uploadedFiles.length > 0 && (
               <>
-                <h2>Uploaded Files</h2>
+                <Heading variant="subsection">Uploaded Files</Heading>
                 <p>Drag the files up & down to change the order in the merged file.</p>
               </>
             )}

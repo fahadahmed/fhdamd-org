@@ -1,4 +1,4 @@
-import { DataTable, type TableHeader } from '../../ui'
+import { DataTable, Heading, type TableHeader } from '../../ui'
 import './userFileList.css'
 
 interface UserFileListProps {
@@ -32,7 +32,7 @@ export default function UserFileList({ files = [] }: UserFileListProps) {
 
   return (
     <div className="user-file-list">
-      <h2>Your Files</h2>
+      <Heading level='h3' variant="subsection">Your Files</Heading>
       <DataTable headers={tableHeaders} data={tableData} />
     </div>
   );

@@ -1,11 +1,11 @@
-import { Button } from '../..'
+import { Button, Heading } from '../..'
 import './homeCta.css'
 
 export default function HomeCta() {
   return (
     <div className="home-cta">
       <div>
-        <h1 className="cta-heading">Simple PDF Tools</h1>
+        <Heading level='h1' variant='cta'>Simple PDF Tools</Heading>
         <p className="cta-byline">Merge PDFs and convert images to PDF in seconds. Pay only<br />for what you use, no subscriptions required.</p>
       </div>
       <div className="button-container">

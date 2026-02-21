@@ -5,6 +5,7 @@ import { db, auth } from '../../../firebase/client';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { UserFileList, OperationsContainer } from '../../slices';
+import { Heading } from '../../ui';
 
 export default function Dashboard() {
   const [files, setFiles] = useState<any[]>([]);
@@ -42,7 +43,7 @@ export default function Dashboard() {
     <div className="dashboard-container">
       <div className='dashboard-header'>
         <div>
-          <h1>Welcome, {profile.name ? `${profile.name}` : ''}</h1>
+          <Heading level='h1' variant='page'>Welcome, {profile.name ? `${profile.name}` : ''}</Heading>
           <p>Manage your PDF files and operations here.</p>
         </div>
         <div>
@@ -52,7 +53,7 @@ export default function Dashboard() {
         </div>
       </div>
       <div className="dashboard-tasks">
-        <h2>Tasks</h2>
+        <Heading level='h3' variant="subsection">Tasks</Heading>
         <OperationsContainer />
       </div>
       <div className="dashboard-files">
