@@ -1,11 +1,11 @@
-import { defineAction } from 'astro:actions';
-import { z } from 'astro:schema';
-import { PDFDocument } from 'pdf-lib';
-import { FieldValue } from 'firebase-admin/firestore';
-import admin from 'firebase-admin';
-import { v4 as uuidv4 } from 'uuid';
-import { getFirebaseAuth, getFirebaseApp } from '../firebase/server';
-import { publish } from '../server/pubsub/publisher';
+import { defineAction } from "astro:actions";
+import { z } from "astro:schema";
+import { PDFDocument } from "pdf-lib";
+import { FieldValue } from "firebase-admin/firestore";
+import admin from "firebase-admin";
+import { v4 as uuidv4 } from "uuid";
+import { getFirebaseAuth, getFirebaseApp } from "../firebase/server";
+import { publish } from "../server/pubsub/publisher";
 
 getFirebaseApp();
 const firestore = admin.firestore();
@@ -23,34 +23,33 @@ const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
 
 export const operations = {
   mergePdfs: defineAction({
-    accept: 'form',
+    accept: "form",
     input: mergePdfsSchema,
     handler: async (input, context) => {
       const { files } = input;
-      const cookieHeader = context.request.headers.get('cookie') || '';
+      const cookieHeader = context.request.headers.get("cookie") || "";
       const sessionCookie = cookieHeader
-        .split('; ')
-        .find((c) => c.startsWith('__session='))
-        ?.split('=')[1];
+        .split("; ")
+        .find((c) => c.startsWith("__session="))
+        ?.split("=")[1];
 
       try {
-        if (!sessionCookie) {
-          throw new Error('Unauthorized');
-        }
+        if (!sessionCookie) throw new Error("Unauthorized");
+
         const auth = await getFirebaseAuth();
         const decodedToken = await auth.verifySessionCookie(
           sessionCookie,
-          true
+          true,
         );
         const userId = decodedToken.uid;
 
-        // Create a new Firestore doc ID for the file
         const fileId = firestore
-          .collection('users')
+          .collection("users")
           .doc(userId)
-          .collection('files')
+          .collection("files")
           .doc().id;
 
+        // Merge PDFs
         const mergedPdf = await PDFDocument.create();
         for (const pdfFile of files) {
           const pdfBytes = await pdfFile.arrayBuffer();
@@ -59,7 +58,7 @@ export const operations = {
           });
           const copiedPages = await mergedPdf.copyPages(
             pdf,
-            pdf.getPageIndices()
+            pdf.getPageIndices(),
           );
           copiedPages.forEach((page) => mergedPdf.addPage(page));
         }
@@ -73,47 +72,51 @@ export const operations = {
 
         await fileRef.save(Buffer.from(mergedPdfBytes), {
           metadata: {
-            contentType: 'application/pdf',
-            metadata: {
-              firebaseStorageDownloadTokens: downloadToken,
-            },
+            contentType: "application/pdf",
+            metadata: { firebaseStorageDownloadTokens: downloadToken },
           },
         });
 
-        const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${
-          bucket.name
-        }/o/${encodeURIComponent(
-          storagePath
-        )}?alt=media&token=${downloadToken}`;
+        const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(storagePath)}?alt=media&token=${downloadToken}`;
 
-        // Save file metadata inside Firestore under user's `files` collection
+        // Determine retention (24h for free users)
+        const retentionMs = 24 * 60 * 60 * 1000; // adjust per subscription plan
+        const expiresAt = new Date(Date.now() + retentionMs);
+
+        // Save Firestore metadata
         await firestore
-          .collection('users')
+          .collection("users")
           .doc(userId)
-          .collection('files')
+          .collection("files")
           .doc(fileId)
           .set({
             fileId,
             fileName: mergedFileName,
+            storagePath,
             fileUrl,
-            operation: 'merge',
+            operation: "merge",
             createdAt: FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp(),
+            expiresAt,
+            deleted: false,
+            deletedAt: null,
+            deletionReason: null,
           });
 
-        // Publish a message to Pub/Sub about the new merged file
-        await publish('app-event', {
+        // Publish event
+        await publish("app-event", {
           userId,
           userEmail: decodedToken.email,
           fileId,
           fileName: mergedFileName,
           fileUrl,
-          eventType: 'pdf-merge',
+          eventType: "pdf-merge",
           timestamp: Date.now(),
         });
+
         return {
           success: true,
-          message: 'Files merged successfully',
+          message: "Files merged successfully",
           data: { fileUrl },
         };
       } catch (error) {
@@ -121,37 +124,35 @@ export const operations = {
         if (error instanceof z.ZodError) {
           return {
             success: false,
-            error: 'validation error',
+            error: "validation error",
             issues: error.issues,
           };
         }
-        return { success: false, error: 'Issue merging files' };
+        return { success: false, error: "Issue merging files" };
       }
     },
   }),
 
   imageToPdf: defineAction({
-    accept: 'form',
+    accept: "form",
     input: imageToPdfSchema,
     handler: async (input, context) => {
       const { images } = input;
-      // Implementation for converting images to PDFs goes here
-      // --- Auth check ---
-      const cookieHeader = context.request.headers.get('cookie') || '';
+      const cookieHeader = context.request.headers.get("cookie") || "";
       const sessionCookie = cookieHeader
-        .split('; ')
-        .find((c) => c.startsWith('__session='))
-        ?.split('=')[1];
+        .split("; ")
+        .find((c) => c.startsWith("__session="))
+        ?.split("=")[1];
 
       if (!sessionCookie) {
-        return { success: false, error: 'Unauthorized' };
+        return { success: false, error: "Unauthorized" };
       }
 
       try {
         const auth = await getFirebaseAuth();
         const decodedToken = await auth.verifySessionCookie(
           sessionCookie,
-          true
+          true,
         );
         const userId = decodedToken.uid;
 
@@ -163,8 +164,7 @@ export const operations = {
               error: `Image ${image.name} exceeds the maximum size of 10MB.`,
             };
           }
-
-          if (!['image/jpeg', 'image/png'].includes(image.type)) {
+          if (!["image/jpeg", "image/png"].includes(image.type)) {
             return {
               success: false,
               error: `Image ${image.name} is not a supported format. Only JPEG and PNG are allowed.`,
@@ -172,27 +172,21 @@ export const operations = {
           }
         }
 
-        // Create PDF document from images
+        // Create PDF from images
         const pdfDoc = await PDFDocument.create();
         for (const imageFile of images) {
           const imageBytes = await imageFile.arrayBuffer();
           let pdfImage;
-          if (imageFile.type === 'image/jpeg') {
+          if (imageFile.type === "image/jpeg")
             pdfImage = await pdfDoc.embedJpg(imageBytes);
-          } else if (imageFile.type === 'image/png') {
+          else if (imageFile.type === "image/png")
             pdfImage = await pdfDoc.embedPng(imageBytes);
-          }
 
           if (pdfImage) {
             const page = pdfDoc.addPage();
             const { width, height } = pdfImage.scale(1);
             page.setSize(width, height);
-            page.drawImage(pdfImage, {
-              x: 0,
-              y: 0,
-              width,
-              height,
-            });
+            page.drawImage(pdfImage, { x: 0, y: 0, width, height });
           } else {
             return {
               success: false,
@@ -203,71 +197,71 @@ export const operations = {
 
         const pdfBytes = await pdfDoc.save();
 
-        // Upload PDF to Firebase Storage and save metadata to Firestore
+        // Upload PDF to Firebase Storage
         const fileId = firestore
-          .collection('users')
+          .collection("users")
           .doc(userId)
-          .collection('files')
+          .collection("files")
           .doc().id;
-
         const pdfFileName = `images-${Date.now()}.pdf`;
         const storagePath = `users/${userId}/${pdfFileName}`;
         const fileRef = bucket.file(storagePath);
-
         const downloadToken = uuidv4();
 
         await fileRef.save(Buffer.from(pdfBytes), {
           metadata: {
-            contentType: 'application/pdf',
-            metadata: {
-              firebaseStorageDownloadTokens: downloadToken,
-            },
+            contentType: "application/pdf",
+            metadata: { firebaseStorageDownloadTokens: downloadToken },
           },
         });
 
-        const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${
-          bucket.name
-        }/o/${encodeURIComponent(
-          storagePath
+        const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(
+          storagePath,
         )}?alt=media&token=${downloadToken}`;
 
-        // Save file metadata inside Firestore under user's `files` collection
+        // Determine retention period (24h for free users, configurable later)
+        const retentionMs = 24 * 60 * 60 * 1000;
+        const expiresAt = new Date(Date.now() + retentionMs);
+
+        // Save metadata to Firestore
         await firestore
-          .collection('users')
+          .collection("users")
           .doc(userId)
-          .collection('files')
+          .collection("files")
           .doc(fileId)
           .set({
             fileId,
             fileName: pdfFileName,
+            storagePath,
             fileUrl,
-            operation: 'image-to-pdf',
+            operation: "image-to-pdf",
             createdAt: FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp(),
+            expiresAt,
+            deleted: false,
+            deletedAt: null,
+            deletionReason: null,
           });
 
-        // Publish a message to Pub/Sub about the new image-to-PDF file
-        await publish('app-event', {
+        // Publish event to Pub/Sub
+        await publish("app-event", {
           userId,
           userEmail: decodedToken.email,
           fileId,
           fileName: pdfFileName,
           fileUrl,
-          eventType: 'image-to-pdf',
+          eventType: "image-to-pdf",
           timestamp: Date.now(),
         });
 
         return {
           success: true,
-          message: 'Images converted to PDF successfully',
+          message: "Images converted to PDF successfully",
           data: { fileUrl },
         };
       } catch (error) {
-        console.error('Error converting images to PDF:', error);
-        return {
-          success: false,
-          error: 'Failed to convert images to PDF',
-        };
+        console.error("Error converting images to PDF:", error);
+        return { success: false, error: "Failed to convert images to PDF" };
       }
     },
   }),
