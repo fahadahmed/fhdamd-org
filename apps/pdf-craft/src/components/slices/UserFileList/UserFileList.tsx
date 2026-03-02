@@ -21,12 +21,16 @@ export default function UserFileList({ files = [] }: UserFileListProps) {
     operation: (file.operation as string).toUpperCase(),
     createdAt: file.createdAt.toDate().toLocaleString(),
     actions: (
-      <div>
-        <a href={file.fileUrl} target="_blank">
-          <img src="/icons/icon-download.svg" alt="Download" />
-          <span style={{ marginLeft: '8px' }}>Download</span>
-        </a>
-      </div>
+      file.deleted ? (
+        <span className="deleted-label">Deleted</span>
+      ) : (
+        <div>
+          <a href={file.fileUrl} target="_blank">
+            <img src="/icons/icon-download.svg" alt="Download" />
+            <span style={{ marginLeft: '8px' }}>Download</span>
+          </a>
+        </div>
+      )
     )
   }));
 
