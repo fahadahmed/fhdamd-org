@@ -1,47 +1,48 @@
-import { onRequest } from 'firebase-functions/v2/https';
-import { onMessagePublished } from 'firebase-functions/v2/pubsub';
-import * as logger from 'firebase-functions/logger';
-import * as admin from 'firebase-admin';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import { defineSecret } from 'firebase-functions/params';
-import Stripe from 'stripe';
-import cors from 'cors';
-import { AppEventPayload } from './events/types';
-import { eventHandlers } from './events/handlers';
-import { fetchCMSData, getCmsQuery, datocmsApiToken, datocmsEnv } from './cms';
+import { onRequest } from "firebase-functions/v2/https";
+import { onMessagePublished } from "firebase-functions/v2/pubsub";
+import { onSchedule } from "firebase-functions/v2/scheduler";
+import * as logger from "firebase-functions/logger";
+import * as admin from "firebase-admin";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { defineSecret } from "firebase-functions/params";
+import Stripe from "stripe";
+import cors from "cors";
+import { AppEventPayload } from "./events/types";
+import { eventHandlers } from "./events/handlers";
+import { fetchCMSData, getCmsQuery, datocmsApiToken, datocmsEnv } from "./cms";
 
 admin.initializeApp();
 
 const db = getFirestore();
 
-const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
-const STRIPE_WEBHOOK_SECRET = defineSecret('STRIPE_WEBHOOK_SECRET');
-const APP_BASE_URL = defineSecret('APP_BASE_URL');
+const STRIPE_SECRET_KEY = defineSecret("STRIPE_SECRET_KEY");
+const STRIPE_WEBHOOK_SECRET = defineSecret("STRIPE_WEBHOOK_SECRET");
+const APP_BASE_URL = defineSecret("APP_BASE_URL");
 
 function getStripe() {
   const secretKey = STRIPE_SECRET_KEY.value();
   if (!secretKey) {
-    throw new Error('STRIPE_SECRET_KEY is not configured');
+    throw new Error("STRIPE_SECRET_KEY is not configured");
   }
   return new Stripe(secretKey, {
-    apiVersion: '2025-12-15.clover',
+    apiVersion: "2025-12-15.clover",
   });
 }
 
 function getAppBaseUrl() {
   const baseUrl = APP_BASE_URL.value();
   if (!baseUrl) {
-    throw new Error('APP_BASE_URL is not configured');
+    throw new Error("APP_BASE_URL is not configured");
   }
   return baseUrl;
 }
 
 const corsHandler = cors({
   origin: [
-    'http://localhost:4321',
-    'https://dev.pdf-craft.app',
-    'https://stg.pdf-craft.app',
-    'https://pdf-craft.app',
+    "http://localhost:4321",
+    "https://dev.pdf-craft.app",
+    "https://stg.pdf-craft.app",
+    "https://pdf-craft.app",
   ],
 });
 
@@ -51,26 +52,26 @@ const processPayment = onRequest(
   },
   async (request, response) => {
     corsHandler(request, response, async () => {
-      if (request.method === 'OPTIONS') {
-        response.set(204).send('');
+      if (request.method === "OPTIONS") {
+        response.set(204).send("");
         return;
       }
-      if (request.method !== 'POST') {
-        response.status(405).send('Method not allowed');
+      if (request.method !== "POST") {
+        response.status(405).send("Method not allowed");
         return;
       }
 
       const authHeader = request.headers.authorization;
 
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        response.status(401).send('Unauthorized: No Bearer token provided');
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        response.status(401).send("Unauthorized: No Bearer token provided");
         return;
       }
 
-      const idToken = authHeader.split('Bearer ')[1];
+      const idToken = authHeader.split("Bearer ")[1];
       const baseUrl = getAppBaseUrl();
       if (!baseUrl) {
-        throw new Error('BASE_URL is not configured');
+        throw new Error("BASE_URL is not configured");
       }
 
       try {
@@ -82,7 +83,7 @@ const processPayment = onRequest(
 
         // Continue to payment processing
         const data =
-          typeof request.body === 'string'
+          typeof request.body === "string"
             ? JSON.parse(request.body)
             : request.body;
         const {
@@ -98,8 +99,8 @@ const processPayment = onRequest(
           try {
             const stripe = getStripe();
             const session = await stripe.checkout.sessions.create({
-              payment_method_types: ['card'],
-              mode: 'payment',
+              payment_method_types: ["card"],
+              mode: "payment",
               line_items: [
                 {
                   price_data: {
@@ -121,26 +122,26 @@ const processPayment = onRequest(
             response.status(200).json({ url: session.url });
             return;
           } catch (error) {
-            logger.error('Payment processing error', error);
-            response.status(500).json({ error: 'Payment processing failed' });
+            logger.error("Payment processing error", error);
+            response.status(500).json({ error: "Payment processing failed" });
             return;
           }
         } else {
-          response.status(403).send('Forbidden: User ID does not match token');
+          response.status(403).send("Forbidden: User ID does not match token");
           return;
         }
       } catch (error) {
-        response.status(401).send('Unauthorized: Invalid token');
+        response.status(401).send("Unauthorized: Invalid token");
         return;
       }
     });
-  }
+  },
 );
 
 const stripeWebhook = onRequest(
   { cors: true, secrets: [STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET] },
   async (request, response) => {
-    const sig = request.headers['stripe-signature'] as string;
+    const sig = request.headers["stripe-signature"] as string;
     let event: Stripe.Event;
     const rawBody = request.rawBody;
     try {
@@ -148,53 +149,53 @@ const stripeWebhook = onRequest(
       event = stripe.webhooks.constructEvent(
         rawBody as Buffer, // 👈 force it to Buffer
         sig,
-        STRIPE_WEBHOOK_SECRET.value()
+        STRIPE_WEBHOOK_SECRET.value(),
       );
     } catch (err: any) {
       response.status(400).send(`Webhook Error: ${err.message}`);
       return;
     }
-    logger.info('✅ Webhook verified:', event.type);
+    logger.info("✅ Webhook verified:", event.type);
 
-    if (event.type === 'checkout.session.completed') {
+    if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
-      logger.info('✅ Event received:', event.id);
-      logger.info('Session details:', session.metadata);
+      logger.info("✅ Event received:", event.id);
+      logger.info("Session details:", session.metadata);
 
       const userId = session.metadata?.userId;
-      const credits = parseInt(session.metadata?.credits || '0', 10);
+      const credits = parseInt(session.metadata?.credits || "0", 10);
       logger.info(`User ID: ${userId}, Credits to add: ${credits}`);
       if (userId && credits > 0) {
-        const userRef = db.collection('users').doc(userId);
+        const userRef = db.collection("users").doc(userId);
         logger.info(`User reference: ${userRef.path}`);
         try {
           await userRef.update({
-            'profile.credits': FieldValue.increment(credits),
+            "profile.credits": FieldValue.increment(credits),
           });
           logger.info(`✅ Updated user ${userId} with ${credits} credits.`);
         } catch (err) {
-          logger.error('❌ Error updating user credits:', err);
+          logger.error("❌ Error updating user credits:", err);
         }
       }
     }
     // Acknowledge immediately so Stripe doesn’t retry
-    response.status(200).send('ok');
-  }
+    response.status(200).send("ok");
+  },
 );
 
-const onAppEvent = onMessagePublished({ topic: 'app-event' }, async (event) => {
+const onAppEvent = onMessagePublished({ topic: "app-event" }, async (event) => {
   const message = event.data.message;
 
   if (!message?.data) {
-    logger.warn('Received Pub/Sub message without data');
+    logger.warn("Received Pub/Sub message without data");
     return;
   }
 
   try {
-    const buffer = Buffer.from(message.data, 'base64');
-    const payload = JSON.parse(buffer.toString('utf8')) as AppEventPayload;
+    const buffer = Buffer.from(message.data, "base64");
+    const payload = JSON.parse(buffer.toString("utf8")) as AppEventPayload;
 
-    logger.info('Received Pub/Sub payload', payload);
+    logger.info("Received Pub/Sub payload", payload);
 
     const handler = eventHandlers[payload.eventType];
 
@@ -207,7 +208,7 @@ const onAppEvent = onMessagePublished({ topic: 'app-event' }, async (event) => {
 
     logger.info(`Successfully processed eventType: ${payload.eventType}`);
   } catch (error) {
-    logger.error('Failed processing Pub/Sub event', error);
+    logger.error("Failed processing Pub/Sub event", error);
     throw error; // important → enables retry
   }
 });
@@ -216,18 +217,18 @@ const cms = onRequest(
   { secrets: [datocmsApiToken, datocmsEnv] },
   async (request, response) => {
     corsHandler(request, response, async () => {
-      if (request.method === 'OPTIONS') {
-        response.status(204).send('');
+      if (request.method === "OPTIONS") {
+        response.status(204).send("");
         return;
       }
-      if (request.method !== 'POST') {
-        response.status(405).send('Method not allowed');
+      if (request.method !== "POST") {
+        response.status(405).send("Method not allowed");
         return;
       }
 
       try {
         const data =
-          typeof request.body === 'string'
+          typeof request.body === "string"
             ? JSON.parse(request.body)
             : request.body;
         const { queryKey, variables } = data;
@@ -237,10 +238,65 @@ const cms = onRequest(
 
         response.status(200).json(cmsData);
       } catch (error) {
-        logger.error('CMS request error', error);
-        response.status(500).json({ error: 'CMS request failed' });
+        logger.error("CMS request error", error);
+        response.status(500).json({ error: "CMS request failed" });
       }
     });
-  }
+  },
 );
-export { processPayment, stripeWebhook, onAppEvent, cms };
+
+const deleteExpiredFiles = onSchedule(
+  {
+    schedule: "every 60 minutes",
+    timeZone: "UTC",
+  },
+  async () => {
+    const now = new Date();
+
+    try {
+      const usersSnapshot = await db.collection("users").get();
+
+      for (const userDoc of usersSnapshot.docs) {
+        const userId = userDoc.id;
+        const filesRef = db.collection("users").doc(userId).collection("files");
+        const expiredFilesSnapshot = await filesRef
+          .where("deleted", "==", false)
+          .where("expiresAt", "<=", now)
+          .limit(500)
+          .get();
+
+        if (expiredFilesSnapshot.empty) continue;
+
+        const batch = db.batch();
+
+        const deletionPromises = expiredFilesSnapshot.docs.map(
+          async (fileDoc) => {
+            const data = fileDoc.data();
+            const storagePath = data.storagePath;
+
+            try {
+              await admin.storage().bucket().file(storagePath).delete();
+              logger.info(`Deleted file from storage: ${storagePath}`);
+            } catch (err) {
+              logger.error(
+                `Error deleting file from storage: ${storagePath}`,
+                err,
+              );
+            }
+
+            batch.update(fileDoc.ref, { deleted: true });
+          },
+        );
+
+        await Promise.all(deletionPromises);
+        await batch.commit();
+        logger.info(
+          `Marked ${expiredFilesSnapshot.size} files as deleted for user ${userId}`,
+        );
+      }
+    } catch (err) {
+      logger.error("Error deleting expired files", err);
+    }
+  },
+);
+export { processPayment, stripeWebhook, onAppEvent, cms, deleteExpiredFiles };
