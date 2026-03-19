@@ -1,26 +1,27 @@
-import { defineAction } from 'astro:actions';
-import admin from 'firebase-admin';
-import { getFirebaseAuth, getFirebaseApp } from '../firebase/server';
-import { z } from 'astro:schema';
+import { defineAction } from "astro:actions";
+import admin from "firebase-admin";
+import { getFirebaseAuth, getFirebaseApp } from "../firebase/server";
+import { log } from "../utils/lib/logger";
+import { z } from "astro:schema";
 
 getFirebaseApp();
 const firestore = admin.firestore();
 
 export const credits = {
   getUserCredits: defineAction({
-    accept: 'form',
+    accept: "form",
     input: undefined, // No input schema needed for this action
     handler: async (_input, context) => {
-      const cookieHeader = context.request.headers.get('cookie') || '';
+      const cookieHeader = context.request.headers.get("cookie") || "";
       const sessionCookie = cookieHeader
-        .split('; ')
-        .find((c) => c.startsWith('__session='))
-        ?.split('=')[1];
+        .split("; ")
+        .find((c) => c.startsWith("__session="))
+        ?.split("=")[1];
 
       if (!sessionCookie) {
         return {
           success: false,
-          error: 'Unauthorized',
+          error: "Unauthorized",
         };
       }
 
@@ -28,17 +29,17 @@ export const credits = {
         const auth = await getFirebaseAuth();
         const decodedToken = await auth.verifySessionCookie(
           sessionCookie,
-          true
+          true,
         );
         const userId = decodedToken.uid;
 
-        const userRef = firestore.collection('users').doc(userId);
+        const userRef = firestore.collection("users").doc(userId);
         const userDoc = await userRef.get();
 
         if (!userDoc.exists) {
           return {
             success: false,
-            error: 'User not found',
+            error: "User not found",
           };
         }
 
@@ -50,31 +51,41 @@ export const credits = {
           },
         };
       } catch (error) {
-        console.error('Error fetching user credits:', error);
+        console.error("Error fetching user credits:", error);
         return {
           success: false,
-          error: 'Failed to fetch user credits',
+          error: "Failed to fetch user credits",
         };
       }
     },
   }),
   checkCredits: defineAction({
-    accept: 'json',
+    accept: "json",
     input: z.object({
       task: z.string(),
+      requestId: z.string(),
     }),
     handler: async (input, context) => {
-      const { task } = input;
-      const cookieHeader = context.request.headers.get('cookie') || '';
+      const { task, requestId } = input;
+      log.event("check-credits", {
+        requestId,
+        feature: task,
+        status: "start",
+      });
+      const cookieHeader = context.request.headers.get("cookie") || "";
       const sessionCookie = cookieHeader
-        .split('; ')
-        .find((c) => c.startsWith('__session='))
-        ?.split('=')[1];
+        .split("; ")
+        .find((c) => c.startsWith("__session="))
+        ?.split("=")[1];
 
       if (!sessionCookie) {
+        log.error("Unauthorized access attempt", {
+          requestId,
+          feature: task,
+        });
         return {
           success: false,
-          error: 'Unauthorized',
+          error: "Unauthorized",
         };
       }
 
@@ -82,17 +93,17 @@ export const credits = {
         const auth = await getFirebaseAuth();
         const decodedToken = await auth.verifySessionCookie(
           sessionCookie,
-          true
+          true,
         );
         const userId = decodedToken.uid;
 
-        const userRef = firestore.collection('users').doc(userId);
+        const userRef = firestore.collection("users").doc(userId);
         const userDoc = await userRef.get();
 
         if (!userDoc.exists) {
           return {
             success: false,
-            error: 'User not found',
+            error: "User not found",
           };
         }
 
@@ -103,15 +114,20 @@ export const credits = {
         if (credits <= 0) {
           return {
             success: false,
-            error: 'Insufficient credits',
+            error: "Insufficient credits",
           };
         }
 
         // Deduct one credit for the task
         await userRef.update({
-          'profile.credits': admin.firestore.FieldValue.increment(-1),
+          "profile.credits": admin.firestore.FieldValue.increment(-1),
         });
 
+        log.event("check-credits", {
+          requestId,
+          feature: task,
+          status: "success",
+        });
         return {
           success: true,
           payload: {
@@ -119,31 +135,31 @@ export const credits = {
           },
         };
       } catch (error) {
-        console.error('Error checking credits:', error);
+        console.error("Error checking credits:", error);
         return {
           success: false,
-          error: 'Failed to check credits',
+          error: "Failed to check credits",
         };
       }
     },
   }),
   buyCredits: defineAction({
-    accept: 'form',
+    accept: "form",
     input: z.object({
       credits: z.coerce.number(),
     }),
     handler: async (input, context) => {
       const { credits } = input;
-      const cookieHeader = context.request.headers.get('cookie') || '';
+      const cookieHeader = context.request.headers.get("cookie") || "";
       const sessionCookie = cookieHeader
-        .split('; ')
-        .find((c) => c.startsWith('__session='))
-        ?.split('=')[1];
+        .split("; ")
+        .find((c) => c.startsWith("__session="))
+        ?.split("=")[1];
 
       if (!sessionCookie) {
         return {
           success: false,
-          error: 'Unauthorized',
+          error: "Unauthorized",
         };
       }
 
@@ -151,15 +167,15 @@ export const credits = {
         const auth = await getFirebaseAuth();
         const decodedToken = await auth.verifySessionCookie(
           sessionCookie,
-          true
+          true,
         );
         const userId = decodedToken.uid;
 
-        const userRef = firestore.collection('users').doc(userId);
+        const userRef = firestore.collection("users").doc(userId);
         // process payment logic here
 
         await userRef.update({
-          'profile.credits': admin.firestore.FieldValue.increment(credits),
+          "profile.credits": admin.firestore.FieldValue.increment(credits),
         });
 
         return {
@@ -169,10 +185,10 @@ export const credits = {
           },
         };
       } catch (error) {
-        console.error('Error buying credits:', error);
+        console.error("Error buying credits:", error);
         return {
           success: false,
-          error: 'Failed to buy credits',
+          error: "Failed to buy credits",
         };
       }
     },

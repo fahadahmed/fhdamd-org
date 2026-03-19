@@ -6,6 +6,7 @@ import admin from "firebase-admin";
 import { v4 as uuidv4 } from "uuid";
 import { getFirebaseAuth, getFirebaseApp } from "../firebase/server";
 import { publish } from "../server/pubsub/publisher";
+import { log } from "../utils/lib/logger";
 
 getFirebaseApp();
 const firestore = admin.firestore();
@@ -13,10 +14,14 @@ const bucket = admin.storage().bucket();
 
 const mergePdfsSchema = z.object({
   files: z.array(z.instanceof(File)),
+  requestId: z.string(),
+  task: z.string(),
 });
 
 const imageToPdfSchema = z.object({
   images: z.array(z.instanceof(File)),
+  requestId: z.string(),
+  task: z.string(),
 });
 
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -26,15 +31,28 @@ export const operations = {
     accept: "form",
     input: mergePdfsSchema,
     handler: async (input, context) => {
-      const { files } = input;
+      const { files, requestId, task } = input;
       const cookieHeader = context.request.headers.get("cookie") || "";
       const sessionCookie = cookieHeader
         .split("; ")
         .find((c) => c.startsWith("__session="))
         ?.split("=")[1];
 
+      log.event("app-operation", {
+        requestId,
+        feature: task,
+        status: "start",
+      });
+
       try {
-        if (!sessionCookie) throw new Error("Unauthorized");
+        if (!sessionCookie) {
+          log.warn("app-operation: unauthorized", {
+            requestId,
+            feature: task,
+            status: "fail",
+          });
+          return { success: false, error: "Unauthorized" };
+        }
 
         const auth = await getFirebaseAuth();
         const decodedToken = await auth.verifySessionCookie(
@@ -42,6 +60,11 @@ export const operations = {
           true,
         );
         const userId = decodedToken.uid;
+        log.debug("app-operation: user authenticated", {
+          requestId,
+          feature: task,
+          userId,
+        });
 
         const fileId = firestore
           .collection("users")
@@ -82,6 +105,12 @@ export const operations = {
         // Determine retention (24h for free users)
         const retentionMs = 24 * 60 * 60 * 1000; // adjust per subscription plan
         const expiresAt = new Date(Date.now() + retentionMs);
+        log.debug("app-operation: file uploaded", {
+          requestId,
+          feature: task,
+          userId,
+          fileId,
+        });
 
         // Save Firestore metadata
         await firestore
@@ -102,16 +131,32 @@ export const operations = {
             deletedAt: null,
             deletionReason: null,
           });
+        log.debug("app-operation: file metadata saved", {
+          requestId,
+          feature: task,
+          userId,
+          fileId,
+        });
 
         // Publish event
-        await publish("app-event", {
-          userId,
-          userEmail: decodedToken.email,
-          fileId,
-          fileName: mergedFileName,
-          fileUrl,
-          eventType: "pdf-merge",
-          timestamp: Date.now(),
+        await publish(
+          "app-event",
+          {
+            userId,
+            userEmail: decodedToken.email,
+            fileId,
+            fileName: mergedFileName,
+            fileUrl,
+            eventType: "pdf-merge",
+            timestamp: Date.now(),
+          },
+          requestId,
+          task,
+        );
+        log.event("app-operation", {
+          requestId,
+          feature: task,
+          status: "success",
         });
 
         return {
@@ -120,14 +165,23 @@ export const operations = {
           data: { fileUrl },
         };
       } catch (error) {
-        console.error(error);
         if (error instanceof z.ZodError) {
+          log.warn("app-operation: validation error", {
+            requestId,
+            feature: task,
+            issues: error.issues,
+          });
           return {
             success: false,
             error: "validation error",
             issues: error.issues,
           };
         }
+        log.error("app-operation: unexpected error", {
+          requestId,
+          feature: task,
+          error: error instanceof Error ? error.message : String(error),
+        });
         return { success: false, error: "Issue merging files" };
       }
     },
@@ -137,14 +191,25 @@ export const operations = {
     accept: "form",
     input: imageToPdfSchema,
     handler: async (input, context) => {
-      const { images } = input;
+      const { images, requestId, task } = input;
       const cookieHeader = context.request.headers.get("cookie") || "";
       const sessionCookie = cookieHeader
         .split("; ")
         .find((c) => c.startsWith("__session="))
         ?.split("=")[1];
 
+      log.event("app-operation", {
+        requestId,
+        feature: task,
+        status: "start",
+      });
+
       if (!sessionCookie) {
+        log.warn("app-operation: unauthorized", {
+          requestId,
+          feature: task,
+          status: "fail",
+        });
         return { success: false, error: "Unauthorized" };
       }
 
@@ -155,16 +220,33 @@ export const operations = {
           true,
         );
         const userId = decodedToken.uid;
+        log.debug("app-operation: user authenticated", {
+          requestId,
+          feature: task,
+          userId,
+        });
 
         // Validate images
         for (const image of images) {
           if (image.size > MAX_IMAGE_SIZE) {
+            log.warn("app-operation: image size exceeds limit", {
+              requestId,
+              feature: task,
+              imageName: image.name,
+            });
+
             return {
               success: false,
               error: `Image ${image.name} exceeds the maximum size of 10MB.`,
             };
           }
           if (!["image/jpeg", "image/png"].includes(image.type)) {
+            log.warn("app-operation: unsupported image format", {
+              requestId,
+              feature: task,
+              imageName: image.name,
+              imageType: image.type,
+            });
             return {
               success: false,
               error: `Image ${image.name} is not a supported format. Only JPEG and PNG are allowed.`,
@@ -188,6 +270,11 @@ export const operations = {
             page.setSize(width, height);
             page.drawImage(pdfImage, { x: 0, y: 0, width, height });
           } else {
+            log.warn("app-operation: failed to embed image", {
+              requestId,
+              feature: task,
+              imageName: imageFile.name,
+            });
             return {
               success: false,
               error: `Failed to embed image ${imageFile.name}.`,
@@ -218,6 +305,12 @@ export const operations = {
         const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(
           storagePath,
         )}?alt=media&token=${downloadToken}`;
+        log.debug("app-operation: PDF uploaded to Firebase Storage", {
+          requestId,
+          feature: task,
+          userId,
+          fileId,
+        });
 
         // Determine retention period (24h for free users, configurable later)
         const retentionMs = 24 * 60 * 60 * 1000;
@@ -242,16 +335,32 @@ export const operations = {
             deletedAt: null,
             deletionReason: null,
           });
+        log.debug("app-operation: file metadata saved", {
+          requestId,
+          feature: task,
+          userId,
+          fileId,
+        });
 
         // Publish event to Pub/Sub
-        await publish("app-event", {
-          userId,
-          userEmail: decodedToken.email,
-          fileId,
-          fileName: pdfFileName,
-          fileUrl,
-          eventType: "image-to-pdf",
-          timestamp: Date.now(),
+        await publish(
+          "app-event",
+          {
+            userId,
+            userEmail: decodedToken.email,
+            fileId,
+            fileName: pdfFileName,
+            fileUrl,
+            eventType: "image-to-pdf",
+            timestamp: Date.now(),
+          },
+          requestId,
+          task,
+        );
+        log.event("app-operation", {
+          requestId,
+          feature: task,
+          status: "success",
         });
 
         return {
@@ -260,7 +369,11 @@ export const operations = {
           data: { fileUrl },
         };
       } catch (error) {
-        console.error("Error converting images to PDF:", error);
+        log.error("app-operation: unexpected error", {
+          requestId,
+          feature: task,
+          error: error instanceof Error ? error.message : String(error),
+        });
         return { success: false, error: "Failed to convert images to PDF" };
       }
     },
