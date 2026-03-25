@@ -61,11 +61,13 @@ export default function MultiPdfUploader() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const requestId = crypto.randomUUID();
     const task = 'merge';
     setButtonLabel('Checking credits...');
     setIsMerging(true);
     const response = await actions.credits.checkCredits({
-      task
+      task,
+      requestId,
     });
     console.log('Check Credits response:', response);
     if (response.data?.success) {
@@ -74,6 +76,8 @@ export default function MultiPdfUploader() {
       uploadedFiles.forEach((file) => {
         formData.append('files', file);
       });
+      formData.append('requestId', requestId);
+      formData.append('task', task);
 
       try {
         console.log(Array.from(formData.values()))

@@ -62,15 +62,18 @@ export default function MultiImageUploader() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const requestId = crypto.randomUUID();
     const task = 'image-to-pdf';
     setButtonLabel('Checking credits...');
     setIsConverting(true);
 
-    const response = await actions.credits.checkCredits({ task });
+    const response = await actions.credits.checkCredits({ task, requestId });
     if (response.data?.success) {
       setButtonLabel('Converting images...');
       const formData = new FormData();
       uploadedFiles.forEach((file) => formData.append('images', file));
+      formData.append('requestId', requestId);
+      formData.append('task', task);
       try {
         const convertResponse = await actions.operations.imageToPdf(formData);
         if (convertResponse.data) {
