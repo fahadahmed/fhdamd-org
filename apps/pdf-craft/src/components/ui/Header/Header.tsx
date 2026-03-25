@@ -46,6 +46,7 @@ export default function Header() {
 
   const handleBuyCredits = async () => {
     const token = await auth.currentUser?.getIdToken();
+    const requestId = crypto.randomUUID();
 
     const paymentResponse = await fetch(`${import.meta.env.PUBLIC_BASE_FUNCTIONS_URL}/processPayment`, { // Convert URL to environment variable later
       method: 'POST',
@@ -56,7 +57,8 @@ export default function Header() {
         currency: 'usd',
         productName: 'PCD-Craft Credits Basic',
         userId: auth.currentUser?.uid,
-        userEmail: auth.currentUser?.email
+        userEmail: auth.currentUser?.email,
+        requestId: requestId,
       }),
       headers: {
         'Authorization': `Bearer ${token}`,
