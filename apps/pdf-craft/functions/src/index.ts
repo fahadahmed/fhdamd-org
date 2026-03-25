@@ -223,41 +223,44 @@ const stripeWebhook = onRequest(
   },
 );
 
-const onAppEvent = onMessagePublished({ topic: "app-event" }, async (event) => {
-  const message = event.data.message;
+const onAppEvent = onMessagePublished(
+  { topic: "app-event", secrets: ["RESEND_API_KEY"] },
+  async (event) => {
+    const message = event.data.message;
 
-  if (!message?.data) {
-    log.warn("Received Pub/Sub message without data");
-    return;
-  }
-  const buffer = Buffer.from(message.data, "base64");
-  const payload = JSON.parse(buffer.toString("utf8")) as AppEventPayload;
-
-  try {
-    log.info("Received Pub/Sub payload", {
-      eventType: payload.eventType,
-      requestId: payload.requestId,
-    });
-    const handler = eventHandlers[payload.eventType];
-    if (!handler) {
-      log.warn(`No handler registered for eventType: ${payload.eventType}`, {
-        requestId: payload.requestId,
-      });
+    if (!message?.data) {
+      log.warn("Received Pub/Sub message without data");
       return;
     }
+    const buffer = Buffer.from(message.data, "base64");
+    const payload = JSON.parse(buffer.toString("utf8")) as AppEventPayload;
 
-    await handler(payload);
-    log.info(`Successfully processed eventType: ${payload.eventType}`, {
-      requestId: payload.requestId,
-    });
-  } catch (error) {
-    log.error("Failed processing Pub/Sub event", {
-      error: error instanceof Error ? error.message : String(error),
-      requestId: payload?.requestId || "N/A",
-    });
-    throw error; // important → enables retry
-  }
-});
+    try {
+      log.info("Received Pub/Sub payload", {
+        eventType: payload.eventType,
+        requestId: payload.requestId,
+      });
+      const handler = eventHandlers[payload.eventType];
+      if (!handler) {
+        log.warn(`No handler registered for eventType: ${payload.eventType}`, {
+          requestId: payload.requestId,
+        });
+        return;
+      }
+
+      await handler(payload);
+      log.info(`Successfully processed eventType: ${payload.eventType}`, {
+        requestId: payload.requestId,
+      });
+    } catch (error) {
+      log.error("Failed processing Pub/Sub event", {
+        error: error instanceof Error ? error.message : String(error),
+        requestId: payload?.requestId || "N/A",
+      });
+      throw error; // important → enables retry
+    }
+  },
+);
 
 const cms = onRequest(
   { secrets: [datocmsApiToken, datocmsEnv] },
