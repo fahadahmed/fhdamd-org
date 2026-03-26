@@ -23,12 +23,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build the app
-        run: pnpm --filter pdf-craft run build
-
-      - name: Build the functions
-        run: pnpm --filter pdf-craft-functions run build
-
       - name: Deploy to Firebase
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
