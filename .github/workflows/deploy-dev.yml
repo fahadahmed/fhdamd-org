@@ -1,0 +1,33 @@
+name: Deploy PDF-Craft Dev
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build the app
+        run: pnpm --filter pdf-craft run build
+
+      - name: Build the functions
+        run: pnpm --filter pdf-craft/functions run build
+
+      - name: Deploy to Firebase
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          pnpm add -g firebase-tools
+          firebase use dev
+          firebase deploy --project pdf-craft-dev

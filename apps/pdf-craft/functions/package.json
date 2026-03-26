@@ -1,5 +1,5 @@
 {
-  "name": "functions",
+  "name": "pdf-craft-functions",
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
