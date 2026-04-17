@@ -253,33 +253,40 @@ const onAppEvent = onMessagePublished(
     const message = event.data.message;
 
     if (!message?.data) {
-      log.warn("Received Pub/Sub message without data");
+      log.warn(`Received Pub/Sub message without data`);
       return;
     }
     const buffer = Buffer.from(message.data, "base64");
     const payload = JSON.parse(buffer.toString("utf8")) as AppEventPayload;
+    const { eventType, requestId } = payload;
 
     try {
-      log.info("Received Pub/Sub payload", {
-        eventType: payload.eventType,
-        requestId: payload.requestId,
+      log.info(`RequestId: ${requestId} - Received Pub/Sub payload`, {
+        eventType,
+        requestId,
       });
-      const handler = eventHandlers[payload.eventType];
+      const handler = eventHandlers[eventType];
       if (!handler) {
-        log.warn(`No handler registered for eventType: ${payload.eventType}`, {
-          requestId: payload.requestId,
-        });
+        log.warn(
+          `RequestId: ${requestId} - No handler registered for eventType: ${eventType}`,
+          {
+            requestId,
+          },
+        );
         return;
       }
 
       await handler(payload);
-      log.info(`Successfully processed eventType: ${payload.eventType}`, {
-        requestId: payload.requestId,
-      });
+      log.info(
+        `RequestId: ${requestId} - Successfully processed eventType: ${eventType}`,
+        {
+          requestId,
+        },
+      );
     } catch (error) {
-      log.error("Failed processing Pub/Sub event", {
+      log.error(`RequestId: ${requestId} - Failed processing Pub/Sub event`, {
         error: error instanceof Error ? error.message : String(error),
-        requestId: payload?.requestId || "N/A",
+        requestId,
       });
       throw error; // important → enables retry
     }
