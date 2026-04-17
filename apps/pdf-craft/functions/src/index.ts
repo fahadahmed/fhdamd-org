@@ -53,32 +53,7 @@ const processPayment = onRequest(
   },
   async (request, response) => {
     corsHandler(request, response, async () => {
-      if (request.method === "OPTIONS") {
-        log.info("Preflight request received");
-        response.set(204).send("");
-        return;
-      }
-      if (request.method !== "POST") {
-        log.warn("Request method not allowed", { method: request.method });
-        response.status(405).send("Method not allowed");
-        return;
-      }
-
-      const authHeader = request.headers.authorization;
-
-      if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        log.warn("Unauthorized request: No Bearer token provided");
-        response.status(401).send("Unauthorized: No Bearer token provided");
-        return;
-      }
-
-      const idToken = authHeader.split("Bearer ")[1];
-      const baseUrl = getAppBaseUrl();
-      if (!baseUrl) {
-        log.error("BASE_URL is not configured");
-        throw new Error("BASE_URL is not configured");
-      }
-      // Continue to payment processing
+      // Parse the initial request object
       const data =
         typeof request.body === "string"
           ? JSON.parse(request.body)
@@ -93,14 +68,54 @@ const processPayment = onRequest(
         userEmail,
         requestId,
       } = data;
-      log.info("Payment request received", {
-        requestId,
-        userId,
-        credits,
-        amount,
-        currency,
-        productName,
-      });
+
+      // pre-payment processing checks
+
+      if (request.method === "OPTIONS") {
+        log.info(
+          `RequestId: ${requestId} - Preflight request received for user: ${userId}`,
+        );
+        response.set(204).send("");
+        return;
+      }
+      if (request.method !== "POST") {
+        log.warn(
+          `RequestId: ${requestId} - Request method not allowed for user: ${userId}`,
+          { method: request.method },
+        );
+        response.status(405).send("Method not allowed");
+        return;
+      }
+
+      const authHeader = request.headers.authorization;
+
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        log.warn(
+          `RequestId: ${requestId} - Unauthorized request: No Bearer token provided`,
+        );
+        response.status(401).send("Unauthorized: No Bearer token provided");
+        return;
+      }
+
+      const idToken = authHeader.split("Bearer ")[1];
+      const baseUrl = getAppBaseUrl();
+      if (!baseUrl) {
+        log.error(
+          `RequestId: ${requestId} - BASE_URL is not configured for user: ${userId}`,
+        );
+        throw new Error("BASE_URL is not configured");
+      }
+      log.info(
+        `RequestId: ${requestId} - Payment request received for user: ${userId}`,
+        {
+          requestId,
+          userId,
+          credits,
+          amount,
+          currency,
+          productName,
+        },
+      );
       try {
         // Verify token with Firebase Admin
         const decodedToken = await admin.auth().verifyIdToken(idToken);
@@ -132,17 +147,23 @@ const processPayment = onRequest(
                 requestId: requestId,
               },
             });
-            log.info("Payment session created", {
-              requestId,
-              sessionId: session.id,
-            });
+            log.info(
+              `RequestId: ${requestId} - Payment session created for user: ${userId} - session: ${session.id}`,
+              {
+                requestId,
+                sessionId: session.id,
+              },
+            );
             response.status(200).json({ url: session.url });
             return;
           } catch (error) {
-            log.error("Payment processing error", {
-              requestId,
-              error: error instanceof Error ? error.message : String(error),
-            });
+            log.error(
+              `RequestId: ${requestId} - Payment processing error for user: ${userId}`,
+              {
+                requestId,
+                error: error instanceof Error ? error.message : String(error),
+              },
+            );
             response.status(500).json({ error: "Payment processing failed" });
             return;
           }
@@ -156,10 +177,13 @@ const processPayment = onRequest(
           return;
         }
       } catch (error) {
-        log.warn("Unauthorized request: Invalid token", {
-          requestId,
-          error: error instanceof Error ? error.message : String(error),
-        });
+        log.warn(
+          `RequestId: ${requestId} - Unauthorized request: Invalid token for user: ${userId}`,
+          {
+            requestId,
+            error: error instanceof Error ? error.message : String(error),
+          },
+        );
         response.status(401).send("Unauthorized: Invalid token");
         return;
       }
@@ -229,33 +253,40 @@ const onAppEvent = onMessagePublished(
     const message = event.data.message;
 
     if (!message?.data) {
-      log.warn("Received Pub/Sub message without data");
+      log.warn(`Received Pub/Sub message without data`);
       return;
     }
     const buffer = Buffer.from(message.data, "base64");
     const payload = JSON.parse(buffer.toString("utf8")) as AppEventPayload;
+    const { eventType, requestId } = payload;
 
     try {
-      log.info("Received Pub/Sub payload", {
-        eventType: payload.eventType,
-        requestId: payload.requestId,
+      log.info(`RequestId: ${requestId} - Received Pub/Sub payload`, {
+        eventType,
+        requestId,
       });
-      const handler = eventHandlers[payload.eventType];
+      const handler = eventHandlers[eventType];
       if (!handler) {
-        log.warn(`No handler registered for eventType: ${payload.eventType}`, {
-          requestId: payload.requestId,
-        });
+        log.warn(
+          `RequestId: ${requestId} - No handler registered for eventType: ${eventType}`,
+          {
+            requestId,
+          },
+        );
         return;
       }
 
       await handler(payload);
-      log.info(`Successfully processed eventType: ${payload.eventType}`, {
-        requestId: payload.requestId,
-      });
+      log.info(
+        `RequestId: ${requestId} - Successfully processed eventType: ${eventType}`,
+        {
+          requestId,
+        },
+      );
     } catch (error) {
-      log.error("Failed processing Pub/Sub event", {
+      log.error(`RequestId: ${requestId} - Failed processing Pub/Sub event`, {
         error: error instanceof Error ? error.message : String(error),
-        requestId: payload?.requestId || "N/A",
+        requestId,
       });
       throw error; // important → enables retry
     }
