@@ -60,7 +60,7 @@ export default function Dashboard() {
         {loading ? (
           <p>Loading...</p>
         ) : (
-          <UserFileList files={files} />
+          <UserFileList files={files.filter(f => !f.deleted)} />
         )}
       </div>
     </div>
