@@ -368,7 +368,11 @@ const deleteExpiredFiles = onSchedule(
               );
             }
 
-            batch.update(fileDoc.ref, { deleted: true });
+            batch.update(fileDoc.ref, {
+              deleted: true,
+              deletedAt: FieldValue.serverTimestamp(),
+              deletedReason: "Delete Cron Job",
+            });
           },
         );
 
