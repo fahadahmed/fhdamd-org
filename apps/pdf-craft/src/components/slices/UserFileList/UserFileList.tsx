@@ -3,15 +3,16 @@ import './userFileList.css'
 
 interface UserFileListProps {
   files?: any[];
+  mode?: string;
 }
 
-export default function UserFileList({ files = [] }: UserFileListProps) {
+export default function UserFileList({ files = [], mode }: UserFileListProps) {
 
   const tableHeaders: TableHeader[] = [
     { label: 'File Name', key: 'fileName' },
     { label: 'Operation', key: 'operation' },
     { label: 'Created At', key: 'createdAt' },
-    { label: 'Actions', key: 'actions' }
+    { label: mode === 'trash' ? 'Deleted At' : 'Actions', key: 'actions' }
   ]
 
 
@@ -21,8 +22,8 @@ export default function UserFileList({ files = [] }: UserFileListProps) {
     operation: (file.operation as string).toUpperCase(),
     createdAt: file.createdAt.toDate().toLocaleString(),
     actions: (
-      file.deleted ? (
-        <span className="deleted-label">Deleted</span>
+      mode === 'trash' ? (
+        <span className="deleted-label">{file.expiresAt.toDate().toLocaleString()}</span>
       ) : (
         <div>
           <a href={file.fileUrl} target="_blank">
@@ -36,8 +37,7 @@ export default function UserFileList({ files = [] }: UserFileListProps) {
 
   return (
     <div className="user-file-list">
-      <Heading level='h3' variant="subsection">Your Files</Heading>
       <DataTable headers={tableHeaders} data={tableData} />
-    </div>
+    </div >
   );
 }

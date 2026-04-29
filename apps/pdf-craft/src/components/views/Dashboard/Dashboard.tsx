@@ -5,7 +5,8 @@ import { db, auth } from '../../../firebase/client';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { UserFileList, OperationsContainer } from '../../slices';
-import { Heading } from '../../ui';
+import { Heading, Tabs, TabsContent, TabsList, TabsTrigger, EmptyState } from '../../ui';
+
 
 export default function Dashboard() {
   const [files, setFiles] = useState<any[]>([]);
@@ -60,7 +61,27 @@ export default function Dashboard() {
         {loading ? (
           <p>Loading...</p>
         ) : (
-          <UserFileList files={files.filter(f => !f.deleted)} />
+          <Tabs defaultValue="files">
+
+            <TabsList>
+              <TabsTrigger value="files">
+                Files
+              </TabsTrigger>
+
+              <TabsTrigger value="trash">
+                History
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="files">
+              <UserFileList files={files.filter(f => !f.deleted)} />
+            </TabsContent>
+
+            <TabsContent value="trash">
+              <UserFileList files={files.filter(f => f.deleted)} mode='trash' />
+            </TabsContent>
+
+          </Tabs>
         )}
       </div>
     </div>
