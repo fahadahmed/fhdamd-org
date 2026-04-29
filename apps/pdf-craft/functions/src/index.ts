@@ -7,7 +7,7 @@ import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { defineSecret } from "firebase-functions/params";
 import Stripe from "stripe";
 import cors from "cors";
-import { AppEventPayload } from "./events/types";
+import type { AppEventPayload } from "./events/types";
 import { eventHandlers } from "./events/handlers";
 import { fetchCMSData, getCmsQuery, datocmsApiToken, datocmsEnv } from "./cms";
 import { log } from "./utils/logger";
@@ -368,7 +368,11 @@ const deleteExpiredFiles = onSchedule(
               );
             }
 
-            batch.update(fileDoc.ref, { deleted: true });
+            batch.update(fileDoc.ref, {
+              deleted: true,
+              deletedAt: FieldValue.serverTimestamp(),
+              deletedReason: "Delete Cron Job",
+            });
           },
         );
 

@@ -1,5 +1,5 @@
 import { getResend } from "../../email/resend";
-import { AppEventHandler } from "./types";
+import type { AppEventHandler } from "./types";
 import { log } from "../../utils/logger";
 
 export const handleMergePdfs: AppEventHandler = async (payload) => {

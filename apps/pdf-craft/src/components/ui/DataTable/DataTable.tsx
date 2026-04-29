@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import './datatable.css'
+import { EmptyState } from '../';
 
 export interface TableHeader {
   label: string;
@@ -24,7 +25,9 @@ export default function DataTable({ headers, data, pageSize = 5 }: DataTableProp
   }, [data, currentPage, pageSize]);
 
   if (data.length === 0) {
-    return <div className="data-table-empty">No data available</div>;
+    return <div className="data-table-empty">
+      <EmptyState>No data available</EmptyState>
+    </div>;
   }
 
   return (

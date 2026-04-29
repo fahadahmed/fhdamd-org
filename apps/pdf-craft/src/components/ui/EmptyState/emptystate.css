@@ -1,0 +1,9 @@
+.empty-state-container {
+  display: grid;
+  min-height: 400px;
+  place-items: center;
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #666;
+}

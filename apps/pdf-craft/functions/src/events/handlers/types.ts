@@ -1,3 +1,3 @@
-import { AppEventPayload } from '../types';
+import type { AppEventPayload } from "../types";
 
 export type AppEventHandler = (payload: AppEventPayload) => Promise<void>;
