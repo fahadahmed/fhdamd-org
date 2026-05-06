@@ -13,7 +13,7 @@
   "dependencies": {
     "@apphosting/astro-adapter": "^0.0.1",
     "@astrojs/react": "^4.4.0",
-    "astro": "^5.14.4",
+    "astro": "^5.17.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
