@@ -1,18 +1,18 @@
-type CmsQueryKey = 'faqs'; // Extendable for future queries
+type CmsQueryKey = "faqs" | "pricing"; // Extendable for future queries
 
 export async function fetchCms<T>(
   queryKey: CmsQueryKey,
-  variables?: Record<string, unknown>
+  variables?: Record<string, unknown>,
 ): Promise<T> {
   const response = await fetch(
     `${import.meta.env.PUBLIC_BASE_FUNCTIONS_URL}/cms`,
     {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ queryKey, variables }),
-    }
+    },
   );
 
   if (!response.ok) {

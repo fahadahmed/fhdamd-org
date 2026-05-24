@@ -1,11 +1,22 @@
 export const CMS_QUERIES = {
   faqs: `
-    query MyQuery {
+    query FaqsQuery {
       allFaqs(orderBy: _createdAt_ASC) {
         title
         content
         id
         _createdAt
+      }
+    }
+  `,
+  pricing: `
+    query PricingQuery {
+      allPricingOptions(orderBy: _createdAt_ASC) {
+        id
+        productName
+        price
+        credits
+        description
       }
     }
   `,
