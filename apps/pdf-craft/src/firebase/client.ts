@@ -22,4 +22,15 @@ setPersistence(auth, browserLocalPersistence);
 
 const db = getFirestore(app);
 
+// Firestore internally aborts its own in-flight watch stream requests during
+// WebSocket reconnects. These rejections are unhandled inside the SDK itself
+// and cannot be caught from user code.
+if (typeof window !== 'undefined') {
+  window.addEventListener('unhandledrejection', (event) => {
+    if (event.reason?.name === 'AbortError') {
+      event.preventDefault();
+    }
+  });
+}
+
 export { app, auth, db };
