@@ -79,7 +79,8 @@ export default function Header() {
       <div className="header-logo"><a href="/">pdf <small>craft</small></a></div>
       {isLoggedIn ? (
         <div className="header-links">
-          <Button kind="secondary" size="sm" type="button" text="Buy Credits" onClick={handleBuyCredits} />
+          {/* <Button kind="secondary" size="sm" type="button" text="Buy Credits" onClick={handleBuyCredits} /> */}
+          <Button kind="tertiary" type="linkButton" url="/buy-credits" text="Buy Credits" />
           <form onSubmit={handleLogout}>
             <Button kind="secondary" type="submit" size="sm" text="Logout" />
           </form>

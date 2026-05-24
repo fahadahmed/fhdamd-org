@@ -33,7 +33,7 @@ const faqs = faqResponse.data.allFaqs;
     <div class="alternate">
       <HowItWorks />
     </div>
-    <Pricing />
+    <Pricing client:load />
     <div class="alternate">
       <Faqs client:load items={faqs} />
     </div>
