@@ -44,42 +44,12 @@ export default function Header() {
     }
   }
 
-  const handleBuyCredits = async () => {
-    const token = await auth.currentUser?.getIdToken();
-    const requestId = crypto.randomUUID();
-
-    const paymentResponse = await fetch(`${import.meta.env.PUBLIC_BASE_FUNCTIONS_URL}/processPayment`, { // Convert URL to environment variable later
-      method: 'POST',
-      body: JSON.stringify({
-        credits: 5,
-        amount: 149,
-        quantity: 1,
-        currency: 'usd',
-        productName: 'PCD-Craft Credits Basic',
-        userId: auth.currentUser?.uid,
-        userEmail: auth.currentUser?.email,
-        requestId: requestId,
-      }),
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      }
-    });
-
-    const paymentData = await paymentResponse.json();
-    if (!paymentData.url) {
-      console.error('Payment URL not found in response');
-      return;
-    } else {
-      window.location.href = paymentData.url;
-    }
-  }
-
   return (
     <div className="header">
       <div className="header-logo"><a href="/">pdf <small>craft</small></a></div>
       {isLoggedIn ? (
         <div className="header-links">
-          {/* <Button kind="secondary" size="sm" type="button" text="Buy Credits" onClick={handleBuyCredits} /> */}
+          <Button kind="tertiary" type="linkButton" url="/dashboard" text="Dashboard" />
           <Button kind="tertiary" type="linkButton" url="/buy-credits" text="Buy Credits" />
           <form onSubmit={handleLogout}>
             <Button kind="secondary" type="submit" size="sm" text="Logout" />
