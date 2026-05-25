@@ -1,0 +1,10 @@
+**/node_modules
+**/.turbo
+**/dist
+.git
+*.log
+.env*
+apps/fhdamd-web
+apps/pdf-craft
+packages
+tooling

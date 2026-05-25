@@ -37,6 +37,8 @@ env:
     secret: baseFunctionsUrl
   - variable: VITE_PROJECT_ID
     secret: viteProjectId
+  - variable: PDF_PROCESSOR_URL
+    secret: pdfProcessorUrl
   # Grant access to secrets in Cloud Secret Manager.
   # See https://firebase.google.com/docs/app-hosting/configure#secret-parameters
   # - variable: MY_SECRET
