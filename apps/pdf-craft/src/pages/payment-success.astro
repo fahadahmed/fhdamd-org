@@ -10,3 +10,8 @@ import Layout from "../layouts/Layout.astro";
     >
   </div>
 </Layout>
+
+<script>
+  import { logEvent } from '../utils/lib/analytics';
+  logEvent('purchase', { currency: 'USD' });
+</script>

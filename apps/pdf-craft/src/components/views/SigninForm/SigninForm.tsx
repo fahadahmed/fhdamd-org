@@ -5,6 +5,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../../../firebase/client'
 import { Button, Input } from '../../../components'
 import { useRecaptcha } from '../../../utils'
+import { logEvent } from '../../../utils/lib/analytics'
 import '../../../styles/form.css'
 
 export default function SigninForm() {
@@ -27,6 +28,7 @@ export default function SigninForm() {
       const idToken = await userCredential.user.getIdToken()
       const response = await actions.user.verifyUser({ idToken, captchaToken })
       if (response.data?.redirected) {
+        logEvent('login', { method: 'email' })
         window.location.assign(response.data?.url)
       }
     } catch (err) {

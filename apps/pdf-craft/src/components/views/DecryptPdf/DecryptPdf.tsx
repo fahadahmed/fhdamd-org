@@ -5,6 +5,7 @@ import { actions } from 'astro:actions'
 import '../../../styles/operations.css'
 import './decryptPdf.css'
 import { Button, Heading, Input } from '../../ui'
+import { logEvent } from '../../../utils/lib/analytics'
 
 export default function DecryptPdf() {
   const [file, setFile] = useState<File | null>(null)
@@ -44,6 +45,7 @@ export default function DecryptPdf() {
       return
     }
 
+    logEvent('pdf_operation_started', { operation_type: task })
     setButtonLabel('Unlocking...')
     const formData = new FormData()
     formData.append('file', file)
@@ -54,11 +56,14 @@ export default function DecryptPdf() {
     try {
       const response = await actions.operations.decryptPdf(formData)
       if (response.data?.success) {
+        logEvent('pdf_operation_completed', { operation_type: task })
         setDownloadLink(response.data.data?.fileUrl || null)
       } else {
+        logEvent('pdf_operation_failed', { operation_type: task })
         setError(response.data?.error || 'Failed to unlock PDF')
       }
     } catch {
+      logEvent('pdf_operation_failed', { operation_type: task })
       setError('An unexpected error occurred. Please try again.')
     } finally {
       setButtonLabel('Unlock PDF')

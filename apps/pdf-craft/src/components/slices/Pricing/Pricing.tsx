@@ -5,6 +5,7 @@ import { Button, Heading } from '../../ui';
 import { auth } from '../../../firebase/client'
 import type { PricingOption } from '../../../utils'
 import { fetchCms } from "../../../utils/lib/cms";
+import { logEvent } from '../../../utils/lib/analytics';
 import './pricing.css'
 
 
@@ -47,6 +48,7 @@ export default function Pricing() {
   }, [])
 
   const handleBuyCredits = async (option: PricingOption) => {
+    logEvent('begin_checkout', { credits: option.credits, value: option.price / 100, currency: 'USD' })
     const token = await auth.currentUser?.getIdToken();
     const requestId = crypto.randomUUID();
 
