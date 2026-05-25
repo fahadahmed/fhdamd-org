@@ -5,6 +5,7 @@ import {
   browserLocalPersistence,
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getAnalytics, type Analytics } from 'firebase/analytics';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 
 const firebaseConfig = {
@@ -19,7 +20,10 @@ const firebaseConfig = {
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
+let analytics: Analytics | null = null;
+
 if (typeof window !== 'undefined') {
+  analytics = getAnalytics(app);
   initializeAppCheck(app, {
     provider: new ReCaptchaV3Provider(import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY),
     isTokenAutoRefreshEnabled: true,
@@ -42,4 +46,4 @@ if (typeof window !== 'undefined') {
   });
 }
 
-export { app, auth, db };
+export { app, auth, db, analytics };

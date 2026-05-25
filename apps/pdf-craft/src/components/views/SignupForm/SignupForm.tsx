@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { actions } from 'astro:actions'
 import { Button, Input } from '../../../components'
 import { useRecaptcha } from '../../../utils'
+import { logEvent } from '../../../utils/lib/analytics'
 
 export default function SignupForm() {
   const [name, setName] = useState<string>('');
@@ -28,6 +29,7 @@ export default function SignupForm() {
       })
 
       if (response.data?.success) {
+        logEvent('sign_up', { method: 'email' })
         window.location.href = '/signin'
       } else {
         setError(response.data?.error || 'An unknown error occurred')

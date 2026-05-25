@@ -6,6 +6,7 @@ import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { actions } from 'astro:actions'
 import { Button, Heading } from "../../ui"
+import { logEvent } from '../../../utils/lib/analytics'
 import '../../../styles/operations.css'
 
 type SortableItemProps = {
@@ -71,6 +72,7 @@ export default function MultiPdfUploader() {
     });
     console.log('Check Credits response:', response);
     if (response.data?.success) {
+      logEvent('pdf_operation_started', { operation_type: task, file_count: uploadedFiles.length })
       setButtonLabel('Merging PDFs...');
       const formData = new FormData();
       uploadedFiles.forEach((file) => {
@@ -85,9 +87,11 @@ export default function MultiPdfUploader() {
         console.log(response)
         if (response.data) {
           console.log('Merge PDF operations response', response.data)
+          logEvent('pdf_operation_completed', { operation_type: task, file_count: uploadedFiles.length })
           setDownloadLink(response.data?.data?.fileUrl || null);
         }
       } catch (err) {
+        logEvent('pdf_operation_failed', { operation_type: task })
         console.error('Error merging PDFs:', err);
       } finally {
         setButtonLabel('Merge PDFs');

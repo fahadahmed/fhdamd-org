@@ -7,6 +7,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { actions } from 'astro:actions'
 import '../../../styles/operations.css'
 import { Button, Heading } from "../../ui"
+import { logEvent } from '../../../utils/lib/analytics'
 
 type SortableItemProps = {
   id: string
@@ -69,6 +70,7 @@ export default function MultiImageUploader() {
 
     const response = await actions.credits.checkCredits({ task, requestId });
     if (response.data?.success) {
+      logEvent('pdf_operation_started', { operation_type: task, file_count: uploadedFiles.length })
       setButtonLabel('Converting images...');
       const formData = new FormData();
       uploadedFiles.forEach((file) => formData.append('images', file));
@@ -77,9 +79,11 @@ export default function MultiImageUploader() {
       try {
         const convertResponse = await actions.operations.imageToPdf(formData);
         if (convertResponse.data) {
+          logEvent('pdf_operation_completed', { operation_type: task, file_count: uploadedFiles.length })
           setDownloadLink(convertResponse.data?.data?.fileUrl || null);
         }
       } catch (err) {
+        logEvent('pdf_operation_failed', { operation_type: task })
         console.error('Error converting images to PDF:', err);
       } finally {
         setButtonLabel('Convert to PDF');
