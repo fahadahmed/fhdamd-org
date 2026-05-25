@@ -1,0 +1,19 @@
+.decrypt-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  margin: 1em 4em;
+}
+
+.error-message {
+  color: #c0392b;
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.back-to-dashboard {
+  color: #091f80;
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 1rem;
+}
