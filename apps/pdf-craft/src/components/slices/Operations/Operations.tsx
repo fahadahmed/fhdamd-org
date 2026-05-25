@@ -24,17 +24,17 @@ export function OperationsContainer() {
         <p>Convert JPG & PNG into PDF format.</p>
         <Button kind="secondary" type="linkButton" url="/imagetopdf" text="CONVERT" />
       </div>
-      <div className="operation-card disabled">
+      <div className="operation-card">
         <img src="/icons/icon-encrypt.svg" alt="Protect PDF" />
         <h3>Protect PDF</h3>
         <p>Secure PDF from unauthorised use with a password.</p>
-        <h4>Coming Soon!</h4>
+        <Button kind="secondary" type="linkButton" url="/encryptpdf" text="PROTECT" />
       </div>
-      <div className="operation-card disabled">
+      <div className="operation-card">
         <img src="/icons/icon-unlock.svg" alt="Unlock PDF" />
         <h3>Unlock PDF</h3>
         <p>Remove password protection and restrictions easily.</p>
-        <h4>Coming Soon!</h4>
+        <Button kind="secondary" type="linkButton" url="/decryptpdf" text="UNLOCK" />
       </div>
     </div>
   )

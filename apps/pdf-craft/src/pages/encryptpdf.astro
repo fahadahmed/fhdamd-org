@@ -1,0 +1,12 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { EncryptPdf } from "../components";
+
+if (!Astro.cookies.has('__session')) {
+  return Astro.redirect('/signin')
+}
+---
+
+<Layout title="Protect PDF">
+  <EncryptPdf client:load />
+</Layout>

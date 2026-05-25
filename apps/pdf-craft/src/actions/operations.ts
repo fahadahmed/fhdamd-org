@@ -8,6 +8,28 @@ import { getFirebaseAuth, getFirebaseApp } from "../firebase/server";
 import { publish } from "../server/pubsub/publisher";
 import { log } from "../utils/lib/logger";
 
+async function callProcessor(path: string, form: FormData): Promise<Response> {
+  const processorUrl = import.meta.env.PDF_PROCESSOR_URL;
+  if (!processorUrl) throw new Error("PDF_PROCESSOR_URL is not configured");
+  const url = `${processorUrl}${path}`;
+
+  if (!import.meta.env.PROD) {
+    return fetch(url, { method: "POST", body: form });
+  }
+
+  // Service-to-service auth via GCP metadata server (available on App Hosting)
+  const tokenRes = await fetch(
+    `http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity?audience=${encodeURIComponent(processorUrl)}`,
+    { headers: { "Metadata-Flavor": "Google" } },
+  );
+  const token = await tokenRes.text();
+  return fetch(url, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: form,
+  });
+}
+
 getFirebaseApp();
 const firestore = admin.firestore();
 const bucket = admin.storage().bucket();
@@ -377,6 +399,214 @@ export const operations = {
           error: error instanceof Error ? error.message : String(error),
         });
         return { success: false, error: "Failed to convert images to PDF" };
+      }
+    },
+  }),
+
+  encryptPdf: defineAction({
+    accept: "form",
+    input: z.object({
+      file: z.instanceof(File),
+      userPassword: z.string().min(1),
+      ownerPassword: z.string().optional(),
+      permissions: z.enum(["full-access", "view-and-print", "read-only"]).default("full-access"),
+      requestId: z.string(),
+      task: z.string(),
+    }),
+    handler: async (input, context) => {
+      const { file, userPassword, ownerPassword, permissions, requestId, task } = input;
+      const cookieHeader = context.request.headers.get("cookie") || "";
+      const sessionCookie = cookieHeader
+        .split("; ")
+        .find((c) => c.startsWith("__session="))
+        ?.split("=")[1];
+
+      log.event("app-operation", { requestId, feature: task, status: "start" });
+
+      if (!sessionCookie) {
+        log.warn("app-operation: unauthorized", { requestId, feature: task, status: "fail" });
+        return { success: false, error: "Unauthorized" };
+      }
+
+      try {
+        const auth = await getFirebaseAuth();
+        const decodedToken = await auth.verifySessionCookie(sessionCookie, true);
+        const userId = decodedToken.uid;
+        log.debug("app-operation: user authenticated", { requestId, feature: task, userId });
+
+        const fileId = firestore.collection("users").doc(userId).collection("files").doc().id;
+
+        const processorForm = new FormData();
+        processorForm.append("file", file);
+        processorForm.append("userPassword", userPassword);
+        if (ownerPassword) processorForm.append("ownerPassword", ownerPassword);
+        processorForm.append("permissions", permissions);
+
+        const processorRes = await callProcessor("/encrypt", processorForm);
+        if (!processorRes.ok) {
+          const body = await processorRes.json() as { error?: string };
+          log.warn("app-operation: processor error", { requestId, feature: task, error: body.error });
+          return { success: false, error: body.error || "Encryption failed" };
+        }
+
+        const pdfBytes = Buffer.from(await processorRes.arrayBuffer());
+        const encryptedFileName = `encrypted-${Date.now()}.pdf`;
+        const storagePath = `users/${userId}/${encryptedFileName}`;
+        const fileRef = bucket.file(storagePath);
+        const downloadToken = uuidv4();
+
+        await fileRef.save(pdfBytes, {
+          metadata: {
+            contentType: "application/pdf",
+            metadata: { firebaseStorageDownloadTokens: downloadToken },
+          },
+        });
+
+        const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(storagePath)}?alt=media&token=${downloadToken}`;
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+        await firestore.collection("users").doc(userId).collection("files").doc(fileId).set({
+          fileId,
+          fileName: encryptedFileName,
+          storagePath,
+          fileUrl,
+          operation: "encrypt",
+          createdAt: FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp(),
+          expiresAt,
+          deleted: false,
+          deletedAt: null,
+          deletionReason: null,
+        });
+        log.debug("app-operation: file metadata saved", { requestId, feature: task, userId, fileId });
+
+        await publish(
+          "app-event",
+          {
+            userId,
+            userEmail: decodedToken.email,
+            fileId,
+            fileName: encryptedFileName,
+            fileUrl,
+            eventType: "pdf-encrypt",
+            timestamp: Date.now(),
+            requestId,
+          },
+          requestId,
+          task,
+        );
+        log.event("app-operation", { requestId, feature: task, status: "success" });
+
+        return { success: true, message: "PDF encrypted successfully", data: { fileUrl } };
+      } catch (error) {
+        log.error("app-operation: unexpected error", {
+          requestId,
+          feature: task,
+          error: error instanceof Error ? error.message : String(error),
+        });
+        return { success: false, error: "Failed to encrypt PDF" };
+      }
+    },
+  }),
+
+  decryptPdf: defineAction({
+    accept: "form",
+    input: z.object({
+      file: z.instanceof(File),
+      password: z.string().min(1),
+      requestId: z.string(),
+      task: z.string(),
+    }),
+    handler: async (input, context) => {
+      const { file, password, requestId, task } = input;
+      const cookieHeader = context.request.headers.get("cookie") || "";
+      const sessionCookie = cookieHeader
+        .split("; ")
+        .find((c) => c.startsWith("__session="))
+        ?.split("=")[1];
+
+      log.event("app-operation", { requestId, feature: task, status: "start" });
+
+      if (!sessionCookie) {
+        log.warn("app-operation: unauthorized", { requestId, feature: task, status: "fail" });
+        return { success: false, error: "Unauthorized" };
+      }
+
+      try {
+        const auth = await getFirebaseAuth();
+        const decodedToken = await auth.verifySessionCookie(sessionCookie, true);
+        const userId = decodedToken.uid;
+        log.debug("app-operation: user authenticated", { requestId, feature: task, userId });
+
+        const fileId = firestore.collection("users").doc(userId).collection("files").doc().id;
+
+        const processorForm = new FormData();
+        processorForm.append("file", file);
+        processorForm.append("password", password);
+
+        const processorRes = await callProcessor("/decrypt", processorForm);
+        if (!processorRes.ok) {
+          const body = await processorRes.json() as { error?: string };
+          log.warn("app-operation: processor error", { requestId, feature: task, error: body.error });
+          return { success: false, error: body.error || "Decryption failed" };
+        }
+
+        const pdfBytes = Buffer.from(await processorRes.arrayBuffer());
+        const decryptedFileName = `decrypted-${Date.now()}.pdf`;
+        const storagePath = `users/${userId}/${decryptedFileName}`;
+        const fileRef = bucket.file(storagePath);
+        const downloadToken = uuidv4();
+
+        await fileRef.save(pdfBytes, {
+          metadata: {
+            contentType: "application/pdf",
+            metadata: { firebaseStorageDownloadTokens: downloadToken },
+          },
+        });
+
+        const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(storagePath)}?alt=media&token=${downloadToken}`;
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+        await firestore.collection("users").doc(userId).collection("files").doc(fileId).set({
+          fileId,
+          fileName: decryptedFileName,
+          storagePath,
+          fileUrl,
+          operation: "decrypt",
+          createdAt: FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp(),
+          expiresAt,
+          deleted: false,
+          deletedAt: null,
+          deletionReason: null,
+        });
+        log.debug("app-operation: file metadata saved", { requestId, feature: task, userId, fileId });
+
+        await publish(
+          "app-event",
+          {
+            userId,
+            userEmail: decodedToken.email,
+            fileId,
+            fileName: decryptedFileName,
+            fileUrl,
+            eventType: "pdf-decrypt",
+            timestamp: Date.now(),
+            requestId,
+          },
+          requestId,
+          task,
+        );
+        log.event("app-operation", { requestId, feature: task, status: "success" });
+
+        return { success: true, message: "PDF decrypted successfully", data: { fileUrl } };
+      } catch (error) {
+        log.error("app-operation: unexpected error", {
+          requestId,
+          feature: task,
+          error: error instanceof Error ? error.message : String(error),
+        });
+        return { success: false, error: "Failed to decrypt PDF" };
       }
     },
   }),

@@ -1,0 +1,75 @@
+.encrypt-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  margin: 1em 4em;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.permission-presets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+
+.preset-option {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  padding: 1em 1.25em;
+  border: 2px solid #091f80;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Instrument Sans", sans-serif;
+  color: #091f80;
+  background-color: #fefef4;
+
+  input[type="radio"] {
+    accent-color: #091f80;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+}
+
+.preset-option.selected {
+  background-color: #091f80;
+  color: #ffffff;
+
+  input[type="radio"] {
+    accent-color: #ffffff;
+  }
+
+  .preset-desc {
+    color: #c8cef5;
+  }
+}
+
+.preset-label {
+  font-weight: 700;
+  font-size: 1rem;
+  min-width: 110px;
+}
+
+.preset-desc {
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+.error-message {
+  color: #c0392b;
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.back-to-dashboard {
+  color: #091f80;
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 1rem;
+}

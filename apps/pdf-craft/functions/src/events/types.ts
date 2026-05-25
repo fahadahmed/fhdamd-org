@@ -4,7 +4,7 @@ export interface AppEventPayload {
   fileId: string;
   fileName: string;
   fileUrl: string;
-  eventType: "pdf-merged" | "image-to-pdf";
+  eventType: "pdf-merge" | "image-to-pdf" | "pdf-encrypt" | "pdf-decrypt";
   timestamp: number;
   requestId: string;
 }
