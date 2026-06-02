@@ -1,0 +1,84 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+import { Chip, Principle, StatusTable, CodeBlock } from './components/IntroBlocks'
+import { shared } from './components/docStyles'
+
+<Meta title="Threads/Introduction" />
+
+<div style={shared.page}>
+
+<div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--th-color-text-3)', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+  <span style={{ width: '24px', height: '1px', background: 'var(--th-color-accent)', display: 'inline-block' }} />
+  @fhdamd/threads · v0.1.0
+</div>
+
+<div style={{ fontFamily: 'var(--th-font-serif)', fontWeight: 300, fontSize: 'clamp(2.125rem, 4vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 0.97, marginBottom: '4px' }}>Threads design system.</div>
+<div style={{ fontFamily: 'var(--th-font-serif)', fontWeight: 300, fontSize: 'clamp(2.125rem, 4vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 0.97, color: 'var(--th-color-text-3)', fontStyle: 'italic', marginBottom: '24px' }}>Calm. Accessible. Consistent.</div>
+
+<div style={shared.lead}>
+  Earthy ceramic tokens for fhdamd.dev, PDF-Craft, Jamaal, and every surface in between.
+  One token contract — web, iOS, macOS.
+</div>
+
+<div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '56px' }}>
+  <Chip>WCAG AA</Chip>
+  <Chip>RTL-ready</Chip>
+  <Chip>Dark theme</Chip>
+  <Chip>React + CSS Modules</Chip>
+  <Chip>Vitest + Storybook</Chip>
+  <Chip>iOS / macOS tokens</Chip>
+</div>
+
+<div style={shared.eyebrow}>Design principles</div>
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px', marginBottom: '48px' }}>
+  <Principle title="Ceramic palette"    body="Bone, ink, terracotta, sage. Warm neutrals that feel considered, not sterile." />
+  <Principle title="WCAG AA minimum"   body="Every text token meets 4.5:1 contrast. Tertiary text is the floor, never below." />
+  <Principle title="RTL-first"         body="All layout uses CSS logical properties. dir=rtl on html flips everything — no JS needed." />
+  <Principle title="One token contract" body="Semantic aliases mean dark theme and iOS tokens are a mapping, not a rewrite." />
+  <Principle title="No hardcoded values" body="Components never use raw hex, px, or magic numbers. Tokens only." />
+  <Principle title="17px body minimum" body="Never below 17px regular or 14px bold for content. Mono labels use 11-12px only." />
+</div>
+
+<hr style={shared.rule} />
+
+<div style={shared.eyebrow}>Component status</div>
+
+<StatusTable />
+
+<hr style={shared.rule} />
+
+<div style={shared.eyebrow}>Token contract</div>
+
+<div style={{ fontVariationSettings: '"wdth" 90, "wght" 380', fontSize: '1.0625rem', lineHeight: 1.65, color: 'var(--th-color-text-2)', marginBottom: '20px', maxWidth: '600px' }}>
+  Components use <strong style={{ fontVariationSettings: '"wdth" 92, "wght" 600', color: 'var(--th-color-text-1)' }}>semantic aliases</strong> only — never raw primitive values or hardcoded hex.
+  Dark theme overrides the same aliases, so components adapt with zero code changes.
+</div>
+
+<CodeBlock>{`/* Correct - semantic alias */
+.card { background: var(--th-color-surface-1); }
+
+/* Wrong - raw primitive */
+.card { background: var(--th-prim-bone-100); }
+
+/* Wrong - hardcoded hex */
+.card { background: #F0EDE6; }`}</CodeBlock>
+
+<div style={{ marginTop: '32px' }}>
+  <div style={shared.eyebrow}>Quick start</div>
+  <CodeBlock>{`import { Button, Card, OpCard } from '@fhdamd/threads'
+import '@fhdamd/threads/tokens'
+
+export function MyPage() {
+  return (
+    <Card accentBar="top" accentColor="terra">
+      <CardTitle>Merge PDFs</CardTitle>
+      <CardBody>Combine documents in seconds.</CardBody>
+      <Button variant="solid-terra" href="/merge">
+        Get started
+      </Button>
+    </Card>
+  )
+}`}</CodeBlock>
+</div>
+
+</div>

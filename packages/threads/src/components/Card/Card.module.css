@@ -1,0 +1,86 @@
+/* ─── BASE ──────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--th-color-surface-1);
+  border: 1px solid var(--th-color-border-default);
+  border-radius: var(--th-radius-lg);
+  padding: var(--th-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--th-space-3);
+  box-shadow: var(--th-shadow-xs);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ─── VARIANTS ───────────────────────────────────────────────────────────── */
+.elevated {
+  box-shadow: var(--th-shadow-md);
+}
+
+.interactive {
+  cursor: pointer;
+  transition:
+    transform var(--th-duration-base) var(--th-ease-out),
+    box-shadow var(--th-duration-base) var(--th-ease-out);
+}
+
+.interactive:hover,
+.interactive:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: var(--th-shadow-lg);
+}
+
+.interactive:focus-visible {
+  outline: 2px solid var(--th-color-focus-ring);
+  outline-offset: 3px;
+}
+
+.inverse {
+  background: var(--th-color-surface-inverse);
+  border-color: transparent;
+  color: var(--th-color-text-inverse);
+}
+
+/* ─── ACCENT BARS ────────────────────────────────────────────────────────── */
+.accentTop::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 3px;
+  background: var(--card-accent, var(--th-color-accent));
+}
+
+.accentStart::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 3px;
+  background: var(--card-accent, var(--th-color-accent));
+}
+
+/* ─── SUB-COMPONENTS ─────────────────────────────────────────────────────── */
+.title {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 92, "wght" 650;
+  font-size: var(--th-text-md);
+  color: var(--th-color-text-1);
+  line-height: 1.15;
+}
+
+.inverse .title {
+  color: var(--th-color-text-inverse);
+}
+
+.body {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 380;
+  font-size: var(--th-text-base);
+  color: var(--th-color-text-2);
+  line-height: 1.6;
+}
+
+.inverse .body {
+  color: var(--th-color-text-inverse-2);
+}

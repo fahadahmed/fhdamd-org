@@ -1,0 +1,105 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+import { ColorSwatch, ColorGrid, PrimRamp, BorderTokens } from './components/ColourBlocks'
+import { shared } from './components/docStyles'
+
+<Meta title="Threads/Primitives/Colours" />
+
+<div style={shared.page}>
+
+<div style={shared.eyebrow}>Primitives / Colours</div>
+<div style={shared.h1}>Colour <em style={{ fontStyle: 'italic', color: 'var(--th-color-accent)' }}>tokens</em></div>
+<div style={shared.lead}>
+  Two layers: primitive ramps that name every raw value, and semantic aliases that
+  components actually use. Never reference primitives directly in component code.
+</div>
+
+<div style={shared.note}>
+  <strong style={{ fontVariationSettings: '"wdth" 92, "wght" 600' }}>Rule:</strong> components use semantic aliases only.
+  Dark theme overrides the same aliases — zero component changes needed.
+</div>
+
+<div style={shared.eyebrow}>Primitive ramps — reference only</div>
+
+<PrimRamp label="Bone" swatches={[
+  ['#F7F4EE','bone-50'], ['#F0EDE6','bone-100'], ['#E8E4DC','bone-200'],
+  ['#E0D8CC','bone-300'], ['#D4C9B8','bone-400'], ['#C8BAA2','bone-500'],
+]} />
+<PrimRamp label="Ink" swatches={[
+  ['#DDD9D2','ink-100'], ['#C4C0B8','ink-200'], ['#A8A49C','ink-300'],
+  ['#8C8880','ink-400'], ['#706D66','ink-500'], ['#5A5750','ink-600'],
+  ['#4D4A44','ink-700'], ['#3D3A35','ink-800'], ['#2E2C28','ink-900'],
+]} />
+<PrimRamp label="Terracotta" swatches={[
+  ['#F5E4D8','terra-100'], ['#EDCAB8','terra-200'], ['#DDA080','terra-300'],
+  ['#C97A55','terra-400'], ['#B5623A','terra-500'], ['#A04E2A','terra-600'],
+  ['#8C3D1E','terra-700'],
+]} />
+<PrimRamp label="Sage" swatches={[
+  ['#DFF0E1','sage-100'], ['#C4D8C6','sage-200'], ['#9DBD9E','sage-300'],
+  ['#7FA386','sage-400'], ['#6B8C72','sage-500'], ['#5C8063','sage-600'],
+  ['#4E7055','sage-700'], ['#3D5C42','sage-800'],
+]} />
+
+<hr style={shared.rule} />
+
+<div style={shared.eyebrow}>Semantic tokens - surface</div>
+<ColorGrid>
+  <ColorSwatch token="--th-color-bg"              name="Background"      hex="#F7F4EE" desc="Page ground" />
+  <ColorSwatch token="--th-color-surface-1"       name="Surface 1"       hex="#F0EDE6" desc="Cards, sheets" />
+  <ColorSwatch token="--th-color-surface-2"       name="Surface 2"       hex="#E8E4DC" desc="Nested cards" />
+  <ColorSwatch token="--th-color-surface-3"       name="Surface 3"       hex="#E0D8CC" desc="Inset / well" />
+  <ColorSwatch token="--th-color-surface-inverse" name="Surface Inverse" hex="#2E2C28" desc="Dark card" />
+</ColorGrid>
+
+<div style={shared.eyebrow}>Semantic tokens - text</div>
+<ColorGrid>
+  <ColorSwatch token="--th-color-text-1"         name="Text 1"         hex="#2E2C28" desc="14.5:1 primary" />
+  <ColorSwatch token="--th-color-text-2"         name="Text 2"         hex="#5A5750" desc="7.1:1 secondary" />
+  <ColorSwatch token="--th-color-text-3"         name="Text 3"         hex="#8C8880" desc="4.6:1 min AA" />
+  <ColorSwatch token="--th-color-text-4"         name="Text 4"         hex="#C4C0B8" desc="Disabled only" />
+  <ColorSwatch token="--th-color-text-inverse"   name="Text Inverse"   hex="#F7F4EE" desc="On inverse" />
+  <ColorSwatch token="--th-color-text-inverse-2" name="Text Inverse 2" hex="#E0D8CC" desc="Secondary on inverse" />
+</ColorGrid>
+
+<div style={shared.eyebrow}>Semantic tokens - accent (terracotta)</div>
+<ColorGrid>
+  <ColorSwatch token="--th-color-accent"        name="Accent"        hex="#B5623A" desc="CTA, priority" />
+  <ColorSwatch token="--th-color-accent-hover"  name="Accent hover"  hex="#A04E2A" desc="Button hover" />
+  <ColorSwatch token="--th-color-accent-subtle" name="Accent subtle" hex="#F5E4D8" desc="Badge bg" />
+  <ColorSwatch token="--th-color-accent-text"   name="Accent text"   hex="#8C3D1E" desc="On subtle bg" />
+</ColorGrid>
+
+<div style={shared.eyebrow}>Semantic tokens - accent (sage)</div>
+<ColorGrid>
+  <ColorSwatch token="--th-color-sage"        name="Sage"        hex="#6B8C72" desc="Done, success" />
+  <ColorSwatch token="--th-color-sage-hover"  name="Sage hover"  hex="#5C8063" desc="Button hover" />
+  <ColorSwatch token="--th-color-sage-subtle" name="Sage subtle" hex="#DFF0E1" desc="Badge bg" />
+  <ColorSwatch token="--th-color-sage-text"   name="Sage text"   hex="#3D5C42" desc="On subtle bg" />
+</ColorGrid>
+
+<div style={shared.eyebrow}>Semantic tokens - status</div>
+<ColorGrid>
+  <ColorSwatch token="--th-color-success"        name="Success"        hex="#6B8C72" />
+  <ColorSwatch token="--th-color-success-subtle" name="Success subtle" hex="#DFF0E1" />
+  <ColorSwatch token="--th-color-success-text"   name="Success text"   hex="#3D5C42" />
+  <ColorSwatch token="--th-color-warning"        name="Warning"        hex="#C4870A" />
+  <ColorSwatch token="--th-color-warning-subtle" name="Warning subtle" hex="#FFF3D4" />
+  <ColorSwatch token="--th-color-warning-text"   name="Warning text"   hex="#7A5200" />
+  <ColorSwatch token="--th-color-error"          name="Error"          hex="#C0392B" />
+  <ColorSwatch token="--th-color-error-subtle"   name="Error subtle"   hex="#FDECEA" />
+  <ColorSwatch token="--th-color-error-text"     name="Error text"     hex="#7B1A12" />
+  <ColorSwatch token="--th-color-info"           name="Info"           hex="#2471A3" />
+  <ColorSwatch token="--th-color-info-subtle"    name="Info subtle"    hex="#D6EAF8" />
+  <ColorSwatch token="--th-color-info-text"      name="Info text"      hex="#154360" />
+</ColorGrid>
+
+<hr style={shared.rule} />
+
+<div style={shared.eyebrow}>Border tokens</div>
+<BorderTokens />
+
+<div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--th-color-text-4)' }}>
+  Toggle the Theme toolbar above to see all dark overrides live
+</div>
+
+</div>

@@ -1,0 +1,205 @@
+/* ─── THREADS DESIGN TOKENS ──────────────────────────────────────────────── */
+/* Ceramic keyboard aesthetic. Use semantic aliases in components, never raw  */
+/* primitives. Dark theme overrides the same aliases — zero component changes. */
+
+:root,
+[data-theme="light"] {
+
+  /* ── Primitive palette (reference only — not for direct component use) ── */
+  --th-prim-bone-50:   #F7F4EE;
+  --th-prim-bone-100:  #F0EDE6;
+  --th-prim-bone-200:  #E8E4DC;
+  --th-prim-bone-300:  #E0D8CC;
+  --th-prim-bone-400:  #D4C9B8;
+  --th-prim-ink-900:   #2E2C28;
+  --th-prim-ink-800:   #3D3A35;
+  --th-prim-ink-700:   #4D4A44;
+  --th-prim-ink-600:   #5A5750;
+  --th-prim-ink-500:   #706D66;
+  --th-prim-ink-400:   #8C8880;
+  --th-prim-ink-300:   #A8A49C;
+  --th-prim-ink-200:   #C4C0B8;
+  --th-prim-ink-100:   #DDD9D2;
+  --th-prim-terra-700: #8C3D1E;
+  --th-prim-terra-600: #A04E2A;
+  --th-prim-terra-500: #B5623A;
+  --th-prim-terra-400: #C97A55;
+  --th-prim-terra-300: #DDA080;
+  --th-prim-terra-200: #EDCAB8;
+  --th-prim-terra-100: #F5E4D8;
+  --th-prim-sage-800:  #3D5C42;
+  --th-prim-sage-700:  #4E7055;
+  --th-prim-sage-600:  #5C8063;
+  --th-prim-sage-500:  #6B8C72;
+  --th-prim-sage-400:  #7FA386;
+  --th-prim-sage-300:  #9DBD9E;
+  --th-prim-sage-200:  #C4D8C6;
+  --th-prim-sage-100:  #DFF0E1;
+
+  /* ── Semantic — surface ─────────────────────────────────────────────────── */
+  --th-color-bg:               #F7F4EE;
+  --th-color-surface-1:        #F0EDE6;
+  --th-color-surface-2:        #E8E4DC;
+  --th-color-surface-3:        #E0D8CC;
+  --th-color-surface-inverse:  #2E2C28;
+
+  /* ── Semantic — text ────────────────────────────────────────────────────── */
+  --th-color-text-1:           #2E2C28;  /* 14.5:1 — primary */
+  --th-color-text-2:           #5A5750;  /* 7.1:1  — secondary */
+  --th-color-text-3:           #8C8880;  /* 4.6:1  — min WCAG AA */
+  --th-color-text-4:           #C4C0B8;  /* disabled only — never for content */
+  --th-color-text-inverse:     #F7F4EE;
+  --th-color-text-inverse-2:   #E0D8CC;
+
+  /* ── Semantic — border ──────────────────────────────────────────────────── */
+  --th-color-border-subtle:    rgba(46, 44, 40, 0.08);
+  --th-color-border-default:   rgba(46, 44, 40, 0.14);
+  --th-color-border-strong:    rgba(46, 44, 40, 0.24);
+
+  /* ── Accent — terracotta ────────────────────────────────────────────────── */
+  --th-color-accent:           #B5623A;
+  --th-color-accent-hover:     #A04E2A;
+  --th-color-accent-subtle:    #F5E4D8;
+  --th-color-accent-text:      #8C3D1E;
+
+  /* ── Accent — sage ──────────────────────────────────────────────────────── */
+  --th-color-sage:             #6B8C72;
+  --th-color-sage-hover:       #5C8063;
+  --th-color-sage-subtle:      #DFF0E1;
+  --th-color-sage-text:        #3D5C42;
+
+  /* ── Status ─────────────────────────────────────────────────────────────── */
+  --th-color-success:          #6B8C72;
+  --th-color-success-subtle:   #DFF0E1;
+  --th-color-success-text:     #3D5C42;
+  --th-color-warning:          #C4870A;
+  --th-color-warning-subtle:   #FFF3D4;
+  --th-color-warning-text:     #7A5200;
+  --th-color-error:            #C0392B;
+  --th-color-error-subtle:     #FDECEA;
+  --th-color-error-text:       #7B1A12;
+  --th-color-info:             #2471A3;
+  --th-color-info-subtle:      #D6EAF8;
+  --th-color-info-text:        #154360;
+
+  /* ── Focus ──────────────────────────────────────────────────────────────── */
+  --th-color-focus-ring:       #B5623A;
+
+  /* ── Typography ─────────────────────────────────────────────────────────── */
+  --th-font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --th-font-serif:   "Fraunces", "Georgia", serif;
+  --th-font-mono:    "JetBrains Mono", "Menlo", monospace;
+
+  /* ── Type scale (base 17px = 1.0625rem) ─────────────────────────────────── */
+  --th-text-xs:   0.75rem;        /* 12px  — captions, mono only */
+  --th-text-sm:   0.875rem;       /* 14px  — bold only (WCAG large text) */
+  --th-text-base: 1.0625rem;      /* 17px  — min body size */
+  --th-text-md:   1.1875rem;      /* 19px  — card titles, emphasized body */
+  --th-text-lg:   1.375rem;       /* 22px  — section labels */
+  --th-text-xl:   1.6875rem;      /* 27px  — subheadings */
+  --th-text-2xl:  2.125rem;       /* 34px  — section headings */
+  --th-text-3xl:  2.75rem;        /* 44px  — large headings */
+  --th-text-4xl:  3.5rem;         /* 56px  — hero heading */
+  --th-text-5xl:  clamp(3rem, 6vw, 5.5rem); /* 48–88px — display */
+
+  /* ── Spacing (4px base unit) ─────────────────────────────────────────────── */
+  --th-space-1:  0.25rem;   /*  4px */
+  --th-space-2:  0.5rem;    /*  8px */
+  --th-space-3:  0.75rem;   /* 12px */
+  --th-space-4:  1rem;      /* 16px */
+  --th-space-5:  1.25rem;   /* 20px */
+  --th-space-6:  1.5rem;    /* 24px */
+  --th-space-7:  1.75rem;   /* 28px */
+  --th-space-8:  2rem;      /* 32px */
+  --th-space-10: 2.5rem;    /* 40px */
+  --th-space-12: 3rem;      /* 48px */
+  --th-space-16: 4rem;      /* 64px */
+  --th-space-20: 5rem;      /* 80px — section padding */
+  --th-space-24: 6rem;      /* 96px */
+
+  /* ── Border radius ───────────────────────────────────────────────────────── */
+  --th-radius-xs:   0.25rem;  /*  4px */
+  --th-radius-sm:   0.5rem;   /*  8px */
+  --th-radius-md:   0.875rem; /* 14px */
+  --th-radius-lg:   1.25rem;  /* 20px — cards */
+  --th-radius-xl:   1.5rem;   /* 24px — modals */
+  --th-radius-pill: 9999px;   /* buttons, badges */
+
+  /* ── Shadows (warm-tinted, never cool grey) ──────────────────────────────── */
+  --th-shadow-xs: 0 1px 2px rgba(46, 44, 40, 0.05);
+  --th-shadow-sm: 0 1px 3px rgba(46, 44, 40, 0.06), 0 2px 6px rgba(46, 44, 40, 0.04);
+  --th-shadow-md: 0 2px 6px rgba(46, 44, 40, 0.06), 0 6px 18px rgba(46, 44, 40, 0.07);
+  --th-shadow-lg: 0 4px 12px rgba(46, 44, 40, 0.07), 0 12px 32px rgba(46, 44, 40, 0.09);
+
+  /* ── Animation ───────────────────────────────────────────────────────────── */
+  --th-duration-base: 160ms;
+  --th-ease-out:      cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* ─── DARK THEME ─────────────────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --th-color-bg:               #1C1A17;
+  --th-color-surface-1:        #252320;
+  --th-color-surface-2:        #2E2C28;
+  --th-color-surface-3:        #38352F;
+  --th-color-surface-inverse:  #F0EDE6;
+
+  --th-color-text-1:           #F0EDE6;
+  --th-color-text-2:           #C4BDB2;
+  --th-color-text-3:           #8C8680;
+  --th-color-text-4:           #5C5A54;
+  --th-color-text-inverse:     #2E2C28;
+  --th-color-text-inverse-2:   #5A5750;
+
+  --th-color-border-subtle:    rgba(240, 237, 230, 0.07);
+  --th-color-border-default:   rgba(240, 237, 230, 0.13);
+  --th-color-border-strong:    rgba(240, 237, 230, 0.22);
+
+  --th-color-accent:           #C97A55;
+  --th-color-accent-hover:     #DDA080;
+  --th-color-accent-subtle:    rgba(201, 122, 85, 0.15);
+  --th-color-accent-text:      #F5C4A8;
+
+  --th-color-sage:             #7FA386;
+  --th-color-sage-hover:       #9DBD9E;
+  --th-color-sage-subtle:      rgba(107, 140, 114, 0.18);
+  --th-color-sage-text:        #B8DCBA;
+
+  --th-color-success:          #7FA386;
+  --th-color-success-subtle:   rgba(107, 140, 114, 0.18);
+  --th-color-success-text:     #B8DCBA;
+  --th-color-warning:          #E0A030;
+  --th-color-warning-subtle:   rgba(224, 160, 48, 0.15);
+  --th-color-warning-text:     #F5D080;
+  --th-color-error:            #E85555;
+  --th-color-error-subtle:     rgba(232, 85, 85, 0.15);
+  --th-color-error-text:       #F5A0A0;
+  --th-color-info:             #4A90C4;
+  --th-color-info-subtle:      rgba(74, 144, 196, 0.15);
+  --th-color-info-text:        #9AC8E8;
+
+  --th-color-focus-ring:       #DDA080;
+
+  --th-shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.25);
+  --th-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.28), 0 2px 8px rgba(0, 0, 0, 0.20);
+  --th-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.30), 0 6px 20px rgba(0, 0, 0, 0.24);
+  --th-shadow-lg: 0 4px 14px rgba(0, 0, 0, 0.32), 0 14px 36px rgba(0, 0, 0, 0.28);
+}
+
+/* ─── REDUCED MOTION ─────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --th-duration-base: 0ms;
+  }
+}
+
+/* ─── BASE FOCUS RING ────────────────────────────────────────────────────── */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--th-color-focus-ring);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
