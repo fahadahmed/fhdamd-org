@@ -25,6 +25,7 @@
     "build:watch": "tsup --watch",
     "test": "vitest run --project unit",
     "test:watch": "vitest --project unit",
+    "test:coverage": "vitest run --project unit --coverage",
     "test:all": "vitest run",
     "lint": "eslint . --max-warnings 0",
     "generate:component": "turbo gen react-component",

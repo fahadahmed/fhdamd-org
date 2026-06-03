@@ -11,6 +11,28 @@ const dirname =
 
 export default defineConfig({
   test: {
+    // Coverage — root level so it applies to the unit project when --coverage is passed
+    coverage: {
+      provider: "v8",
+      reportsDirectory: "./coverage",
+      // text: terminal summary, lcov: SonarCloud, json-summary: badges / CI gates
+      reporter: ["text", "lcov", "json-summary"],
+      include: ["src/components/**/*.{ts,tsx}"],
+      exclude: [
+        "src/**/*.test.{ts,tsx}",
+        "src/**/*.stories.{ts,tsx}",
+        "src/docs/**",
+        "src/test-setup.ts",
+        "src/css-modules.d.ts",
+      ],
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 80,
+        statements: 80,
+      },
+    },
+
     projects: [
       // Unit tests — fast, jsdom-like environment via happy-dom
       {
@@ -21,15 +43,6 @@ export default defineConfig({
           include: ["src/**/*.test.tsx", "src/**/*.test.ts"],
           setupFiles: ["src/test-setup.ts"],
           css: true,
-          coverage: {
-            provider: "v8",
-            thresholds: {
-              lines: 80,
-              functions: 80,
-              branches: 80,
-              statements: 80,
-            },
-          },
         },
       },
       // Storybook tests — run stories in real Chromium via Playwright
