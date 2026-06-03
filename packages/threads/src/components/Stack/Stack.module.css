@@ -1,0 +1,9 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.alignStart   { align-items: flex-start; }
+.alignCenter  { align-items: center; }
+.alignEnd     { align-items: flex-end; }
+.alignStretch { align-items: stretch; }

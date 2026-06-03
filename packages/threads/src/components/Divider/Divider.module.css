@@ -1,0 +1,13 @@
+.divider {
+  border: none;
+  border-block-end: 1px solid var(--th-color-border-default);
+  margin-block: var(--th-space-4);
+}
+
+.colorSubtle  { border-block-end-color: var(--th-color-border-subtle); }
+.colorDefault { border-block-end-color: var(--th-color-border-default); }
+.colorStrong  { border-block-end-color: var(--th-color-border-strong); }
+.colorAccent  {
+  border-block-end-color: var(--th-color-accent);
+  border-block-end-width: 2px;
+}

@@ -1,0 +1,7 @@
+.section {
+  display: block;
+}
+
+.sm { padding-block: var(--th-space-6); }
+.md { padding-block: var(--th-space-10); }
+.lg { padding-block: var(--th-space-20); }

@@ -1,0 +1,7 @@
+.grid {
+  display: grid;
+}
+
+.gridItem {
+  min-width: 0; /* prevent grid blowout */
+}
