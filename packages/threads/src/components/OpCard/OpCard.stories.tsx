@@ -68,6 +68,7 @@ const meta = {
     description: "Combine multiple PDF documents into a single file — in the right order, every time.",
     credits: 2,
     href: "#",
+    icon: <MergeIcon />,
     iconVariant: "terra",
     status: "live",
     ctaLabel: "Merge",

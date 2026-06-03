@@ -28,6 +28,7 @@ const meta = {
     variant: "default",
     accentBar: "none",
     accentColor: "terra",
+    children: "Card content",
   },
 } satisfies Meta<typeof Card>;
 

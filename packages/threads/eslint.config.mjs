@@ -3,9 +3,10 @@ import * as reactPlugin from "eslint-plugin-react";
 import * as reactHooksPlugin from "eslint-plugin-react-hooks";
 
 export default tseslint.config(
-  // 🔹 TypeScript + React for source files
+  // Source files — full type-checked linting
   {
     files: ["src/**/*.{ts,tsx}"],
+    ignores: ["src/**/*.test.{ts,tsx}", "src/**/*.stories.{ts,tsx}"],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
@@ -24,13 +25,27 @@ export default tseslint.config(
     },
   },
 
-  // 🔹 Simple TS parser (no project) for config, tests, Storybook, etc.
+  // Test and story files — parser only, no type-checking project
+  {
+    files: [
+      "src/**/*.test.{ts,tsx}",
+      "src/**/*.stories.{ts,tsx}",
+    ],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        sourceType: "module",
+      },
+    },
+  },
+
+  // Config and tooling files
   {
     files: [
       "vitest.config.ts",
-      "vitest.setup.ts",
-      "vitest.shims.d.ts",
+      "tsup.config.ts",
       ".storybook/**/*.ts",
+      ".storybook/**/*.tsx",
     ],
     languageOptions: {
       parser: tseslint.parser,

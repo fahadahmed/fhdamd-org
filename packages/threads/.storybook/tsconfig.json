@@ -1,7 +1,11 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "rootDir": "..",
   },
-  "include": [".", "../src"]
+  "include": [
+    ".",
+    "../src"
+  ]
 }
