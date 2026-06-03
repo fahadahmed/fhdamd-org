@@ -1,0 +1,50 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--th-space-2);
+  padding: 6px 14px 6px 7px;
+  background: var(--th-color-surface-1);
+  border: 1px solid var(--th-color-border-default);
+  border-radius: var(--th-radius-pill);
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--th-color-text-3);
+}
+
+.pip {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--th-radius-pill);
+  background: var(--th-color-sage-subtle);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--th-radius-pill);
+  display: block;
+}
+
+.dotAvailable {
+  background: var(--th-color-sage);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+.dotBusy {
+  background: var(--th-color-text-4);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.85); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dotAvailable { animation: none; }
+}

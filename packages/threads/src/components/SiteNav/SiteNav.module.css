@@ -1,0 +1,227 @@
+/* ─── SHELL ──────────────────────────────────────────────────────────────── */
+.nav {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 200;
+  background: color-mix(in srgb, var(--th-color-bg) 90%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-block-end: 1px solid var(--th-color-border-default);
+}
+
+/* ─── INNER ──────────────────────────────────────────────────────────────── */
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 58px;
+  gap: var(--th-space-8);
+}
+
+/* ─── BRAND ──────────────────────────────────────────────────────────────── */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--th-space-3);
+  text-decoration: none;
+  flex-shrink: 0;
+  min-inline-size: 0;
+}
+
+.brand:focus-visible {
+  outline: 2px solid var(--th-color-focus-ring);
+  outline-offset: 3px;
+  border-radius: var(--th-radius-xs);
+}
+
+.wordmark {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: var(--th-text-lg);
+  color: var(--th-color-text-1);
+  letter-spacing: -0.015em;
+}
+
+.wordmarkDot {
+  font-style: normal;
+  color: var(--th-color-accent);
+}
+
+.logoMark {
+  height: 28px;
+  width: auto;
+  color: var(--th-color-text-1);
+  display: block;
+}
+
+.brandName {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--th-color-text-3);
+}
+
+/* ─── DESKTOP NAV LINKS ──────────────────────────────────────────────────── */
+.desktopNav {
+  flex: 1;
+  min-inline-size: 0; /* allows it to shrink without overflowing */
+  display: flex;
+  justify-content: center;
+}
+
+.linkList {
+  display: flex;
+  list-style: none;
+  gap: var(--th-space-1);
+  margin: 0;
+  padding: 0;
+}
+
+.link {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--th-color-text-3);
+  padding: var(--th-space-2) var(--th-space-3);
+  border-radius: var(--th-radius-pill);
+  text-decoration: none;
+  transition:
+    background var(--th-duration-base) var(--th-ease-out),
+    color var(--th-duration-base) var(--th-ease-out);
+}
+
+.link:hover {
+  background: var(--th-color-surface-2);
+  color: var(--th-color-text-1);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--th-color-focus-ring);
+  outline-offset: 2px;
+}
+
+.linkActive {
+  color: var(--th-color-text-1);
+  background: var(--th-color-surface-2);
+}
+
+/* ─── ACTIONS (CTA + BURGER) ─────────────────────────────────────────────── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--th-space-2);
+  flex-shrink: 0;
+}
+
+.ctaGroup {
+  display: none; /* shown via media query below */
+  align-items: center;
+  gap: var(--th-space-2);
+}
+
+/* ─── BURGER ─────────────────────────────────────────────────────────────── */
+.burger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--th-radius-sm);
+  border: 1px solid var(--th-color-border-strong);
+  background: transparent;
+  color: var(--th-color-text-2);
+  cursor: pointer;
+  transition:
+    background var(--th-duration-base) var(--th-ease-out),
+    color var(--th-duration-base) var(--th-ease-out);
+}
+
+.burger:hover {
+  background: var(--th-color-surface-2);
+  color: var(--th-color-text-1);
+}
+
+.burger:focus-visible {
+  outline: 2px solid var(--th-color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* ─── MOBILE NAV ─────────────────────────────────────────────────────────── */
+.mobileNav {
+  display: none;
+  border-block-end: 1px solid var(--th-color-border-default);
+  background: var(--th-color-bg);
+}
+
+.mobileNavOpen {
+  display: block;
+}
+
+.mobileLinkList {
+  list-style: none;
+  margin: 0;
+  padding: var(--th-space-4) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--th-space-1);
+}
+
+.mobileLink {
+  display: block;
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--th-color-text-2);
+  padding: var(--th-space-3) var(--th-space-2);
+  border-radius: var(--th-radius-sm);
+  text-decoration: none;
+  transition: background var(--th-duration-base) var(--th-ease-out);
+}
+
+.mobileLink:hover {
+  background: var(--th-color-surface-2);
+  color: var(--th-color-text-1);
+}
+
+.mobileLinkActive {
+  color: var(--th-color-text-1);
+  background: var(--th-color-surface-2);
+}
+
+.mobileCtaRow {
+  display: flex;
+  gap: var(--th-space-3);
+  margin-block-start: var(--th-space-4);
+  padding-block-start: var(--th-space-4);
+  border-block-start: 1px solid var(--th-color-border-default);
+}
+
+.mobileCtaBtn {
+  flex: 1;
+  justify-content: center;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (min-width: 769px) {
+  .burger {
+    display: none;
+  }
+
+  .ctaGroup {
+    display: flex;
+  }
+
+  .mobileNav {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktopNav {
+    display: none;
+  }
+}

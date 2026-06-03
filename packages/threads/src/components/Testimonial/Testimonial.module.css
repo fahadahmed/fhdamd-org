@@ -1,0 +1,27 @@
+.card {
+  background: var(--th-color-surface-1);
+  border: 1px solid var(--th-color-border-default);
+  border-radius: var(--th-radius-lg);
+  padding: var(--th-space-6);
+}
+
+.quote {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: var(--th-text-md);
+  line-height: 1.55;
+  color: var(--th-color-text-2);
+  margin-block-end: var(--th-space-4);
+}
+
+.quote::before { content: "\201C"; }
+.quote::after  { content: "\201D"; }
+
+.attribution {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--th-color-text-4);
+}

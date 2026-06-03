@@ -38,3 +38,43 @@ export { Divider } from "./components/Divider/Divider";
 export type { DividerProps, DividerColor } from "./components/Divider/Divider";
 
 export type { SpaceScale } from "./components/layout.types";
+
+// Atoms
+export { Badge } from "./components/Badge/Badge";
+export type { BadgeProps, BadgeVariant } from "./components/Badge/Badge";
+
+export { Tag } from "./components/Badge/Tag";
+export type { TagProps } from "./components/Badge/Tag";
+
+// Site chrome
+export { SiteNav } from "./components/SiteNav/SiteNav";
+export type { SiteNavProps, SiteVariant, NavLink, NavCta } from "./components/SiteNav/SiteNav";
+
+export { SiteFooter } from "./components/SiteFooter/SiteFooter";
+export type { SiteFooterProps, FooterLink, FooterColumn } from "./components/SiteFooter/SiteFooter";
+
+// PDF-Craft components
+export { PriceCard } from "./components/PriceCard/PriceCard";
+export type { PriceCardProps, PriceCardOperation } from "./components/PriceCard/PriceCard";
+
+export { Testimonial } from "./components/Testimonial/Testimonial";
+export type { TestimonialProps } from "./components/Testimonial/Testimonial";
+
+export { Accordion } from "./components/Accordion/Accordion";
+export type { AccordionProps, AccordionItem } from "./components/Accordion/Accordion";
+
+export { StepCard } from "./components/StepCard/StepCard";
+export type { StepCardProps } from "./components/StepCard/StepCard";
+
+// fhdamd.dev components
+export { ProjectCard } from "./components/ProjectCard/ProjectCard";
+export type { ProjectCardProps, ProjectCardAccent, PricingPill } from "./components/ProjectCard/ProjectCard";
+
+export { ClientWorkRow } from "./components/ClientWorkRow/ClientWorkRow";
+export type { ClientWorkRowProps } from "./components/ClientWorkRow/ClientWorkRow";
+
+export { EssayRow } from "./components/EssayRow/EssayRow";
+export type { EssayRowProps, EssayCategory } from "./components/EssayRow/EssayRow";
+
+export { AvailabilityPill } from "./components/AvailabilityPill/AvailabilityPill";
+export type { AvailabilityPillProps } from "./components/AvailabilityPill/AvailabilityPill";

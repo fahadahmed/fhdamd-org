@@ -4,7 +4,7 @@ import { toSpaceVar } from "../layout.types";
 import styles from "./Grid.module.css";
 
 export type GridCols = 1 | 2 | 3 | 4 | 6 | 12;
-export type GridSpan = 1 | 2 | 3 | 4 | 6 | 12;
+export type GridSpan = 1 | 2 | 3 | 4 | 6 | 8 | 12;
 export type GridElement = "div" | "ul" | "ol" | "section";
 
 export interface GridProps extends HTMLAttributes<HTMLElement> {

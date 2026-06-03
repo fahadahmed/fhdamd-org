@@ -1,0 +1,62 @@
+/* ─── BASE ──────────────────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: var(--th-radius-pill);
+  padding-inline: var(--th-space-3);
+  padding-block: var(--th-space-1);
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+/* ─── DOT ────────────────────────────────────────────────────────────────── */
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* ─── VARIANTS ───────────────────────────────────────────────────────────── */
+.terra {
+  background: var(--th-color-accent-subtle);
+  color: var(--th-color-accent-text);
+}
+
+.sage {
+  background: var(--th-color-sage-subtle);
+  color: var(--th-color-sage-text);
+}
+
+.warning {
+  background: var(--th-color-warning-subtle);
+  color: var(--th-color-warning-text);
+}
+
+.error {
+  background: var(--th-color-error-subtle);
+  color: var(--th-color-error-text);
+}
+
+.info {
+  background: var(--th-color-info-subtle);
+  color: var(--th-color-info-text);
+}
+
+.neutral {
+  background: var(--th-color-surface-3);
+  color: var(--th-color-text-2);
+  border: 1px solid var(--th-color-border-strong);
+}
+
+.inverse {
+  background: var(--th-color-surface-inverse);
+  color: var(--th-color-text-inverse);
+}
