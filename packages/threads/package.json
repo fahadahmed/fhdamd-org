@@ -7,9 +7,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     },
     "./tokens": "./src/tokens/tokens.css"
   },
@@ -23,6 +23,9 @@
   "scripts": {
     "build": "tsup",
     "build:watch": "tsup --watch",
+    "test": "vitest run --project unit",
+    "test:watch": "vitest --project unit",
+    "test:all": "vitest run",
     "lint": "eslint . --max-warnings 0",
     "generate:component": "turbo gen react-component",
     "check-types": "tsc --noEmit",
@@ -32,6 +35,10 @@
   },
   "devDependencies": {
     "tsup": "^8.5.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/user-event": "^14.6.1",
+    "happy-dom": "^17.4.4",
     "@chromatic-com/storybook": "^5.2.1",
     "@storybook/addon-a11y": "^10.4.1",
     "@storybook/addon-docs": "^10.4.1",
