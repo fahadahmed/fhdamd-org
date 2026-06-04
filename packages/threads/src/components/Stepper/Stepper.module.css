@@ -1,0 +1,77 @@
+.stepper {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  padding-block: var(--th-space-2);
+}
+
+/* Connector line behind nodes */
+.track {
+  position: absolute;
+  inset-block-start: calc(22px + var(--th-space-2)); /* center of circle */
+  inset-inline: 10%;
+  block-size: 1px;
+  background: var(--th-color-border-default);
+  z-index: 0;
+}
+
+/* Individual step node */
+.node {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--th-space-2);
+  position: relative;
+  z-index: 1;
+}
+
+.circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--th-color-border-strong);
+  background: var(--th-color-surface-1);
+  color: var(--th-color-text-3);
+  transition:
+    background var(--th-duration-base) var(--th-ease-out),
+    border-color var(--th-duration-base) var(--th-ease-out),
+    color var(--th-duration-base) var(--th-ease-out);
+}
+
+.number {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-size: var(--th-text-md);
+  line-height: 1;
+}
+
+.label {
+  font-family: var(--th-font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--th-color-text-4);
+  text-align: center;
+}
+
+/* Done */
+.done .circle {
+  background: var(--th-color-surface-3);
+  border-color: var(--th-color-border-strong);
+  color: var(--th-color-text-2);
+}
+
+/* Active */
+.active .circle {
+  background: var(--th-color-text-1);
+  border-color: var(--th-color-text-1);
+  color: var(--th-color-text-inverse);
+}
+
+.active .label {
+  color: var(--th-color-text-2);
+}

@@ -1,0 +1,86 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+/* Tooltip bubble */
+.tip {
+  position: absolute;
+  z-index: 7000;
+  background: var(--th-color-surface-inverse);
+  color: var(--th-color-text-inverse);
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 400;
+  font-size: var(--th-text-sm);
+  line-height: 1.4;
+  padding: var(--th-space-2) var(--th-space-3);
+  border-radius: var(--th-radius-sm);
+  white-space: nowrap;
+  pointer-events: none;
+
+  /* Hidden by default */
+  opacity: 0;
+  transition: opacity var(--th-duration-base) var(--th-ease-out);
+}
+
+/* Arrow shared */
+.tip::after {
+  content: "";
+  position: absolute;
+  border: 5px solid transparent;
+}
+
+/* Show on hover or focus-within */
+.wrapper:hover .tip,
+.wrapper:focus-within .tip {
+  opacity: 1;
+}
+
+/* ─── POSITIONS ───────────────────────────────────────────────────────────── */
+.top {
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+.top::after {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-block-start-color: var(--th-color-surface-inverse);
+}
+
+.bottom {
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+.bottom::after {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-block-end-color: var(--th-color-surface-inverse);
+}
+
+.left {
+  right: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+.left::after {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-inline-start-color: var(--th-color-surface-inverse);
+}
+
+.right {
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+.right::after {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-inline-end-color: var(--th-color-surface-inverse);
+}

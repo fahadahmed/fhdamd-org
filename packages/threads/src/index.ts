@@ -107,3 +107,31 @@ export type { RadioProps } from "./components/Radio/Radio";
 
 export { FileDropzone } from "./components/FileDropzone/FileDropzone";
 export type { FileDropzoneProps } from "./components/FileDropzone/FileDropzone";
+
+// Navigation & Disclosure
+export { Tabs } from "./components/Tabs/Tabs";
+export type { TabsProps, TabItem } from "./components/Tabs/Tabs";
+
+export { Breadcrumb } from "./components/Breadcrumb/Breadcrumb";
+export type { BreadcrumbProps, BreadcrumbItem } from "./components/Breadcrumb/Breadcrumb";
+
+export { Stepper } from "./components/Stepper/Stepper";
+export type { StepperProps, StepperStep, StepStatus } from "./components/Stepper/Stepper";
+
+// Overlays
+export { Dialog } from "./components/Dialog/Dialog";
+export type { DialogProps } from "./components/Dialog/Dialog";
+
+export { Tooltip } from "./components/Tooltip/Tooltip";
+export type { TooltipProps, TooltipPosition } from "./components/Tooltip/Tooltip";
+
+// Controls
+export { Toggle } from "./components/Toggle/Toggle";
+export type { ToggleProps, ToggleVariant } from "./components/Toggle/Toggle";
+
+export { Progress } from "./components/Progress/Progress";
+export type { ProgressProps, ProgressVariant } from "./components/Progress/Progress";
+
+// Data
+export { DataTable } from "./components/DataTable/DataTable";
+export type { DataTableProps, DataTableColumn, SortDir } from "./components/DataTable/DataTable";
