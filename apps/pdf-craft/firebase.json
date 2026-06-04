@@ -22,7 +22,7 @@
   ],
   "apphosting": {
     "backendId": "pdf-craft-web",
-    "rootDir": "/",
+    "rootDir": "apps/pdf-craft",
     "ignore": [
       "node_modules",
       ".git",
