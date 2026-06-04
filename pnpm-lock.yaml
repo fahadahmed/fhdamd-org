@@ -90,9 +90,6 @@ importers:
       '@dnd-kit/utilities':
         specifier: ^3.2.2
         version: 3.2.2(react@19.2.6)
-      '@fhdamd/threads':
-        specifier: workspace:*
-        version: link:../../packages/threads
       '@google-cloud/pubsub':
         specifier: ^5.3.0
         version: 5.3.0
@@ -117,9 +114,6 @@ importers:
       react-dom:
         specifier: ^19.2.6
         version: 19.2.6(react@19.2.6)
-      react-dropzone-esm:
-        specifier: ^15.2.0
-        version: 15.2.0(react@19.2.6)
       uuid:
         specifier: ^14.0.0
         version: 14.0.0
@@ -6111,12 +6105,6 @@ packages:
     resolution: {integrity: sha512-0prMI+hvBbPjsWnxDLxlCGyM8PN6UuWjEUCYmZhO67xIV9Xasa/r/vDnq+Xyq4Lo27g8QSbO5YzARu0D1Sps3g==}
     peerDependencies:
       react: ^19.2.6
-
-  react-dropzone-esm@15.2.0:
-    resolution: {integrity: sha512-pPwR8xWVL+tFLnbAb8KVH5f6Vtl397tck8dINkZ1cPMxHWH+l9dFmIgRWgbh7V7jbjIcuKXCsVrXbhQz68+dVA==}
-    engines: {node: '>= 10.13'}
-    peerDependencies:
-      react: '>= 16.8 || 18.0.0'
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -14360,11 +14348,6 @@ snapshots:
     dependencies:
       react: 19.2.6
       scheduler: 0.27.0
-
-  react-dropzone-esm@15.2.0(react@19.2.6):
-    dependencies:
-      prop-types: 15.8.1
-      react: 19.2.6
 
   react-is@16.13.1: {}
 
