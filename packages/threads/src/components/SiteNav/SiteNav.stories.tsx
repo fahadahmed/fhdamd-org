@@ -14,7 +14,7 @@ const fhdamdLinks = [
 ];
 
 const meta = {
-  title: "Threads/SiteNav",
+  title: "Threads/Site/SiteNav",
   component: SiteNav,
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],

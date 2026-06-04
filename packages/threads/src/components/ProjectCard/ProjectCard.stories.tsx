@@ -17,7 +17,7 @@ const ThreadsIcon = () => (
 );
 
 const meta = {
-  title: "Threads/ProjectCard",
+  title: "Threads/Components/ProjectCard",
   component: ProjectCard,
   parameters: { layout: "padded" },
   tags: ["autodocs"],

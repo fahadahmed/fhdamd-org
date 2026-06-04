@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ClientWorkRow } from "./ClientWorkRow";
 
 const meta = {
-  title: "Threads/ClientWorkRow",
+  title: "Threads/Components/ClientWorkRow",
   component: ClientWorkRow,
   parameters: { layout: "padded" },
   tags: ["autodocs"],

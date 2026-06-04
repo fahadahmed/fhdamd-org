@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { StepCard } from "./StepCard";
 
 const meta = {
-  title: "Threads/StepCard",
+  title: "Threads/Components/StepCard",
   component: StepCard,
   parameters: { layout: "centered" },
   tags: ["autodocs"],

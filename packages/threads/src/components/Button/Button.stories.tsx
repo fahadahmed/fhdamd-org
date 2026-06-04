@@ -16,7 +16,7 @@ const Mail = () => (
 );
 
 const meta = {
-  title: "Threads/Button",
+  title: "Threads/Atoms/Button",
   component: Button,
   parameters: { layout: "centered" },
   tags: ["autodocs"],

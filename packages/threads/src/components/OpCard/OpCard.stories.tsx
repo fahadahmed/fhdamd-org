@@ -49,7 +49,7 @@ const AiIcon = () => (
 
 /* ── Meta ────────────────────────────────────────────────────────────────── */
 const meta = {
-  title: "Threads/OpCard",
+  title: "Threads/Components/OpCard",
   component: OpCard,
   parameters: { layout: "padded" },
   tags: ["autodocs"],

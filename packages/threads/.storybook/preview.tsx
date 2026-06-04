@@ -68,6 +68,23 @@ const preview: Preview = {
       test: "todo",
     },
     backgrounds: { disable: true },
+    options: {
+      storySort: {
+        order: [
+          "Threads",
+          [
+            "Introduction",
+            "Primitives",   ["Colours", "Typography", "Spacing"],
+            "Atoms",        ["Button", "Badge", "AvailabilityPill"],
+            "Layout",       ["Container", "Stack", "Cluster", "Grid", "Section", "Divider"],
+            "Components",   ["Card", "OpCard", "Accordion", "PriceCard", "Testimonial", "StepCard", "ProjectCard", "ClientWorkRow", "EssayRow"],
+            "Feedback",     ["Callout", "Banner", "Toast"],
+            "Forms",        ["Input", "Textarea", "Select", "Checkbox", "Radio", "FileDropzone"],
+            "Site",         ["SiteNav", "SiteFooter"],
+          ],
+        ],
+      },
+    },
   },
 };
 

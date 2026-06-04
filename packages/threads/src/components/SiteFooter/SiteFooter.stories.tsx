@@ -36,7 +36,7 @@ const pdfCraftColumns = [
 ];
 
 const meta = {
-  title: "Threads/SiteFooter",
+  title: "Threads/Site/SiteFooter",
   component: SiteFooter,
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],

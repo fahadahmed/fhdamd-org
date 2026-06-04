@@ -35,7 +35,7 @@ const pdfCraftFaq = [
 ];
 
 const meta = {
-  title: "Threads/Accordion",
+  title: "Threads/Components/Accordion",
   component: Accordion,
   parameters: { layout: "padded" },
   tags: ["autodocs"],

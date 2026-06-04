@@ -20,7 +20,7 @@ const proOps = [
 ];
 
 const meta = {
-  title: "Threads/PriceCard",
+  title: "Threads/Components/PriceCard",
   component: PriceCard,
   parameters: { layout: "centered" },
   tags: ["autodocs"],
