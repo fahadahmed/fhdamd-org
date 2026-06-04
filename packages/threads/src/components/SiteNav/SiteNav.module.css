@@ -7,6 +7,9 @@
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-block-end: 1px solid var(--th-color-border-default);
+  /* Prevent any child from blowing past the viewport width */
+  max-inline-size: 100vw;
+  overflow: hidden;
 }
 
 /* ─── INNER ──────────────────────────────────────────────────────────────── */
@@ -15,7 +18,7 @@
   align-items: center;
   justify-content: space-between;
   height: 58px;
-  gap: var(--th-space-8);
+  gap: var(--th-space-4);
 }
 
 /* ─── BRAND ──────────────────────────────────────────────────────────────── */
@@ -24,8 +27,10 @@
   align-items: center;
   gap: var(--th-space-3);
   text-decoration: none;
-  flex-shrink: 0;
+  /* Shrinks if CTAs are very numerous, but stays readable */
+  flex-shrink: 1;
   min-inline-size: 0;
+  overflow: hidden;
 }
 
 .brand:focus-visible {
@@ -41,6 +46,9 @@
   font-size: var(--th-text-lg);
   color: var(--th-color-text-1);
   letter-spacing: -0.015em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .wordmarkDot {
@@ -53,6 +61,7 @@
   width: auto;
   color: var(--th-color-text-1);
   display: block;
+  flex-shrink: 0;
 }
 
 .brandName {
@@ -61,14 +70,16 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--th-color-text-3);
+  white-space: nowrap;
 }
 
 /* ─── DESKTOP NAV LINKS ──────────────────────────────────────────────────── */
 .desktopNav {
   flex: 1;
-  min-inline-size: 0; /* allows it to shrink without overflowing */
+  min-inline-size: 0;
   display: flex;
   justify-content: center;
+  overflow: hidden;
 }
 
 .linkList {
@@ -77,6 +88,8 @@
   gap: var(--th-space-1);
   margin: 0;
   padding: 0;
+  flex-shrink: 1;
+  min-inline-size: 0;
 }
 
 .link {
@@ -88,15 +101,13 @@
   padding: var(--th-space-2) var(--th-space-3);
   border-radius: var(--th-radius-pill);
   text-decoration: none;
+  white-space: nowrap;
   transition:
     background var(--th-duration-base) var(--th-ease-out),
     color var(--th-duration-base) var(--th-ease-out);
 }
 
-.link:hover {
-  background: var(--th-color-surface-2);
-  color: var(--th-color-text-1);
-}
+.link:hover { background: var(--th-color-surface-2); color: var(--th-color-text-1); }
 
 .link:focus-visible {
   outline: 2px solid var(--th-color-focus-ring);
@@ -108,7 +119,7 @@
   background: var(--th-color-surface-2);
 }
 
-/* ─── ACTIONS (CTA + BURGER) ─────────────────────────────────────────────── */
+/* ─── ACTIONS (CTA GROUP + BURGER) ──────────────────────────────────────── */
 .actions {
   display: flex;
   align-items: center;
@@ -117,8 +128,21 @@
 }
 
 .ctaGroup {
-  display: none; /* shown via media query below */
+  display: none; /* shown via @media below */
+  align-items: center;
   gap: var(--th-space-2);
+}
+
+/* Tighten desktop CTAs on narrower desktop viewports */
+@media (max-width: 1100px) {
+  .ctaGroup {
+    gap: var(--th-space-1);
+  }
+  .ctaGroup a,
+  .ctaGroup button {
+    padding-inline: var(--th-space-3) !important;
+    font-size: var(--th-text-xs) !important;
+  }
 }
 
 /* ─── BURGER ─────────────────────────────────────────────────────────────── */
@@ -128,6 +152,7 @@
   justify-content: center;
   width: 36px;
   height: 36px;
+  flex-shrink: 0;
   border-radius: var(--th-radius-sm);
   border: 1px solid var(--th-color-border-strong);
   background: transparent;
@@ -138,17 +163,14 @@
     color var(--th-duration-base) var(--th-ease-out);
 }
 
-.burger:hover {
-  background: var(--th-color-surface-2);
-  color: var(--th-color-text-1);
-}
+.burger:hover { background: var(--th-color-surface-2); color: var(--th-color-text-1); }
 
 .burger:focus-visible {
   outline: 2px solid var(--th-color-focus-ring);
   outline-offset: 2px;
 }
 
-/* ─── MOBILE NAV ─────────────────────────────────────────────────────────── */
+/* ─── MOBILE NAV DRAWER ──────────────────────────────────────────────────── */
 .mobileNav {
   display: none;
   border-block-end: 1px solid var(--th-color-border-default);
@@ -162,66 +184,66 @@
 .mobileLinkList {
   list-style: none;
   margin: 0;
-  padding: var(--th-space-4) 0;
+  padding: var(--th-space-3) 0 var(--th-space-4);
   display: flex;
   flex-direction: column;
-  gap: var(--th-space-1);
 }
 
+/* Shared styles for nav links and CTAs inside the drawer */
 .mobileLink {
   display: block;
+  width: 100%;
+  text-align: start;
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--th-color-text-2);
-  padding: var(--th-space-3) var(--th-space-2);
+  padding: var(--th-space-4) var(--th-space-2);
   border-radius: var(--th-radius-sm);
   text-decoration: none;
-  transition: background var(--th-duration-base) var(--th-ease-out);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition:
+    background var(--th-duration-base) var(--th-ease-out),
+    color var(--th-duration-base) var(--th-ease-out);
 }
 
-.mobileLink:hover {
-  background: var(--th-color-surface-2);
-  color: var(--th-color-text-1);
-}
+.mobileLink:hover { background: var(--th-color-surface-2); color: var(--th-color-text-1); }
 
 .mobileLinkActive {
   color: var(--th-color-text-1);
   background: var(--th-color-surface-2);
 }
 
-.mobileCtaRow {
-  display: flex;
-  gap: var(--th-space-3);
-  margin-block-start: var(--th-space-4);
-  padding-block-start: var(--th-space-4);
-  border-block-start: 1px solid var(--th-color-border-default);
+/* Primary CTA in mobile drawer gets accent colour */
+.mobilePrimary {
+  color: var(--th-color-accent);
 }
 
-.mobileCtaBtn {
-  flex: 1;
-  justify-content: center;
+.mobilePrimary:hover {
+  background: var(--th-color-accent-subtle);
+  color: var(--th-color-accent-text);
+}
+
+/* Thin divider between nav links and CTAs */
+.mobileDivider {
+  block-size: 1px;
+  background: var(--th-color-border-default);
+  margin-block: var(--th-space-2);
 }
 
 /* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media (min-width: 769px) {
-  .burger {
-    display: none;
-  }
-
-  .ctaGroup {
-    display: flex;
-    align-items: center; /* must be here, not on display:none rule */
-  }
-
-  .mobileNav {
-    display: none !important;
-  }
+  .burger  { display: none; }
+  .ctaGroup { display: flex; align-items: center; }
+  .mobileNav { display: none !important; }
 }
 
 @media (max-width: 768px) {
-  .desktopNav {
-    display: none;
-  }
+  .desktopNav { display: none; }
+  .inner { gap: var(--th-space-2); }
+  /* Brand can use all available space between logo and burger */
+  .brand { flex-shrink: 0; }
 }

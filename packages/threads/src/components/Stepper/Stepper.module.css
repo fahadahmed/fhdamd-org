@@ -8,14 +8,13 @@
 /* Connector line behind nodes */
 .track {
   position: absolute;
-  inset-block-start: calc(22px + var(--th-space-2)); /* center of circle */
+  inset-block-start: calc(22px + var(--th-space-2));
   inset-inline: 10%;
   block-size: 1px;
   background: var(--th-color-border-default);
   z-index: 0;
 }
 
-/* Individual step node */
 .node {
   flex: 1;
   display: flex;
@@ -74,4 +73,40 @@
 
 .active .label {
   color: var(--th-color-text-2);
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .circle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .number {
+    font-size: var(--th-text-base);
+  }
+
+  .label {
+    font-size: 0.5rem;
+  }
+
+  .track {
+    inset-block-start: calc(18px + var(--th-space-2));
+  }
+}
+
+@media (max-width: 400px) {
+  /* On very small screens hide labels and shrink circles further */
+  .label {
+    display: none;
+  }
+
+  .circle {
+    width: 30px;
+    height: 30px;
+  }
+
+  .track {
+    inset-block-start: calc(15px + var(--th-space-2));
+  }
 }

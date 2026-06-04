@@ -24,18 +24,17 @@
   flex-shrink: 0;
 }
 
-/* Title — serif heading */
+/* Title — responsive serif heading matching reference HTML */
 .title {
   font-family: var(--th-font-serif);
   font-weight: 300;
-  font-size: var(--th-text-3xl);
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
   letter-spacing: -0.025em;
   line-height: 1.05;
   color: var(--th-color-text-1);
   margin: 0;
 }
 
-/* Allows <em> inside title to render as italic accent */
 .title em {
   font-style: italic;
   color: var(--th-color-accent);
@@ -51,4 +50,10 @@
   max-inline-size: 580px;
   margin: 0;
   margin-block-start: var(--th-space-4);
+}
+
+@media (max-width: 480px) {
+  .intro {
+    font-size: var(--th-text-base);
+  }
 }

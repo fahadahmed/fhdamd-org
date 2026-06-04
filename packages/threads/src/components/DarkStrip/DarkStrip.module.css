@@ -56,3 +56,21 @@
 .centered .actions {
   justify-content: center;
 }
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
+.heading {
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
+}
+
+@media (max-width: 768px) {
+  .strip {
+    padding: var(--th-space-8) var(--th-space-6);
+  }
+}
+
+@media (max-width: 480px) {
+  .strip {
+    padding: var(--th-space-6) var(--th-space-5);
+    border-radius: var(--th-radius-lg);
+  }
+}

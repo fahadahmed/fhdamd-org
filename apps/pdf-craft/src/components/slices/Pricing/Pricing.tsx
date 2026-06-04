@@ -1,17 +1,11 @@
 'use client';
 import { useState, useEffect } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
-import { Button, Heading } from '../../ui';
+import { PriceCard } from '@fhdamd/threads'
 import { auth } from '../../../firebase/client'
 import type { PricingOption } from '../../../utils'
-import { fetchCms } from "../../../utils/lib/cms";
-import { logEvent } from '../../../utils/lib/analytics';
-import './pricing.css'
-
-
-// Fetch the data of the pricing from DatoCMS
-// If the user is signed in, then redirect to the checkout page with the selected pricing option
-// else redirect to the login/signup page with a redirect back to the checkout page after successful login/signup
+import { fetchCms } from '../../../utils/lib/cms'
+import { logEvent } from '../../../utils/lib/analytics'
 
 type PricingResponse = {
   data: {
@@ -19,87 +13,103 @@ type PricingResponse = {
   };
 }
 
+/** Derive the operations breakdown shown on each card from credit count */
+function getOps(credits: number) {
+  return [
+    { label: 'Merge PDFs',      tag: `${credits / 2} merges` },
+    { label: 'Image to PDF',    tag: `${credits / 2} converts` },
+    { label: 'Protect / Unlock', tag: `${Math.floor(credits / 4)} ops` },
+  ]
+}
+
 export default function Pricing() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [pricingOptions, setPricingOptions] = useState<PricingOption[]>([]);
+  const [isLoggedIn, setIsLoggedIn]       = useState(false)
+  const [pricingOptions, setPricingOptions] = useState<PricingOption[]>([])
 
   useEffect(() => {
     async function loadPricingOptions() {
       try {
-        const response = await fetchCms<PricingResponse>("pricing");
-        setPricingOptions(response.data.allPricingOptions);
+        const response = await fetchCms<PricingResponse>('pricing')
+        setPricingOptions(response.data.allPricingOptions)
       } catch (error) {
-        console.error("Error fetching pricing options:", error);
+        console.error('Error fetching pricing options:', error)
       }
     }
 
-    loadPricingOptions();
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        console.log("User is logged in:", user.email)
-        setIsLoggedIn(true)
-      } else {
-        console.log("No user session found.")
-        setIsLoggedIn(false)
-      }
-    })
+    loadPricingOptions()
 
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user)
+    })
     return () => unsubscribe()
   }, [])
 
   const handleBuyCredits = async (option: PricingOption) => {
     logEvent('begin_checkout', { credits: option.credits, value: option.price / 100, currency: 'USD' })
-    const token = await auth.currentUser?.getIdToken();
-    const requestId = crypto.randomUUID();
+    const token     = await auth.currentUser?.getIdToken()
+    const requestId = crypto.randomUUID()
 
-    const paymentResponse = await fetch(`${import.meta.env.PUBLIC_BASE_FUNCTIONS_URL}/processPayment`, { // Convert URL to environment variable later
-      method: 'POST',
-      body: JSON.stringify({
-        credits: option.credits,
-        amount: option.price,
-        quantity: 1,
-        currency: 'usd',
-        productName: option.productName,
-        userId: auth.currentUser?.uid,
-        userEmail: auth.currentUser?.email,
-        requestId: requestId,
-      }),
-      headers: {
-        'Authorization': `Bearer ${token}`,
+    const paymentResponse = await fetch(
+      `${import.meta.env.PUBLIC_BASE_FUNCTIONS_URL}/processPayment`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          credits:     option.credits,
+          amount:      option.price,
+          quantity:    1,
+          currency:    'usd',
+          productName: option.productName,
+          userId:      auth.currentUser?.uid,
+          userEmail:   auth.currentUser?.email,
+          requestId,
+        }),
+        headers: { Authorization: `Bearer ${token}` },
       }
-    });
+    )
 
-    const paymentData = await paymentResponse.json();
-    if (!paymentData.url) {
-      console.error('Payment URL not found in response');
-      return;
-    } else {
-      window.location.href = paymentData.url;
-    }
+    const paymentData = await paymentResponse.json()
+    if (paymentData.url) window.location.href = paymentData.url
   }
 
-  return <div className="pricing">
-    <Heading variant='section'>Simple Pricing</Heading>
-    <p className='pricing-byline'>Buy credits once, use them anytime. No subscriptions, no expiry.</p>
-    <div className="pricing-cards">
-      {pricingOptions.map(option => (
-        <div key={option.id} className="pricing-card">
-          <h3>${(option.price / 100).toFixed(2)}</h3>
-          <p><small>{option.credits} credits<br />{option.description}</small></p>
-          {/* <Button kind="secondary" size="sm" type="button" text="Buy Credits" onClick={handleBuyCredits} /> */}
-          {isLoggedIn ? (
-            <Button kind="secondary" size="lg" type="button" text="Buy Credits" onClick={() => handleBuyCredits(option)} />
-          ) : (
-            <Button kind="secondary" type="linkButton" url="/signup" text="Buy Credits" />
-          )}
-          <ul>
-            <li>upto {option.credits / 2} operations</li>
-            <li>Credits never expire</li>
-            <li>No subscriptions needed</li>
-            <li>Prices in USD</li>
-          </ul>
-        </div>
-      ))}
+  if (pricingOptions.length === 0) return null
+
+  /* Featured tier is the middle one (index 1) */
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+        gap: 'var(--th-space-4)',
+        maxWidth: '880px',
+      }}
+    >
+      {pricingOptions.map((option, i) => {
+        const price  = `$${(option.price / 100).toFixed(2)}`
+        const perCr  = (option.price / 100 / option.credits).toFixed(2)
+        const isFeatured = i === 1
+
+        return (
+          <PriceCard
+            key={option.id}
+            credits={option.credits}
+            price={price}
+            priceNote={`$${perCr} per credit${isFeatured ? ' · save 17%' : i === 2 ? ' · save 33%' : ''}`}
+            featured={isFeatured}
+            operations={getOps(option.credits)}
+            cta={
+              isLoggedIn
+                ? { label: 'Buy credits' }
+                : { href: '/signup', label: isFeatured ? 'Buy credits' : 'Get started' }
+            }
+            onCtaClick={
+              isLoggedIn
+                ? (e) => { e.preventDefault(); handleBuyCredits(option); }
+                : undefined
+            }
+            ctaVariant={isFeatured ? 'solid-terra' : 'ghost'}
+          />
+        )
+      })}
     </div>
-  </div>;
+  )
 }

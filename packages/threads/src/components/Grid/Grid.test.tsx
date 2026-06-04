@@ -12,16 +12,24 @@ describe("Grid", () => {
     expect(container.firstChild?.nodeName).toBe("DIV");
   });
 
-  it("applies cols and gap as inline styles", () => {
+  it("applies cols via data-cols attribute and gap as inline style", () => {
     const { container } = render(<Grid cols={3} gap={6}>Content</Grid>);
     const el = container.firstChild as HTMLElement;
-    expect(el.style.gridTemplateColumns).toBe("repeat(3, 1fr)");
+    expect(el.getAttribute("data-cols")).toBe("3");
     expect(el.style.gap).toBe("var(--th-space-6)");
   });
 
-  it("defaults to 12 columns", () => {
+  it("defaults to 12 columns via data-cols", () => {
     const { container } = render(<Grid>Content</Grid>);
-    expect((container.firstChild as HTMLElement).style.gridTemplateColumns).toBe("repeat(12, 1fr)");
+    expect((container.firstChild as HTMLElement).getAttribute("data-cols")).toBe("12");
+  });
+
+  it("passes colsMd and colsSm as data attributes", () => {
+    const { container } = render(<Grid cols={4} colsMd={2} colsSm={1}>Content</Grid>);
+    const el = container.firstChild as HTMLElement;
+    expect(el.getAttribute("data-cols")).toBe("4");
+    expect(el.getAttribute("data-cols-md")).toBe("2");
+    expect(el.getAttribute("data-cols-sm")).toBe("1");
   });
 
   it("merges custom className", () => {

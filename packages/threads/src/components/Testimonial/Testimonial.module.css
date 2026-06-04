@@ -25,3 +25,9 @@
   text-transform: uppercase;
   color: var(--th-color-text-4);
 }
+
+@media (max-width: 480px) {
+  .card {
+    padding: var(--th-space-5);
+  }
+}

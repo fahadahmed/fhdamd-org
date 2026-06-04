@@ -2,7 +2,7 @@
   padding-block: var(--th-space-12) var(--th-space-8);
 }
 
-/* Eyebrow — matches section-eyebrow pattern from PDF-Craft */
+/* Eyebrow */
 .eyebrow {
   font-family: var(--th-font-mono);
   font-size: 0.6875rem;
@@ -23,7 +23,7 @@
   flex-shrink: 0;
 }
 
-/* H1 — primary heading */
+/* H1 — primary heading. --th-text-5xl is already clamp(3rem, 6vw, 5.5rem) */
 .heading {
   font-family: var(--th-font-serif);
   font-weight: 300;
@@ -88,4 +88,34 @@
   gap: var(--th-space-3);
   flex-wrap: wrap;
   align-items: center;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero {
+    padding-block: var(--th-space-10) var(--th-space-6);
+  }
+
+  .body {
+    font-size: var(--th-text-base);
+    margin-block-end: var(--th-space-6);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding-block: var(--th-space-8) var(--th-space-5);
+  }
+
+  .eyebrow {
+    margin-block-end: var(--th-space-4);
+  }
+
+  .subheading {
+    margin-block-end: var(--th-space-4);
+  }
+
+  .chips {
+    margin-block-end: var(--th-space-5);
+  }
 }

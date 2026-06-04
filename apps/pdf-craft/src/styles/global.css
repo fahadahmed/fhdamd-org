@@ -1,71 +1,98 @@
+/* Local fonts — used by auth pages */
 @font-face {
   font-family: "Josefin Slab";
-  src: url(/fonts/josefin_slab/JosefinSlab-VariableFont_wght.ttf)
-    format("truetype");
+  src: url(/fonts/josefin_slab/JosefinSlab-VariableFont_wght.ttf) format("truetype");
   font-weight: 100 700;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Instrument Sans";
-  src: url(/fonts/instrument_sans/InstrumentSans-VariableFont_wdth\,wght.ttf)
-    format("truetype");
+  src: url(/fonts/instrument_sans/InstrumentSans-VariableFont_wdth,wght.ttf) format("truetype");
   font-weight: 100 400 700;
   font-style: normal;
 }
-html,
-body {
+
+/* ─── BASE ───────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  min-width: 100%;
-  min-height: 100dvh;
-  background-color: #fefef4;
 }
 
-h1,
-h2 {
+html {
+  font-size: 106.25%; /* 17px base */
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+/* Use Threads tokens — responds to data-theme on <html> */
+body {
+  background: var(--th-color-bg);
+  color: var(--th-color-text-1);
+  font-family: var(--th-font-display);
+  font-size: var(--th-text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
-.app {
-  display: grid;
-  grid-template-rows: 100px 1fr 80px;
-  place-items: center;
-  min-height: 100dvh;
-  padding: 0 12em;
+a {
+  color: inherit;
+  text-decoration: none;
 }
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+:focus { outline: none; }
+
+:focus-visible {
+  outline: 2px solid var(--th-color-focus-ring);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ─── AUTH / LEGACY PAGE HELPERS ─────────────────────────────────────────── */
+/* These classes remain for SigninForm / SignupForm / other pages not yet
+   migrated to Threads components.                                            */
 
 .form-container {
   display: grid;
   justify-content: center;
   text-align: center;
-  border: 2px solid #091f80;
+  border: 2px solid var(--th-color-border-strong);
   padding: 4em 6em;
   border-radius: 8px;
   max-width: 500px;
+  background: var(--th-color-surface-1);
 }
 
 .auth-container {
   max-width: 500px;
-  border: 2px solid #091f80;
+  border: 2px solid var(--th-color-border-strong);
   padding: 4em;
   border-radius: 8px;
+  background: var(--th-color-surface-1);
 }
+
 .container-heading {
-  color: #091f80;
+  color: var(--th-color-text-1);
   font-size: 48px;
   font-family: "Josefin Slab", serif;
   font-weight: 700;
 }
 
 .container-subheading {
-  color: #091f80;
+  color: var(--th-color-text-2);
   font-size: 18px;
   font-family: "Instrument Sans", sans-serif;
-}
-
-.alternate {
-  background-color: #fbfbe3;
-  padding: 3em 6em;
 }

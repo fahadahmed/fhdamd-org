@@ -8,6 +8,9 @@
   flex-direction: column;
   text-decoration: none;
   color: inherit;
+  transition:
+    transform var(--th-duration-base) var(--th-ease-out),
+    box-shadow var(--th-duration-base) var(--th-ease-out);
 }
 
 /* ─── LIVE VARIANT ───────────────────────────────────────────────────────── */
@@ -54,26 +57,14 @@
   stroke-linejoin: round;
 }
 
-.iconTerra {
-  background: var(--th-color-accent-subtle);
-}
-.iconTerra svg {
-  stroke: var(--th-color-accent-text);
-}
+.iconTerra { background: var(--th-color-accent-subtle); }
+.iconTerra svg { stroke: var(--th-color-accent-text); }
 
-.iconSage {
-  background: var(--th-color-sage-subtle);
-}
-.iconSage svg {
-  stroke: var(--th-color-sage-text);
-}
+.iconSage { background: var(--th-color-sage-subtle); }
+.iconSage svg { stroke: var(--th-color-sage-text); }
 
-.iconMuted {
-  background: var(--th-color-surface-3);
-}
-.iconMuted svg {
-  stroke: var(--th-color-text-3);
-}
+.iconMuted { background: var(--th-color-surface-3); }
+.iconMuted svg { stroke: var(--th-color-text-3); }
 
 /* ─── CONTENT ────────────────────────────────────────────────────────────── */
 .name {
@@ -102,6 +93,7 @@
   align-items: center;
   gap: var(--th-space-3);
   margin-block-start: auto;
+  flex-wrap: wrap;
 }
 
 .ctaBtn {
@@ -166,4 +158,23 @@
   text-transform: uppercase;
   color: var(--th-color-text-3);
   min-block-size: 36px;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .card {
+    padding: var(--th-space-5);
+  }
+
+  .icon {
+    width: 44px;
+    height: 44px;
+    margin-block-end: var(--th-space-4);
+  }
+
+  .ctaBtn {
+    padding-inline: var(--th-space-4);
+    font-size: var(--th-text-sm);
+    min-block-size: 40px;
+  }
 }

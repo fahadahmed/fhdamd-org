@@ -1,3 +1,4 @@
+import type { MouseEvent } from "react";
 import { Button } from "../Button/Button";
 import type { ButtonVariant } from "../Button/Button";
 import styles from "./PriceCard.module.css";
@@ -14,7 +15,9 @@ export interface PriceCardProps {
   featured?: boolean;
   featuredLabel?: string;
   operations?: PriceCardOperation[];
-  cta: { href: string; label: string };
+  cta: { href?: string; label: string };
+  /** Optional click handler on the CTA button (e.g. for Stripe checkout) */
+  onCtaClick?: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
   ctaVariant?: ButtonVariant;
   className?: string;
 }
@@ -27,6 +30,7 @@ export function PriceCard({
   featuredLabel = "Most popular",
   operations = [],
   cta,
+  onCtaClick,
   ctaVariant,
   className,
 }: PriceCardProps) {
@@ -71,6 +75,7 @@ export function PriceCard({
         href={cta.href}
         variant={ctaVariant ?? defaultCtaVariant}
         className={styles.cta}
+        onClick={onCtaClick}
       >
         {cta.label}
       </Button>

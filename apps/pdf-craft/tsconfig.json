@@ -1,5 +1,13 @@
 {
   "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "paths": {
+      "@fhdamd/threads":        ["../../packages/threads/src/index.ts"],
+      "@fhdamd/threads/tokens": ["../../packages/threads/src/tokens/tokens.css"]
+    }
+  },
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": ["dist"]
 }

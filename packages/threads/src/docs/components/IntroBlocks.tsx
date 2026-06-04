@@ -63,31 +63,66 @@ export function CodeBlock({ children }: { children: string }) {
 }
 
 export function StatusTable() {
+  const done = 'done' as StatusKey
+  const pending = 'pending' as StatusKey
+
   const rows = [
-    { name: 'Button',          used: 'All',               stories: 'done'    as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Card',            used: 'All',               stories: 'done'    as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'OpCard',          used: 'PDF-Craft',         stories: 'done'    as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Badge + Tag',     used: 'All',               stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'SiteNav',         used: 'PDF-Craft, fhdamd', stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'SiteFooter',      used: 'PDF-Craft, fhdamd', stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'PriceCard',       used: 'PDF-Craft',         stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Testimonial',     used: 'PDF-Craft',         stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Toast',           used: 'PDF-Craft',         stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Callout / Banner',used: 'All',               stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Progress bar',    used: 'PDF-Craft, Jamaal', stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Toggle',          used: 'Jamaal',            stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Accordion',       used: 'PDF-Craft',         stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Form elements',   used: 'PDF-Craft, fhdamd', stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Tabs',            used: 'All',               stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Breadcrumb',      used: 'PDF-Craft',         stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Stepper',         used: 'PDF-Craft, Jamaal', stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Dialog',          used: 'All',               stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Tooltip',         used: 'All',               stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Task row',        used: 'Jamaal',            stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Habit row',       used: 'Jamaal',            stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'SparklineCard',   used: 'Jamaal',            stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'HeatmapCell',     used: 'Jamaal',            stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
-    { name: 'Mobile tab bar',  used: 'Jamaal',            stories: 'pending' as StatusKey, tests: 'pending' as StatusKey },
+    // ── Atoms ──────────────────────────────────────────────────────────
+    { name: 'Button',           used: 'All',               stories: done, tests: done },
+    { name: 'Badge + Tag',      used: 'All',               stories: done, tests: done },
+    { name: 'Toggle',           used: 'All',               stories: done, tests: done },
+    { name: 'AvailabilityPill', used: 'fhdamd',            stories: done, tests: done },
+    { name: 'Text',             used: 'All',               stories: done, tests: done },
+    // ── Layout ─────────────────────────────────────────────────────────
+    { name: 'Container',        used: 'All',               stories: done, tests: done },
+    { name: 'Stack',            used: 'All',               stories: done, tests: done },
+    { name: 'Cluster',          used: 'All',               stories: done, tests: done },
+    { name: 'Grid / AutoGrid',  used: 'All',               stories: done, tests: done },
+    { name: 'Section',          used: 'All',               stories: done, tests: done },
+    { name: 'Divider',          used: 'All',               stories: done, tests: done },
+    // ── Navigation ─────────────────────────────────────────────────────
+    { name: 'Tabs',             used: 'All',               stories: done, tests: done },
+    { name: 'Breadcrumb',       used: 'PDF-Craft',         stories: done, tests: done },
+    { name: 'Stepper',          used: 'PDF-Craft, Jamaal', stories: done, tests: done },
+    // ── Components ─────────────────────────────────────────────────────
+    { name: 'Card',             used: 'All',               stories: done, tests: done },
+    { name: 'OpCard',           used: 'PDF-Craft',         stories: done, tests: done },
+    { name: 'Accordion',        used: 'PDF-Craft',         stories: done, tests: done },
+    { name: 'PriceCard',        used: 'PDF-Craft',         stories: done, tests: done },
+    { name: 'Testimonial',      used: 'PDF-Craft',         stories: done, tests: done },
+    { name: 'StepCard',         used: 'PDF-Craft',         stories: done, tests: done },
+    { name: 'ProjectCard',      used: 'fhdamd',            stories: done, tests: done },
+    { name: 'ClientWorkRow',    used: 'fhdamd',            stories: done, tests: done },
+    { name: 'EssayRow',         used: 'fhdamd',            stories: done, tests: done },
+    { name: 'Progress',         used: 'PDF-Craft, Jamaal', stories: done, tests: done },
+    { name: 'DataTable',        used: 'PDF-Craft',         stories: done, tests: done },
+    { name: 'SectionHeader',    used: 'All',               stories: done, tests: done },
+    { name: 'Hero',             used: 'PDF-Craft, fhdamd', stories: done, tests: done },
+    { name: 'DarkStrip',        used: 'PDF-Craft',         stories: done, tests: done },
+    // ── Feedback ───────────────────────────────────────────────────────
+    { name: 'Callout',          used: 'All',               stories: done, tests: done },
+    { name: 'Banner',           used: 'All',               stories: done, tests: done },
+    { name: 'Toast',            used: 'PDF-Craft',         stories: done, tests: done },
+    // ── Forms ──────────────────────────────────────────────────────────
+    { name: 'Input',            used: 'PDF-Craft, fhdamd', stories: done, tests: done },
+    { name: 'Textarea',         used: 'PDF-Craft, fhdamd', stories: done, tests: done },
+    { name: 'Select',           used: 'PDF-Craft',         stories: done, tests: done },
+    { name: 'Checkbox',         used: 'All',               stories: done, tests: done },
+    { name: 'Radio',            used: 'All',               stories: done, tests: done },
+    { name: 'FileDropzone',     used: 'PDF-Craft',         stories: done, tests: done },
+    // ── Overlays ───────────────────────────────────────────────────────
+    { name: 'Dialog',           used: 'All',               stories: done, tests: done },
+    { name: 'Tooltip',          used: 'All',               stories: done, tests: done },
+    // ── Site chrome ────────────────────────────────────────────────────
+    { name: 'SiteNav',          used: 'PDF-Craft, fhdamd', stories: done, tests: done },
+    { name: 'SiteFooter',       used: 'PDF-Craft, fhdamd', stories: done, tests: done },
+    // ── Jamaal-specific (pending) ───────────────────────────────────────
+    { name: 'Task row',         used: 'Jamaal',            stories: pending, tests: pending },
+    { name: 'Habit row',        used: 'Jamaal',            stories: pending, tests: pending },
+    { name: 'Setting row',      used: 'Jamaal',            stories: pending, tests: pending },
+    { name: 'SparklineCard',    used: 'Jamaal',            stories: pending, tests: pending },
+    { name: 'HeatmapCell',      used: 'Jamaal',            stories: pending, tests: pending },
+    { name: 'Mobile tab bar',   used: 'Jamaal',            stories: pending, tests: pending },
   ]
 
   const th: CSSProperties = {

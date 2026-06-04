@@ -30,3 +30,9 @@
   color: var(--th-color-text-2);
   line-height: 1.65;
 }
+
+@media (max-width: 480px) {
+  .card {
+    padding: var(--th-space-5);
+  }
+}
