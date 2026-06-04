@@ -1,18 +1,13 @@
-import js from '@eslint/js';
 import * as tsParserPkg from '@typescript-eslint/parser';
 import * as tsPluginPkg from '@typescript-eslint/eslint-plugin';
-import * as reactPluginPkg from 'eslint-plugin-react';
-import * as reactHooksPkg from 'eslint-plugin-react-hooks';
+import eslintPluginAstro from 'eslint-plugin-astro';
 
-// Resolve default exports
 const tsParser = tsParserPkg.default ?? tsParserPkg;
 const tsPlugin = tsPluginPkg.default ?? tsPluginPkg;
-const reactPlugin = reactPluginPkg.default ?? reactPluginPkg;
-const reactHooks = reactHooksPkg.default ?? reactHooksPkg;
 
 export default [
-  // Base JS rules
-  js.configs.recommended,
+  // Astro recommended rules
+  ...eslintPluginAstro.configs.recommended,
 
   // TypeScript files
   {
@@ -36,22 +31,6 @@ export default [
         'warn',
         { argsIgnorePattern: '^_' },
       ],
-    },
-  },
-
-  // React files
-  {
-    files: ['**/*.jsx', '**/*.tsx'],
-    plugins: {
-      react: reactPlugin,
-      'react-hooks': reactHooks,
-    },
-    rules: {
-      'react/jsx-uses-react': 'error',
-      'react/jsx-uses-vars': 'error',
-    },
-    settings: {
-      react: { version: 'detect' },
     },
   },
 

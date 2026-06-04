@@ -1,5 +1,10 @@
 # Settings for Backend (on Cloud Run).
 # See https://firebase.google.com/docs/app-hosting/configure#cloud-run
+
+# Run through Turbo so @fhdamd/threads is built before pdf-craft.
+# Firebase App Hosting clones the full repo and runs this from the repo root.
+buildCommand: pnpm exec turbo run build --filter=pdf-craft
+
 runConfig:
   minInstances: 0
   # maxInstances: 100

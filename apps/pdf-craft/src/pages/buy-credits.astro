@@ -3,6 +3,62 @@ import Layout from "../layouts/Layout.astro";
 import { Pricing } from "../components/slices";
 ---
 
-<Layout title="Buy Credits">
-  <Pricing client:load />
+<Layout title="Buy Credits — PDF-Craft">
+  <div class="pricing-page">
+    <div class="pricing-header">
+      <h1 class="pricing-title">Simple, pay-as-you-go pricing</h1>
+      <p class="pricing-subtitle">
+        Buy credits and use them for any operation. No subscription, no expiry.
+      </p>
+    </div>
+    <div class="pricing-grid">
+      <Pricing client:load />
+    </div>
+  </div>
 </Layout>
+
+<style>
+  .pricing-page {
+    width: 100%;
+    max-width: 960px;
+    margin-inline: auto;
+    padding: var(--th-space-10) var(--th-space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--th-space-8);
+  }
+
+  .pricing-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--th-space-3);
+  }
+
+  .pricing-title {
+    font-family: var(--th-font-display);
+    font-variation-settings: "wdth" 90, "wght" 650;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    color: var(--th-color-text-1);
+    margin: 0;
+    line-height: 1.15;
+  }
+
+  .pricing-subtitle {
+    font-family: var(--th-font-display);
+    font-size: var(--th-text-base);
+    color: var(--th-color-text-2);
+    margin: 0;
+  }
+
+  .pricing-grid {
+    width: 100%;
+  }
+
+  @media (max-width: 480px) {
+    .pricing-page {
+      padding: var(--th-space-8) var(--th-space-4);
+      gap: var(--th-space-6);
+    }
+  }
+</style>

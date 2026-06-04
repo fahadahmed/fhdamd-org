@@ -1,0 +1,205 @@
+/* Both sites use dark footer per reference HTML */
+.footer {
+  background: var(--th-color-surface-inverse);
+  border-block-start: 1px solid rgba(240, 237, 230, 0.08);
+  position: relative;
+  z-index: 1;
+}
+
+.light {
+  background: var(--th-color-bg);
+  border-block-start: 1px solid var(--th-color-border-default);
+}
+
+.dark {
+  background: var(--th-color-surface-inverse);
+  border-block-start: 1px solid rgba(240, 237, 230, 0.08);
+}
+
+.inner {
+  padding-block: var(--th-space-10) var(--th-space-8);
+}
+
+/* ─── SIMPLE LAYOUT (fhdamd) ─────────────────────────────────────────────── */
+.simple {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--th-space-6);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--th-space-4);
+  flex-shrink: 0;
+}
+
+.logoMark {
+  height: 36px;
+  width: auto;
+  display: block;
+  color: var(--th-color-text-inverse);
+  opacity: 0.32;
+}
+
+.wordmark {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: var(--th-text-lg);
+  color: var(--th-color-text-inverse);
+  display: block;
+}
+
+.wordmarkAccent {
+  font-style: normal;
+  color: var(--th-color-accent-text);
+}
+
+.brandName {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--th-color-text-inverse-2);
+}
+
+.tagline {
+  font-family: var(--th-font-mono);
+  font-size: var(--th-text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--th-color-text-inverse-2);
+  margin-block-start: var(--th-space-3);
+}
+
+.nav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.linkList {
+  display: flex;
+  list-style: none;
+  gap: var(--th-space-6);
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.link {
+  font-family: var(--th-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--th-color-text-inverse-2);
+  text-decoration: none;
+  transition: color var(--th-duration-base) var(--th-ease-out);
+}
+
+.link:hover {
+  color: var(--th-color-text-inverse);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--th-color-focus-ring);
+  outline-offset: 2px;
+}
+
+.copy {
+  font-family: var(--th-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--th-color-text-inverse-2);
+  flex-shrink: 0;
+  margin: 0;
+}
+
+/* ─── COLUMN LAYOUT (PDF-Craft) ──────────────────────────────────────────── */
+.top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--th-space-12);
+  flex-wrap: wrap;
+  margin-block-end: var(--th-space-8);
+}
+
+.columns {
+  display: flex;
+  gap: var(--th-space-12);
+  flex-wrap: wrap;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--th-space-4);
+}
+
+.columnTitle {
+  font-family: var(--th-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--th-color-text-inverse-2);
+}
+
+.columnLinks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--th-space-3);
+}
+
+.columnLinks .link {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 380;
+  font-size: var(--th-text-sm);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--th-color-text-inverse-2);
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--th-space-3);
+  padding-block-start: var(--th-space-6);
+  border-block-start: 1px solid rgba(240, 237, 230, 0.1);
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .simple {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--th-space-5);
+  }
+
+  .nav {
+    justify-content: flex-start;
+  }
+
+  .top {
+    flex-direction: column;
+  }
+
+  .columns {
+    flex-direction: column;
+    gap: var(--th-space-8);
+  }
+
+  .bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

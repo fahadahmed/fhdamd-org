@@ -1,0 +1,93 @@
+/* ─── STACK (fixed bottom-right) ─────────────────────────────────────────── */
+.stack {
+  position: fixed;
+  inset-block-end: var(--th-space-6);
+  inset-inline-end: var(--th-space-6);
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  gap: var(--th-space-2);
+  max-inline-size: 480px;
+  width: calc(100vw - var(--th-space-8));
+}
+
+/* ─── INDIVIDUAL TOAST ────────────────────────────────────────────────────── */
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--th-space-3);
+  padding: var(--th-space-3) var(--th-space-5);
+  border-radius: var(--th-radius-md);
+  font-size: var(--th-text-base);
+  border: 1px solid transparent;
+  box-shadow: var(--th-shadow-md);
+  animation: slideIn var(--th-duration-base) var(--th-ease-out);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast { animation: none; }
+}
+
+.toastIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.toastMessage {
+  flex: 1;
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 400;
+  line-height: 1.5;
+}
+
+.toastClose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+  padding: var(--th-space-1);
+  border-radius: var(--th-radius-xs);
+  flex-shrink: 0;
+  transition: opacity var(--th-duration-base);
+}
+
+.toastClose:hover  { opacity: 1; }
+
+.toastClose:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* ─── VARIANTS ───────────────────────────────────────────────────────────── */
+.success {
+  background: var(--th-color-success-subtle);
+  border-color: var(--th-color-success);
+  color: var(--th-color-success-text);
+}
+
+.error {
+  background: var(--th-color-error-subtle);
+  border-color: var(--th-color-error);
+  color: var(--th-color-error-text);
+}
+
+.info {
+  background: var(--th-color-info-subtle);
+  border-color: var(--th-color-info);
+  color: var(--th-color-info-text);
+}
+
+.warning {
+  background: var(--th-color-warning-subtle);
+  border-color: var(--th-color-warning);
+  color: var(--th-color-warning-text);
+}

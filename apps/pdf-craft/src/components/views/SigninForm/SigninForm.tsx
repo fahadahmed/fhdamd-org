@@ -2,24 +2,22 @@
 import { useState } from 'react'
 import { actions } from 'astro:actions'
 import { signInWithEmailAndPassword } from 'firebase/auth'
+import { Input, Button, Stack, Callout } from '@fhdamd/threads'
 import { auth } from '../../../firebase/client'
-import { Button, Input } from '../../../components'
 import { useRecaptcha } from '../../../utils'
 import { logEvent } from '../../../utils/lib/analytics'
-import '../../../styles/form.css'
 
 export default function SigninForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const captchaToken = useRecaptcha('signin');
-
+  const [email, setEmail]       = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError]       = useState('')
+  const captchaToken = useRecaptcha('signin')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!captchaToken) {
-      setError('Captcha verification failed. Try again.')
+      setError('Captcha verification failed. Please try again.')
       return
     }
 
@@ -35,14 +33,36 @@ export default function SigninForm() {
       setError('Failed to sign in. Please check your credentials.')
       console.error('Error signing in:', err)
     }
-
   }
+
   return (
-    <form onSubmit={handleSubmit} className="form">
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <Input type="email" name="email" id="email" labelText='Email' value={email} setValue={setEmail} />
-      <Input type="password" name="password" id="password" labelText='Password' value={password} setValue={setPassword} />
-      <Button type="submit" text="Login" kind="primary" />
+    <form onSubmit={handleSubmit}>
+      <Stack gap={4}>
+        {error && <Callout variant="error">{error}</Callout>}
+        <Input
+          type="email"
+          name="email"
+          id="email"
+          label="Email address"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          autoComplete="email"
+          required
+        />
+        <Input
+          type="password"
+          name="password"
+          id="password"
+          label="Password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          autoComplete="current-password"
+          required
+        />
+        <Button type="submit" variant="solid-terra" style={{ width: '100%' }}>
+          Sign in
+        </Button>
+      </Stack>
     </form>
   )
 }

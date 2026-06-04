@@ -1,0 +1,45 @@
+.grid {
+  display: grid;
+  /* Columns driven by data-cols attribute — avoids inline style so media queries work */
+  grid-template-columns: repeat(var(--_cols, 12), 1fr);
+}
+
+/* Wire up CSS custom property from data attribute */
+.grid[data-cols="1"]  { --_cols: 1; }
+.grid[data-cols="2"]  { --_cols: 2; }
+.grid[data-cols="3"]  { --_cols: 3; }
+.grid[data-cols="4"]  { --_cols: 4; }
+.grid[data-cols="6"]  { --_cols: 6; }
+.grid[data-cols="8"]  { --_cols: 8; }
+.grid[data-cols="12"] { --_cols: 12; }
+
+/* Tablet (≤768px) — use data-cols-md */
+@media (max-width: 768px) {
+  .grid[data-cols-md="1"]  { --_cols: 1; }
+  .grid[data-cols-md="2"]  { --_cols: 2; }
+  .grid[data-cols-md="3"]  { --_cols: 3; }
+  .grid[data-cols-md="4"]  { --_cols: 4; }
+  .grid[data-cols-md="6"]  { --_cols: 6; }
+  .grid[data-cols-md="8"]  { --_cols: 8; }
+  .grid[data-cols-md="12"] { --_cols: 12; }
+}
+
+/* Mobile (≤480px) — use data-cols-sm, default 1 */
+@media (max-width: 480px) {
+  .grid[data-cols-sm="1"]  { --_cols: 1; }
+  .grid[data-cols-sm="2"]  { --_cols: 2; }
+  .grid[data-cols-sm="3"]  { --_cols: 3; }
+  .grid[data-cols-sm="4"]  { --_cols: 4; }
+  .grid[data-cols-sm="6"]  { --_cols: 6; }
+  .grid[data-cols-sm="8"]  { --_cols: 8; }
+  .grid[data-cols-sm="12"] { --_cols: 12; }
+}
+
+.gridItem {
+  min-inline-size: 0; /* prevent grid blowout */
+}
+
+/* ─── AutoGrid ───────────────────────────────────────────────────────────── */
+.autoGrid {
+  display: grid;
+}

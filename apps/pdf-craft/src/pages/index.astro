@@ -1,41 +1,470 @@
 ---
+import { createElement as h } from "react";
 import Layout from "../layouts/Layout.astro";
-import {
-  HomeCta,
-  Footer,
-  Header,
-  Operations,
-  Pricing,
-  Testimonials,
-  HowItWorks,
-  Faqs,
-} from "../components";
+import { Pricing } from "../components";
 import { fetchCms } from "../utils/lib/cms";
 import { type Faq } from "../utils";
+import {
+  Hero,
+  Container,
+  Section,
+  SectionHeader,
+  AutoGrid,
+  OpCard,
+  StepCard,
+  Testimonial,
+  Accordion,
+  DarkStrip,
+  Button,
+} from "@fhdamd/threads";
 
-type FaqResponse = {
-  data: {
-    allFaqs: Faq[];
-  };
-};
-
-const faqResponse: FaqResponse = await fetchCms<FaqResponse>("faqs");
+type FaqResponse = { data: { allFaqs: Faq[] } };
+const faqResponse = await fetchCms<FaqResponse>("faqs");
 const faqs = faqResponse.data.allFaqs;
+const faqItems = faqs.map(({ title, content }) => ({
+  question: title,
+  answer: content,
+}));
+
+/* Build all React elements with createElement in the frontmatter
+   so Astro's template parser never sees raw JSX inside {} expressions */
+const heroSubheading = h(
+  "span",
+  null,
+  h("em", null, "Beautifully honest"),
+  " pricing.",
+);
+const heroActions = h(
+  "div",
+  {
+    style: {
+      display: "flex",
+      gap: "var(--th-space-3)",
+      flexWrap: "wrap" as const,
+    },
+  },
+  h(
+    Button as any,
+    { variant: "solid-terra", size: "lg", href: "/signup" },
+    "Get started free",
+  ),
+  h(
+    Button as any,
+    { variant: "ghost", size: "lg", href: "/#tools" },
+    "See all tools",
+  ),
+);
+
+const titleOperations = h(
+  "span",
+  null,
+  "Everything your ",
+  h("em", null, "documents"),
+  " need",
+);
+const titleHowItWorks = h(
+  "span",
+  null,
+  "Up and running ",
+  h("em", null, "in three steps"),
+);
+const titlePricing = h(
+  "span",
+  null,
+  "Simple, ",
+  h("em", null, "honest"),
+  " credits",
+);
+const titleTestimonials = h(
+  "span",
+  null,
+  "Trusted by people who value their ",
+  h("em", null, "time"),
+);
+const titleFaq = h(
+  "span",
+  null,
+  "Frequently asked ",
+  h("em", null, "questions"),
+);
+const ctaHeading = h(
+  "span",
+  null,
+  "No subscription.",
+  h("br", null),
+  " Just ",
+  h("em", null, "results"),
+  ".",
+);
+const ctaAction = h(
+  Button as any,
+  { variant: "solid-terra", size: "lg", href: "/signup" },
+  "Get started — it's free",
+);
+
+const ss = { marginBottom: "var(--th-space-8)" }; // shared section style
 ---
 
 <Layout>
-  <div class="container">
-    <HomeCta />
-    <div class="alternate">
-      <Operations />
-    </div>
-    <Testimonials />
-    <div class="alternate">
-      <HowItWorks />
-    </div>
-    <Pricing client:load />
-    <div class="alternate">
-      <Faqs client:load items={faqs} />
-    </div>
-  </div>
+  <!-- HERO -->
+  <Container>
+    <Hero
+      eyebrow="PDF tools that respect your time"
+      heading="Simple PDF tools."
+      subheading={heroSubheading}
+      body="Merge, protect, convert and unlock PDF documents in seconds. Buy credits once — pay only for what you use, no subscriptions, no expiry."
+      chips={[
+        "No subscription",
+        "Credits never expire",
+        "Files processed securely",
+        "Any device",
+      ]}
+      actions={heroActions}
+    />
+  </Container>
+
+  <!-- OPERATIONS -->
+  <section
+    id="tools"
+    style="border-top:1px solid var(--th-color-border-default)"
+  >
+    <Container>
+      <Section size="md">
+        <SectionHeader
+          eyebrow="PDF operations"
+          title={titleOperations}
+          intro="Four tools live now. Split, compress, sign and AI-powered summaries are all coming soon."
+          style={ss}
+        />
+        <div class="op-grid">
+          <div class="op-live">
+            <OpCard
+              name="Merge PDFs"
+              description="Combine multiple PDF documents into a single file — in the right order, every time."
+              credits={2}
+              href="/mergepdf"
+              iconVariant="terra"
+              ctaLabel="Merge"
+              status="live"
+              icon={h(
+                "svg",
+                {
+                  viewBox: "0 0 24 24",
+                  fill: "none",
+                  stroke: "currentColor",
+                  strokeWidth: 1.5,
+                  strokeLinecap: "round" as const,
+                  strokeLinejoin: "round" as const,
+                },
+                h("path", {
+                  d: "M8 6H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3",
+                }),
+                h("path", { d: "M15 3H9l-1 3h8l-1-3z" }),
+                h("path", { d: "M12 11v6M9 14l3 3 3-3" }),
+              )}
+            />
+          </div>
+          <div class="op-live">
+            <OpCard
+              name="Image to PDF"
+              description="Convert JPG & PNG images to clean PDF format instantly. No quality loss."
+              credits={2}
+              href="/imagetopdf"
+              iconVariant="sage"
+              ctaLabel="Convert"
+              status="live"
+              icon={h(
+                "svg",
+                {
+                  viewBox: "0 0 24 24",
+                  fill: "none",
+                  stroke: "currentColor",
+                  strokeWidth: 1.5,
+                  strokeLinecap: "round" as const,
+                  strokeLinejoin: "round" as const,
+                },
+                h("rect", { x: 3, y: 3, width: 18, height: 18, rx: 2 }),
+                h("circle", { cx: 8.5, cy: 8.5, r: 1.5 }),
+                h("polyline", { points: "21 15 16 10 5 21" }),
+              )}
+            />
+          </div>
+          <div class="op-live">
+            <OpCard
+              name="Protect PDF"
+              description="Secure your PDF from unauthorised use with a strong password."
+              credits={4}
+              href="/encryptpdf"
+              iconVariant="terra"
+              ctaLabel="Protect"
+              status="live"
+              icon={h(
+                "svg",
+                {
+                  viewBox: "0 0 24 24",
+                  fill: "none",
+                  stroke: "currentColor",
+                  strokeWidth: 1.5,
+                  strokeLinecap: "round" as const,
+                  strokeLinejoin: "round" as const,
+                },
+                h("rect", { x: 3, y: 11, width: 18, height: 11, rx: 2 }),
+                h("path", { d: "M7 11V7a5 5 0 0 1 10 0v4" }),
+              )}
+            />
+          </div>
+          <div class="op-live">
+            <OpCard
+              name="Unlock PDF"
+              description="Remove password protection and restrictions from your documents easily."
+              credits={4}
+              href="/decryptpdf"
+              iconVariant="sage"
+              ctaLabel="Unlock"
+              status="live"
+              icon={h(
+                "svg",
+                {
+                  viewBox: "0 0 24 24",
+                  fill: "none",
+                  stroke: "currentColor",
+                  strokeWidth: 1.5,
+                  strokeLinecap: "round" as const,
+                  strokeLinejoin: "round" as const,
+                },
+                h("rect", { x: 3, y: 11, width: 18, height: 11, rx: 2 }),
+                h("path", { d: "M7 11V7a5 5 0 0 1 9.9-1" }),
+              )}
+            />
+          </div>
+          <OpCard
+            name="Split PDF"
+            description="Divide a PDF into separate pages or custom page ranges."
+            credits={3}
+            iconVariant="muted"
+            status="soon"
+            icon={h(
+              "svg",
+              {
+                viewBox: "0 0 24 24",
+                fill: "none",
+                stroke: "currentColor",
+                strokeWidth: 1.5,
+                strokeLinecap: "round" as const,
+              },
+              h("path", {
+                d: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z",
+              }),
+              h("polyline", { points: "14 2 14 8 20 8" }),
+              h("line", { x1: 12, y1: 11, x2: 12, y2: 17 }),
+              h("line", { x1: 9, y1: 14, x2: 15, y2: 14 }),
+            )}
+          />
+          <OpCard
+            name="Compress PDF"
+            description="Reduce file size while preserving quality for sharing and storage."
+            credits={3}
+            iconVariant="muted"
+            status="soon"
+            icon={h(
+              "svg",
+              {
+                viewBox: "0 0 24 24",
+                fill: "none",
+                stroke: "currentColor",
+                strokeWidth: 1.5,
+                strokeLinecap: "round" as const,
+              },
+              h("path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" }),
+              h("polyline", { points: "17 8 12 3 7 8" }),
+              h("line", { x1: 12, y1: 3, x2: 12, y2: 15 }),
+            )}
+          />
+          <OpCard
+            name="Sign PDF"
+            description="Add your digital signature to documents quickly and securely."
+            credits={4}
+            iconVariant="muted"
+            status="soon"
+            icon={h(
+              "svg",
+              {
+                viewBox: "0 0 24 24",
+                fill: "none",
+                stroke: "currentColor",
+                strokeWidth: 1.5,
+                strokeLinecap: "round" as const,
+              },
+              h("path", {
+                d: "M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z",
+              }),
+            )}
+          />
+          <OpCard
+            name="AI Summary"
+            description="Get a concise overview or detailed breakdown of any document using AI."
+            credits={5}
+            iconVariant="muted"
+            status="soon"
+            icon={h(
+              "svg",
+              {
+                viewBox: "0 0 24 24",
+                fill: "none",
+                stroke: "currentColor",
+                strokeWidth: 1.5,
+                strokeLinecap: "round" as const,
+              },
+              h("path", {
+                d: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
+              }),
+            )}
+          />
+        </div>
+      </Section>
+    </Container>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section
+    id="how-it-works"
+    style="border-top:1px solid var(--th-color-border-default)"
+  >
+    <Container>
+      <Section size="md">
+        <SectionHeader
+          eyebrow="How it works"
+          title={titleHowItWorks}
+          style={ss}
+        />
+        <AutoGrid minColWidth="240px" gap={4}>
+          <StepCard
+            number="01"
+            title="Create a free account"
+            body="Sign up in seconds. No credit card required. New accounts include a small credit balance to try the tools straight away."
+          />
+          <StepCard
+            number="02"
+            title="Buy a credit pack"
+            body="Three simple packs to choose from. Credits never expire and work across every operation. Pay once, use whenever you need."
+          />
+          <StepCard
+            number="03"
+            title="Process your documents"
+            body="Upload, pick your operation, download. The exact credit cost is shown before you confirm — no surprises, ever."
+          />
+        </AutoGrid>
+      </Section>
+    </Container>
+  </section>
+
+  <!-- PRICING -->
+  <section
+    id="pricing"
+    style="border-top:1px solid var(--th-color-border-default)"
+  >
+    <Container>
+      <Section size="md">
+        <SectionHeader
+          eyebrow="Pricing"
+          title={titlePricing}
+          intro="Buy once, use anytime. No monthly fees. No usage caps. Credits never expire."
+          style={ss}
+        />
+        <Pricing client:load />
+      </Section>
+    </Container>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section style="border-top:1px solid var(--th-color-border-default)">
+    <Container>
+      <Section size="md">
+        <SectionHeader
+          eyebrow="What people say"
+          title={titleTestimonials}
+          style={ss}
+        />
+        <AutoGrid minColWidth="280px" gap={4}>
+          <Testimonial
+            quote="Finally, a PDF tool that's honest about pricing. I pay only when I actually use it — no subscriptions, no surprises."
+            attribution="Samia Akhtar · Senior Claims Consultant"
+          />
+          <Testimonial
+            quote="The credit-based pay-per-use model is incredibly transparent. I know exactly what each action costs before I click."
+            attribution="Brendan Lawrie · Partner, Big 4 Consultancy"
+          />
+          <Testimonial
+            quote="Most PDF tools feel bloated. This one does exactly what it promises, charges fairly, and gets out of the way."
+            attribution="Sean Kempen · Real Estate Agent"
+          />
+          <Testimonial
+            quote="Clean interface, no learning curve. I merged and converted my files in seconds without reading a single guide."
+            attribution="Patricia Widjojo · Paralegal"
+          />
+        </AutoGrid>
+      </Section>
+    </Container>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" style="border-top:1px solid var(--th-color-border-default)">
+    <Container>
+      <Section size="md">
+        <SectionHeader eyebrow="FAQ" title={titleFaq} style={ss} />
+        <div style="max-width:680px">
+          <Accordion client:load items={faqItems} defaultOpenIndex={0} />
+        </div>
+      </Section>
+    </Container>
+  </section>
+
+  <!-- CTA STRIP -->
+  <section style="border-top:1px solid var(--th-color-border-default)">
+    <Container>
+      <Section size="md">
+        <DarkStrip
+          eyebrow="Ready to get started"
+          heading={ctaHeading}
+          body="Create a free account and process your first PDF in under a minute."
+          align="center"
+          actions={ctaAction}
+        />
+      </Section>
+    </Container>
+  </section>
 </Layout>
+
+<style is:global>
+  /* OpCard grid — matches the reference HTML breakpoints exactly */
+  .op-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+
+  /* Live ops span 2 columns on desktop */
+  .op-live {
+    grid-column: span 2;
+  }
+
+  /* Tablet — collapse to 2-column grid, live cards still span 2 */
+  @media (max-width: 900px) {
+    .op-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .op-live {
+      grid-column: span 2;
+    }
+  }
+
+  /* Mobile — single column, everything full width */
+  @media (max-width: 480px) {
+    .op-grid {
+      grid-template-columns: 1fr;
+    }
+    .op-live {
+      grid-column: span 1;
+    }
+  }
+</style>

@@ -1,3 +1,9 @@
+/// <reference path="../.astro/types.d.ts" />
+
+// Side-effect-only CSS imports from the Threads design system
+declare module "@fhdamd/threads/tokens" {}
+declare module "*.css" {}
+
 interface ImportMetaEnv {
   readonly PUBLIC_FIREBASE_API_KEY: string;
   readonly PUBLIC_FIREBASE_AUTH_DOMAIN: string;

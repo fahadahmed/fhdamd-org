@@ -1,0 +1,20 @@
+.section {
+  display: block;
+}
+
+.sm { padding-block: var(--th-space-6); }   /* 24px */
+.md { padding-block: var(--th-space-10); }  /* 40px */
+.lg { padding-block: var(--th-space-20); }  /* 80px */
+
+/* Reduce vertical padding on tablet */
+@media (max-width: 768px) {
+  .md { padding-block: var(--th-space-8); }  /* 32px */
+  .lg { padding-block: var(--th-space-12); } /* 48px */
+}
+
+/* Tighter on mobile */
+@media (max-width: 480px) {
+  .sm { padding-block: var(--th-space-4); }  /* 16px */
+  .md { padding-block: var(--th-space-6); }  /* 24px */
+  .lg { padding-block: var(--th-space-8); }  /* 32px */
+}

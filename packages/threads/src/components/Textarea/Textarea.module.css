@@ -1,0 +1,5 @@
+.textarea {
+  min-block-size: 96px; /* override input's 48px */
+  resize: vertical;
+  line-height: 1.6;
+}

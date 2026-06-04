@@ -1,0 +1,104 @@
+.row {
+  display: grid;
+  grid-template-columns: 200px 1fr 120px;
+  align-items: start;
+  border-block-end: 1px solid var(--th-color-border-subtle);
+}
+
+.row:first-child {
+  border-block-start: 1px solid var(--th-color-border-subtle);
+}
+
+/* ─── LEFT ────────────────────────────────────────────────────────────────── */
+.left {
+  padding: var(--th-space-5) var(--th-space-6) var(--th-space-5) 0;
+  border-inline-end: 1px solid var(--th-color-border-subtle);
+}
+
+.client {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 92, "wght" 680;
+  font-size: 0.9375rem;
+  color: var(--th-color-text-1);
+  margin-block-end: var(--th-space-1);
+}
+
+.date {
+  font-family: var(--th-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--th-color-text-4);
+}
+
+/* ─── BODY ────────────────────────────────────────────────────────────────── */
+.body {
+  padding: var(--th-space-5) var(--th-space-6);
+}
+
+.title {
+  font-family: var(--th-font-serif);
+  font-weight: 400;
+  font-size: var(--th-text-lg);
+  letter-spacing: -0.01em;
+  margin-block-end: var(--th-space-2);
+  line-height: 1.15;
+  color: var(--th-color-text-1);
+}
+
+.desc {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--th-color-text-3);
+  margin-block-end: var(--th-space-3);
+}
+
+.tags {
+  display: flex;
+  gap: var(--th-space-1);
+  flex-wrap: wrap;
+}
+
+/* ─── RIGHT ───────────────────────────────────────────────────────────────── */
+.right {
+  padding: var(--th-space-5) 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.value {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: var(--th-radius-pill);
+  background: var(--th-color-sage-subtle);
+  color: var(--th-color-sage-text);
+  white-space: nowrap;
+}
+
+/* ─── RESPONSIVE ──────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .left {
+    padding: var(--th-space-4) 0 var(--th-space-2);
+    border-inline-end: none;
+    border-block-end: 1px solid var(--th-color-border-subtle);
+  }
+
+  .body {
+    padding: var(--th-space-3) 0 var(--th-space-4);
+  }
+
+  .right {
+    padding: 0 0 var(--th-space-4);
+    justify-content: flex-start;
+  }
+}

@@ -1,0 +1,110 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+import { SpaceRow, RadiusSwatch, ShadowSwatch } from './components/SpacingBlocks'
+import { shared } from './components/docStyles'
+
+<Meta title="Threads/Primitives/Spacing" />
+
+<div style={shared.page}>
+
+<div style={shared.eyebrow}>Primitives / Spacing</div>
+<div style={shared.h1}>Spacing, radius <em style={{ fontStyle: 'italic', color: 'var(--th-color-accent)' }}>&amp; shadows</em></div>
+<div style={shared.lead}>
+  4px base unit. Every spacing value is a multiple of 4. Use logical properties throughout —
+  padding-inline not padding-left, margin-block not margin-top. RTL is a zero-code flip.
+</div>
+
+<div style={shared.note}>
+  <strong style={{ fontVariationSettings: '"wdth" 92, "wght" 600' }}>Logical properties only.</strong>{' '}
+  All layout in components must use inline and block axes.
+  No left, right, top, or bottom in component CSS.
+</div>
+
+<div style={shared.eyebrow}>Spacing scale - 4px base unit</div>
+
+<div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '40px' }}>
+  <SpaceRow token="--th-space-1"  px="4px" />
+  <SpaceRow token="--th-space-2"  px="8px" />
+  <SpaceRow token="--th-space-3"  px="12px" />
+  <SpaceRow token="--th-space-4"  px="16px" />
+  <SpaceRow token="--th-space-5"  px="20px" />
+  <SpaceRow token="--th-space-6"  px="24px" />
+  <SpaceRow token="--th-space-7"  px="28px" />
+  <SpaceRow token="--th-space-8"  px="32px" />
+  <SpaceRow token="--th-space-10" px="40px" />
+  <SpaceRow token="--th-space-12" px="48px" />
+  <SpaceRow token="--th-space-16" px="64px" />
+  <SpaceRow token="--th-space-20" px="80px" note="section padding" />
+  <SpaceRow token="--th-space-24" px="96px" />
+</div>
+
+<hr style={shared.rule} />
+
+<div style={shared.eyebrow}>Border radius</div>
+
+<div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'flex-end', marginBottom: '40px' }}>
+  <RadiusSwatch token="--th-radius-xs"   label="xs · 4px" />
+  <RadiusSwatch token="--th-radius-sm"   label="sm · 8px" />
+  <RadiusSwatch token="--th-radius-md"   label="md · 14px" />
+  <RadiusSwatch token="--th-radius-lg"   label="lg · 20px · cards" />
+  <RadiusSwatch token="--th-radius-xl"   label="xl · 24px · modals" />
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+    <div style={{ width: '120px', height: '44px', background: 'var(--th-color-surface-2)', border: '1px solid var(--th-color-border-default)', borderRadius: '9999px' }} />
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.5rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--th-color-text-3)' }}>pill · 9999px · buttons</div>
+      <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.5rem', color: 'var(--th-color-text-4)', marginTop: '2px' }}>--th-radius-pill</div>
+    </div>
+  </div>
+</div>
+
+<hr style={shared.rule} />
+
+<div style={shared.eyebrow}>Shadows - warm-tinted, never cool grey</div>
+
+<div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap', alignItems: 'flex-end', marginBottom: '40px' }}>
+  <ShadowSwatch token="--th-shadow-xs" label="shadow-xs · default card" />
+  <ShadowSwatch token="--th-shadow-sm" label="shadow-sm · subtle lift" />
+  <ShadowSwatch token="--th-shadow-md" label="shadow-md · elevated" />
+  <ShadowSwatch token="--th-shadow-lg" label="shadow-lg · hover / modal" />
+</div>
+
+<div style={shared.note}>
+  Shadow alpha values are higher in dark theme to compensate for reduced surface contrast.
+  Toggle the Theme toolbar above to see the difference.
+</div>
+
+<hr style={shared.rule} />
+
+<div style={shared.eyebrow}>Focus ring</div>
+
+<div style={{ display: 'flex', gap: '24px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '32px' }}>
+  <div style={{ padding: '10px 20px', background: 'var(--th-color-surface-1)', border: '1px solid var(--th-color-border-default)', borderRadius: '9999px', fontVariationSettings: '"wdth" 92, "wght" 550', fontSize: 'var(--th-text-base)', outline: '2px solid var(--th-color-focus-ring)', outlineOffset: '3px' }}>
+    :focus-visible state
+  </div>
+  <div style={{ fontVariationSettings: '"wdth" 90, "wght" 380', fontSize: '1.0625rem', lineHeight: 1.65, color: 'var(--th-color-text-2)', maxWidth: '400px' }}>
+    Applied with outline only on :focus-visible — never on :focus.
+    Terracotta in light theme, lighter in dark.
+  </div>
+</div>
+
+<div style={shared.eyebrow}>Animation</div>
+
+<div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '32px' }}>
+  <div style={{ background: 'var(--th-color-surface-1)', border: '1px solid var(--th-color-border-default)', borderRadius: '12px', padding: '16px 20px', flex: 1, minWidth: '260px' }}>
+    <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.1em', color: 'var(--th-color-text-3)', marginBottom: '4px' }}>--th-duration-base</div>
+    <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.875rem', color: 'var(--th-color-text-1)', marginBottom: '4px' }}>160ms</div>
+    <div style={{ fontVariationSettings: '"wdth" 90, "wght" 380', fontSize: 'var(--th-text-sm)', color: 'var(--th-color-text-3)' }}>All interactive transitions</div>
+  </div>
+  <div style={{ background: 'var(--th-color-surface-1)', border: '1px solid var(--th-color-border-default)', borderRadius: '12px', padding: '16px 20px', flex: 1, minWidth: '260px' }}>
+    <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.1em', color: 'var(--th-color-text-3)', marginBottom: '4px' }}>--th-ease-out</div>
+    <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.875rem', color: 'var(--th-color-text-1)', marginBottom: '4px' }}>cubic-bezier(0,0,0.2,1)</div>
+    <div style={{ fontVariationSettings: '"wdth" 90, "wght" 380', fontSize: 'var(--th-text-sm)', color: 'var(--th-color-text-3)' }}>Standard easing</div>
+  </div>
+</div>
+
+<div style={shared.note}>
+  <strong style={{ fontVariationSettings: '"wdth" 92, "wght" 600', color: 'var(--th-color-text-1)' }}>Reduced motion:</strong>{' '}
+  When prefers-reduced-motion: reduce is active, --th-duration-base is automatically set to 0ms.
+  No component-level overrides needed.
+</div>
+
+</div>

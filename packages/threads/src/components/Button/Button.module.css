@@ -1,0 +1,136 @@
+/* ─── BASE ──────────────────────────────────────────────────────────────── */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--th-space-2);
+  border-radius: var(--th-radius-pill);
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 92, "wght" 560;
+  font-size: var(--th-text-base);
+  padding-inline: var(--th-space-5);
+  padding-block: var(--th-space-3);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  min-block-size: 44px;
+  white-space: nowrap;
+  line-height: 1;
+  vertical-align: middle;
+  transition:
+    background var(--th-duration-base) var(--th-ease-out),
+    color var(--th-duration-base) var(--th-ease-out),
+    border-color var(--th-duration-base) var(--th-ease-out),
+    transform var(--th-duration-base) var(--th-ease-out),
+    opacity var(--th-duration-base) var(--th-ease-out);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--th-color-focus-ring);
+  outline-offset: 3px;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ─── VARIANTS ───────────────────────────────────────────────────────────── */
+.solidInk {
+  background: var(--th-color-text-1);
+  color: var(--th-color-text-inverse);
+}
+.solidInk:hover:not(:disabled) {
+  background: var(--th-prim-ink-800, #3d3a35);
+}
+
+.solidTerra {
+  background: var(--th-color-accent);
+  color: var(--th-color-text-inverse);
+}
+.solidTerra:hover:not(:disabled) {
+  background: var(--th-color-accent-hover);
+}
+
+.solidSage {
+  background: var(--th-color-sage);
+  color: var(--th-color-text-1);
+}
+.solidSage:hover:not(:disabled) {
+  background: var(--th-color-sage-hover);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--th-color-text-2);
+  border-color: var(--th-color-border-strong);
+}
+.ghost:hover:not(:disabled) {
+  background: var(--th-color-surface-2);
+  border-color: var(--th-color-text-1);
+  color: var(--th-color-text-1);
+}
+
+.outline {
+  background: transparent;
+  color: var(--th-color-accent);
+  border-color: var(--th-color-accent);
+}
+.outline:hover:not(:disabled) {
+  background: var(--th-color-accent-subtle);
+}
+
+.subtleTerra {
+  background: var(--th-color-accent-subtle);
+  color: var(--th-color-accent-text);
+  border: none;
+}
+.subtleTerra:hover:not(:disabled) {
+  filter: brightness(0.96);
+}
+
+.subtleSage {
+  background: var(--th-color-sage-subtle);
+  color: var(--th-color-sage-text);
+  border: none;
+}
+.subtleSage:hover:not(:disabled) {
+  filter: brightness(0.96);
+}
+
+/* ─── SIZES — compound selectors so they always win over .button base ─────── */
+.button.sm {
+  font-size: var(--th-text-sm);
+  padding-inline: var(--th-space-4);
+  padding-block: var(--th-space-2);
+  min-block-size: 36px;
+}
+
+.button.lg {
+  font-size: var(--th-text-md);
+  padding-inline: var(--th-space-7);
+  padding-block: var(--th-space-4);
+  min-block-size: 52px;
+}
+
+/* ─── ICON ───────────────────────────────────────────────────────────────── */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.icon svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

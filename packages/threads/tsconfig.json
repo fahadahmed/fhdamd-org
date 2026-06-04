@@ -1,12 +1,27 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "target": "ES2017",
+    "rootDir": "src",
+    "target": "ES2022",
     "module": "ESNext",
-    "lib": ["DOM", "ES2017"],
+    "moduleResolution": "bundler",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
+    ],
     "strict": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+    "types": [
+      "vitest/globals"
+    ]
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

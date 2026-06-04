@@ -1,0 +1,96 @@
+/* Shared form field chrome — label, hint, error.
+   Imported by Input, Textarea, Select. */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--th-space-2);
+}
+
+.label {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 92, "wght" 550;
+  font-size: var(--th-text-base);
+  color: var(--th-color-text-1);
+}
+
+.label--disabled {
+  color: var(--th-color-text-4);
+}
+
+.required {
+  color: var(--th-color-accent);
+  margin-inline-start: 2px;
+}
+
+.hint {
+  font-size: var(--th-text-sm);
+  color: var(--th-color-text-3);
+  line-height: 1.4;
+}
+
+.error {
+  font-size: var(--th-text-sm);
+  color: var(--th-color-error-text);
+  display: flex;
+  align-items: center;
+  gap: var(--th-space-1);
+  line-height: 1.4;
+}
+
+.success {
+  font-size: var(--th-text-sm);
+  color: var(--th-color-success-text);
+  line-height: 1.4;
+}
+
+/* ─── SHARED INPUT CHROME ────────────────────────────────────────────────── */
+.input {
+  width: 100%;
+  padding-inline: var(--th-space-4);
+  padding-block: var(--th-space-3);
+  background: var(--th-color-surface-1);
+  border: 1px solid var(--th-color-border-strong);
+  border-radius: var(--th-radius-md);
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 400;
+  font-size: var(--th-text-base);
+  color: var(--th-color-text-1);
+  min-block-size: 48px;
+  transition:
+    border-color var(--th-duration-base) var(--th-ease-out),
+    box-shadow var(--th-duration-base) var(--th-ease-out);
+  appearance: none;
+}
+
+.input::placeholder {
+  color: var(--th-color-text-4);
+}
+
+.input:hover:not(:disabled) {
+  border-color: var(--th-color-text-3);
+}
+
+.input:focus-visible {
+  outline: none;
+  border-color: var(--th-color-accent);
+  box-shadow: 0 0 0 3px rgba(181, 98, 58, 0.2);
+}
+
+.input:disabled {
+  background: var(--th-color-surface-3);
+  color: var(--th-color-text-4);
+  cursor: not-allowed;
+}
+
+.input--error {
+  border-color: var(--th-color-error);
+}
+
+.input--error:focus-visible {
+  box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.2);
+}
+
+.input--success {
+  border-color: var(--th-color-success);
+}

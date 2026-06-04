@@ -1,0 +1,52 @@
+/* ─── BASE ───────────────────────────────────────────────────────────────── */
+.text {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.italic { font-style: italic; }
+
+/* ─── SIZE ───────────────────────────────────────────────────────────────── */
+.size-xs   { font-size: var(--th-text-xs); }
+.size-sm   { font-size: var(--th-text-sm); }
+.size-base { font-size: var(--th-text-base); }
+.size-md   { font-size: var(--th-text-md);  line-height: 1.5; }
+.size-lg   { font-size: var(--th-text-lg);  line-height: 1.3; }
+.size-xl   { font-size: var(--th-text-xl);  line-height: 1.2; }
+.size-2xl  { font-size: var(--th-text-2xl); line-height: 1.1; letter-spacing: -0.02em; }
+.size-3xl  { font-size: var(--th-text-3xl); line-height: 1.05; letter-spacing: -0.025em; }
+.size-4xl  { font-size: var(--th-text-4xl); line-height: 1;    letter-spacing: -0.03em; }
+.size-5xl  { font-size: var(--th-text-5xl); line-height: 0.97; letter-spacing: -0.03em; }
+
+/* ─── FAMILY ─────────────────────────────────────────────────────────────── */
+.family-display {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 400;
+}
+
+.family-serif {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+}
+
+.family-mono {
+  font-family: var(--th-font-mono);
+  letter-spacing: 0.05em;
+}
+
+/* ─── COLOR ──────────────────────────────────────────────────────────────── */
+.color-1          { color: var(--th-color-text-1); }
+.color-2          { color: var(--th-color-text-2); }
+.color-3          { color: var(--th-color-text-3); }
+.color-4          { color: var(--th-color-text-4); }
+.color-inverse    { color: var(--th-color-text-inverse); }
+.color-inverse-2  { color: var(--th-color-text-inverse-2); }
+.color-accent     { color: var(--th-color-accent); }
+.color-accent-text { color: var(--th-color-accent-text); }
+.color-sage       { color: var(--th-color-sage); }
+.color-sage-text  { color: var(--th-color-sage-text); }
+
+/* ─── ALIGN ──────────────────────────────────────────────────────────────── */
+.align-start  { text-align: start; }
+.align-center { text-align: center; }
+.align-end    { text-align: end; }

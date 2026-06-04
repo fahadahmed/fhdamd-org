@@ -1,30 +1,45 @@
 ---
+import "@fhdamd/threads/tokens";
 import "../styles/global.css";
 import { Header, Footer } from '../components'
+
 const SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>PDF Craft</title>
-    <meta
-      name="google-site-verification"
-      content="RTymfG9lAPowVx8zPgKlrhrccN8Ysk_Mbc7Kp_hfDUA"
+    <title>PDF-Craft — Simple PDF Tools. Pay only for what you use.</title>
+    <meta name="google-site-verification" content="RTymfG9lAPowVx8zPgKlrhrccN8Ysk_Mbc7Kp_hfDUA" />
+
+    <!-- Threads design system fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
     />
-    <script
-      src={`https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`}
-      defer></script>
+
+    <script src={`https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`} defer></script>
+
+    <!-- Initialise theme from localStorage before first paint to avoid flash -->
+    <script is:inline>
+      (function () {
+        const saved = localStorage.getItem('th-theme');
+        const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', saved || preferred);
+      })();
+    </script>
   </head>
   <body>
-    <div class="app">
-      <Header client:load/>
+    <Header client:load />
+    <main>
       <slot />
-      <Footer />
-    </div>
+    </main>
+    <Footer />
   </body>
 </html>

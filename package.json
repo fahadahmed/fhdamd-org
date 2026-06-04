@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "build:pdf-craft": "turbo run build --filter=pdf-craft",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "turbo run format",

@@ -1,18 +1,38 @@
-import './footer.css'
+import { SiteFooter } from '@fhdamd/threads'
 
 export default function Footer() {
-
-  const today = new Date().getFullYear();
-
   return (
-    <footer className="footer-container">
-      <div className="footer-logo"><a href="/">pdf <small>craft</small></a></div>
-      <ul className="footer-links">
-        <li><a href="/terms">Terms & Conditions</a></li>
-        <li><a href="/privacy">Privacy Policy</a></li>
-        <li><a href="/contact">Contact Us</a></li>
-        <li><a href="/resources">Resources</a></li>
-      </ul>
-    </footer>
+    <SiteFooter
+      site="pdf-craft"
+      tagline="Simple tools. Honest pricing."
+      columns={[
+        {
+          title: 'Tools',
+          links: [
+            { href: '/mergepdf',   label: 'Merge PDFs' },
+            { href: '/imagetopdf', label: 'Image to PDF' },
+            { href: '/encryptpdf', label: 'Protect PDF' },
+            { href: '/decryptpdf', label: 'Unlock PDF' },
+          ],
+        },
+        {
+          title: 'Account',
+          links: [
+            { href: '/signup',   label: 'Sign up' },
+            { href: '/signin',   label: 'Log in' },
+            { href: '/#pricing', label: 'Buy credits' },
+          ],
+        },
+        {
+          title: 'Legal',
+          links: [
+            { href: '/privacy', label: 'Privacy Policy' },
+            { href: '/terms',   label: 'Terms & Conditions' },
+            { href: '/contact', label: 'Contact' },
+          ],
+        },
+      ]}
+      bottomRight="Built on the Threads design system"
+    />
   )
 }

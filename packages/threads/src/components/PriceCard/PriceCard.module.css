@@ -1,0 +1,128 @@
+.card {
+  background: var(--th-color-surface-1);
+  border: 1px solid var(--th-color-border-default);
+  border-radius: var(--th-radius-lg);
+  padding: var(--th-space-7) var(--th-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--th-space-4);
+  position: relative;
+}
+
+.featured {
+  border-color: var(--th-color-accent);
+  border-width: 2px;
+}
+
+.featuredBadge {
+  position: absolute;
+  inset-block-start: -13px;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  background: var(--th-color-accent);
+  color: var(--th-color-text-inverse);
+  font-family: var(--th-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: var(--th-radius-pill);
+  white-space: nowrap;
+}
+
+/* Top content wrapper — flex: 1 pushes CTA to bottom of card */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--th-space-3);
+  flex: 1;
+}
+
+.credits {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-size: var(--th-text-4xl);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--th-color-text-1);
+}
+
+.creditsUnit {
+  font-family: var(--th-font-mono);
+  font-size: var(--th-text-lg);
+  letter-spacing: 0;
+  color: var(--th-color-text-3);
+}
+
+.price {
+  font-family: var(--th-font-display);
+  font-variation-settings:
+    "wdth" 92,
+    "wght" 650;
+  font-size: var(--th-text-2xl);
+  letter-spacing: -0.02em;
+  color: var(--th-color-text-1);
+}
+
+.priceNote {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: var(--th-color-text-3);
+}
+
+.divider {
+  border: none;
+  border-block-end: 1px solid var(--th-color-border-subtle);
+  margin-block: var(--th-space-1);
+}
+
+.operations {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--th-space-3);
+}
+
+.operation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--th-text-base);
+  color: var(--th-color-text-2);
+}
+
+.opLabel {
+  font-family: var(--th-font-display);
+  font-variation-settings:
+    "wdth" 90,
+    "wght" 400;
+}
+
+.opTag {
+  border-radius: var(--th-radius-xs);
+  padding-inline: var(--th-space-2);
+  padding-block: 2px;
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  background: var(--th-color-surface-2);
+  color: var(--th-color-text-2);
+  border: 1px solid var(--th-color-border-default);
+  white-space: nowrap;
+}
+
+/* CTA sits below the flex:1 content — always at the bottom of the card */
+.cta {
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: var(--th-space-5);
+  }
+}

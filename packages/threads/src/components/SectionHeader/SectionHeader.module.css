@@ -1,0 +1,59 @@
+.root {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Eyebrow — mono label with leading accent line */
+.eyebrow {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--th-color-text-3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-block-end: var(--th-space-5);
+}
+
+.eyebrow::before {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background: var(--th-color-accent);
+  flex-shrink: 0;
+}
+
+/* Title — responsive serif heading matching reference HTML */
+.title {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  color: var(--th-color-text-1);
+  margin: 0;
+}
+
+.title em {
+  font-style: italic;
+  color: var(--th-color-accent);
+}
+
+/* Intro paragraph */
+.intro {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 380;
+  font-size: var(--th-text-md);
+  line-height: 1.65;
+  color: var(--th-color-text-2);
+  max-inline-size: 580px;
+  margin: 0;
+  margin-block-start: var(--th-space-4);
+}
+
+@media (max-width: 480px) {
+  .intro {
+    font-size: var(--th-text-base);
+  }
+}
