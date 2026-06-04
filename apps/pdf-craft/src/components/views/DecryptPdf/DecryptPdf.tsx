@@ -1,31 +1,40 @@
 'use client'
 import { useState } from 'react'
-import { useDropzone } from 'react-dropzone-esm'
 import { actions } from 'astro:actions'
-import '../../../styles/operations.css'
-import './decryptPdf.css'
-import { Button, Heading, Input } from '../../ui'
+import {
+  Container, Stack, Text, Button, Input, FileDropzone, Callout, Card, Divider,
+} from '@fhdamd/threads'
 import { logEvent } from '../../../utils/lib/analytics'
 
+const XIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+)
+
+const DownloadIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+    <polyline points="7 10 12 15 17 10" />
+    <line x1="12" y1="15" x2="12" y2="3" />
+  </svg>
+)
+
 export default function DecryptPdf() {
-  const [file, setFile] = useState<File | null>(null)
-  const [password, setPassword] = useState('')
+  const [file, setFile]                 = useState<File | null>(null)
+  const [password, setPassword]         = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
   const [downloadLink, setDownloadLink] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [buttonLabel, setButtonLabel] = useState('Unlock PDF')
+  const [error, setError]               = useState<string | null>(null)
+  const [buttonLabel, setButtonLabel]   = useState('Unlock PDF')
 
-  const { getRootProps, getInputProps } = useDropzone({
-    accept: { 'application/pdf': ['.pdf'] },
-    maxFiles: 1,
-    onDrop: (acceptedFiles: File[]) => {
-      if (acceptedFiles.length > 0) {
-        setFile(acceptedFiles[0])
-        setDownloadLink(null)
-        setError(null)
-      }
-    },
-  })
+  const handleFiles = (files: File[]) => {
+    if (files.length > 0) {
+      setFile(files[0])
+      setDownloadLink(null)
+      setError(null)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,7 +48,7 @@ export default function DecryptPdf() {
 
     const creditsResponse = await actions.credits.checkCredits({ task, requestId })
     if (!creditsResponse.data?.success) {
-      alert(`Insufficient credits for ${task}. Please buy more credits.`)
+      setError('Insufficient credits for this operation. Please buy more credits.')
       setButtonLabel('Unlock PDF')
       setIsProcessing(false)
       return
@@ -60,7 +69,7 @@ export default function DecryptPdf() {
         setDownloadLink(response.data.data?.fileUrl || null)
       } else {
         logEvent('pdf_operation_failed', { operation_type: task })
-        setError(response.data?.error || 'Failed to unlock PDF')
+        setError(response.data?.error || 'Failed to unlock PDF.')
       }
     } catch {
       logEvent('pdf_operation_failed', { operation_type: task })
@@ -71,61 +80,98 @@ export default function DecryptPdf() {
     }
   }
 
+  const reset = () => { setDownloadLink(null); setFile(null); setPassword(''); setError(null) }
+
   return (
-    <div className="container">
-      <div className="container-heading">
-        <Heading level="h1" variant="section">Unlock PDF</Heading>
-        <p><a href="/dashboard" className="back-to-dashboard">Back to Dashboard</a></p>
-      </div>
+    <Container>
+      <Stack gap={6} style={{ paddingBlock: 'var(--th-space-8)' }}>
 
-      {downloadLink ? (
-        <div className="decrypt-form">
-          <p>Your unlocked PDF is ready.</p>
-          <a href={downloadLink} download>Download Unlocked PDF</a>
-          <Button
-            type="button"
-            kind="secondary"
-            size="xl"
-            onClick={() => { setDownloadLink(null); setFile(null); setPassword('') }}
-            text="Unlock Another PDF"
-          />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--th-space-3)' }}>
+          <Stack gap={1}>
+            <Text as="h1" size="2xl" color="1" weight={650} width={90}>Unlock PDF</Text>
+            <Text size="sm" color="2">Remove password protection from a PDF file.</Text>
+          </Stack>
+          <Button href="/dashboard" variant="ghost" size="sm">Back to dashboard</Button>
         </div>
-      ) : (
-        <>
-          {!file ? (
-            <div {...getRootProps()} className="dropzone-container">
-              <input {...getInputProps()} />
-              <p>Drag and drop a password-protected PDF here or click to browse</p>
-            </div>
-          ) : (
-            <div className="sortable-item">
-              {file.name}
-              <Button type="button" kind="tertiary" size="sm" onClick={() => setFile(null)} text="❌" />
-            </div>
-          )}
 
-          {file && (
-            <form onSubmit={handleSubmit} className="decrypt-form">
-              <Input
-                type="password"
-                name="password"
-                id="password"
-                value={password}
-                labelText="PDF Password"
-                setValue={setPassword}
-              />
-              {error && <p className="error-message">{error}</p>}
-              <Button
-                type="submit"
-                kind="primary"
-                size="xl"
-                disabled={isProcessing || !password}
-                text={buttonLabel}
-              />
-            </form>
-          )}
-        </>
-      )}
-    </div>
+        <Card variant="elevated">
+          <Stack gap={5} style={{ padding: 'var(--th-space-6)' }}>
+
+            {downloadLink ? (
+              <Stack gap={4} align="center" style={{ paddingBlock: 'var(--th-space-4)' }}>
+                <Callout variant="success" title="Your PDF is unlocked">
+                  The password protection has been removed successfully.
+                </Callout>
+                <div style={{ display: 'flex', gap: 'var(--th-space-3)', flexWrap: 'wrap' }}>
+                  <Button href={downloadLink} variant="solid-terra" icon={<DownloadIcon />}>
+                    Download unlocked PDF
+                  </Button>
+                  <Button variant="ghost" onClick={reset}>Unlock another PDF</Button>
+                </div>
+              </Stack>
+            ) : (
+              <>
+                {!file ? (
+                  <FileDropzone
+                    label="Upload PDF"
+                    hint="Drag and drop or click to browse — one PDF file"
+                    accept="application/pdf"
+                    onFiles={handleFiles}
+                  />
+                ) : (
+                  <Stack gap={3}>
+                    <Text size="sm" color="2" weight={500}>Selected file</Text>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: 'var(--th-space-3) var(--th-space-4)',
+                      borderRadius: 'var(--th-radius-md)',
+                      border: '1px solid var(--th-color-border)',
+                      background: 'var(--th-color-surface-2)',
+                    }}>
+                      <Text size="sm" color="1">{file.name}</Text>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => setFile(null)} aria-label="Remove file"><XIcon /></Button>
+                    </div>
+                  </Stack>
+                )}
+
+                {file && (
+                  <>
+                    <Divider />
+                    <form onSubmit={handleSubmit}>
+                      <Stack gap={4}>
+                        <Input
+                          type="password"
+                          name="password"
+                          id="password"
+                          label="PDF password"
+                          hint="Enter the password that protects this file"
+                          value={password}
+                          onChange={e => setPassword(e.target.value)}
+                          autoComplete="current-password"
+                          required
+                        />
+                        {error && <Callout variant="error">{error}</Callout>}
+                        <Button
+                          type="submit"
+                          variant="solid-terra"
+                          disabled={isProcessing || !password}
+                          style={{ alignSelf: 'flex-start' }}
+                        >
+                          {buttonLabel}
+                        </Button>
+                      </Stack>
+                    </form>
+                  </>
+                )}
+              </>
+            )}
+
+          </Stack>
+        </Card>
+
+      </Stack>
+    </Container>
   )
 }

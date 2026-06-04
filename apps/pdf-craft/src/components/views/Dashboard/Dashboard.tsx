@@ -1,15 +1,14 @@
 'use client';
-import './dashboard.css'
 import { useEffect, useState } from 'react';
 import { db, auth } from '../../../firebase/client';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
-import { UserFileList, OperationsContainer } from '../../slices';
-import { Heading, Tabs, TabsContent, TabsList, TabsTrigger, EmptyState } from '../../ui';
-
+import { Container, Stack, Text, Badge, Tabs, type TabItem } from '@fhdamd/threads';
+import { OperationsContainer } from '../../slices';
+import { UserFileList } from '../../slices';
 
 export default function Dashboard() {
-  const [files, setFiles] = useState<any[]>([]);
+  const [files, setFiles]     = useState<any[]>([]);
   const [profile, setProfile] = useState<{ name?: string; credits?: number; isSubscriber?: boolean }>({});
   const [loading, setLoading] = useState(true);
 
@@ -17,21 +16,18 @@ export default function Dashboard() {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
-          const filesRef = collection(db, 'users', user.uid, 'files');
-          const snapshot = await getDocs(filesRef);
-          setFiles(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+          const filesRef  = collection(db, 'users', user.uid, 'files');
+          const snapshot  = await getDocs(filesRef);
+          setFiles(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
 
-          // Fetch profile
-          const profileRef = doc(db, 'users', user.uid);
+          const profileRef  = doc(db, 'users', user.uid);
           const profileSnap = await getDoc(profileRef);
           if (profileSnap.exists()) {
             const data = profileSnap.data();
-            if (data.profile) {
-              setProfile(data.profile);
-            }
+            if (data.profile) setProfile(data.profile);
           }
         } catch (error) {
-          console.error('Error fetching files:', error);
+          console.error('Error fetching dashboard data:', error);
           setFiles([]);
         }
       }
@@ -40,50 +36,62 @@ export default function Dashboard() {
     return () => unsubscribe();
   }, []);
 
+  const tabItems: TabItem[] = [
+    {
+      id: 'files',
+      label: 'Files',
+      content: <UserFileList files={files.filter(f => !f.deleted)} />,
+    },
+    {
+      id: 'history',
+      label: 'History',
+      content: <UserFileList files={files.filter(f => f.deleted)} mode="trash" />,
+    },
+  ];
+
   return (
-    <div className="dashboard-container">
-      <div className='dashboard-header'>
-        <div>
-          <Heading level='h1' variant='page'>Welcome, {profile.name ? `${profile.name}` : ''}</Heading>
-          <p>Manage your PDF files and operations here.</p>
-        </div>
-        <div>
+    <Container>
+      <Stack gap={8} style={{ paddingBlock: 'var(--th-space-8)' }}>
+
+        {/* ── Page header ───────────────────────────────────────────────── */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 'var(--th-space-4)' }}>
+          <Stack gap={2}>
+            <Text as="h1" size="3xl" color="1" weight={650} width={90}>
+              Welcome{profile.name ? `, ${profile.name}` : ''}
+            </Text>
+            <Text as="p" size="sm" color="2">
+              Manage your PDF files and operations below.
+            </Text>
+          </Stack>
+
           {profile.credits !== undefined && (
-            <p><strong>Available Credits:</strong> {profile.credits}</p>
+            <Badge variant="terra">
+              {profile.credits} {profile.credits === 1 ? 'credit' : 'credits'} remaining
+            </Badge>
           )}
         </div>
-      </div>
-      <div className="dashboard-tasks">
-        <Heading level='h3' variant="subsection">Tasks</Heading>
-        <OperationsContainer />
-      </div>
-      <div className="dashboard-files">
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <Tabs defaultValue="files">
 
-            <TabsList>
-              <TabsTrigger value="files">
-                Files
-              </TabsTrigger>
+        {/* ── Operations ────────────────────────────────────────────────── */}
+        <Stack gap={4}>
+          <Text as="h2" size="lg" color="1" weight={600} width={90}>
+            Tools
+          </Text>
+          <OperationsContainer />
+        </Stack>
 
-              <TabsTrigger value="trash">
-                History
-              </TabsTrigger>
-            </TabsList>
+        {/* ── Files ─────────────────────────────────────────────────────── */}
+        <Stack gap={4}>
+          <Text as="h2" size="lg" color="1" weight={600} width={90}>
+            Your files
+          </Text>
+          {loading ? (
+            <Text color="2" size="sm">Loading your files...</Text>
+          ) : (
+            <Tabs items={tabItems} defaultActiveId="files" ariaLabel="File views" />
+          )}
+        </Stack>
 
-            <TabsContent value="files">
-              <UserFileList files={files.filter(f => !f.deleted)} />
-            </TabsContent>
-
-            <TabsContent value="trash">
-              <UserFileList files={files.filter(f => f.deleted)} mode='trash' />
-            </TabsContent>
-
-          </Tabs>
-        )}
-      </div>
-    </div>
+      </Stack>
+    </Container>
   );
 }

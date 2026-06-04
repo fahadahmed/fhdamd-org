@@ -37,6 +37,13 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* main grows to fill available space, pushing the footer to the bottom */
+body > main {
+  flex: 1;
 }
 
 h1, h2, h3, h4, h5, h6 {
