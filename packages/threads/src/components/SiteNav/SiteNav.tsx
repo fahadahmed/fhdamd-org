@@ -197,6 +197,7 @@ export function SiteNav({
                     {c.label}
                   </Button>
                 ))}
+
               </div>
             )}
 
@@ -253,6 +254,7 @@ export function SiteNav({
                     key={c.href}
                     href={c.href}
                     variant={c.variant ?? "ghost"}
+                    size="sm"
                     className={styles.mobileCtaBtn}
                     onClick={handleMobileLinkClick}
                   >

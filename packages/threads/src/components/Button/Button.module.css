@@ -103,15 +103,15 @@
   filter: brightness(0.96);
 }
 
-/* ─── SIZES ──────────────────────────────────────────────────────────────── */
-.sm {
+/* ─── SIZES — compound selectors so they always win over .button base ─────── */
+.button.sm {
   font-size: var(--th-text-sm);
   padding-inline: var(--th-space-4);
   padding-block: var(--th-space-2);
   min-block-size: 36px;
 }
 
-.lg {
+.button.lg {
   font-size: var(--th-text-md);
   padding-inline: var(--th-space-7);
   padding-block: var(--th-space-4);

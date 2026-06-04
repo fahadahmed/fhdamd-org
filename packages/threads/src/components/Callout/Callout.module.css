@@ -1,0 +1,62 @@
+.callout {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--th-space-3);
+  padding: var(--th-space-4) var(--th-space-5);
+  border-radius: var(--th-radius-md);
+  border-inline-start: 3px solid transparent;
+}
+
+/* ─── ICON ───────────────────────────────────────────────────────────────── */
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-block-start: 2px; /* optical alignment with first line of text */
+}
+
+/* ─── BODY ───────────────────────────────────────────────────────────────── */
+.body {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.title {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 92, "wght" 600;
+  font-size: var(--th-text-base);
+  margin-block-end: 3px;
+  line-height: 1.4;
+}
+
+.content {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 380;
+  font-size: var(--th-text-base);
+  line-height: 1.55;
+  opacity: 0.9;
+}
+
+/* ─── VARIANTS ───────────────────────────────────────────────────────────── */
+.success {
+  background: var(--th-color-success-subtle);
+  border-inline-start-color: var(--th-color-success);
+  color: var(--th-color-success-text);
+}
+
+.warning {
+  background: var(--th-color-warning-subtle);
+  border-inline-start-color: var(--th-color-warning);
+  color: var(--th-color-warning-text);
+}
+
+.error {
+  background: var(--th-color-error-subtle);
+  border-inline-start-color: var(--th-color-error);
+  color: var(--th-color-error-text);
+}
+
+.info {
+  background: var(--th-color-info-subtle);
+  border-inline-start-color: var(--th-color-info);
+  color: var(--th-color-info-text);
+}

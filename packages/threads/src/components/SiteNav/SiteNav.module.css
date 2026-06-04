@@ -118,7 +118,6 @@
 
 .ctaGroup {
   display: none; /* shown via media query below */
-  align-items: center;
   gap: var(--th-space-2);
 }
 
@@ -213,6 +212,7 @@
 
   .ctaGroup {
     display: flex;
+    align-items: center; /* must be here, not on display:none rule */
   }
 
   .mobileNav {
