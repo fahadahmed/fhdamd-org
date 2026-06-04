@@ -135,3 +135,17 @@ export type { ProgressProps, ProgressVariant } from "./components/Progress/Progr
 // Data
 export { DataTable } from "./components/DataTable/DataTable";
 export type { DataTableProps, DataTableColumn, SortDir } from "./components/DataTable/DataTable";
+
+// Typography
+export { Text } from "./components/Text/Text";
+export type { TextProps, TextSize, TextFamily, TextColor, TextAlign, TextAs } from "./components/Text/Text";
+
+// Page composition patterns
+export { SectionHeader } from "./components/SectionHeader/SectionHeader";
+export type { SectionHeaderProps } from "./components/SectionHeader/SectionHeader";
+
+export { Hero } from "./components/Hero/Hero";
+export type { HeroProps } from "./components/Hero/Hero";
+
+export { DarkStrip } from "./components/DarkStrip/DarkStrip";
+export type { DarkStripProps } from "./components/DarkStrip/DarkStrip";

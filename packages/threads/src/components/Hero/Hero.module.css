@@ -1,0 +1,91 @@
+.hero {
+  padding-block: var(--th-space-12) var(--th-space-8);
+}
+
+/* Eyebrow — matches section-eyebrow pattern from PDF-Craft */
+.eyebrow {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--th-color-text-3);
+  margin-block-end: var(--th-space-5);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background: var(--th-color-accent);
+  flex-shrink: 0;
+}
+
+/* H1 — primary heading */
+.heading {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-size: var(--th-text-5xl);
+  line-height: 0.97;
+  letter-spacing: -0.03em;
+  color: var(--th-color-text-1);
+  margin: 0 0 4px;
+}
+
+/* H2 — muted second line */
+.subheading {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-size: var(--th-text-5xl);
+  line-height: 0.97;
+  letter-spacing: -0.03em;
+  color: var(--th-color-text-3);
+  margin: 0 0 var(--th-space-5);
+}
+
+.subheading em {
+  font-style: italic;
+}
+
+/* Body paragraph */
+.body {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 380;
+  font-size: var(--th-text-md);
+  line-height: 1.65;
+  color: var(--th-color-text-2);
+  max-inline-size: 580px;
+  margin: 0 0 var(--th-space-7);
+}
+
+/* Feature chips */
+.chips {
+  display: flex;
+  gap: var(--th-space-2);
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--th-space-7);
+}
+
+.chip {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: var(--th-radius-pill);
+  border: 1px solid var(--th-color-border-strong);
+  color: var(--th-color-text-3);
+  background: var(--th-color-surface-2);
+}
+
+/* Actions row */
+.actions {
+  display: flex;
+  gap: var(--th-space-3);
+  flex-wrap: wrap;
+  align-items: center;
+}

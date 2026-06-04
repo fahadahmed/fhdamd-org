@@ -75,10 +75,10 @@ const preview: Preview = {
           [
             "Introduction",
             "Primitives",  ["Colours", "Typography", "Spacing"],
-            "Atoms",       ["Button", "Badge", "Toggle", "AvailabilityPill"],
+            "Atoms",       ["Button", "Badge", "Toggle", "AvailabilityPill", "Text"],
             "Layout",      ["Container", "Stack", "Cluster", "Grid", "Section", "Divider"],
             "Navigation",  ["Tabs", "Breadcrumb", "Stepper"],
-            "Components",  ["Card", "OpCard", "Accordion", "PriceCard", "Testimonial", "StepCard", "ProjectCard", "ClientWorkRow", "EssayRow", "Progress", "DataTable"],
+            "Components",  ["Card", "OpCard", "Accordion", "PriceCard", "Testimonial", "StepCard", "ProjectCard", "ClientWorkRow", "EssayRow", "Progress", "DataTable", "SectionHeader", "Hero", "DarkStrip"],
             "Feedback",    ["Callout", "Banner", "Toast"],
             "Forms",       ["Input", "Textarea", "Select", "Checkbox", "Radio", "FileDropzone"],
             "Overlays",    ["Dialog", "Tooltip"],
