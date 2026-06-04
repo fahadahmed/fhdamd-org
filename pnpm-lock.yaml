@@ -90,6 +90,9 @@ importers:
       '@dnd-kit/utilities':
         specifier: ^3.2.2
         version: 3.2.2(react@19.2.6)
+      '@fhdamd/threads':
+        specifier: workspace:*
+        version: link:../../packages/threads
       '@google-cloud/pubsub':
         specifier: ^5.3.0
         version: 5.3.0
