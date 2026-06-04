@@ -1,16 +1,35 @@
 import { AutoGrid, OpCard } from '@fhdamd/threads'
 
+/* ── Inline SVG icons — stroke colour injected by OpCard's CSS (.icon svg) ── */
+
 const MergeIcon = () => (
-  <img src="/icons/icon-merge.svg" alt="" width={40} height={40} />
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M8 6H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3" />
+    <path d="M15 3H9l-1 3h8l-1-3z" />
+    <path d="M12 11v6M9 14l3 3 3-3" />
+  </svg>
 )
+
 const ConvertIcon = () => (
-  <img src="/icons/icon-convert.svg" alt="" width={40} height={40} />
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x={3} y={3} width={18} height={18} rx={2} />
+    <circle cx={8.5} cy={8.5} r={1.5} />
+    <polyline points="21 15 16 10 5 21" />
+  </svg>
 )
+
 const EncryptIcon = () => (
-  <img src="/icons/icon-encrypt.svg" alt="" width={40} height={40} />
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x={3} y={11} width={18} height={11} rx={2} />
+    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+  </svg>
 )
+
 const UnlockIcon = () => (
-  <img src="/icons/icon-unlock.svg" alt="" width={40} height={40} />
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x={3} y={11} width={18} height={11} rx={2} />
+    <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+  </svg>
 )
 
 export function OperationsContainer() {

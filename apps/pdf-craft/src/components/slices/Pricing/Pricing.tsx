@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
-import { PriceCard } from '@fhdamd/threads'
+import { Container, Stack, Text, AutoGrid, PriceCard } from '@fhdamd/threads'
 import { auth } from '../../../firebase/client'
 import type { PricingOption } from '../../../utils'
 import { fetchCms } from '../../../utils/lib/cms'
@@ -13,17 +13,16 @@ type PricingResponse = {
   };
 }
 
-/** Derive the operations breakdown shown on each card from credit count */
 function getOps(credits: number) {
   return [
-    { label: 'Merge PDFs',      tag: `${credits / 2} merges` },
-    { label: 'Image to PDF',    tag: `${credits / 2} converts` },
+    { label: 'Merge PDFs',       tag: `${credits / 2} merges` },
+    { label: 'Image to PDF',     tag: `${credits / 2} converts` },
     { label: 'Protect / Unlock', tag: `${Math.floor(credits / 4)} ops` },
   ]
 }
 
 export default function Pricing() {
-  const [isLoggedIn, setIsLoggedIn]       = useState(false)
+  const [isLoggedIn, setIsLoggedIn]         = useState(false)
   const [pricingOptions, setPricingOptions] = useState<PricingOption[]>([])
 
   useEffect(() => {
@@ -73,19 +72,11 @@ export default function Pricing() {
 
   if (pricingOptions.length === 0) return null
 
-  /* Featured tier is the middle one (index 1) */
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-        gap: 'var(--th-space-4)',
-        maxWidth: '880px',
-      }}
-    >
+    <AutoGrid minColWidth="260px" gap={4}>
       {pricingOptions.map((option, i) => {
-        const price  = `$${(option.price / 100).toFixed(2)}`
-        const perCr  = (option.price / 100 / option.credits).toFixed(2)
+        const price      = `$${(option.price / 100).toFixed(2)}`
+        const perCr      = (option.price / 100 / option.credits).toFixed(2)
         const isFeatured = i === 1
 
         return (
@@ -110,6 +101,6 @@ export default function Pricing() {
           />
         )
       })}
-    </div>
+    </AutoGrid>
   )
 }
