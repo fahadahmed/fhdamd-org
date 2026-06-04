@@ -61,38 +61,16 @@ img {
   border-radius: 4px;
 }
 
-/* ─── AUTH / LEGACY PAGE HELPERS ─────────────────────────────────────────── */
-/* These classes remain for SigninForm / SignupForm / other pages not yet
-   migrated to Threads components.                                            */
+/* ─── LEGACY PAGE HELPERS ─────────────────────────────────────────────────── */
+/* Retained for pages not yet migrated to Threads components (dashboard etc.) */
 
 .form-container {
   display: grid;
   justify-content: center;
   text-align: center;
-  border: 2px solid var(--th-color-border-strong);
-  padding: 4em 6em;
-  border-radius: 8px;
+  border: 1px solid var(--th-color-border);
+  padding: var(--th-space-8);
+  border-radius: var(--th-radius-xl);
   max-width: 500px;
   background: var(--th-color-surface-1);
-}
-
-.auth-container {
-  max-width: 500px;
-  border: 2px solid var(--th-color-border-strong);
-  padding: 4em;
-  border-radius: 8px;
-  background: var(--th-color-surface-1);
-}
-
-.container-heading {
-  color: var(--th-color-text-1);
-  font-size: 48px;
-  font-family: "Josefin Slab", serif;
-  font-weight: 700;
-}
-
-.container-subheading {
-  color: var(--th-color-text-2);
-  font-size: 18px;
-  font-family: "Instrument Sans", sans-serif;
 }

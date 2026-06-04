@@ -1,14 +1,90 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { Footer, SignupForm } from "../components";
+import { SignupForm } from "../components";
 ---
 
 <Layout>
-  <div class="auth-container">
-    <h2 class="container-heading">Create an account for PDF-Craft</h2>
-    <p class="container-subheading">
-      Already have an account? <a href="/signin">Sign-in</a>
-    </p>
-    <SignupForm client:load />
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1 class="auth-title">Create an account</h1>
+        <p class="auth-subtitle">Start processing PDFs — pay only for what you use</p>
+      </div>
+
+      <SignupForm client:load />
+
+      <p class="auth-footer-link">
+        Already have an account? <a href="/signin">Sign in</a>
+      </p>
+    </div>
   </div>
 </Layout>
+
+<style>
+  .auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100dvh - 80px);
+    padding: var(--th-space-6);
+  }
+
+  .auth-card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--th-color-surface-1);
+    border: 1px solid var(--th-color-border);
+    border-radius: var(--th-radius-2xl);
+    padding: var(--th-space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--th-space-6);
+  }
+
+  .auth-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--th-space-2);
+  }
+
+  .auth-title {
+    font-size: var(--th-text-2xl);
+    font-family: var(--th-font-display);
+    font-variation-settings: "wdth" 90, "wght" 650;
+    color: var(--th-color-text-1);
+    margin: 0;
+  }
+
+  .auth-subtitle {
+    font-size: var(--th-text-sm);
+    color: var(--th-color-text-2);
+    font-family: var(--th-font-display);
+    margin: 0;
+  }
+
+  .auth-footer-link {
+    font-size: var(--th-text-sm);
+    color: var(--th-color-text-2);
+    text-align: center;
+    font-family: var(--th-font-display);
+    margin: 0;
+  }
+
+  .auth-footer-link a {
+    color: var(--th-color-accent-text);
+    font-weight: 550;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .auth-footer-link a:hover {
+    color: var(--th-color-accent);
+  }
+
+  @media (max-width: 480px) {
+    .auth-card {
+      padding: var(--th-space-6);
+      border-radius: var(--th-radius-xl);
+    }
+  }
+</style>
