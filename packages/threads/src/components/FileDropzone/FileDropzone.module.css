@@ -1,0 +1,74 @@
+.zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--th-space-2);
+  padding: var(--th-space-8);
+  border: 2px dashed var(--th-color-border-strong);
+  border-radius: var(--th-radius-lg);
+  cursor: pointer;
+  position: relative;
+  text-align: center;
+  transition:
+    background var(--th-duration-base) var(--th-ease-out),
+    border-color var(--th-duration-base) var(--th-ease-out);
+}
+
+.zone:hover:not(.disabled),
+.zone:focus-visible {
+  background: var(--th-color-surface-2);
+  border-color: var(--th-color-accent);
+}
+
+.zone:focus-visible {
+  outline: 2px solid var(--th-color-focus-ring);
+  outline-offset: 3px;
+}
+
+.dragOver {
+  background: var(--th-color-accent-subtle);
+  border-color: var(--th-color-accent);
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.hasError {
+  border-color: var(--th-color-error);
+}
+
+.uploadIcon {
+  color: var(--th-color-text-3);
+}
+
+.text {
+  font-size: var(--th-text-base);
+  color: var(--th-color-text-2);
+}
+
+.browse {
+  color: var(--th-color-accent);
+  font-variation-settings: "wdth" 92, "wght" 550;
+}
+
+.zoneHint {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: var(--th-color-text-4);
+  text-align: center;
+}
+
+.hiddenInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

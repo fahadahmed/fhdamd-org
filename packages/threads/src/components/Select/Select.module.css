@@ -1,0 +1,22 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.select {
+  padding-inline-end: var(--th-space-8); /* room for caret */
+  cursor: pointer;
+}
+
+.select:disabled {
+  cursor: not-allowed;
+}
+
+.caret {
+  position: absolute;
+  inset-inline-end: var(--th-space-3);
+  pointer-events: none;
+  color: var(--th-color-text-3);
+  flex-shrink: 0;
+}
