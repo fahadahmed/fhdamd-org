@@ -1,10 +1,16 @@
 // This file has been automatically migrated to valid ESM format by Storybook.
 import { createRequire } from "node:module";
+import { readFileSync } from "node:fs";
+import { resolve, dirname as pathDirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import type { StorybookConfig } from "@storybook/react-vite";
 
 import { join, dirname } from "path";
 
 const require = createRequire(import.meta.url);
+
+const __dirname = pathDirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(readFileSync(resolve(__dirname, "../package.json"), "utf-8"));
 
 /**
  * This function is used to resolve the absolute path of a package.
@@ -25,6 +31,15 @@ const config: StorybookConfig = {
   framework: {
     name: getAbsolutePath("@storybook/react-vite"),
     options: {},
+  },
+  async viteFinal(config) {
+    return {
+      ...config,
+      define: {
+        ...config.define,
+        __THREADS_VERSION__: JSON.stringify(pkg.version),
+      },
+    };
   },
 };
 export default config;
