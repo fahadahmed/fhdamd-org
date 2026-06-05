@@ -2,6 +2,7 @@
   "name": "@fhdamd/threads",
   "version": "0.2.0",
   "private": false,
+  "license": "MIT",
   "description": "Earthy, accessible React + CSS Modules design system for fhdamd products",
   "keywords": ["design-system", "react", "css-modules", "components", "ui"],
   "repository": {
@@ -27,7 +28,9 @@
   },
   "files": [
     "dist",
-    "src/tokens/tokens.css"
+    "src/tokens/tokens.css",
+    "LICENSE",
+    "README.md"
   ],
   "publishConfig": {
     "access": "public"
