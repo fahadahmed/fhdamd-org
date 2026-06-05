@@ -7,13 +7,9 @@ on:
     paths:
       - packages/threads/**
 
-permissions:
-  checks: write
-  contents: read
-
 jobs:
   deploy:
-    name: Build and deploy Storybook (live)
+    name: Build and deploy Storybook
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -36,11 +32,10 @@ jobs:
       - name: Build Storybook
         run: pnpm --filter @fhdamd/threads build-storybook
 
-      - name: Deploy to Firebase Hosting (live channel)
+      - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_THREADS }}
           projectId: fhdamd-threads
           channelId: live
-          entryPoint: packages/threads
