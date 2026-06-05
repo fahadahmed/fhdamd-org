@@ -1,5 +1,11 @@
 import type { CSSProperties } from 'react'
 
+declare const __THREADS_VERSION__: string
+
+export function PackageVersion() {
+  return <>{__THREADS_VERSION__}</>
+}
+
 export function Chip({ children }: { children: string }) {
   return (
     <span style={{
