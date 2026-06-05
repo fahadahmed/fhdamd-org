@@ -1,5 +1,8 @@
 ---
-if (Astro.cookies.has('__session')) {
-  return Astro.redirect('/dashboard')
-}
+import Layout from "../layouts/Layout.astro";
+import { PaymentCancel } from "../components";
 ---
+
+<Layout>
+  <PaymentCancel client:load />
+</Layout>
