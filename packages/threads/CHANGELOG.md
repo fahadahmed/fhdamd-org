@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.3.0...threads-v0.3.1) (2026-06-05)
+
+
+### Bug Fixes
+
+* **threads:** switch to Vite lib build for correct CSS Modules support ([47b8004](https://github.com/fahadahmed/fhdamd-org/commit/47b800486dc54bda60c69fd3f235ae39b7a127db))
+
 ## [0.3.0](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.2.0...threads-v0.3.0) (2026-06-05)
 
 
