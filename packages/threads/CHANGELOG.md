@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.2.0...threads-v0.3.0) (2026-06-05)
+
+
+### Features
+
+* **pdf-craft:** implementing @fhdamd/threads npm package ([3c42df2](https://github.com/fahadahmed/fhdamd-org/commit/3c42df26288b961b228a483dd0f7bf63d70072ba))
+* **threads:** add ./styles export for component CSS ([ac78087](https://github.com/fahadahmed/fhdamd-org/commit/ac780879f7e1c1279d60b85e95faca4b950dd9c7))
+
 ## [0.2.0](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.1.0...threads-v0.2.0) (2026-06-05)
 
 
