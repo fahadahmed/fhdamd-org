@@ -91,8 +91,8 @@ importers:
         specifier: ^3.2.2
         version: 3.2.2(react@19.2.6)
       '@fhdamd/threads':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.3.1
+        version: 0.3.1
       '@google-cloud/pubsub':
         specifier: ^5.3.0
         version: 5.3.0
@@ -1247,8 +1247,8 @@ packages:
   '@fastify/busboy@3.2.0':
     resolution: {integrity: sha512-m9FVDXU3GT2ITSe0UaMA5rU3QkfC/UXtCU8y0gSN/GugTqtVldOBWIB5V6V3sbmenVZUIpU6f+mPEO2+m5iTaA==}
 
-  '@fhdamd/threads@0.3.0':
-    resolution: {integrity: sha512-PaYUyEePeLgKWv58xqfg+bml5WeyG4XWmBj2wNbh1rPupRHneh1sMtAz2iMFazIRxlkKq4+/tGlAiqKkBACFbA==}
+  '@fhdamd/threads@0.3.1':
+    resolution: {integrity: sha512-uEbq8hGQrArWvQPgwQhM9UKf+wbp2M7v6Y1iSLOEcb6iE0Arl7DptwvZgUuW7dr4shDSAYmhHSdPGurMwahmFw==}
 
   '@firebase/ai@2.12.0':
     resolution: {integrity: sha512-b+OL4vdyiSLZL/7dLd67V55CjKJvU9MpNmwnday7eA6GG2+J4iwUEsEHgw0/jKY3A41FfkF0SrnYFvtKbQZ65A==}
@@ -8223,7 +8223,7 @@ snapshots:
 
   '@fastify/busboy@3.2.0': {}
 
-  '@fhdamd/threads@0.3.0':
+  '@fhdamd/threads@0.3.1':
     dependencies:
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
