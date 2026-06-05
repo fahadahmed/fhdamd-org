@@ -1,6 +1,6 @@
 {
   "name": "@fhdamd/threads",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": false,
   "description": "Earthy, accessible React + CSS Modules design system for fhdamd products",
   "keywords": ["design-system", "react", "css-modules", "components", "ui"],
