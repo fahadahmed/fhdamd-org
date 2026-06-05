@@ -1,135 +1,89 @@
-# Turborepo starter
+# fhdamd-org
 
-This Turborepo starter is maintained by the Turborepo core team.
+Personal monorepo for fhdamd products — a pnpm workspace managed with Turborepo.
 
-## Using this example
+## Workspace layout
 
-Run the following command:
+```
+apps/
+  pdf-craft/        Astro + React web app for PDF creation and manipulation (Firebase App Hosting)
+  fhdamd-web/       Personal site (Astro + React, Firebase App Hosting)
+  pdf-processor/    Express microservice for server-side PDF processing
+
+packages/
+  threads/          @fhdamd/threads — React + CSS Modules design system (published to npm)
+
+tooling/
+  eslint/           Shared ESLint config
+  prettier/         Shared Prettier config
+```
+
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) ≥ 18
+- [pnpm](https://pnpm.io/) 10 — `npm install -g pnpm`
+
+## Getting started
 
 ```sh
-npx create-turbo@latest
+# Install all dependencies
+pnpm install
+
+# Start all apps and packages in dev mode
+pnpm dev
+
+# Start a single app
+pnpm dev --filter=pdf-craft
+pnpm dev --filter=fhdamd-web
+
+# Build everything
+pnpm build
+
+# Build a single app
+pnpm build --filter=pdf-craft
 ```
 
-## What's inside?
+## Packages
 
-This Turborepo includes the following packages/apps:
+### `@fhdamd/threads`
 
-### Apps and Packages
+The shared design system used across all fhdamd apps. Published to npm.
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+```sh
+# Build the library
+pnpm --filter=@fhdamd/threads build
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+# Storybook (component development)
+pnpm --filter=@fhdamd/threads storybook
 
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+# Run tests
+pnpm --filter=@fhdamd/threads test
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+See [packages/threads](packages/threads/README.md) for full usage docs.
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+## Tooling
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+| Tool | Purpose |
+|------|---------|
+| [Turborepo](https://turborepo.com) | Task runner with caching |
+| [pnpm workspaces](https://pnpm.io/workspaces) | Monorepo package management |
+| [TypeScript](https://www.typescriptlang.org/) | Type checking across all packages |
+| [ESLint](https://eslint.org/) | Linting |
+| [Prettier](https://prettier.io/) | Formatting |
+| [Commitizen](https://commitizen.github.io/) | Conventional commit prompts (`pnpm commit`) |
+| [Release Please](https://github.com/googleapis/release-please) | Automated versioning and changelogs |
 
-### Develop
+## Committing
 
-To develop all apps and packages, run the following command:
+Use the interactive commit prompt to follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+```sh
+pnpm commit
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+Commits scoped to a package (`feat(threads):`, `fix(pdf-craft):`) trigger Release Please to version that package automatically.
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+## License
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+[MIT](./LICENSE)
