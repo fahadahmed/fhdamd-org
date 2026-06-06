@@ -38,12 +38,14 @@ const mergePdfsSchema = z.object({
   files: z.array(z.instanceof(File)),
   requestId: z.string(),
   task: z.string(),
+  creditCost: z.coerce.number().int().positive(),
 });
 
 const imageToPdfSchema = z.object({
   images: z.array(z.instanceof(File)),
   requestId: z.string(),
   task: z.string(),
+  creditCost: z.coerce.number().int().positive(),
 });
 
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -176,6 +178,9 @@ export const operations = {
           requestId,
           task,
         );
+        await firestore.collection("users").doc(userId).update({
+          "profile.credits": FieldValue.increment(-creditCost),
+        });
         log.event("app-operation", {
           requestId,
           feature: task,
@@ -381,6 +386,9 @@ export const operations = {
           requestId,
           task,
         );
+        await firestore.collection("users").doc(userId).update({
+          "profile.credits": FieldValue.increment(-creditCost),
+        });
         log.event("app-operation", {
           requestId,
           feature: task,
@@ -412,9 +420,10 @@ export const operations = {
       permissions: z.enum(["full-access", "view-and-print", "read-only"]).default("full-access"),
       requestId: z.string(),
       task: z.string(),
+      creditCost: z.coerce.number().int().positive(),
     }),
     handler: async (input, context) => {
-      const { file, userPassword, ownerPassword, permissions, requestId, task } = input;
+      const { file, userPassword, ownerPassword, permissions, requestId, task, creditCost } = input;
       const cookieHeader = context.request.headers.get("cookie") || "";
       const sessionCookie = cookieHeader
         .split("; ")
@@ -495,6 +504,9 @@ export const operations = {
           requestId,
           task,
         );
+        await firestore.collection("users").doc(userId).update({
+          "profile.credits": FieldValue.increment(-creditCost),
+        });
         log.event("app-operation", { requestId, feature: task, status: "success" });
 
         return { success: true, message: "PDF encrypted successfully", data: { fileUrl } };
@@ -516,9 +528,10 @@ export const operations = {
       password: z.string().min(1),
       requestId: z.string(),
       task: z.string(),
+      creditCost: z.coerce.number().int().positive(),
     }),
     handler: async (input, context) => {
-      const { file, password, requestId, task } = input;
+      const { file, password, requestId, task, creditCost } = input;
       const cookieHeader = context.request.headers.get("cookie") || "";
       const sessionCookie = cookieHeader
         .split("; ")
@@ -597,6 +610,9 @@ export const operations = {
           requestId,
           task,
         );
+        await firestore.collection("users").doc(userId).update({
+          "profile.credits": FieldValue.increment(-creditCost),
+        });
         log.event("app-operation", { requestId, feature: task, status: "success" });
 
         return { success: true, message: "PDF decrypted successfully", data: { fileUrl } };

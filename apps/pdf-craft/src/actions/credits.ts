@@ -64,9 +64,10 @@ export const credits = {
     input: z.object({
       task: z.string(),
       requestId: z.string(),
+      creditCost: z.number().int().positive(),
     }),
     handler: async (input, context) => {
-      const { task, requestId } = input;
+      const { task, requestId, creditCost } = input;
       log.event("check-credits", {
         requestId,
         feature: task,
@@ -110,18 +111,12 @@ export const credits = {
         const userData = userDoc.data();
         const credits = userData?.profile?.credits || 0;
 
-        // Assuming each task costs 1 credit
-        if (credits <= 0) {
+        if (credits < creditCost) {
           return {
             success: false,
             error: "Insufficient credits",
           };
         }
-
-        // Deduct one credit for the task
-        await userRef.update({
-          "profile.credits": admin.firestore.FieldValue.increment(-1),
-        });
 
         log.event("check-credits", {
           requestId,

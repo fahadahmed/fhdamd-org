@@ -28,7 +28,7 @@ const DownloadIcon = () => (
   </svg>
 )
 
-export default function EncryptPdf() {
+export default function EncryptPdf({ creditCost }: { creditCost: number }) {
   const [file, setFile]                   = useState<File | null>(null)
   const [userPassword, setUserPassword]   = useState('')
   const [ownerPassword, setOwnerPassword] = useState('')
@@ -56,7 +56,7 @@ export default function EncryptPdf() {
     setButtonLabel('Checking credits...')
     setIsProcessing(true)
 
-    const creditsResponse = await actions.credits.checkCredits({ task, requestId })
+    const creditsResponse = await actions.credits.checkCredits({ task, requestId, creditCost })
     if (!creditsResponse.data?.success) {
       setError('Insufficient credits for this operation. Please buy more credits.')
       setButtonLabel('Protect PDF')
@@ -73,6 +73,7 @@ export default function EncryptPdf() {
     formData.append('permissions', permissions)
     formData.append('requestId', requestId)
     formData.append('task', task)
+    formData.append('creditCost', String(creditCost))
 
     try {
       const response = await actions.operations.encryptPdf(formData)

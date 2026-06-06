@@ -20,7 +20,7 @@ const DownloadIcon = () => (
   </svg>
 )
 
-export default function DecryptPdf() {
+export default function DecryptPdf({ creditCost }: { creditCost: number }) {
   const [file, setFile]                 = useState<File | null>(null)
   const [password, setPassword]         = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
@@ -46,7 +46,7 @@ export default function DecryptPdf() {
     setButtonLabel('Checking credits...')
     setIsProcessing(true)
 
-    const creditsResponse = await actions.credits.checkCredits({ task, requestId })
+    const creditsResponse = await actions.credits.checkCredits({ task, requestId, creditCost })
     if (!creditsResponse.data?.success) {
       setError('Insufficient credits for this operation. Please buy more credits.')
       setButtonLabel('Unlock PDF')
@@ -61,6 +61,7 @@ export default function DecryptPdf() {
     formData.append('password', password)
     formData.append('requestId', requestId)
     formData.append('task', task)
+    formData.append('creditCost', String(creditCost))
 
     try {
       const response = await actions.operations.decryptPdf(formData)

@@ -1,12 +1,19 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { ImageToPdf } from "../components";
+import { fetchCms } from "../utils/lib/cms";
+import type { Operation } from "../utils";
 
 if (!Astro.cookies.has("__session")) {
   return Astro.redirect("/signin");
 }
+
+type OperationsResponse = { data: { allOperations: Operation[] } }
+const opsRes = await fetchCms<OperationsResponse>('operations')
+const op = opsRes.data.allOperations.find(o => o.iconKey === 'convert')
+const creditCost = op?.creditCost ?? 2
 ---
 
 <Layout>
-  <ImageToPdf client:load />
+  <ImageToPdf creditCost={creditCost} client:load />
 </Layout>

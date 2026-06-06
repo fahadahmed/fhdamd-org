@@ -46,7 +46,7 @@ function SortableItem({ id, children }: { id: string; children: React.ReactNode 
 
 const MAX_IMAGES = 10
 
-export default function ImageToPdf() {
+export default function ImageToPdf({ creditCost }: { creditCost: number }) {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const [isConverting, setIsConverting]   = useState(false)
   const [downloadLink, setDownloadLink]   = useState<string | null>(null)
@@ -83,7 +83,7 @@ export default function ImageToPdf() {
     setButtonLabel('Checking credits...')
     setIsConverting(true)
 
-    const response = await actions.credits.checkCredits({ task, requestId })
+    const response = await actions.credits.checkCredits({ task, requestId, creditCost })
     if (!response.data?.success) {
       setError('Insufficient credits for this operation. Please buy more credits.')
       setButtonLabel('Convert to PDF')
@@ -97,6 +97,7 @@ export default function ImageToPdf() {
     uploadedFiles.forEach(file => formData.append('images', file))
     formData.append('requestId', requestId)
     formData.append('task', task)
+    formData.append('creditCost', String(creditCost))
 
     try {
       const convertResponse = await actions.operations.imageToPdf(formData)

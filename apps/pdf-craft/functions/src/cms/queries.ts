@@ -20,4 +20,20 @@ export const CMS_QUERIES = {
       }
     }
   `,
+  operations: `
+    query OperationsQuery {
+      allOperations(orderBy: sortOrder_ASC) {
+        id
+        _createdAt
+        title
+        detail
+        creditCost
+        active
+        actionLabel
+        actionRoute
+        iconKey
+        sortOrder
+      }
+    }
+  `,
 };

@@ -6,8 +6,9 @@ import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { Container, Stack, Text, Badge, Tabs, type TabItem } from '@fhdamd/threads';
 import { OperationsContainer } from '../../slices';
 import { UserFileList } from '../../slices';
+import type { Operation } from '../../../utils';
 
-export default function Dashboard() {
+export default function Dashboard({ operations }: { operations: Operation[] }) {
   const [files, setFiles]     = useState<any[]>([]);
   const [profile, setProfile] = useState<{ name?: string; credits?: number; isSubscriber?: boolean }>({});
   const [loading, setLoading] = useState(true);
@@ -76,7 +77,7 @@ export default function Dashboard() {
           <Text as="h2" size="lg" color="1" weight={600} width={90}>
             Tools
           </Text>
-          <OperationsContainer />
+          <OperationsContainer operations={operations} activeOnly />
         </Stack>
 
         {/* ── Files ─────────────────────────────────────────────────────── */}

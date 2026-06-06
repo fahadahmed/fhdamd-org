@@ -46,7 +46,7 @@ function SortableItem({ id, children }: { id: string; children: React.ReactNode 
 
 const MAX_FILES = 5
 
-export default function MultiPdfUploader() {
+export default function MultiPdfUploader({ creditCost }: { creditCost: number }) {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const [isMerging, setIsMerging]         = useState(false)
   const [downloadLink, setDownloadLink]   = useState<string | null>(null)
@@ -83,7 +83,7 @@ export default function MultiPdfUploader() {
     setButtonLabel('Checking credits...')
     setIsMerging(true)
 
-    const response = await actions.credits.checkCredits({ task, requestId })
+    const response = await actions.credits.checkCredits({ task, requestId, creditCost })
     if (!response.data?.success) {
       setError('Insufficient credits for this operation. Please buy more credits.')
       setButtonLabel('Merge PDFs')
@@ -97,6 +97,7 @@ export default function MultiPdfUploader() {
     uploadedFiles.forEach(file => formData.append('files', file))
     formData.append('requestId', requestId)
     formData.append('task', task)
+    formData.append('creditCost', String(creditCost))
 
     try {
       const mergeResponse = await actions.operations.mergePdfs(formData)
