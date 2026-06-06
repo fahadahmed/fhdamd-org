@@ -18,11 +18,18 @@ export async function publish(
   }
   const pubsub = new PubSub({ projectId });
   const buffer = Buffer.from(JSON.stringify(payload));
-  log.event("pubsub-publish", {
+  log.event("🔄 pubsub-publish", {
     requestId,
     feature,
     status: "start",
     topic,
   });
-  return pubsub.topic(topic).publishMessage({ data: buffer });
+  try {
+    const messageId = await pubsub.topic(topic).publishMessage({ data: buffer });
+    log.event("🔄 pubsub-publish", { requestId, feature, status: "success", topic, messageId });
+    return messageId;
+  } catch (error) {
+    log.exception(error as Error, { requestId, feature, topic });
+    throw error;
+  }
 }

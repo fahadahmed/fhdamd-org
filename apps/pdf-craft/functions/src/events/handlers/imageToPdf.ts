@@ -3,9 +3,8 @@ import type { AppEventHandler } from "./types";
 import { log } from "../../utils/logger";
 
 export const handleImageToPdf: AppEventHandler = async (payload) => {
-  const { userEmail, fileName, fileUrl, requestId } = payload;
+  const { userId, userEmail, fileId, fileName, fileUrl, requestId } = payload;
 
-  // Send email notification using Resend
   try {
     const resend = getResend();
     await resend.emails.send({
@@ -20,12 +19,14 @@ export const handleImageToPdf: AppEventHandler = async (payload) => {
         <p>Thank you for using PDF Craft!</p>
       `,
     });
-    log.info(
-      `✅ RequestID: ${requestId} - Email sent to ${userEmail} for file ${fileName}`,
-    );
-  } catch (error) {
-    log.error(`❌ RequestID: ${requestId} - Error sending email notification`, {
-      error: error instanceof Error ? error.message : String(error),
+    log.business("📧 email-sent", {
+      requestId,
+      userId,
+      fileId,
+      feature: "image-to-pdf",
+      status: "success",
     });
+  } catch (error) {
+    log.exception(error as Error, { requestId, userId, fileId, feature: "image-to-pdf" });
   }
 };

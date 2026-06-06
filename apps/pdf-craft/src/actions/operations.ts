@@ -55,14 +55,14 @@ export const operations = {
     accept: "form",
     input: mergePdfsSchema,
     handler: async (input, context) => {
-      const { files, requestId, task } = input;
+      const { files, requestId, task, creditCost } = input;
       const cookieHeader = context.request.headers.get("cookie") || "";
       const sessionCookie = cookieHeader
         .split("; ")
         .find((c) => c.startsWith("__session="))
         ?.split("=")[1];
 
-      log.event("app-operation", {
+      log.event("📄 app-operation", {
         requestId,
         feature: task,
         status: "start",
@@ -181,9 +181,19 @@ export const operations = {
         await firestore.collection("users").doc(userId).update({
           "profile.credits": FieldValue.increment(-creditCost),
         });
-        log.event("app-operation", {
+        log.business("💰 credit-deducted", {
           requestId,
           feature: task,
+          userId,
+          fileId,
+          creditCost,
+        });
+        log.business("📄 app-operation", {
+          requestId,
+          feature: task,
+          userId,
+          fileId,
+          creditCost,
           status: "success",
         });
 
@@ -205,11 +215,7 @@ export const operations = {
             issues: error.issues,
           };
         }
-        log.error("app-operation: unexpected error", {
-          requestId,
-          feature: task,
-          error: error instanceof Error ? error.message : String(error),
-        });
+        log.exception(error as Error, { requestId, feature: task });
         return { success: false, error: "Issue merging files" };
       }
     },
@@ -219,14 +225,14 @@ export const operations = {
     accept: "form",
     input: imageToPdfSchema,
     handler: async (input, context) => {
-      const { images, requestId, task } = input;
+      const { images, requestId, task, creditCost } = input;
       const cookieHeader = context.request.headers.get("cookie") || "";
       const sessionCookie = cookieHeader
         .split("; ")
         .find((c) => c.startsWith("__session="))
         ?.split("=")[1];
 
-      log.event("app-operation", {
+      log.event("📄 app-operation", {
         requestId,
         feature: task,
         status: "start",
@@ -389,9 +395,19 @@ export const operations = {
         await firestore.collection("users").doc(userId).update({
           "profile.credits": FieldValue.increment(-creditCost),
         });
-        log.event("app-operation", {
+        log.business("💰 credit-deducted", {
           requestId,
           feature: task,
+          userId,
+          fileId,
+          creditCost,
+        });
+        log.business("📄 app-operation", {
+          requestId,
+          feature: task,
+          userId,
+          fileId,
+          creditCost,
           status: "success",
         });
 
@@ -401,11 +417,7 @@ export const operations = {
           data: { fileUrl },
         };
       } catch (error) {
-        log.error("app-operation: unexpected error", {
-          requestId,
-          feature: task,
-          error: error instanceof Error ? error.message : String(error),
-        });
+        log.exception(error as Error, { requestId, feature: task });
         return { success: false, error: "Failed to convert images to PDF" };
       }
     },
@@ -430,7 +442,7 @@ export const operations = {
         .find((c) => c.startsWith("__session="))
         ?.split("=")[1];
 
-      log.event("app-operation", { requestId, feature: task, status: "start" });
+      log.event("📄 app-operation", { requestId, feature: task, status: "start" });
 
       if (!sessionCookie) {
         log.warn("app-operation: unauthorized", { requestId, feature: task, status: "fail" });
@@ -507,15 +519,12 @@ export const operations = {
         await firestore.collection("users").doc(userId).update({
           "profile.credits": FieldValue.increment(-creditCost),
         });
-        log.event("app-operation", { requestId, feature: task, status: "success" });
+        log.business("💰 credit-deducted", { requestId, feature: task, userId, fileId, creditCost });
+        log.business("📄 app-operation", { requestId, feature: task, userId, fileId, creditCost, status: "success" });
 
         return { success: true, message: "PDF encrypted successfully", data: { fileUrl } };
       } catch (error) {
-        log.error("app-operation: unexpected error", {
-          requestId,
-          feature: task,
-          error: error instanceof Error ? error.message : String(error),
-        });
+        log.exception(error as Error, { requestId, feature: task });
         return { success: false, error: "Failed to encrypt PDF" };
       }
     },
@@ -538,7 +547,7 @@ export const operations = {
         .find((c) => c.startsWith("__session="))
         ?.split("=")[1];
 
-      log.event("app-operation", { requestId, feature: task, status: "start" });
+      log.event("📄 app-operation", { requestId, feature: task, status: "start" });
 
       if (!sessionCookie) {
         log.warn("app-operation: unauthorized", { requestId, feature: task, status: "fail" });
@@ -613,15 +622,12 @@ export const operations = {
         await firestore.collection("users").doc(userId).update({
           "profile.credits": FieldValue.increment(-creditCost),
         });
-        log.event("app-operation", { requestId, feature: task, status: "success" });
+        log.business("💰 credit-deducted", { requestId, feature: task, userId, fileId, creditCost });
+        log.business("📄 app-operation", { requestId, feature: task, userId, fileId, creditCost, status: "success" });
 
         return { success: true, message: "PDF decrypted successfully", data: { fileUrl } };
       } catch (error) {
-        log.error("app-operation: unexpected error", {
-          requestId,
-          feature: task,
-          error: error instanceof Error ? error.message : String(error),
-        });
+        log.exception(error as Error, { requestId, feature: task });
         return { success: false, error: "Failed to decrypt PDF" };
       }
     },

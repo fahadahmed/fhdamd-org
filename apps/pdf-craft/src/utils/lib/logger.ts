@@ -8,7 +8,7 @@ export type LogContext = {
   action?: string;
   status?: "start" | "success" | "fail";
   type?: "event" | "business" | "error";
-  [key: string]: string | object | undefined;
+  [key: string]: string | number | object | undefined;
 };
 
 function base(

@@ -51,7 +51,7 @@ export const credits = {
           },
         };
       } catch (error) {
-        console.error("Error fetching user credits:", error);
+        log.exception(error as Error, { feature: "get-user-credits" });
         return {
           success: false,
           error: "Failed to fetch user credits",
@@ -68,7 +68,7 @@ export const credits = {
     }),
     handler: async (input, context) => {
       const { task, requestId, creditCost } = input;
-      log.event("check-credits", {
+      log.event("💰 check-credits", {
         requestId,
         feature: task,
         status: "start",
@@ -80,7 +80,7 @@ export const credits = {
         ?.split("=")[1];
 
       if (!sessionCookie) {
-        log.error("Unauthorized access attempt", {
+        log.error("🔐 Unauthorized access attempt", {
           requestId,
           feature: task,
         });
@@ -112,15 +112,25 @@ export const credits = {
         const credits = userData?.profile?.credits || 0;
 
         if (credits < creditCost) {
+          log.warn("💰 check-credits: insufficient credits", {
+            requestId,
+            feature: task,
+            userId,
+            creditCost,
+            balance: credits,
+            status: "fail",
+          });
           return {
             success: false,
             error: "Insufficient credits",
           };
         }
 
-        log.event("check-credits", {
+        log.event("💰 check-credits", {
           requestId,
           feature: task,
+          userId,
+          creditCost,
           status: "success",
         });
         return {
@@ -130,7 +140,7 @@ export const credits = {
           },
         };
       } catch (error) {
-        console.error("Error checking credits:", error);
+        log.exception(error as Error, { requestId, feature: task });
         return {
           success: false,
           error: "Failed to check credits",
@@ -167,12 +177,16 @@ export const credits = {
         const userId = decodedToken.uid;
 
         const userRef = firestore.collection("users").doc(userId);
-        // process payment logic here
-
         await userRef.update({
           "profile.credits": admin.firestore.FieldValue.increment(credits),
         });
 
+        log.business("💰 credits-purchased", {
+          feature: "buy-credits",
+          status: "success",
+          userId,
+          credits,
+        });
         return {
           success: true,
           payload: {
@@ -180,7 +194,7 @@ export const credits = {
           },
         };
       } catch (error) {
-        console.error("Error buying credits:", error);
+        log.exception(error as Error, { feature: "buy-credits" });
         return {
           success: false,
           error: "Failed to buy credits",

@@ -3,7 +3,7 @@ import type { AppEventHandler } from "./types";
 import { log } from "../../utils/logger";
 
 export const handleEncryptPdf: AppEventHandler = async (payload) => {
-  const { userEmail, fileName, fileUrl, requestId } = payload;
+  const { userId, userEmail, fileId, fileName, fileUrl, requestId } = payload;
 
   try {
     const resend = getResend();
@@ -19,12 +19,14 @@ export const handleEncryptPdf: AppEventHandler = async (payload) => {
         <p>Thank you for using PDF Craft!</p>
       `,
     });
-    log.info(
-      `✅ RequestID: ${requestId} - Email sent to ${userEmail} for file ${fileName}`,
-    );
-  } catch (error) {
-    log.error(`❌ RequestID: ${requestId} - Error sending email notification`, {
-      error: error instanceof Error ? error.message : String(error),
+    log.business("📧 email-sent", {
+      requestId,
+      userId,
+      fileId,
+      feature: "pdf-encrypt",
+      status: "success",
     });
+  } catch (error) {
+    log.exception(error as Error, { requestId, userId, fileId, feature: "pdf-encrypt" });
   }
 };
