@@ -6,6 +6,7 @@ import {
   getFirebaseApp,
   getFirebaseFirestore,
 } from '../firebase/server';
+import { log } from '../utils/lib/logger';
 
 getFirebaseApp();
 
@@ -46,10 +47,11 @@ export const user = {
     input: SignUpSchema,
     handler: async (input, _ctx) => {
       const { name, email, password, captchaToken } = input;
-      // 🔐 Verify reCAPTCHA before doing anything else
-      const isHuman = await verifyRecaptcha(captchaToken);
+      log.event("🔐 user-registration", { feature: "sign-up", status: "start" });
 
+      const isHuman = await verifyRecaptcha(captchaToken);
       if (!isHuman) {
+        log.warn("🔐 user-registration: captcha failed", { feature: "sign-up", status: "fail" });
         return {
           success: false,
           error: 'Captcha verification failed. Try again.',
@@ -65,7 +67,6 @@ export const user = {
           displayName: name,
         });
 
-        // 2. Create user profile inside 'profile' field
         const userRef = firestore.collection('users').doc(userRecord.uid);
         await userRef.set({
           profile: {
@@ -75,6 +76,11 @@ export const user = {
           },
         });
 
+        log.business("🔐 user-registered", {
+          feature: "sign-up",
+          status: "success",
+          userId: userRecord.uid,
+        });
         return {
           success: true,
           payload: {
@@ -93,6 +99,7 @@ export const user = {
         }
 
         if ((error as any).code === 'auth/email-already-exists') {
+          log.warn("🔐 user-registration: email already exists", { feature: "sign-up", status: "fail" });
           return {
             success: false,
             error: 'Account with this email already exists',
@@ -106,8 +113,7 @@ export const user = {
           };
         }
 
-        // eslint-disable-next-line no-console
-        console.log('error', error);
+        log.exception(error as Error, { feature: "sign-up" });
         return {
           success: false,
           error: 'Issue creating a new user',
@@ -121,10 +127,11 @@ export const user = {
     input: VerifyUserSchema,
     handler: async (input, context) => {
       const { idToken, captchaToken } = input;
-      // 🔐 Verify reCAPTCHA before doing anything else
-      const isHuman = await verifyRecaptcha(captchaToken);
+      log.event("🔑 user-signin", { feature: "sign-in", status: "start" });
 
+      const isHuman = await verifyRecaptcha(captchaToken);
       if (!isHuman) {
+        log.warn("🔑 user-signin: captcha failed", { feature: "sign-in", status: "fail" });
         return {
           success: false,
           error: 'Captcha verification failed. Try again.',
@@ -133,16 +140,19 @@ export const user = {
 
       const auth = await getFirebaseAuth();
       try {
+        let decodedIdToken;
         try {
-          await auth.verifyIdToken(idToken);
+          decodedIdToken = await auth.verifyIdToken(idToken);
         } catch (error) {
+          log.warn("🔑 user-signin: invalid id token", { feature: "sign-in", status: "fail" });
           return {
             success: false,
             error: 'Invalid Token',
             status: 401,
           };
         }
-        // Create and set session cookie
+
+        const userId = decodedIdToken.uid;
         const fiveDays = 60 * 60 * 24 * 5 * 1000;
         const sessionCookie = await auth.createSessionCookie(idToken, {
           expiresIn: fiveDays,
@@ -155,8 +165,14 @@ export const user = {
           sameSite: 'strict',
           maxAge: fiveDays,
         });
+
+        log.business("🔑 user-signed-in", {
+          feature: "sign-in",
+          status: "success",
+          userId,
+        });
       } catch (error) {
-        console.error('Error verifying user:', error);
+        log.exception(error as Error, { feature: "sign-in" });
         return {
           success: false,
           error: 'Failed to verify user',
@@ -178,16 +194,17 @@ export const user = {
     }),
     handler: async (input, context) => {
       const { captchaToken } = input;
-      // 🔐 Verify reCAPTCHA before doing anything else
       const isHuman = await verifyRecaptcha(captchaToken);
 
       if (!isHuman) {
+        log.warn("🚪 user-signout: captcha failed", { feature: "sign-out", status: "fail" });
         return {
           success: false,
           error: 'Captcha verification failed. Try again.',
         };
       }
       context.cookies.delete('__session', { path: '/' });
+      log.event("🚪 user-signout", { feature: "sign-out", status: "success" });
       return { success: true };
     },
   }),
