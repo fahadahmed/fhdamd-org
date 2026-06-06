@@ -14,6 +14,6 @@ const operations: Operation[] = [...operationsRes.data.allOperations]
   .sort((a, b) => a.sortOrder - b.sortOrder)
 ---
 
-<Layout>
+<Layout title="Dashboard — PDF-Craft" noindex={true}>
   <DashboardView operations={operations} client:load />
 </Layout>

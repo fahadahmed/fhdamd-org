@@ -6,6 +6,7 @@ import {
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getAnalytics, type Analytics } from 'firebase/analytics';
+import { getPerformance } from 'firebase/performance';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 
 const firebaseConfig = {
@@ -24,6 +25,7 @@ let analytics: Analytics | null = null;
 
 if (typeof window !== 'undefined') {
   analytics = getAnalytics(app);
+  getPerformance(app);
   initializeAppCheck(app, {
     provider: new ReCaptchaV3Provider(import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY),
     isTokenAutoRefreshEnabled: true,

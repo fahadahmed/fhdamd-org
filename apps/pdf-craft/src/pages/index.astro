@@ -114,7 +114,27 @@ const ctaAction = h(
 const ss = { marginBottom: "var(--th-space-8)" }; // shared section style
 ---
 
-<Layout>
+<Layout
+  title="PDF-Craft — Simple PDF Tools. Pay only for what you use."
+  description="Merge, protect, convert and unlock PDF documents in seconds. Buy credits once — pay only for what you use, no subscriptions, no expiry."
+>
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "PDF-Craft",
+      "url": "https://pdf-craft.app",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": "Merge, protect, convert and unlock PDF documents in seconds. Buy credits once — pay only for what you use, no subscriptions, no expiry.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "description": "Free to sign up. Pay per use with credits that never expire."
+      }
+    })} />
+  </Fragment>
   <!-- HERO -->
   <Container>
     <Hero

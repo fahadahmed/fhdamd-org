@@ -5,6 +5,22 @@ import "../styles/global.css";
 import { Header, Footer } from '../components'
 
 const SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = 'PDF-Craft — Simple PDF Tools. Pay only for what you use.',
+  description = 'Merge, protect, convert and unlock PDF documents in seconds. Buy credits once — pay only for what you use, no subscriptions, no expiry.',
+  ogImage = 'https://pdf-craft.app/og-default.png',
+  noindex = false,
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, 'https://pdf-craft.app').href;
 ---
 
 <!doctype html>
@@ -14,7 +30,26 @@ const SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>PDF-Craft — Simple PDF Tools. Pay only for what you use.</title>
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="PDF-Craft" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
     <meta name="google-site-verification" content="RTymfG9lAPowVx8zPgKlrhrccN8Ysk_Mbc7Kp_hfDUA" />
 
     <!-- Threads design system fonts -->
@@ -25,7 +60,9 @@ const SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
       rel="stylesheet"
     />
 
-    <script src={`https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`} defer></script>
+    <script is:inline src={`https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`} defer></script>
+
+    <slot name="head" />
 
     <!-- Initialise theme from localStorage before first paint to avoid flash -->
     <script is:inline>
@@ -44,3 +81,22 @@ const SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
     <Footer />
   </body>
 </html>
+
+<script>
+  import { logEvent } from '../utils/lib/analytics';
+
+  window.addEventListener('error', (event) => {
+    logEvent('exception', {
+      description: `${event.message} (${event.filename}:${event.lineno})`,
+      fatal: false,
+    });
+  });
+
+  window.addEventListener('unhandledrejection', (event) => {
+    if (event.reason?.name === 'AbortError') return;
+    logEvent('exception', {
+      description: event.reason?.message ?? String(event.reason),
+      fatal: false,
+    });
+  });
+</script>
