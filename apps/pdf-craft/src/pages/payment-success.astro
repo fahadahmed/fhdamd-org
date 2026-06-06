@@ -1,13 +1,13 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { PaymentSuccess } from "../components";
+import { PaymentSuccess as PaymentSuccessComponent } from "../components";
 ---
 
 <Layout>
-  <PaymentSuccess client:load />
+  <PaymentSuccessComponent client:load />
 </Layout>
 
 <script>
-  import { logEvent } from '../utils/lib/analytics';
-  logEvent('purchase', { currency: 'USD' });
+  import { logEvent } from "../utils/lib/analytics";
+  logEvent("purchase", { currency: "USD" });
 </script>

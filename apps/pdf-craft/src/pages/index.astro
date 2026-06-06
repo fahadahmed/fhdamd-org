@@ -1,9 +1,10 @@
 ---
-import { createElement as h } from "react";
+import React, { createElement as h } from "react";
 import Layout from "../layouts/Layout.astro";
 import { Pricing } from "../components";
+import { iconMap, deriveVariant } from "../components/slices/Operations/Operations";
 import { fetchCms } from "../utils/lib/cms";
-import { type Faq } from "../utils";
+import { type Faq, type Operation } from "../utils";
 import {
   Hero,
   Container,
@@ -19,8 +20,16 @@ import {
 } from "@fhdamd/threads";
 
 type FaqResponse = { data: { allFaqs: Faq[] } };
-const faqResponse = await fetchCms<FaqResponse>("faqs");
+type OperationsResponse = { data: { allOperations: Operation[] } };
+
+const [faqResponse, operationsResponse] = await Promise.all([
+  fetchCms<FaqResponse>("faqs"),
+  fetchCms<OperationsResponse>("operations"),
+]);
+
 const faqs = faqResponse.data.allFaqs;
+const operations: Operation[] = [...operationsResponse.data.allOperations]
+  .sort((a, b) => a.sortOrder - b.sortOrder);
 const faqItems = faqs.map(({ title, content }) => ({
   question: title,
   answer: content,
@@ -100,7 +109,7 @@ const ctaAction = h(
   Button as any,
   { variant: "solid-terra", size: "lg", href: "/signup" },
   "Get started — it's free",
-);
+) as React.ReactNode;
 
 const ss = { marginBottom: "var(--th-space-8)" }; // shared section style
 ---
@@ -137,189 +146,20 @@ const ss = { marginBottom: "var(--th-space-8)" }; // shared section style
           style={ss}
         />
         <div class="op-grid">
-          <div class="op-live">
-            <OpCard
-              name="Merge PDFs"
-              description="Combine multiple PDF documents into a single file — in the right order, every time."
-              credits={2}
-              href="/mergepdf"
-              iconVariant="terra"
-              ctaLabel="Merge"
-              status="live"
-              icon={h(
-                "svg",
-                {
-                  viewBox: "0 0 24 24",
-                  fill: "none",
-                  stroke: "currentColor",
-                  strokeWidth: 1.5,
-                  strokeLinecap: "round" as const,
-                  strokeLinejoin: "round" as const,
-                },
-                h("path", {
-                  d: "M8 6H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3",
-                }),
-                h("path", { d: "M15 3H9l-1 3h8l-1-3z" }),
-                h("path", { d: "M12 11v6M9 14l3 3 3-3" }),
-              )}
-            />
-          </div>
-          <div class="op-live">
-            <OpCard
-              name="Image to PDF"
-              description="Convert JPG & PNG images to clean PDF format instantly. No quality loss."
-              credits={2}
-              href="/imagetopdf"
-              iconVariant="sage"
-              ctaLabel="Convert"
-              status="live"
-              icon={h(
-                "svg",
-                {
-                  viewBox: "0 0 24 24",
-                  fill: "none",
-                  stroke: "currentColor",
-                  strokeWidth: 1.5,
-                  strokeLinecap: "round" as const,
-                  strokeLinejoin: "round" as const,
-                },
-                h("rect", { x: 3, y: 3, width: 18, height: 18, rx: 2 }),
-                h("circle", { cx: 8.5, cy: 8.5, r: 1.5 }),
-                h("polyline", { points: "21 15 16 10 5 21" }),
-              )}
-            />
-          </div>
-          <div class="op-live">
-            <OpCard
-              name="Protect PDF"
-              description="Secure your PDF from unauthorised use with a strong password."
-              credits={4}
-              href="/encryptpdf"
-              iconVariant="terra"
-              ctaLabel="Protect"
-              status="live"
-              icon={h(
-                "svg",
-                {
-                  viewBox: "0 0 24 24",
-                  fill: "none",
-                  stroke: "currentColor",
-                  strokeWidth: 1.5,
-                  strokeLinecap: "round" as const,
-                  strokeLinejoin: "round" as const,
-                },
-                h("rect", { x: 3, y: 11, width: 18, height: 11, rx: 2 }),
-                h("path", { d: "M7 11V7a5 5 0 0 1 10 0v4" }),
-              )}
-            />
-          </div>
-          <div class="op-live">
-            <OpCard
-              name="Unlock PDF"
-              description="Remove password protection and restrictions from your documents easily."
-              credits={4}
-              href="/decryptpdf"
-              iconVariant="sage"
-              ctaLabel="Unlock"
-              status="live"
-              icon={h(
-                "svg",
-                {
-                  viewBox: "0 0 24 24",
-                  fill: "none",
-                  stroke: "currentColor",
-                  strokeWidth: 1.5,
-                  strokeLinecap: "round" as const,
-                  strokeLinejoin: "round" as const,
-                },
-                h("rect", { x: 3, y: 11, width: 18, height: 11, rx: 2 }),
-                h("path", { d: "M7 11V7a5 5 0 0 1 9.9-1" }),
-              )}
-            />
-          </div>
-          <OpCard
-            name="Split PDF"
-            description="Divide a PDF into separate pages or custom page ranges."
-            credits={3}
-            iconVariant="muted"
-            status="soon"
-            icon={h(
-              "svg",
-              {
-                viewBox: "0 0 24 24",
-                fill: "none",
-                stroke: "currentColor",
-                strokeWidth: 1.5,
-                strokeLinecap: "round" as const,
-              },
-              h("path", {
-                d: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z",
-              }),
-              h("polyline", { points: "14 2 14 8 20 8" }),
-              h("line", { x1: 12, y1: 11, x2: 12, y2: 17 }),
-              h("line", { x1: 9, y1: 14, x2: 15, y2: 14 }),
-            )}
-          />
-          <OpCard
-            name="Compress PDF"
-            description="Reduce file size while preserving quality for sharing and storage."
-            credits={3}
-            iconVariant="muted"
-            status="soon"
-            icon={h(
-              "svg",
-              {
-                viewBox: "0 0 24 24",
-                fill: "none",
-                stroke: "currentColor",
-                strokeWidth: 1.5,
-                strokeLinecap: "round" as const,
-              },
-              h("path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" }),
-              h("polyline", { points: "17 8 12 3 7 8" }),
-              h("line", { x1: 12, y1: 3, x2: 12, y2: 15 }),
-            )}
-          />
-          <OpCard
-            name="Sign PDF"
-            description="Add your digital signature to documents quickly and securely."
-            credits={4}
-            iconVariant="muted"
-            status="soon"
-            icon={h(
-              "svg",
-              {
-                viewBox: "0 0 24 24",
-                fill: "none",
-                stroke: "currentColor",
-                strokeWidth: 1.5,
-                strokeLinecap: "round" as const,
-              },
-              h("path", {
-                d: "M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z",
-              }),
-            )}
-          />
-          <OpCard
-            name="AI Summary"
-            description="Get a concise overview or detailed breakdown of any document using AI."
-            credits={5}
-            iconVariant="muted"
-            status="soon"
-            icon={h(
-              "svg",
-              {
-                viewBox: "0 0 24 24",
-                fill: "none",
-                stroke: "currentColor",
-                strokeWidth: 1.5,
-                strokeLinecap: "round" as const,
-              },
-              h("path", {
-                d: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
-              }),
-            )}
-          />
+          {operations.map((op, i) => (
+            <div class={op.active ? "op-live" : ""}>
+              <OpCard
+                name={op.title}
+                description={op.detail}
+                credits={op.creditCost}
+                href={op.active ? op.actionRoute : undefined}
+                ctaLabel={op.actionLabel}
+                icon={iconMap[op.iconKey]}
+                iconVariant={deriveVariant(op, i)}
+                status={op.active ? "live" : "soon"}
+              />
+            </div>
+          ))}
         </div>
       </Section>
     </Container>

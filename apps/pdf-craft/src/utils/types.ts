@@ -12,3 +12,15 @@ export type PricingOption = {
   credits: number;
   description: string;
 };
+
+export type Operation = {
+  id: string;
+  title: string;
+  detail: string;
+  creditCost: number;
+  active: boolean;
+  actionLabel: string;
+  actionRoute: string;
+  iconKey: string;
+  sortOrder: number;
+};

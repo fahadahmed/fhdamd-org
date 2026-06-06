@@ -1,12 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import { Dashboard as DashboardView } from '../components'
+import { fetchCms } from '../utils/lib/cms'
+import type { Operation } from '../utils'
 
 if (!Astro.cookies.has('__session')) {
   return Astro.redirect('/signin')
 }
+
+type OperationsResponse = { data: { allOperations: Operation[] } }
+const operationsRes = await fetchCms<OperationsResponse>('operations')
+const operations: Operation[] = [...operationsRes.data.allOperations]
+  .sort((a, b) => a.sortOrder - b.sortOrder)
 ---
 
 <Layout>
-  <DashboardView client:load />
+  <DashboardView operations={operations} client:load />
 </Layout>
