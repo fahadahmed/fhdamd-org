@@ -3,11 +3,30 @@ import Layout from "../layouts/Layout.astro";
 import { PaymentSuccess as PaymentSuccessComponent } from "../components";
 ---
 
-<Layout>
+<Layout noindex={true}>
   <PaymentSuccessComponent client:load />
 </Layout>
 
 <script>
   import { logEvent } from "../utils/lib/analytics";
-  logEvent("purchase", { currency: "USD" });
+
+  const sessionId = new URLSearchParams(window.location.search).get("session_id");
+
+  if (sessionId) {
+    const dedupKey = `purchase_fired_${sessionId}`;
+    if (!sessionStorage.getItem(dedupKey)) {
+      const raw = sessionStorage.getItem("pending_purchase");
+      const purchase = raw ? JSON.parse(raw) : {};
+
+      logEvent("purchase", {
+        transaction_id: sessionId,
+        currency: "USD",
+        value: purchase.value ?? 0,
+        items: purchase.items ?? [],
+      });
+
+      sessionStorage.setItem(dedupKey, "1");
+      sessionStorage.removeItem("pending_purchase");
+    }
+  }
 </script>

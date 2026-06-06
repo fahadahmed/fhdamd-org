@@ -44,7 +44,19 @@ export default function Pricing() {
   }, [])
 
   const handleBuyCredits = async (option: PricingOption) => {
-    logEvent('begin_checkout', { credits: option.credits, value: option.price / 100, currency: 'USD' })
+    const items = [{
+      item_id: `credits_${option.credits}`,
+      item_name: option.productName,
+      price: option.price / 100,
+      quantity: 1,
+    }];
+    logEvent('begin_checkout', { currency: 'USD', value: option.price / 100, items });
+    sessionStorage.setItem('pending_purchase', JSON.stringify({
+      value: option.price / 100,
+      credits: option.credits,
+      productName: option.productName,
+      items,
+    }));
     const token     = await auth.currentUser?.getIdToken()
     const requestId = crypto.randomUUID()
 

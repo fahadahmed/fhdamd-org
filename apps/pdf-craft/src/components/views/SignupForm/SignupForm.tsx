@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { actions } from 'astro:actions'
 import { Input, Button, Stack, Callout } from '@fhdamd/threads'
 import { useRecaptcha } from '../../../utils'
-import { logEvent } from '../../../utils/lib/analytics'
+import { logEvent, setUserId } from '../../../utils/lib/analytics'
 
 export default function SignupForm() {
   const [name, setName]         = useState('')
@@ -30,6 +30,9 @@ export default function SignupForm() {
 
       if (response.data?.success) {
         logEvent('sign_up', { method: 'email' })
+        if (response.data.payload?.userId) {
+          setUserId(response.data.payload.userId)
+        }
         window.location.href = '/signin'
       } else {
         setError(response.data?.error || 'An unknown error occurred.')

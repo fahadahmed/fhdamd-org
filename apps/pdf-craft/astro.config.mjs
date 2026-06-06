@@ -5,6 +5,7 @@ import react from '@astrojs/react';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://pdf-craft.app',
   output: 'server',
   adapter: node({
     mode: 'standalone',

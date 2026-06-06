@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /mergepdf
+Disallow: /encryptpdf
+Disallow: /decryptpdf
+Disallow: /imagetopdf
+Disallow: /payment-success
+Disallow: /payment-cancel
+Disallow: /signin
+
+Sitemap: https://pdf-craft.app/sitemap.xml
