@@ -32,3 +32,5 @@ env:
     secret: viteProjectId
   - variable: PDF_PROCESSOR_URL
     secret: pdfProcessorUrl
+  - variable: PUBLIC_APP_ENV
+    secret: appEnv

@@ -7,6 +7,7 @@ import { actions } from 'astro:actions'
 import {
   Container, Stack, Text, Button, FileDropzone, Callout, Card, Divider,
 } from '@fhdamd/threads'
+import * as Sentry from '@sentry/astro'
 import { logEvent } from '../../../utils/lib/analytics'
 
 const GripIcon = () => (
@@ -104,11 +105,20 @@ export default function MultiPdfUploader({ creditCost }: { creditCost: number })
       if (mergeResponse.data) {
         logEvent('pdf_operation_completed', { operation_type: task, file_count: uploadedFiles.length })
         setDownloadLink(mergeResponse.data?.data?.fileUrl || null)
+      } else if (mergeResponse.error) {
+        logEvent('pdf_operation_failed', { operation_type: task })
+        setError(
+          mergeResponse.error.code === 'CONTENT_TOO_LARGE'
+            ? 'Your files are too large to merge. Please reduce the file sizes or number of files.'
+            : 'An unexpected error occurred. Please try again.'
+        )
+        Sentry.captureException(mergeResponse.error)
       }
     } catch (err) {
       logEvent('pdf_operation_failed', { operation_type: task })
       setError('An unexpected error occurred. Please try again.')
       console.error('Error merging PDFs:', err)
+      Sentry.captureException(err)
     } finally {
       setButtonLabel('Merge PDFs')
       setIsMerging(false)

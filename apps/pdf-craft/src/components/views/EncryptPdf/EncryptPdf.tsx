@@ -4,6 +4,7 @@ import { actions } from 'astro:actions'
 import {
   Container, Stack, Text, Button, Input, FileDropzone, Callout, Card, Divider, Radio,
 } from '@fhdamd/threads'
+import * as Sentry from '@sentry/astro'
 import { logEvent } from '../../../utils/lib/analytics'
 
 type PermissionPreset = 'full-access' | 'view-and-print' | 'read-only'
@@ -84,9 +85,10 @@ export default function EncryptPdf({ creditCost }: { creditCost: number }) {
         logEvent('pdf_operation_failed', { operation_type: task })
         setError(response.data?.error || 'Failed to protect PDF.')
       }
-    } catch {
+    } catch (err) {
       logEvent('pdf_operation_failed', { operation_type: task })
       setError('An unexpected error occurred. Please try again.')
+      Sentry.captureException(err)
     } finally {
       setButtonLabel('Protect PDF')
       setIsProcessing(false)

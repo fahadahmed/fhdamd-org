@@ -10,6 +10,13 @@ import type { AppEventPayload } from "./events/types";
 import { eventHandlers } from "./events/handlers";
 import { fetchCMSData, getCmsQuery, datocmsApiToken, datocmsEnv } from "./cms";
 import { log } from "./utils/logger";
+import * as Sentry from "@sentry/node";
+
+Sentry.init({
+  dsn: process.env.PUBLIC_SENTRY_DSN,
+  environment: process.env.PUBLIC_APP_ENV || "dev",
+  tracesSampleRate: 0.2,
+});
 
 admin.initializeApp();
 

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { actions } from 'astro:actions'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
+import * as Sentry from '@sentry/astro'
 import { useRecaptcha } from '../../../utils'
 import { auth } from '../../../firebase/client'
 import { SiteNav } from '@fhdamd/threads'
@@ -16,6 +17,7 @@ export default function Header() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsLoggedIn(!!user)
+      Sentry.setUser(user ? { id: user.uid, email: user.email ?? undefined } : null)
     })
     return () => unsubscribe()
   }, [])

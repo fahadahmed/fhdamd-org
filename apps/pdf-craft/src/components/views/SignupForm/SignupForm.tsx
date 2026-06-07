@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { actions } from 'astro:actions'
 import { Input, Button, Stack, Callout } from '@fhdamd/threads'
+import * as Sentry from '@sentry/astro'
 import { useRecaptcha } from '../../../utils'
 import { logEvent, setUserId } from '../../../utils/lib/analytics'
 
@@ -39,6 +40,7 @@ export default function SignupForm() {
       }
     } catch (err: any) {
       setError(err.message)
+      Sentry.captureException(err)
     }
   }
 

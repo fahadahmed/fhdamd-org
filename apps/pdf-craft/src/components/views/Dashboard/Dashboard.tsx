@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import * as Sentry from '@sentry/astro';
 import { db, auth } from '../../../firebase/client';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
@@ -29,6 +30,7 @@ export default function Dashboard({ operations }: { operations: Operation[] }) {
           }
         } catch (error) {
           console.error('Error fetching dashboard data:', error);
+          Sentry.captureException(error);
           setFiles([]);
         }
       }
