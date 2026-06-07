@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { actions } from 'astro:actions'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { Input, Button, Stack, Callout } from '@fhdamd/threads'
+import * as Sentry from '@sentry/astro'
 import { auth } from '../../../firebase/client'
 import { useRecaptcha } from '../../../utils'
 import { logEvent, setUserId } from '../../../utils/lib/analytics'
@@ -33,6 +34,7 @@ export default function SigninForm() {
     } catch (err) {
       setError('Failed to sign in. Please check your credentials.')
       console.error('Error signing in:', err)
+      Sentry.captureException(err)
     }
   }
 

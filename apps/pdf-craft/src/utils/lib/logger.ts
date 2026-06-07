@@ -1,4 +1,5 @@
 import * as logger from "firebase-functions/logger";
+import * as Sentry from "@sentry/astro";
 
 export type LogContext = {
   requestId?: string;
@@ -32,11 +33,13 @@ export const log = {
     base("info", event, { type: "event", ...ctx }),
   business: (action: string, ctx?: LogContext) =>
     base("info", action, { type: "business", ...ctx }),
-  exception: (error: Error, ctx?: LogContext) =>
+  exception: (error: Error, ctx?: LogContext) => {
     base("error", "exception", {
       type: "error",
       error: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
       ...ctx,
-    }),
+    });
+    Sentry.captureException(error, { extra: ctx });
+  },
 };

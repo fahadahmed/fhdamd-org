@@ -4,6 +4,7 @@ import { actions } from 'astro:actions'
 import {
   Container, Stack, Text, Button, Input, FileDropzone, Callout, Card, Divider,
 } from '@fhdamd/threads'
+import * as Sentry from '@sentry/astro'
 import { logEvent } from '../../../utils/lib/analytics'
 
 const XIcon = () => (
@@ -72,9 +73,10 @@ export default function DecryptPdf({ creditCost }: { creditCost: number }) {
         logEvent('pdf_operation_failed', { operation_type: task })
         setError(response.data?.error || 'Failed to unlock PDF.')
       }
-    } catch {
+    } catch (err) {
       logEvent('pdf_operation_failed', { operation_type: task })
       setError('An unexpected error occurred. Please try again.')
+      Sentry.captureException(err)
     } finally {
       setButtonLabel('Unlock PDF')
       setIsProcessing(false)

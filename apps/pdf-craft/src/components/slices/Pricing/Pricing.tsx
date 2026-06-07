@@ -1,11 +1,12 @@
 'use client';
 import { useState, useEffect } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
-import { Container, Stack, Text, AutoGrid, PriceCard } from '@fhdamd/threads'
+import { Container, Stack, Text, AutoGrid, PriceCard, Callout } from '@fhdamd/threads'
 import { auth } from '../../../firebase/client'
 import type { PricingOption } from '../../../utils'
 import { fetchCms } from '../../../utils/lib/cms'
 import { logEvent } from '../../../utils/lib/analytics'
+import * as Sentry from '@sentry/astro'
 
 type PricingResponse = {
   data: {
@@ -24,6 +25,7 @@ function getOps(credits: number) {
 export default function Pricing() {
   const [isLoggedIn, setIsLoggedIn]         = useState(false)
   const [pricingOptions, setPricingOptions] = useState<PricingOption[]>([])
+  const [error, setError]                   = useState('')
 
   useEffect(() => {
     async function loadPricingOptions() {
@@ -32,6 +34,7 @@ export default function Pricing() {
         setPricingOptions(response.data.allPricingOptions)
       } catch (error) {
         console.error('Error fetching pricing options:', error)
+        Sentry.captureException(error)
       }
     }
 
@@ -44,6 +47,7 @@ export default function Pricing() {
   }, [])
 
   const handleBuyCredits = async (option: PricingOption) => {
+    setError('')
     const items = [{
       item_id: `credits_${option.credits}`,
       item_name: option.productName,
@@ -57,62 +61,76 @@ export default function Pricing() {
       productName: option.productName,
       items,
     }));
-    const token     = await auth.currentUser?.getIdToken()
-    const requestId = crypto.randomUUID()
+    try {
+      const token     = await auth.currentUser?.getIdToken()
+      const requestId = crypto.randomUUID()
 
-    const paymentResponse = await fetch(
-      `${import.meta.env.PUBLIC_BASE_FUNCTIONS_URL}/processPayment`,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          credits:     option.credits,
-          amount:      option.price,
-          quantity:    1,
-          currency:    'usd',
-          productName: option.productName,
-          userId:      auth.currentUser?.uid,
-          userEmail:   auth.currentUser?.email,
-          requestId,
-        }),
-        headers: { Authorization: `Bearer ${token}` },
+      const paymentResponse = await fetch(
+        `${import.meta.env.PUBLIC_BASE_FUNCTIONS_URL}/processPayment`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            credits:     option.credits,
+            amount:      option.price,
+            quantity:    1,
+            currency:    'usd',
+            productName: option.productName,
+            userId:      auth.currentUser?.uid,
+            userEmail:   auth.currentUser?.email,
+            requestId,
+          }),
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+
+      const paymentData = await paymentResponse.json()
+      if (paymentData.url) {
+        window.location.href = paymentData.url
+      } else {
+        setError('Could not start checkout. Please try again.')
+        Sentry.captureMessage('processPayment returned no checkout url', { extra: { requestId, status: paymentResponse.status } })
       }
-    )
-
-    const paymentData = await paymentResponse.json()
-    if (paymentData.url) window.location.href = paymentData.url
+    } catch (err) {
+      setError('Could not start checkout. Please try again.')
+      console.error('Error starting checkout:', err)
+      Sentry.captureException(err)
+    }
   }
 
   if (pricingOptions.length === 0) return null
 
   return (
-    <AutoGrid minColWidth="260px" gap={4}>
-      {pricingOptions.map((option, i) => {
-        const price      = `$${(option.price / 100).toFixed(2)}`
-        const perCr      = (option.price / 100 / option.credits).toFixed(2)
-        const isFeatured = i === 1
+    <Stack gap={4}>
+      {error && <Callout variant="error">{error}</Callout>}
+      <AutoGrid minColWidth="260px" gap={4}>
+        {pricingOptions.map((option, i) => {
+          const price      = `$${(option.price / 100).toFixed(2)}`
+          const perCr      = (option.price / 100 / option.credits).toFixed(2)
+          const isFeatured = i === 1
 
-        return (
-          <PriceCard
-            key={option.id}
-            credits={option.credits}
-            price={price}
-            priceNote={`$${perCr} per credit${isFeatured ? ' · save 17%' : i === 2 ? ' · save 33%' : ''}`}
-            featured={isFeatured}
-            operations={getOps(option.credits)}
-            cta={
-              isLoggedIn
-                ? { label: 'Buy credits' }
-                : { href: '/signup', label: isFeatured ? 'Buy credits' : 'Get started' }
-            }
-            onCtaClick={
-              isLoggedIn
-                ? (e) => { e.preventDefault(); handleBuyCredits(option); }
-                : undefined
-            }
-            ctaVariant={isFeatured ? 'solid-terra' : 'ghost'}
-          />
-        )
-      })}
-    </AutoGrid>
+          return (
+            <PriceCard
+              key={option.id}
+              credits={option.credits}
+              price={price}
+              priceNote={`$${perCr} per credit${isFeatured ? ' · save 17%' : i === 2 ? ' · save 33%' : ''}`}
+              featured={isFeatured}
+              operations={getOps(option.credits)}
+              cta={
+                isLoggedIn
+                  ? { label: 'Buy credits' }
+                  : { href: '/signup', label: isFeatured ? 'Buy credits' : 'Get started' }
+              }
+              onCtaClick={
+                isLoggedIn
+                  ? (e) => { e.preventDefault(); handleBuyCredits(option); }
+                  : undefined
+              }
+              ctaVariant={isFeatured ? 'solid-terra' : 'ghost'}
+            />
+          )
+        })}
+      </AutoGrid>
+    </Stack>
   )
 }
