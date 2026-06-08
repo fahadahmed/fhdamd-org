@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { actions } from 'astro:actions'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import * as Sentry from '@sentry/astro'
-import { useRecaptcha } from '../../../utils'
 import { auth } from '../../../firebase/client'
 import { SiteNav } from '@fhdamd/threads'
 import type { NavCta } from '@fhdamd/threads'
@@ -11,7 +10,6 @@ import type { NavCta } from '@fhdamd/threads'
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [theme, setTheme]           = useState<'light' | 'dark'>('light')
-  const captchaToken = useRecaptcha('logout')
 
   /* Sync auth state */
   useEffect(() => {
@@ -29,13 +27,18 @@ export default function Header() {
   }, [])
 
   const handleLogout = async () => {
-    if (!captchaToken) return
     try {
-      const response = await actions.user.signOutUser({ captchaToken })
+      const response = await actions.user.signOutUser({})
+      if (!response.data?.success) {
+        console.error('Error signing out:', response.error)
+        Sentry.captureException(response.error)
+        return
+      }
       await signOut(auth)
-      if (response.data?.success) window.location.href = '/'
+      window.location.href = '/'
     } catch (err) {
       console.error('Error signing out:', err)
+      Sentry.captureException(err)
     }
   }
 
