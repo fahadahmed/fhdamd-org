@@ -189,21 +189,14 @@ export const user = {
 
   signOutUser: defineAction({
     accept: 'json',
-    input: z.object({
-      captchaToken: z.string().min(10, 'Captcha token is required'),
-    }),
-    handler: async (input, context) => {
-      const { captchaToken } = input;
-      const isHuman = await verifyRecaptcha(captchaToken);
-
-      if (!isHuman) {
-        log.warn("🚪 user-signout: captcha failed", { feature: "sign-out", status: "fail" });
-        return {
-          success: false,
-          error: 'Captcha verification failed. Try again.',
-        };
-      }
-      context.cookies.delete('__session', { path: '/' });
+    input: undefined,
+    handler: async (_input, context) => {
+      context.cookies.delete('__session', {
+        path: '/',
+        httpOnly: true,
+        secure: import.meta.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+      });
       log.event("🚪 user-signout", { feature: "sign-out", status: "success" });
       return { success: true };
     },

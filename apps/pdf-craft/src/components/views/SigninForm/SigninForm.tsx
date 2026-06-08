@@ -12,11 +12,12 @@ export default function SigninForm() {
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
   const [error, setError]       = useState('')
-  const captchaToken = useRecaptcha('signin')
+  const { getToken } = useRecaptcha('signin')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    const captchaToken = await getToken()
     if (!captchaToken) {
       setError('Captcha verification failed. Please try again.')
       return
