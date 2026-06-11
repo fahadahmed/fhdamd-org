@@ -4,7 +4,7 @@ vi.mock("@dnd-kit/core", () => ({
   DndContext: ({ children }: any) => children,
   useSensors: () => [],
   useSensor: () => ({}),
-  PointerSensor: class PointerSensor {},
+  PointerSensor: vi.fn(),
   closestCenter: () => null,
 }));
 

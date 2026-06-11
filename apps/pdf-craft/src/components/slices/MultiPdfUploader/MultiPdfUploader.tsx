@@ -1,14 +1,14 @@
 'use client'
 import { useState } from "react"
-import { DndContext, useSensors, useSensor, PointerSensor, closestCenter, type DragEndEvent } from '@dnd-kit/core'
-import { arrayMove, SortableContext } from '@dnd-kit/sortable'
+import { useSensors, useSensor, PointerSensor, type DragEndEvent } from '@dnd-kit/core'
+import { arrayMove } from '@dnd-kit/sortable'
 import { actions } from 'astro:actions'
 import {
   Container, Stack, Text, Button, FileDropzone, Callout, Card, Divider,
 } from '@fhdamd/threads'
 import * as Sentry from '@sentry/astro'
 import { logEvent } from '../../../utils/lib/analytics'
-import { GripIcon, XIcon, DownloadIcon, SortableItem } from '../../shared'
+import { DownloadIcon, DraggableFileList } from '../../shared'
 
 const MAX_FILES = 5
 
@@ -144,32 +144,7 @@ export default function MultiPdfUploader({ creditCost }: { creditCost: number })
                         <Text size="sm" color="1" weight={600}>Files to merge ({uploadedFiles.length})</Text>
                         <Text size="xs" color="2">Drag to reorder — files will be merged top to bottom</Text>
                       </Stack>
-                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                        <SortableContext items={uploadedFiles.map(f => f.name)}>
-                          <Stack gap={2}>
-                            {uploadedFiles.map((file) => (
-                              <SortableItem key={file.name} id={file.name}>
-                                <div style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: 'var(--th-space-3)',
-                                  padding: 'var(--th-space-3) var(--th-space-4)',
-                                  borderRadius: 'var(--th-radius-md)',
-                                  border: '1px solid var(--th-color-border)',
-                                  background: 'var(--th-color-surface-2)',
-                                  cursor: 'grab',
-                                }}>
-                                  <GripIcon />
-                                  <Text size="sm" color="1" style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                    {file.name}
-                                  </Text>
-                                  <Button type="button" variant="ghost" size="sm" onClick={() => handleDelete(file.name)} aria-label={`Remove ${file.name}`}><XIcon /></Button>
-                                </div>
-                              </SortableItem>
-                            ))}
-                          </Stack>
-                        </SortableContext>
-                      </DndContext>
+                      <DraggableFileList files={uploadedFiles} sensors={sensors} onDragEnd={handleDragEnd} onDelete={handleDelete} />
                     </Stack>
 
                     {error && <Callout variant="error">{error}</Callout>}

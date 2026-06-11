@@ -40,7 +40,7 @@ describe("ImageToPdf", () => {
 
   it("shows the max-files callout and hides the dropzone at 10 images", async () => {
     render(<ImageToPdf creditCost={2} />);
-    addFiles([...new Array(10)].map((_, i) => makeImage(`img${i}.png`)));
+    addFiles(Array.from({ length: 10 }, (_, i) => makeImage(`img${i}.png`)));
     await waitFor(() =>
       expect(screen.getByRole("alert")).toHaveTextContent(/Maximum of 10 images reached/i),
     );
