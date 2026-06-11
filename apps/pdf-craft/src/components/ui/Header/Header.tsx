@@ -22,7 +22,7 @@ export default function Header() {
 
   /* Sync theme state from <html data-theme> */
   useEffect(() => {
-    const current = document.documentElement.getAttribute('data-theme') as 'light' | 'dark'
+    const current = document.documentElement.dataset.theme as 'light' | 'dark'
     setTheme(current ?? 'light')
   }, [])
 
@@ -35,7 +35,7 @@ export default function Header() {
         return
       }
       await signOut(auth)
-      window.location.href = '/'
+      globalThis.location.href = '/'
     } catch (err) {
       console.error('Error signing out:', err)
       Sentry.captureException(err)
@@ -44,7 +44,7 @@ export default function Header() {
 
   const toggleTheme = () => {
     const next = theme === 'light' ? 'dark' : 'light'
-    document.documentElement.setAttribute('data-theme', next)
+    document.documentElement.dataset.theme = next
     localStorage.setItem('th-theme', next)
     setTheme(next)
   }

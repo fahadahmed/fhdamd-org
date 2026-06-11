@@ -4,5 +4,9 @@
       "mode": "auto"
     }
   ],
-  "dart.analyzerLogFile": null
+  "dart.analyzerLogFile": null,
+  "sonarlint.connectedMode.project": {
+    "connectionId": "fahadahmed",
+    "projectKey": "fhdamd-org"
+  }
 }

@@ -1,0 +1,99 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
+const { mockSignIn, mockGetToken, mockGetIdToken } = vi.hoisted(() => ({
+  mockSignIn: vi.fn(),
+  mockGetToken: vi.fn().mockResolvedValue("captcha-token"),
+  mockGetIdToken: vi.fn().mockResolvedValue("id-token"),
+}));
+
+vi.mock("firebase/auth", () => ({
+  signInWithEmailAndPassword: mockSignIn,
+}));
+
+vi.mock("../../../utils", () => ({
+  useRecaptcha: () => ({ getToken: mockGetToken }),
+}));
+
+vi.mock("../../../utils/lib/analytics", () => ({
+  logEvent: vi.fn(),
+  setUserId: vi.fn(),
+}));
+
+import SigninForm from "./SigninForm";
+import { verifyUser } from "../../../test/mocks/astro-actions";
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  mockGetToken.mockResolvedValue("captcha-token");
+  mockSignIn.mockResolvedValue({ user: { uid: "uid-1", getIdToken: mockGetIdToken } });
+  verifyUser.mockResolvedValue({ data: { redirected: false }, error: null });
+  vi.stubGlobal("location", { assign: vi.fn(), href: "" } as any);
+});
+
+describe("SigninForm", () => {
+  it("renders email input, password input, and submit button", () => {
+    render(<SigninForm />);
+    expect(screen.getByLabelText("Email address")).toBeInTheDocument();
+    expect(screen.getByLabelText("Password")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Sign in/i })).toBeInTheDocument();
+  });
+
+  it("shows a captcha error when getToken returns null", async () => {
+    mockGetToken.mockResolvedValue(null);
+    const user = userEvent.setup();
+    render(<SigninForm />);
+    await user.type(screen.getByLabelText("Email address"), "test@test.com");
+    await user.type(screen.getByLabelText("Password"), "password123");
+    await user.click(screen.getByRole("button", { name: /Sign in/i }));
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent(/Captcha verification failed/i),
+    );
+    expect(mockSignIn).not.toHaveBeenCalled();
+  });
+
+  it("calls signInWithEmailAndPassword with email and password", async () => {
+    const user = userEvent.setup();
+    render(<SigninForm />);
+    await user.type(screen.getByLabelText("Email address"), "user@test.com");
+    await user.type(screen.getByLabelText("Password"), "secret");
+    await user.click(screen.getByRole("button", { name: /Sign in/i }));
+    await waitFor(() =>
+      expect(mockSignIn).toHaveBeenCalledWith(expect.anything(), "user@test.com", "secret"),
+    );
+  });
+
+  it("calls actions.user.verifyUser with the id token and captcha token", async () => {
+    const user = userEvent.setup();
+    render(<SigninForm />);
+    await user.type(screen.getByLabelText("Email address"), "user@test.com");
+    await user.type(screen.getByLabelText("Password"), "secret");
+    await user.click(screen.getByRole("button", { name: /Sign in/i }));
+    await waitFor(() =>
+      expect(verifyUser).toHaveBeenCalledWith({ idToken: "id-token", captchaToken: "captcha-token" }),
+    );
+  });
+
+  it("navigates when verifyUser returns redirected=true", async () => {
+    verifyUser.mockResolvedValue({ data: { redirected: true, url: "/dashboard" } });
+    const user = userEvent.setup();
+    render(<SigninForm />);
+    await user.type(screen.getByLabelText("Email address"), "user@test.com");
+    await user.type(screen.getByLabelText("Password"), "secret");
+    await user.click(screen.getByRole("button", { name: /Sign in/i }));
+    await waitFor(() => expect(globalThis.location.assign).toHaveBeenCalledWith("/dashboard"));
+  });
+
+  it("shows an error when signInWithEmailAndPassword throws", async () => {
+    mockSignIn.mockRejectedValue(new Error("Invalid credentials"));
+    const user = userEvent.setup();
+    render(<SigninForm />);
+    await user.type(screen.getByLabelText("Email address"), "bad@test.com");
+    await user.type(screen.getByLabelText("Password"), "wrong");
+    await user.click(screen.getByRole("button", { name: /Sign in/i }));
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent(/Failed to sign in/i),
+    );
+  });
+});
