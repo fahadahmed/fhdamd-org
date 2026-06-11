@@ -16,11 +16,11 @@ export default defineConfig({
       exclude: [
         "src/test/**",
         "src/**/*.test.{ts,tsx}",
-        // Astro virtual modules / full-pipeline dependencies — not runnable in Vitest
+        // Astro virtual modules / full-pipeline dependencies
         "src/actions/**",
         "src/pages/**",
         "src/layouts/**",
-        // Firebase init and Pub/Sub — integration concerns, not unit testable
+        // Firebase init and Pub/Sub — integration concerns
         "src/firebase/**",
         "src/server/**",
         "src/env.d.ts",
@@ -30,12 +30,22 @@ export default defineConfig({
   },
   define: {
     "import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY": JSON.stringify("test-site-key"),
+    "import.meta.env.PUBLIC_BASE_FUNCTIONS_URL": JSON.stringify("https://functions.test"),
   },
   resolve: {
-    alias: {
-      "@fhdamd/threads": resolve(__dirname, "../../packages/threads/src/index.ts"),
-      "astro:actions": resolve(__dirname, "src/test/mocks/astro-actions.ts"),
-      "astro:schema": resolve(__dirname, "src/test/mocks/astro-schema.ts"),
-    },
+    alias: [
+      // Design system — swap real package for a lightweight test mock
+      { find: "@fhdamd/threads", replacement: resolve(__dirname, "src/test/mocks/threads.tsx") },
+      // Sentry — no-op in tests
+      { find: "@sentry/astro", replacement: resolve(__dirname, "src/test/mocks/sentry.ts") },
+      // Astro virtual modules
+      { find: "astro:actions", replacement: resolve(__dirname, "src/test/mocks/astro-actions.ts") },
+      { find: "astro:schema", replacement: resolve(__dirname, "src/test/mocks/astro-schema.ts") },
+      // Local Firebase client (matches relative imports that resolve to this file)
+      {
+        find: /.*\/firebase\/client$/,
+        replacement: resolve(__dirname, "src/test/mocks/firebase-client.ts"),
+      },
+    ],
   },
 });

@@ -1,8 +1,19 @@
 import { vi } from "vitest";
 
-export const actions = new Proxy(
-  {},
-  { get: () => vi.fn().mockResolvedValue({ data: null, error: null }) },
-);
+// Named exports so tests can import and reconfigure these directly.
+export const checkCredits = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
+export const mergePdfs = vi.fn().mockResolvedValue({ data: { data: { fileUrl: "https://cdn.test/merged.pdf" } }, error: null });
+export const encryptPdf = vi.fn().mockResolvedValue({ data: { success: true, data: { fileUrl: "https://cdn.test/encrypted.pdf" } }, error: null });
+export const decryptPdf = vi.fn().mockResolvedValue({ data: { success: true, data: { fileUrl: "https://cdn.test/decrypted.pdf" } }, error: null });
+export const imageToPdf = vi.fn().mockResolvedValue({ data: { data: { fileUrl: "https://cdn.test/output.pdf" } }, error: null });
+export const verifyUser = vi.fn().mockResolvedValue({ data: { redirected: false }, error: null });
+export const createUser = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
+export const signOutUser = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
+
+export const actions = {
+  credits: { checkCredits },
+  operations: { mergePdfs, encryptPdf, decryptPdf, imageToPdf },
+  user: { verifyUser, createUser, signOutUser },
+};
 
 export const defineAction = vi.fn((config: unknown) => config);
