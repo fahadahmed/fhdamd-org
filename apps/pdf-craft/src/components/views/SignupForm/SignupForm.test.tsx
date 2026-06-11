@@ -70,7 +70,7 @@ describe("SignupForm", () => {
     await user.type(screen.getByLabelText("Email address"), "jane@test.com");
     await user.type(screen.getByLabelText("Password"), "password123");
     await user.click(screen.getByRole("button", { name: /Create account/i }));
-    await waitFor(() => expect(window.location.href).toBe("/signin"));
+    await waitFor(() => expect(globalThis.location.href).toBe("/signin"));
   });
 
   it("shows an API error message when createUser returns success=false", async () => {

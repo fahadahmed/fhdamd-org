@@ -91,7 +91,7 @@ describe("Pricing", () => {
     render(<Pricing />);
     await waitFor(() => screen.getByText("10 credits"));
     await user.click(screen.getAllByRole("button", { name: /Buy credits/i })[0]);
-    await waitFor(() => expect(window.location.href).toBe("https://stripe.test/checkout"));
+    await waitFor(() => expect(globalThis.location.href).toBe("https://stripe.test/checkout"));
   });
 
   it("shows an error when payment API returns no checkout URL", async () => {

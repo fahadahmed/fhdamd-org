@@ -6,7 +6,7 @@ vi.mock("@dnd-kit/core", () => ({
   DndContext: ({ children }: any) => <div>{children}</div>,
   useSensors: () => [],
   useSensor: () => ({}),
-  PointerSensor: class {},
+  PointerSensor: class PointerSensor {},
   closestCenter: () => null,
 }));
 
@@ -62,7 +62,7 @@ describe("ImageToPdf", () => {
 
   it("shows the max-files callout and hides the dropzone at 10 images", async () => {
     render(<ImageToPdf creditCost={2} />);
-    addFiles([...Array(10)].map((_, i) => makeImage(`img${i}.png`)));
+    addFiles([...new Array(10)].map((_, i) => makeImage(`img${i}.png`)));
     await waitFor(() =>
       expect(screen.getByRole("alert")).toHaveTextContent(/Maximum of 10 images reached/i),
     );

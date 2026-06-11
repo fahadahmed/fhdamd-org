@@ -140,11 +140,11 @@ export const SiteNav = ({ links, ctas }: any) => (
     {links?.map((l: any) => (
       <a key={l.href} href={l.href}>{l.label}</a>
     ))}
-    {ctas?.map((c: any, i: number) =>
+    {ctas?.map((c: any) =>
       c.href ? (
-        <a key={i} href={c.href}>{c.label}</a>
+        <a key={c.label} href={c.href}>{c.label}</a>
       ) : (
-        <button key={i} onClick={c.onClick}>{c.label}</button>
+        <button key={c.label} onClick={c.onClick}>{c.label}</button>
       ),
     )}
   </nav>

@@ -24,7 +24,7 @@ beforeEach(() => {
   (signOut as any).mockResolvedValue(undefined);
   signOutUser.mockResolvedValue({ data: { success: true }, error: null });
   vi.stubGlobal("location", { href: "" });
-  document.documentElement.removeAttribute("data-theme");
+  delete document.documentElement.dataset.theme;
 });
 
 describe("Header — unauthenticated", () => {
@@ -49,20 +49,20 @@ describe("Header — unauthenticated", () => {
   });
 
   it("toggles theme from light to dark on button click", async () => {
-    document.documentElement.setAttribute("data-theme", "light");
+    document.documentElement.dataset.theme = "light";
     const user = userEvent.setup();
     render(<Header />);
     await user.click(screen.getByRole("button", { name: "Dark" }));
-    expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+    expect(document.documentElement.dataset.theme).toBe("dark");
     expect(localStorage.getItem("th-theme")).toBe("dark");
   });
 
   it("toggles theme from dark to light on button click", async () => {
-    document.documentElement.setAttribute("data-theme", "dark");
+    document.documentElement.dataset.theme = "dark";
     const user = userEvent.setup();
     render(<Header />);
     await user.click(screen.getByRole("button", { name: "Light" }));
-    expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+    expect(document.documentElement.dataset.theme).toBe("light");
     expect(localStorage.getItem("th-theme")).toBe("light");
   });
 });
@@ -90,7 +90,7 @@ describe("Header — authenticated", () => {
     await user.click(screen.getByRole("button", { name: "Log out" }));
     await waitFor(() => expect(signOutUser).toHaveBeenCalled());
     expect(signOut).toHaveBeenCalled();
-    expect(window.location.href).toBe("/");
+    expect(globalThis.location.href).toBe("/");
   });
 
   it("does not redirect when signOutUser returns success=false", async () => {
@@ -100,6 +100,6 @@ describe("Header — authenticated", () => {
     await user.click(screen.getByRole("button", { name: "Log out" }));
     await waitFor(() => expect(signOutUser).toHaveBeenCalled());
     expect(signOut).not.toHaveBeenCalled();
-    expect(window.location.href).toBe("");
+    expect(globalThis.location.href).toBe("");
   });
 });

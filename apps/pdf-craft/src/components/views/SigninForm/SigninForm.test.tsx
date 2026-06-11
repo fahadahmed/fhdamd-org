@@ -29,7 +29,7 @@ beforeEach(() => {
   mockGetToken.mockResolvedValue("captcha-token");
   mockSignIn.mockResolvedValue({ user: { uid: "uid-1", getIdToken: mockGetIdToken } });
   verifyUser.mockResolvedValue({ data: { redirected: false }, error: null });
-  vi.stubGlobal("location", { assign: vi.fn(), href: "" });
+  vi.stubGlobal("location", { assign: vi.fn(), href: "" } as any);
 });
 
 describe("SigninForm", () => {
@@ -82,7 +82,7 @@ describe("SigninForm", () => {
     await user.type(screen.getByLabelText("Email address"), "user@test.com");
     await user.type(screen.getByLabelText("Password"), "secret");
     await user.click(screen.getByRole("button", { name: /Sign in/i }));
-    await waitFor(() => expect(window.location.assign).toHaveBeenCalledWith("/dashboard"));
+    await waitFor(() => expect(globalThis.location.assign).toHaveBeenCalledWith("/dashboard"));
   });
 
   it("shows an error when signInWithEmailAndPassword throws", async () => {
