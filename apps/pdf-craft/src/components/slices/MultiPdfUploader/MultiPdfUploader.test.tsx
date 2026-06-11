@@ -2,28 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-vi.mock("@dnd-kit/core", () => ({
-  DndContext: ({ children }: any) => <div>{children}</div>,
-  useSensors: () => [],
-  useSensor: () => ({}),
-  PointerSensor: class PointerSensor {},
-  closestCenter: () => null,
-}));
-
-vi.mock("@dnd-kit/sortable", () => ({
-  SortableContext: ({ children }: any) => <div>{children}</div>,
-  useSortable: () => ({ attributes: {}, listeners: {}, setNodeRef: () => {}, transform: null, transition: undefined }),
-  arrayMove: (arr: any[], from: number, to: number) => {
-    const r = [...arr];
-    r.splice(to, 0, r.splice(from, 1)[0]);
-    return r;
-  },
-}));
-
-vi.mock("@dnd-kit/utilities", () => ({
-  CSS: { Transform: { toString: () => "" } },
-}));
-
 vi.mock("../../../utils/lib/analytics", () => ({ logEvent: vi.fn() }));
 
 import MultiPdfUploader from "./MultiPdfUploader";

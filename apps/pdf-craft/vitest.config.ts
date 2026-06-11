@@ -7,7 +7,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
-    setupFiles: ["./src/test/setup.ts"],
+    setupFiles: ["./src/test/setup.ts", "./src/test/mocks/dnd-kit.ts"],
     include: ["src/**/*.test.{ts,tsx}"],
     reporters: ["default", "junit"],
     outputFile: { junit: "./test-results/junit.xml" },
@@ -45,7 +45,7 @@ export default defineConfig({
       { find: "astro:schema", replacement: resolve(__dirname, "src/test/mocks/astro-schema.ts") },
       // Local Firebase client (matches relative imports that resolve to this file)
       {
-        find: /.*\/firebase\/client$/,
+        find: /(?:[^/]+\/)*firebase\/client$/,
         replacement: resolve(__dirname, "src/test/mocks/firebase-client.ts"),
       },
     ],
