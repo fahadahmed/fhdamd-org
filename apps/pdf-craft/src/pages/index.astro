@@ -2,9 +2,21 @@
 import React, { createElement as h } from "react";
 import Layout from "../layouts/Layout.astro";
 import { Pricing } from "../components";
-import { iconMap, deriveVariant } from "../components/slices/Operations/Operations";
+import {
+  iconMap,
+  deriveVariant,
+} from "../components/slices/Operations/Operations";
 import { fetchCms } from "../utils/lib/cms";
-import { type Faq, type Operation } from "../utils";
+import {
+  type Faq,
+  type Operation,
+  type Testimonial,
+  type SectionHeader as SectionHeaderData,
+  type HeroData,
+  type Step,
+  titleToReact,
+  indexSectionHeaders,
+} from "../utils";
 import {
   Hero,
   Container,
@@ -13,36 +25,43 @@ import {
   AutoGrid,
   OpCard,
   StepCard,
-  Testimonial,
+  Testimonial as TestimonialCard,
   Accordion,
   DarkStrip,
   Button,
 } from "@fhdamd/threads";
 
-type FaqResponse = { data: { allFaqs: Faq[] } };
-type OperationsResponse = { data: { allOperations: Operation[] } };
+type HomePageResponse = {
+  data: {
+    allHeros: HeroData[];
+    allFaqs: Faq[];
+    allOperations: Operation[];
+    allTestimonials: Testimonial[];
+    allSectionHeaders: SectionHeaderData[];
+    allSteps: Step[];
+  };
+};
 
-const [faqResponse, operationsResponse] = await Promise.all([
-  fetchCms<FaqResponse>("faqs"),
-  fetchCms<OperationsResponse>("operations"),
-]);
-
-const faqs = faqResponse.data.allFaqs;
-const operations: Operation[] = [...operationsResponse.data.allOperations]
-  .sort((a, b) => a.sortOrder - b.sortOrder);
+const { data } = await fetchCms<HomePageResponse>("homePage");
+const faqs = data.allFaqs;
+const operations: Operation[] = [...data.allOperations].sort(
+  (a, b) => a.sortOrder - b.sortOrder,
+);
 const faqItems = faqs.map(({ title, content }) => ({
   question: title,
   answer: content,
 }));
-
+const testimonials: Testimonial[] = [...data.allTestimonials].sort((a, b) =>
+  a._createdAt.localeCompare(b._createdAt),
+);
+const sh = indexSectionHeaders(data.allSectionHeaders);
+const hero = data.allHeros[0];
+const steps: Step[] = [...data.allSteps];
 /* Build all React elements with createElement in the frontmatter
    so Astro's template parser never sees raw JSX inside {} expressions */
-const heroSubheading = h(
-  "span",
-  null,
-  h("em", null, "Beautifully honest"),
-  " pricing.",
-);
+const heroSubheading = hero.subheading
+  ? h("span", null, ...titleToReact(hero.subheading))
+  : undefined;
 const heroActions = h(
   "div",
   {
@@ -54,48 +73,17 @@ const heroActions = h(
   },
   h(
     Button as any,
-    { variant: "solid-terra", size: "lg", href: "/signup" },
-    "Get started free",
+    { variant: "solid-terra", size: "lg", href: hero.primaryCtaHref },
+    hero.primaryCtaLabel,
   ),
-  h(
-    Button as any,
-    { variant: "ghost", size: "lg", href: "/#tools" },
-    "See all tools",
-  ),
+  hero.secondaryCtaLabel &&
+    h(
+      Button as any,
+      { variant: "ghost", size: "lg", href: hero.secondaryCtaHref },
+      hero.secondaryCtaLabel,
+    ),
 );
 
-const titleOperations = h(
-  "span",
-  null,
-  "Everything your ",
-  h("em", null, "documents"),
-  " need",
-);
-const titleHowItWorks = h(
-  "span",
-  null,
-  "Up and running ",
-  h("em", null, "in three steps"),
-);
-const titlePricing = h(
-  "span",
-  null,
-  "Simple, ",
-  h("em", null, "honest"),
-  " credits",
-);
-const titleTestimonials = h(
-  "span",
-  null,
-  "Trusted by people who value their ",
-  h("em", null, "time"),
-);
-const titleFaq = h(
-  "span",
-  null,
-  "Frequently asked ",
-  h("em", null, "questions"),
-);
 const ctaHeading = h(
   "span",
   null,
@@ -108,9 +96,10 @@ const ctaHeading = h(
 const ctaAction = h(
   Button as any,
   { variant: "solid-terra", size: "lg", href: "/signup" },
-  "Get started — it's free",
+  "Get started",
 ) as React.ReactNode;
 
+const borderStyle = "border-top:1px solid var(--th-color-border-default)";
 const ss = { marginBottom: "var(--th-space-8)" }; // shared section style
 ---
 
@@ -119,35 +108,36 @@ const ss = { marginBottom: "var(--th-space-8)" }; // shared section style
   description="Merge, protect, convert and unlock PDF documents in seconds. Buy credits once — pay only for what you use, no subscriptions, no expiry."
 >
   <Fragment slot="head">
-    <script is:inline type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "PDF-Craft",
-      "url": "https://pdf-craft.app",
-      "applicationCategory": "BusinessApplication",
-      "operatingSystem": "Web",
-      "description": "Merge, protect, convert and unlock PDF documents in seconds. Buy credits once — pay only for what you use, no subscriptions, no expiry.",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD",
-        "description": "Free to sign up. Pay per use with credits that never expire."
-      }
-    })} />
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name: "PDF-Craft",
+        url: "https://pdf-craft.app",
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Web",
+        description:
+          "Merge, protect, convert and unlock PDF documents in seconds. Buy credits once — pay only for what you use, no subscriptions, no expiry.",
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "USD",
+          description:
+            "Free to sign up. Pay per use with credits that never expire.",
+        },
+      })}
+    />
   </Fragment>
   <!-- HERO -->
   <Container>
     <Hero
-      eyebrow="PDF tools that respect your time"
-      heading="Simple PDF tools."
+      eyebrow={hero.eyebrow}
+      heading={hero.heading}
       subheading={heroSubheading}
-      body="Merge, protect, convert and unlock PDF documents in seconds. Buy credits once — pay only for what you use, no subscriptions, no expiry."
-      chips={[
-        "No subscription",
-        "Credits never expire",
-        "Files processed securely",
-        "Any device",
-      ]}
+      body={hero.body}
+      chips={hero.chips ?? undefined}
       actions={heroActions}
     />
   </Container>
@@ -160,75 +150,61 @@ const ss = { marginBottom: "var(--th-space-8)" }; // shared section style
     <Container>
       <Section size="md">
         <SectionHeader
-          eyebrow="PDF operations"
-          title={titleOperations}
-          intro="Four tools live now. Split, compress, sign and AI-powered summaries are all coming soon."
+          eyebrow={sh["home--operations"]?.eyebrow}
+          title={titleToReact(sh["home--operations"]?.title ?? "")}
+          intro={sh["home--operations"]?.intro}
           style={ss}
         />
         <div class="op-grid">
-          {operations.map((op, i) => (
-            <div class={op.active ? "op-live" : ""}>
-              <OpCard
-                name={op.title}
-                description={op.detail}
-                credits={op.creditCost}
-                href={op.active ? op.actionRoute : undefined}
-                ctaLabel={op.actionLabel}
-                icon={iconMap[op.iconKey]}
-                iconVariant={deriveVariant(op, i)}
-                status={op.active ? "live" : "soon"}
-              />
-            </div>
-          ))}
+          {
+            operations.map((op, i) => (
+              <div class={op.active ? "op-live" : ""}>
+                <OpCard
+                  name={op.title}
+                  description={op.detail}
+                  credits={op.creditCost}
+                  href={op.active ? op.actionRoute : undefined}
+                  ctaLabel={op.actionLabel}
+                  icon={iconMap[op.iconKey]}
+                  iconVariant={deriveVariant(op, i)}
+                  status={op.active ? "live" : "soon"}
+                />
+              </div>
+            ))
+          }
         </div>
       </Section>
     </Container>
   </section>
 
   <!-- HOW IT WORKS -->
-  <section
-    id="how-it-works"
-    style="border-top:1px solid var(--th-color-border-default)"
-  >
+  <section id="how-it-works" style={borderStyle}>
     <Container>
       <Section size="md">
         <SectionHeader
-          eyebrow="How it works"
-          title={titleHowItWorks}
+          eyebrow={sh["home--how-it-works"]?.eyebrow}
+          title={titleToReact(sh["home--how-it-works"]?.title ?? "")}
           style={ss}
         />
         <AutoGrid minColWidth="240px" gap={4}>
-          <StepCard
-            number="01"
-            title="Create a free account"
-            body="Sign up in seconds. No credit card required. New accounts include a small credit balance to try the tools straight away."
-          />
-          <StepCard
-            number="02"
-            title="Buy a credit pack"
-            body="Three simple packs to choose from. Credits never expire and work across every operation. Pay once, use whenever you need."
-          />
-          <StepCard
-            number="03"
-            title="Process your documents"
-            body="Upload, pick your operation, download. The exact credit cost is shown before you confirm — no surprises, ever."
-          />
+          {
+            steps.map(({ id, number, title, body }) => (
+              <StepCard number={number} title={title} body={body} />
+            ))
+          }
         </AutoGrid>
       </Section>
     </Container>
   </section>
 
   <!-- PRICING -->
-  <section
-    id="pricing"
-    style="border-top:1px solid var(--th-color-border-default)"
-  >
+  <section id="pricing" style={borderStyle}>
     <Container>
       <Section size="md">
         <SectionHeader
-          eyebrow="Pricing"
-          title={titlePricing}
-          intro="Buy once, use anytime. No monthly fees. No usage caps. Credits never expire."
+          eyebrow={sh["home--pricing"]?.eyebrow}
+          title={titleToReact(sh["home--pricing"]?.title ?? "")}
+          intro={sh["home--pricing"]?.intro}
           style={ss}
         />
         <Pricing client:load />
@@ -237,41 +213,37 @@ const ss = { marginBottom: "var(--th-space-8)" }; // shared section style
   </section>
 
   <!-- TESTIMONIALS -->
-  <section style="border-top:1px solid var(--th-color-border-default)">
+  <section style={borderStyle}>
     <Container>
       <Section size="md">
         <SectionHeader
-          eyebrow="What people say"
-          title={titleTestimonials}
+          eyebrow={sh["home--testimonials"]?.eyebrow}
+          title={titleToReact(sh["home--testimonials"]?.title ?? "")}
           style={ss}
         />
         <AutoGrid minColWidth="280px" gap={4}>
-          <Testimonial
-            quote="Finally, a PDF tool that's honest about pricing. I pay only when I actually use it — no subscriptions, no surprises."
-            attribution="Samia Akhtar · Senior Claims Consultant"
-          />
-          <Testimonial
-            quote="The credit-based pay-per-use model is incredibly transparent. I know exactly what each action costs before I click."
-            attribution="Brendan Lawrie · Partner, Big 4 Consultancy"
-          />
-          <Testimonial
-            quote="Most PDF tools feel bloated. This one does exactly what it promises, charges fairly, and gets out of the way."
-            attribution="Sean Kempen · Real Estate Agent"
-          />
-          <Testimonial
-            quote="Clean interface, no learning curve. I merged and converted my files in seconds without reading a single guide."
-            attribution="Patricia Widjojo · Paralegal"
-          />
+          {
+            testimonials.map(({ detail, name, title }) => (
+              <TestimonialCard
+                quote={detail}
+                attribution={`${name} · ${title}`}
+              />
+            ))
+          }
         </AutoGrid>
       </Section>
     </Container>
   </section>
 
   <!-- FAQ -->
-  <section id="faq" style="border-top:1px solid var(--th-color-border-default)">
+  <section id="faq" style={borderStyle}>
     <Container>
       <Section size="md">
-        <SectionHeader eyebrow="FAQ" title={titleFaq} style={ss} />
+        <SectionHeader
+          eyebrow={sh["home--faq"]?.eyebrow}
+          title={titleToReact(sh["home--faq"]?.title ?? "")}
+          style={ss}
+        />
         <div style="max-width:680px">
           <Accordion client:load items={faqItems} defaultOpenIndex={0} />
         </div>
@@ -280,7 +252,7 @@ const ss = { marginBottom: "var(--th-space-8)" }; // shared section style
   </section>
 
   <!-- CTA STRIP -->
-  <section style="border-top:1px solid var(--th-color-border-default)">
+  <section style={borderStyle}>
     <Container>
       <Section size="md">
         <DarkStrip
