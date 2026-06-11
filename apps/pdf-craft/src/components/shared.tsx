@@ -1,5 +1,6 @@
-import { DndContext, closestCenter, type DragEndEvent } from '@dnd-kit/core'
-import { SortableContext, useSortable } from '@dnd-kit/sortable'
+import { useState } from 'react'
+import { DndContext, closestCenter, useSensors, useSensor, PointerSensor, type DragEndEvent } from '@dnd-kit/core'
+import { SortableContext, useSortable, arrayMove } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Stack, Text, Button } from '@fhdamd/threads'
 
@@ -23,6 +24,35 @@ export const GripIcon = () => (
     <circle cx="15" cy="5" r="1" fill="currentColor" /><circle cx="15" cy="12" r="1" fill="currentColor" /><circle cx="15" cy="19" r="1" fill="currentColor" />
   </svg>
 )
+
+export function useDraggableFiles(maxFiles: number) {
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
+  const [error, setError] = useState<string | null>(null)
+
+  const handleFiles = (incoming: File[]) => {
+    setUploadedFiles(prev => {
+      const remaining = maxFiles - prev.length
+      return [...prev, ...incoming.slice(0, remaining)]
+    })
+    setError(null)
+  }
+
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    if (active.id !== over?.id) {
+      const oldIndex = uploadedFiles.findIndex(f => f.name === active.id)
+      const newIndex = uploadedFiles.findIndex(f => f.name === over?.id)
+      setUploadedFiles(items => arrayMove(items, oldIndex, newIndex))
+    }
+  }
+
+  const handleDelete = (fileName: string) =>
+    setUploadedFiles(files => files.filter(f => f.name !== fileName))
+
+  return { uploadedFiles, setUploadedFiles, error, setError, handleFiles, sensors, handleDragEnd, handleDelete }
+}
 
 export function SortableItem({ id, children }: { readonly id: string; readonly children: React.ReactNode }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id })

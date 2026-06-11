@@ -1,45 +1,20 @@
 'use client'
 import { useState } from "react"
-import { useSensors, useSensor, PointerSensor, type DragEndEvent } from '@dnd-kit/core'
-import { arrayMove } from '@dnd-kit/sortable'
 import { actions } from 'astro:actions'
 import {
   Container, Stack, Text, Button, FileDropzone, Callout, Card, Divider,
 } from '@fhdamd/threads'
 import * as Sentry from '@sentry/astro'
 import { logEvent } from '../../../utils/lib/analytics'
-import { DownloadIcon, DraggableFileList } from '../../shared'
+import { DownloadIcon, DraggableFileList, useDraggableFiles } from '../../shared'
 
 const MAX_FILES = 5
 
 export default function MultiPdfUploader({ creditCost }: { creditCost: number }) {
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
+  const { uploadedFiles, setUploadedFiles, error, setError, handleFiles, sensors, handleDragEnd, handleDelete } = useDraggableFiles(MAX_FILES)
   const [isMerging, setIsMerging]         = useState(false)
   const [downloadLink, setDownloadLink]   = useState<string | null>(null)
-  const [error, setError]                 = useState<string | null>(null)
   const [buttonLabel, setButtonLabel]     = useState('Merge PDFs')
-
-  const handleFiles = (incoming: File[]) => {
-    setUploadedFiles(prev => {
-      const remaining = MAX_FILES - prev.length
-      return [...prev, ...incoming.slice(0, remaining)]
-    })
-    setError(null)
-  }
-
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event
-    if (active.id !== over?.id) {
-      const oldIndex = uploadedFiles.findIndex(f => f.name === active.id)
-      const newIndex = uploadedFiles.findIndex(f => f.name === over?.id)
-      setUploadedFiles(items => arrayMove(items, oldIndex, newIndex))
-    }
-  }
-
-  const handleDelete = (fileName: string) =>
-    setUploadedFiles(files => files.filter(f => f.name !== fileName))
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
