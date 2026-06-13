@@ -1,8 +1,10 @@
 import { getResend } from "../../email/resend";
-import type { AppEventHandler } from "./types";
+import type { TypedEventHandler } from "./types";
+import type { PdfOperationPayload } from "../types";
+import { pdfOperationEmailHtml, pdfOperationSubject } from "../../email/templates/pdfOperation";
 import { log } from "../../utils/logger";
 
-export const handleDecryptPdf: AppEventHandler = async (payload) => {
+export const handleDecryptPdf: TypedEventHandler<PdfOperationPayload> = async (payload) => {
   const { userId, userEmail, fileId, fileName, fileUrl, requestId } = payload;
 
   try {
@@ -10,14 +12,8 @@ export const handleDecryptPdf: AppEventHandler = async (payload) => {
     await resend.emails.send({
       to: userEmail,
       from: "PDF Craft <no-reply@pdf-craft.app>",
-      subject: "Your Unlocked PDF is Ready!",
-      html: `
-        <p>Hi there,</p>
-        <p>Your PDF <strong>${fileName}</strong> has been successfully unlocked and password protection has been removed.</p>
-        <p>You can download it using the link below:</p>
-        <p><a href="${fileUrl}">Download Unlocked PDF</a></p>
-        <p>Thank you for using PDF Craft!</p>
-      `,
+      subject: pdfOperationSubject("pdf-decrypt"),
+      html: pdfOperationEmailHtml({ operationType: "pdf-decrypt", fileName, fileUrl }),
     });
     log.business("📧 email-sent", {
       requestId,
