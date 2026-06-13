@@ -1,15 +1,18 @@
 import { onRequest } from "firebase-functions/v2/https";
 import { onMessagePublished } from "firebase-functions/v2/pubsub";
 import { onSchedule } from "firebase-functions/v2/scheduler";
+import { auth } from "firebase-functions/v1";
 import * as admin from "firebase-admin";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { defineSecret } from "firebase-functions/params";
 import Stripe from "stripe";
 import cors from "cors";
+import { v4 as uuidv4 } from "uuid";
 import type { AppEventPayload } from "./events/types";
 import { eventHandlers } from "./events/handlers";
 import { fetchCMSData, getCmsQuery, datocmsApiToken, datocmsEnv } from "./cms";
 import { log } from "./utils/logger";
+import { publishAppEvent } from "./utils/pubsub";
 import * as Sentry from "@sentry/node";
 
 Sentry.init({
@@ -249,6 +252,31 @@ const stripeWebhook = onRequest(
             feature: "payment",
             status: "success",
           });
+
+          const userDoc = await userRef.get();
+          const profile = userDoc.data()?.profile ?? {};
+          const creditsTotal: number = profile.credits ?? credits;
+          const displayName: string = profile.name ?? "";
+          const userEmail: string = session.metadata?.userEmail ?? "";
+          const amountCents: number = session.amount_total ?? 0;
+          const currency: string = session.currency ?? "usd";
+
+          await publishAppEvent(
+            {
+              eventType: "credits-purchased",
+              userId,
+              userEmail,
+              displayName,
+              creditsPurchased: credits,
+              creditsTotal,
+              amountCents,
+              currency,
+              timestamp: Date.now(),
+              requestId,
+            },
+            requestId,
+            "credits-purchased",
+          );
         } catch (err) {
           log.exception(err as Error, { requestId, userId, feature: "payment" });
         }
@@ -399,4 +427,33 @@ const deleteExpiredFiles = onSchedule(
     }
   },
 );
-export { processPayment, stripeWebhook, onAppEvent, cms, deleteExpiredFiles };
+const onUserCreated = auth.user().onCreate(async (user) => {
+  const requestId = uuidv4();
+  const { uid, email, displayName } = user;
+
+  if (!email) {
+    log.warn("🔐 user-created: no email on user record", { userId: uid, feature: "user-created" });
+    return;
+  }
+
+  log.event("🔐 user-created", { requestId, userId: uid, feature: "user-created", status: "start" });
+
+  try {
+    await publishAppEvent(
+      {
+        eventType: "user-created",
+        userId: uid,
+        userEmail: email,
+        displayName: displayName ?? email.split("@")[0],
+        timestamp: Date.now(),
+        requestId,
+      },
+      requestId,
+      "user-created",
+    );
+  } catch (error) {
+    log.exception(error as Error, { requestId, userId: uid, feature: "user-created" });
+  }
+});
+
+export { processPayment, stripeWebhook, onAppEvent, cms, deleteExpiredFiles, onUserCreated };

@@ -1,8 +1,10 @@
 import { getResend } from "../../email/resend";
-import type { AppEventHandler } from "./types";
+import type { TypedEventHandler } from "./types";
+import type { PdfOperationPayload } from "../types";
+import { pdfOperationEmailHtml, pdfOperationSubject } from "../../email/templates/pdfOperation";
 import { log } from "../../utils/logger";
 
-export const handleMergePdfs: AppEventHandler = async (payload) => {
+export const handleMergePdfs: TypedEventHandler<PdfOperationPayload> = async (payload) => {
   const { userId, userEmail, fileId, fileName, fileUrl, requestId } = payload;
 
   try {
@@ -10,14 +12,8 @@ export const handleMergePdfs: AppEventHandler = async (payload) => {
     await resend.emails.send({
       to: userEmail,
       from: "PDF Craft <no-reply@pdf-craft.app>",
-      subject: "Your Merged PDF is Ready!",
-      html: `
-        <p>Hi there,</p>
-        <p>Your PDF files have been successfully merged into a single PDF file named <strong>${fileName}</strong>.</p>
-        <p>You can download your merged PDF using the link below:</p>
-        <p><a href="${fileUrl}">Download Merged PDF</a></p>
-        <p>Thank you for using PDF Craft!</p>
-      `,
+      subject: pdfOperationSubject("pdf-merge"),
+      html: pdfOperationEmailHtml({ operationType: "pdf-merge", fileName, fileUrl }),
     });
     log.business("📧 email-sent", {
       requestId,
