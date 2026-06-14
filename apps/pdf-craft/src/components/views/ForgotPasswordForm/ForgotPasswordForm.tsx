@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { actions } from 'astro:actions'
 import { Input, Button, Stack, Callout } from '@fhdamd/threads'
 import { useRecaptcha } from '../../../utils'
+import FormSuccess from '../../ui/FormSuccess/FormSuccess'
 
 type Status = 'idle' | 'sending' | 'success' | 'error'
 
@@ -41,29 +42,9 @@ export default function ForgotPasswordForm() {
 
   if (status === 'success') {
     return (
-      <div style={{
-        background: 'var(--th-color-sage-subtle)',
-        borderRadius: 'var(--th-radius-lg)',
-        padding: 'var(--th-space-8) var(--th-space-6)',
-        textAlign: 'center',
-      }}>
-        <p style={{
-          fontFamily: 'var(--th-font-display)',
-          fontSize: 'var(--th-text-lg)',
-          fontVariationSettings: '"wdth" 92, "wght" 650',
-          color: 'var(--th-color-sage-text)',
-          marginBlockEnd: 'var(--th-space-2)',
-        }}>
-          Check your email
-        </p>
-        <p style={{
-          fontFamily: 'var(--th-font-display)',
-          fontSize: 'var(--th-text-base)',
-          color: 'var(--th-color-text-2)',
-        }}>
-          If an account exists for <strong>{email}</strong>, you'll receive a password reset link shortly.
-        </p>
-      </div>
+      <FormSuccess title="Check your email">
+        If an account exists for <strong>{email}</strong>, you'll receive a password reset link shortly.
+      </FormSuccess>
     )
   }
 

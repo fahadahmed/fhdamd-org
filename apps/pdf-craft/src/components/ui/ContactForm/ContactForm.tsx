@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { actions } from 'astro:actions'
 import { Input, Textarea, Select, Button, Stack, Callout } from '@fhdamd/threads'
 import { useRecaptcha } from '../../../utils'
+import FormSuccess from '../FormSuccess/FormSuccess'
 
 type Status = 'idle' | 'sending' | 'success' | 'error'
 
@@ -52,29 +53,9 @@ export default function ContactForm() {
 
   if (status === 'success') {
     return (
-      <div style={{
-        background: 'var(--th-color-sage-subtle)',
-        borderRadius: 'var(--th-radius-lg)',
-        padding: 'var(--th-space-8) var(--th-space-6)',
-        textAlign: 'center',
-      }}>
-        <p style={{
-          fontFamily: 'var(--th-font-display)',
-          fontSize: 'var(--th-text-lg)',
-          fontVariationSettings: '"wdth" 92, "wght" 650',
-          color: 'var(--th-color-sage-text)',
-          marginBlockEnd: 'var(--th-space-2)',
-        }}>
-          Message sent!
-        </p>
-        <p style={{
-          fontFamily: 'var(--th-font-display)',
-          fontSize: 'var(--th-text-base)',
-          color: 'var(--th-color-text-2)',
-        }}>
-          We'll get back to you within 1–2 business days.
-        </p>
-      </div>
+      <FormSuccess title="Message sent!">
+        We'll get back to you within 1–2 business days.
+      </FormSuccess>
     )
   }
 
