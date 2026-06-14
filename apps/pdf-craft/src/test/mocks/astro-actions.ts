@@ -9,11 +9,13 @@ export const imageToPdf = vi.fn().mockResolvedValue({ data: { data: { fileUrl: "
 export const verifyUser = vi.fn().mockResolvedValue({ data: { redirected: false }, error: null });
 export const createUser = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
 export const signOutUser = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
+export const sendMessage = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
 
 export const actions = {
   credits: { checkCredits },
   operations: { mergePdfs, encryptPdf, decryptPdf, imageToPdf },
   user: { verifyUser, createUser, signOutUser },
+  contact: { sendMessage },
 };
 
 export const defineAction = vi.fn((config: unknown) => config);

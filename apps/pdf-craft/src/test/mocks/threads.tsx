@@ -85,6 +85,23 @@ export const FileDropzone = ({ label, accept, multiple, onFiles }: any) => (
   </div>
 );
 
+export const Textarea = ({ id, name, label, value, onChange, required, hint, rows }: any) => (
+  <div>
+    <label htmlFor={id}>{label}</label>
+    <textarea id={id} name={name} value={value} onChange={onChange} required={required} rows={rows} />
+    {hint && <span>{hint}</span>}
+  </div>
+);
+
+export const Select = ({ id, name, label, value, onChange, required, children }: any) => (
+  <div>
+    <label htmlFor={id}>{label}</label>
+    <select id={id} name={name} value={value} onChange={onChange} required={required}>
+      {children}
+    </select>
+  </div>
+);
+
 export const Radio = ({ name, value, checked, onChange }: any) => (
   <input type="radio" name={name} value={value} checked={checked} onChange={onChange} />
 );
