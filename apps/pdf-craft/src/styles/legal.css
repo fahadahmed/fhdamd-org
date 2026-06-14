@@ -1,0 +1,62 @@
+.legal-page {
+  padding-block: var(--th-space-20);
+}
+
+.legal-container {
+  max-inline-size: 760px;
+  margin-inline: auto;
+  padding-inline: var(--th-space-6);
+}
+
+.legal-header {
+  margin-block-end: var(--th-space-8);
+}
+
+.legal-eyebrow {
+  display: inline-block;
+  font-family: var(--th-font-display);
+  font-size: var(--th-text-xs);
+  font-variation-settings: "wdth" 92, "wght" 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--th-color-accent);
+  margin-block-end: var(--th-space-3);
+}
+
+.legal-title {
+  font-family: var(--th-font-display);
+  font-size: var(--th-text-3xl);
+  font-variation-settings: "wdth" 92, "wght" 700;
+  color: var(--th-color-text-1);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-block-end: var(--th-space-3);
+}
+
+.legal-meta {
+  font-family: var(--th-font-display);
+  font-size: var(--th-text-sm);
+  color: var(--th-color-text-3);
+}
+
+.legal-divider {
+  border: none;
+  border-block-start: 1px solid var(--th-color-border);
+  margin-block-end: var(--th-space-10);
+}
+
+/* first h2 gets no top margin since it immediately follows the divider */
+.legal-body h2:first-child {
+  margin-block-start: 0;
+}
+
+.legal-unpublished {
+  font-family: var(--th-font-display);
+  font-size: var(--th-text-base);
+  color: var(--th-color-text-3);
+}
+
+@media (max-width: 640px) {
+  .legal-page { padding-block: var(--th-space-12); }
+  .legal-title { font-size: var(--th-text-2xl); }
+}
