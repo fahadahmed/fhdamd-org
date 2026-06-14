@@ -187,6 +187,91 @@ export const user = {
     },
   }),
 
+  sendPasswordReset: defineAction({
+    accept: 'json',
+    input: z.object({
+      email: z.string().email('Invalid email address'),
+      captchaToken: z.string().min(1),
+    }),
+    handler: async (input) => {
+      const { email, captchaToken } = input;
+      log.event("🔑 password-reset-request", { feature: "forgot-password", status: "start" });
+
+      const isHuman = await verifyRecaptcha(captchaToken);
+      if (!isHuman) {
+        log.warn("🔑 password-reset: captcha failed", { feature: "forgot-password", status: "fail" });
+        return { success: false, error: 'Captcha verification failed. Please try again.' };
+      }
+
+      try {
+        const auth = await getFirebaseAuth();
+        const resetLink = await auth.generatePasswordResetLink(email);
+
+        const apiKey = import.meta.env.RESEND_API_KEY;
+        if (!apiKey) throw new Error('RESEND_API_KEY is not configured');
+
+        const html = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f4f0;font-family:'DM Sans',Arial,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f0;padding:40px 16px">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;max-width:560px;width:100%">
+        <tr><td style="background:#2b2825;padding:28px 36px">
+          <span style="font-size:20px;font-weight:700;color:#f5f4f0;letter-spacing:-0.02em">PDF Craft</span>
+        </td></tr>
+        <tr><td style="padding:36px 36px 28px">
+          <h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#1a1916;letter-spacing:-0.02em">Reset your password</h1>
+          <p style="margin:0 0 24px;font-size:15px;color:#5a5754;line-height:1.6">
+            We received a request to reset the password for your PDF Craft account. Click the button below to choose a new password.
+          </p>
+          <table cellpadding="0" cellspacing="0"><tr><td>
+            <a href="${resetLink}" style="display:inline-block;background:#c84b2f;color:#ffffff;font-size:15px;font-weight:600;padding:12px 28px;border-radius:8px;text-decoration:none;letter-spacing:-0.01em">Reset password</a>
+          </td></tr></table>
+          <p style="margin:24px 0 0;font-size:13px;color:#8a8784;line-height:1.6">
+            This link expires in 1 hour. If you didn't request a password reset, you can safely ignore this email — your password will not change.
+          </p>
+        </td></tr>
+        <tr><td style="background:#f5f4f0;padding:20px 36px;border-top:1px solid #e8e6e1">
+          <p style="margin:0;font-size:12px;color:#8a8784">© ${new Date().getFullYear()} PDF Craft. All rights reserved.</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+        const res = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            from: 'PDF Craft <no-reply@pdf-craft.app>',
+            to: [email],
+            subject: 'Reset your PDF Craft password',
+            html,
+          }),
+        });
+
+        if (!res.ok) {
+          const err = await res.text();
+          throw new Error(`Resend error: ${err}`);
+        }
+
+        log.business("🔑 password-reset-sent", { feature: "forgot-password", status: "success" });
+      } catch (error: any) {
+        // auth/user-not-found — return success anyway so we don't leak whether the email exists
+        if (error?.code === 'auth/user-not-found') {
+          log.warn("🔑 password-reset: user not found", { feature: "forgot-password" });
+          return { success: true };
+        }
+        log.exception(error as Error, { feature: "forgot-password" });
+        return { success: false, error: 'Failed to send reset email. Please try again.' };
+      }
+
+      return { success: true };
+    },
+  }),
+
   signOutUser: defineAction({
     accept: 'json',
     input: undefined,

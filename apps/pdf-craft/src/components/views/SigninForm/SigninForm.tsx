@@ -53,16 +53,29 @@ export default function SigninForm() {
           autoComplete="email"
           required
         />
-        <Input
-          type="password"
-          name="password"
-          id="password"
-          label="Password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          autoComplete="current-password"
-          required
-        />
+        <div>
+          <Input
+            type="password"
+            name="password"
+            id="password"
+            label="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            autoComplete="current-password"
+            required
+          />
+          <div style={{ textAlign: 'right', marginBlockStart: 'var(--th-space-1)' }}>
+            <a href="/forgot-password" style={{
+              fontFamily: 'var(--th-font-display)',
+              fontSize: 'var(--th-text-xs)',
+              color: 'var(--th-color-text-3)',
+              textDecoration: 'underline',
+              textUnderlineOffset: '3px',
+            }}>
+              Forgot password?
+            </a>
+          </div>
+        </div>
         <Button type="submit" variant="solid-terra" style={{ width: '100%' }}>
           Sign in
         </Button>
