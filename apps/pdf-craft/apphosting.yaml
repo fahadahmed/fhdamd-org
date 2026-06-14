@@ -34,3 +34,5 @@ env:
     secret: pdfProcessorUrl
   - variable: PUBLIC_APP_ENV
     secret: appEnv
+  - variable: RESEND_API_KEY
+    secret: resendApiKey

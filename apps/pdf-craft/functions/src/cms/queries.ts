@@ -6,7 +6,14 @@ const TESTIMONIAL_FIELDS = `id name detail title _createdAt`;
 const SECTION_HEADER_FIELDS = `key eyebrow title intro`;
 const STEP_FIELDS = `id number title body`;
 
+const LEGAL_PAGE_FIELDS = `title slug eyebrow metaDescription _updatedAt content`;
+
 export const CMS_QUERIES = {
+  legalPage: `
+    query LegalPageQuery($slug: String!) {
+      legalPage(filter: { slug: { eq: $slug } }) { ${LEGAL_PAGE_FIELDS} }
+    }
+  `,
   faqs: `
     query FaqsQuery {
       allFaqs(orderBy: _createdAt_ASC) { ${FAQ_FIELDS} }

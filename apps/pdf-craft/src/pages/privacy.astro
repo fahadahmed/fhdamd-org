@@ -1,0 +1,54 @@
+---
+import { marked } from 'marked';
+import Layout from '../layouts/Layout.astro';
+import { fetchCms } from '../utils/lib/cms';
+import '../styles/prose.css';
+import '../styles/legal.css';
+
+type LegalPageResponse = {
+  data: {
+    legalPage: {
+      title: string;
+      eyebrow: string;
+      metaDescription: string;
+      _updatedAt: string;
+      content: string;
+    } | null;
+  };
+};
+
+const { data } = await fetchCms<LegalPageResponse>('legalPage', { slug: 'privacy' });
+const page = data?.legalPage ?? null;
+
+const lastUpdated = page?._updatedAt
+  ? new Date(page._updatedAt).toLocaleDateString('en-GB', {
+      day: 'numeric', month: 'long', year: 'numeric',
+    })
+  : null;
+
+const contentHtml = page?.content ? (marked(page.content) as string) : null;
+---
+
+<Layout
+  title={page ? `${page.title} — PDF Craft` : 'Privacy Policy — PDF Craft'}
+  description={page?.metaDescription ?? ''}
+>
+  <div class="legal-page">
+    <div class="legal-container">
+
+      <div class="legal-header">
+        {page?.eyebrow && <span class="legal-eyebrow">{page.eyebrow}</span>}
+        <h1 class="legal-title">{page?.title ?? 'Privacy Policy'}</h1>
+        {lastUpdated && <p class="legal-meta">Last updated <time>{lastUpdated}</time></p>}
+      </div>
+
+      <hr class="legal-divider" />
+
+      {contentHtml
+        ? <div class="prose legal-body" set:html={contentHtml} />
+        : <p class="legal-unpublished">This page hasn't been published yet.</p>
+      }
+
+    </div>
+  </div>
+</Layout>

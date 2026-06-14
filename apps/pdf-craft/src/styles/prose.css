@@ -1,0 +1,111 @@
+/* Article / markdown prose — uses threads design tokens */
+.prose {
+  color: var(--th-color-text-1);
+  font-family: var(--th-font-display);
+  font-size: var(--th-text-base);
+  line-height: 1.75;
+}
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 92, "wght" 700;
+  color: var(--th-color-text-1);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-block-start: 2.25em;
+  margin-block-end: 0.6em;
+}
+
+.prose h2 { font-size: var(--th-text-xl); }
+.prose h3 { font-size: var(--th-text-lg); }
+.prose h4 { font-size: var(--th-text-md); font-variation-settings: "wdth" 92, "wght" 600; }
+
+.prose p {
+  margin-block-end: 1.25em;
+  color: var(--th-color-text-2);
+}
+
+.prose p:last-child { margin-block-end: 0; }
+
+.prose a {
+  color: var(--th-color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.prose a:hover { color: var(--th-color-accent-hover); }
+
+.prose strong {
+  font-variation-settings: "wdth" 92, "wght" 650;
+  color: var(--th-color-text-1);
+}
+
+.prose em {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-style: italic;
+}
+
+.prose ul,
+.prose ol {
+  padding-inline-start: 1.5em;
+  margin-block-end: 1.25em;
+  color: var(--th-color-text-2);
+}
+
+.prose li { margin-block-end: 0.4em; line-height: 1.65; }
+.prose li:last-child { margin-block-end: 0; }
+
+.prose ul { list-style-type: disc; }
+.prose ol { list-style-type: decimal; }
+
+.prose hr {
+  border: none;
+  border-block-start: 1px solid var(--th-color-border);
+  margin-block: 2.5em;
+}
+
+.prose blockquote {
+  border-inline-start: 3px solid var(--th-color-accent-subtle);
+  padding-inline-start: 1.25em;
+  margin-inline: 0;
+  color: var(--th-color-text-2);
+  font-style: italic;
+}
+
+/* Table */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-block-end: 1.5em;
+  font-size: var(--th-text-sm);
+}
+
+.prose th {
+  text-align: start;
+  font-variation-settings: "wdth" 92, "wght" 650;
+  color: var(--th-color-text-1);
+  border-block-end: 2px solid var(--th-color-border-strong);
+  padding-block: var(--th-space-2);
+  padding-inline-end: var(--th-space-4);
+}
+
+.prose td {
+  color: var(--th-color-text-2);
+  border-block-end: 1px solid var(--th-color-border-subtle);
+  padding-block: var(--th-space-2);
+  padding-inline-end: var(--th-space-4);
+  vertical-align: top;
+}
+
+.prose code {
+  font-family: var(--th-font-mono);
+  font-size: 0.875em;
+  background: var(--th-color-surface-2);
+  border-radius: var(--th-radius-xs);
+  padding: 0.15em 0.4em;
+  color: var(--th-color-accent-text);
+}
