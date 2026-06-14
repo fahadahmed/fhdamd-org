@@ -6,5 +6,7 @@ export { default as EncryptPdf } from "./EncryptPdf";
 export { default as DecryptPdf } from "./DecryptPdf";
 export { default as PaymentSuccess } from "./PaymentSuccess";
 export { default as PaymentCancel } from "./PaymentCancel";
+export { default as ForgotPasswordForm } from "./ForgotPasswordForm";
+export { default as ResetPasswordForm } from "./ResetPasswordForm";
 
 export * from "./SignupForm";
