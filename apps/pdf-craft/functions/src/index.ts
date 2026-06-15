@@ -288,7 +288,7 @@ const stripeWebhook = onRequest(
 );
 
 const onAppEvent = onMessagePublished(
-  { topic: "app-event", secrets: ["RESEND_API_KEY"] },
+  { topic: "app-event", secrets: ["RESEND_API_KEY", "RESEND_AUDIENCE_ID"] },
   async (event) => {
     const message = event.data.message;
 

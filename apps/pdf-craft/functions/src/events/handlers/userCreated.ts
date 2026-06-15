@@ -6,22 +6,35 @@ import { log } from "../../utils/logger";
 
 export const handleUserCreated: TypedEventHandler<UserCreatedPayload> = async (payload) => {
   const { userId, userEmail, displayName, requestId } = payload;
+  const [firstName, ...rest] = displayName.split(" ");
+  const lastName = rest.join(" ");
 
-  try {
-    const resend = getResend();
-    await resend.emails.send({
+  const resend = getResend();
+  const audienceId = process.env.RESEND_AUDIENCE_ID;
+
+  const results = await Promise.allSettled([
+    resend.emails.send({
       to: userEmail,
       from: "PDF Craft <no-reply@pdf-craft.app>",
-      subject: `Welcome to PDF Craft, ${displayName.split(" ")[0]}!`,
+      subject: `Welcome to PDF Craft, ${firstName}!`,
       html: welcomeEmailHtml(displayName),
-    });
-    log.business("📧 email-sent", {
-      requestId,
-      userId,
-      feature: "user-created",
-      status: "success",
-    });
-  } catch (error) {
-    log.exception(error as Error, { requestId, userId, feature: "user-created" });
+    }),
+    audienceId
+      ? resend.contacts.create({ audienceId, email: userEmail, firstName, lastName, unsubscribed: false })
+      : Promise.resolve(null),
+  ]);
+
+  const [emailResult, contactResult] = results;
+
+  if (emailResult.status === "fulfilled") {
+    log.business("📧 email-sent", { requestId, userId, feature: "user-created", status: "success" });
+  } else {
+    log.exception(emailResult.reason, { requestId, userId, feature: "user-created" });
+  }
+
+  if (audienceId && contactResult.status === "rejected") {
+    log.exception(contactResult.reason, { requestId, userId, feature: "mailing-list" });
+  } else if (audienceId) {
+    log.business("📋 mailing-list-added", { requestId, userId, feature: "mailing-list", status: "success" });
   }
 };
