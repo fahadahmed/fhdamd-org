@@ -1,9 +1,13 @@
-name: Release
+name: Release Threads to NPM
 
 on:
   push:
     branches:
       - main
+    paths:
+      - "packages/threads/**"
+      - "release-please-config.json"
+      - ".release-please-manifest.json"
 
 permissions:
   contents: write
