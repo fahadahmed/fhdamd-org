@@ -84,7 +84,7 @@ export function creditsPurchasedEmailHtml(data: CreditsPurchasedData): string {
     </table>
 
     <p style="margin: 0; font-family: ${FONT}; font-size: 14px; color: #8C8880; line-height: 1.6; text-align: center;">
-      Each PDF operation uses 1 credit. Questions about your purchase?
+      Credits are deducted per operation and never expire. Questions about your purchase?
       <a href="mailto:support@pdf-craft.app" style="color: #B5623A; text-decoration: underline;">Contact us</a>.
     </p>
   `;
