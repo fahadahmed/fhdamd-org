@@ -71,8 +71,8 @@ export function welcomeEmailHtml(displayName: string): string {
       <tr>
         <td style="background-color: #F7F4EE; border-radius: 12px; padding: 14px 18px;">
           <p style="margin: 0; font-family: ${FONT}; font-size: 14px; color: #5A5750; line-height: 1.6;">
-            ✦ &nbsp;Each operation costs <strong style="color: #2E2C28;">1 credit</strong>. Buy more anytime on the
-            <a href="https://pdf-craft.app/pricing" style="color: #B5623A; text-decoration: underline;">pricing page</a>.
+            ✦ &nbsp;Credits are deducted per operation and never expire. Buy more anytime on the
+            <a href="https://pdf-craft.app/buy-credits" style="color: #B5623A; text-decoration: underline;">pricing page</a>.
           </p>
         </td>
       </tr>
