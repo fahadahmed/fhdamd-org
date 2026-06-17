@@ -174,6 +174,7 @@ locals {
     "roles/eventarc.admin",             # onMessagePublished / onSchedule triggers
     "roles/pubsub.admin",               # topics/subscriptions for onMessagePublished
     "roles/cloudscheduler.admin",       # onSchedule jobs
+    "roles/iam.workloadIdentityPoolAdmin", # manage the WIF pool/provider this SA authenticates through
   ])
 }
 
