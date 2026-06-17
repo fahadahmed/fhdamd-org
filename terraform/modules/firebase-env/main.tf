@@ -47,6 +47,10 @@ resource "google_firestore_database" "default" {
   location_id = "nam5"
   type        = "FIRESTORE_NATIVE"
 
+  lifecycle {
+    prevent_destroy = true
+  }
+
   depends_on = [google_project_service.apis]
 }
 
@@ -59,6 +63,10 @@ resource "google_firebase_storage_bucket" "default" {
   provider  = google-beta
   project   = var.project_id
   bucket_id = "${var.project_id}.firebasestorage.app"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 
   depends_on = [google_project_service.apis]
 }
