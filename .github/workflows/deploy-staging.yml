@@ -1,0 +1,81 @@
+name: Deploy PDF-Craft Staging
+
+on:
+  push:
+    tags:
+      - 'pdf-craft-v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+'
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  guard:
+    name: Verify tag is on main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure tagged commit belongs to main
+        run: |
+          git fetch origin main
+          if ! git branch -r --contains "${{ github.sha }}" | grep -qE '\borigin/main\b'; then
+            echo "::error::RC tags must be created from a commit on the main branch. Tag '${{ github.ref_name }}' points to ${{ github.sha }} which is not in main's history."
+            exit 1
+          fi
+          echo "Commit ${{ github.sha }} is on main. Proceeding."
+
+  deploy:
+    name: Firebase deploy — staging
+    needs: guard
+    runs-on: ubuntu-latest
+    environment: staging
+    permissions:
+      contents: read
+      id-token: write  # required for OIDC token exchange with GCP
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build functions
+        working-directory: apps/pdf-craft/functions
+        run: pnpm run build
+
+      - name: Install Firebase CLI
+        run: pnpm add -g firebase-tools
+
+      - name: Deploy Firestore rules
+        working-directory: apps/pdf-craft
+        run: firebase deploy --only firestore:rules --project pdf-craft-stg --force
+
+      - name: Deploy Storage rules
+        working-directory: apps/pdf-craft
+        run: firebase deploy --only storage --project pdf-craft-stg --force
+
+      - name: Deploy Cloud Functions
+        working-directory: apps/pdf-craft
+        run: firebase deploy --only functions --project pdf-craft-stg --force
+
+      - name: Deploy App Hosting
+        working-directory: apps/pdf-craft
+        run: firebase deploy --only apphosting --project pdf-craft-stg --force
