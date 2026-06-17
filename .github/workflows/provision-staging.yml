@@ -17,6 +17,7 @@ jobs:
   provision:
     name: Terraform — provision staging infra
     runs-on: ubuntu-latest
+    environment: staging
     defaults:
       run:
         working-directory: terraform/environments/staging
