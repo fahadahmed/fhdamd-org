@@ -219,6 +219,7 @@ locals {
     "roles/firebaseapphosting.computeRunner",
     "roles/secretmanager.secretAccessor",  # read apphosting.yaml secret payloads
     "roles/secretmanager.viewer",          # read secret version metadata (build-time resolution)
+    "roles/pubsub.publisher",              # server actions publish directly to the app-event topic
   ])
 }
 
