@@ -5,13 +5,12 @@ on:
     tags:
       - 'pdf-processor-v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+'
 
-permissions:
-  contents: read
-
 jobs:
   guard:
     name: Verify tag is on main
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
@@ -34,6 +33,8 @@ jobs:
     permissions:
       contents: read
       id-token: write  # required for OIDC token exchange with GCP
+    outputs:
+      service-url: ${{ steps.service.outputs.url }}
     env:
       PROJECT_ID: pdf-craft-stg
       REGION: us-central1
@@ -102,3 +103,23 @@ jobs:
           done
           echo "::error::pdf-processor health check failed after 5 attempts. Check Cloud Run logs in pdf-craft-stg."
           exit 1
+
+  release:
+    name: Publish GitHub Release
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --repo "${{ github.repository }}" \
+            --title "${{ github.ref_name }} — staging" \
+            --prerelease \
+            --notes "Deployed to staging: ${{ needs.deploy.outputs.service-url }}
+
+          Commit: ${{ github.sha }}
+          Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
