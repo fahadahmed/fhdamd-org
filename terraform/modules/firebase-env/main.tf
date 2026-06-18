@@ -37,6 +37,7 @@ resource "google_project_service" "apis" {
     "eventarc.googleapis.com",
     "pubsub.googleapis.com",
     "cloudscheduler.googleapis.com",
+    "cloudbilling.googleapis.com",
   ])
   project            = var.project_id
   service            = each.key
