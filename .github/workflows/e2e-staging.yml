@@ -1,19 +1,11 @@
 name: E2E Staging
 
 on:
-  # workflow_run grants this workflow secrets access regardless of which
-  # ref triggered it, which is risky if the upstream workflow could be
-  # triggered by an untrusted fork PR. It can't here: deploy-staging.yml
-  # only triggers on tag pushes, which require write access to this repo.
-  workflow_run:
-    workflows: ["Deploy PDF-Craft Staging"]
-    types: [completed]
   workflow_dispatch: {}
 
 jobs:
   e2e:
     name: Playwright E2E — staging
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment: staging
     permissions:
@@ -21,8 +13,6 @@ jobs:
       id-token: write  # required for OIDC token exchange with GCP
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2
         with:
