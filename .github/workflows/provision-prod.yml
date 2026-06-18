@@ -1,0 +1,43 @@
+name: Provision PDF-Craft Prod Infra
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/environments/prod/**'
+      - 'terraform/modules/firebase-env/**'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  id-token: write  # required for OIDC token exchange with GCP
+
+jobs:
+  provision:
+    name: Terraform — provision prod infra
+    runs-on: ubuntu-latest
+    environment: prod
+    defaults:
+      run:
+        working-directory: terraform/environments/prod
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
+        with:
+          terraform_version: "~1.9"
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform apply
+        run: terraform apply -auto-approve -input=false

@@ -1,0 +1,128 @@
+name: Deploy PDF-Craft Prod
+
+on:
+  push:
+    tags:
+      - 'pdf-craft-v[0-9]+.[0-9]+.[0-9]+'
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  guard:
+    name: Verify tag is on main and not an RC
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Reject RC tags
+        run: |
+          if [[ "${{ github.ref_name }}" == *-rc.* ]]; then
+            echo "::error::RC tags must not trigger a production deploy. Tag '${{ github.ref_name }}' looks like an RC tag."
+            exit 1
+          fi
+
+      - name: Ensure tagged commit belongs to main
+        run: |
+          git fetch origin main
+          if ! git branch -r --contains "${{ github.sha }}" | grep -qE '\borigin/main\b'; then
+            echo "::error::Production tags must be created from a commit on the main branch. Tag '${{ github.ref_name }}' points to ${{ github.sha }} which is not in main's history."
+            exit 1
+          fi
+          echo "Commit ${{ github.sha }} is on main. Proceeding."
+
+  e2e-gate:
+    name: Verify staging E2E passed for this commit
+    needs: guard
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    steps:
+      - name: Check for a successful e2e-staging.yml run on this commit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COUNT=$(gh run list \
+            --repo "${{ github.repository }}" \
+            --workflow=e2e-staging.yml \
+            --commit="${{ github.sha }}" \
+            --status=success \
+            --json databaseId \
+            --jq 'length')
+          if [ "$COUNT" -eq "0" ]; then
+            echo "::error::No successful e2e-staging.yml run found for commit ${{ github.sha }}. Tag and deploy this commit as an RC to staging first (pdf-craft-v*.*.*-rc.*), confirm E2E passes, then re-tag the same commit for prod."
+            exit 1
+          fi
+          echo "Found a successful e2e-staging.yml run for commit ${{ github.sha }}. Proceeding."
+
+  deploy:
+    name: Firebase deploy — prod
+    needs: e2e-gate
+    runs-on: ubuntu-latest
+    environment: prod
+    permissions:
+      contents: read
+      id-token: write  # required for OIDC token exchange with GCP
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build functions
+        working-directory: apps/pdf-craft/functions
+        run: pnpm run build
+
+      - name: Install Firebase CLI
+        run: pnpm add -g firebase-tools
+
+      - name: Deploy Firestore rules
+        working-directory: apps/pdf-craft
+        run: firebase deploy --only firestore:rules --project pdf-craft-prd --force
+
+      - name: Deploy Storage rules
+        working-directory: apps/pdf-craft
+        run: firebase deploy --only storage --project pdf-craft-prd --force
+
+      - name: Deploy Cloud Functions
+        working-directory: apps/pdf-craft
+        run: firebase deploy --only functions --project pdf-craft-prd --force
+
+      - name: Deploy App Hosting
+        working-directory: apps/pdf-craft
+        run: firebase deploy --only apphosting --project pdf-craft-prd --force
+
+  release:
+    name: Publish GitHub Release
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --repo "${{ github.repository }}" \
+            --title "${{ github.ref_name }}" \
+            --notes "Deployed to production: https://pdf-craft.app
+
+          Commit: ${{ github.sha }}
+          Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
