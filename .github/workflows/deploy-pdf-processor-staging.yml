@@ -1,0 +1,104 @@
+name: Deploy PDF-Processor Staging
+
+on:
+  push:
+    tags:
+      - 'pdf-processor-v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+'
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    name: Verify tag is on main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure tagged commit belongs to main
+        run: |
+          git fetch origin main
+          if ! git branch -r --contains "${{ github.sha }}" | grep -qE '\borigin/main\b'; then
+            echo "::error::RC tags must be created from a commit on the main branch. Tag '${{ github.ref_name }}' points to ${{ github.sha }} which is not in main's history."
+            exit 1
+          fi
+          echo "Commit ${{ github.sha }} is on main. Proceeding."
+
+  deploy:
+    name: Deploy to Cloud Run — staging
+    needs: guard
+    runs-on: ubuntu-latest
+    environment: staging
+    permissions:
+      contents: read
+      id-token: write  # required for OIDC token exchange with GCP
+    env:
+      PROJECT_ID: pdf-craft-stg
+      REGION: us-central1
+      IMAGE: us-central1-docker.pkg.dev/pdf-craft-stg/cloud-run-source-deploy/pdf-processor
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@e427ad8a34f8676edf47cf7d7925499adf3eb74f # v2
+
+      - name: Authenticate Docker with Artifact Registry
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+
+      - name: Build image
+        run: |
+          docker build \
+            -f apps/pdf-processor/Dockerfile \
+            -t ${{ env.IMAGE }}:${{ github.ref_name }} \
+            -t ${{ env.IMAGE }}:latest \
+            .
+
+      - name: Push image
+        run: |
+          docker push ${{ env.IMAGE }}:${{ github.ref_name }}
+          docker push ${{ env.IMAGE }}:latest
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy pdf-processor \
+            --image=${{ env.IMAGE }}:${{ github.ref_name }} \
+            --project=${{ env.PROJECT_ID }} \
+            --region=${{ env.REGION }} \
+            --allow-unauthenticated \
+            --min-instances=0 \
+            --max-instances=5 \
+            --memory=512Mi \
+            --cpu=1 \
+            --port=8080 \
+            --quiet
+
+      - name: Get service URL
+        id: service
+        run: |
+          URL=$(gcloud run services describe pdf-processor \
+            --project=${{ env.PROJECT_ID }} \
+            --region=${{ env.REGION }} \
+            --format='value(status.url)')
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+
+      - name: Verify health endpoint
+        run: |
+          URL="${{ steps.service.outputs.url }}/health"
+          echo "Checking $URL ..."
+          for i in 1 2 3 4 5; do
+            STATUS=$(curl -sf -o /dev/null -w "%{http_code}" "$URL" 2>/dev/null || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "Health check passed (HTTP 200)."
+              exit 0
+            fi
+            echo "Attempt $i/5: HTTP $STATUS — waiting 15s for cold start..."
+            sleep 15
+          done
+          echo "::error::pdf-processor health check failed after 5 attempts. Check Cloud Run logs in pdf-craft-stg."
+          exit 1
