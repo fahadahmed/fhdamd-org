@@ -1,0 +1,155 @@
+name: Deploy PDF-Processor Prod
+
+on:
+  push:
+    tags:
+      - 'pdf-processor-v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  guard:
+    name: Verify tag is on main and not an RC
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Reject RC tags
+        run: |
+          if [[ "${{ github.ref_name }}" == *-rc.* ]]; then
+            echo "::error::RC tags must not trigger a production deploy. Tag '${{ github.ref_name }}' looks like an RC tag."
+            exit 1
+          fi
+
+      - name: Ensure tagged commit belongs to main
+        run: |
+          git fetch origin main
+          if ! git branch -r --contains "${{ github.sha }}" | grep -qE '\borigin/main\b'; then
+            echo "::error::Production tags must be created from a commit on the main branch. Tag '${{ github.ref_name }}' points to ${{ github.sha }} which is not in main's history."
+            exit 1
+          fi
+          echo "Commit ${{ github.sha }} is on main. Proceeding."
+
+  e2e-gate:
+    name: Verify staging E2E passed for this commit
+    needs: guard
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    steps:
+      - name: Check for a successful e2e-staging.yml run on this commit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COUNT=$(gh run list \
+            --repo "${{ github.repository }}" \
+            --workflow=e2e-staging.yml \
+            --commit="${{ github.sha }}" \
+            --status=success \
+            --json databaseId \
+            --jq 'length')
+          if [ "$COUNT" -eq "0" ]; then
+            echo "::error::No successful e2e-staging.yml run found for commit ${{ github.sha }}. Tag and deploy this commit as an RC to staging first (pdf-processor-v*.*.*-rc.*), confirm E2E passes, then re-tag the same commit for prod."
+            exit 1
+          fi
+          echo "Found a successful e2e-staging.yml run for commit ${{ github.sha }}. Proceeding."
+
+  deploy:
+    name: Deploy to Cloud Run — prod
+    needs: e2e-gate
+    runs-on: ubuntu-latest
+    environment: prod
+    permissions:
+      contents: read
+      id-token: write  # required for OIDC token exchange with GCP
+    outputs:
+      service-url: ${{ steps.service.outputs.url }}
+    env:
+      PROJECT_ID: pdf-craft-prd
+      REGION: us-central1
+      IMAGE: us-central1-docker.pkg.dev/pdf-craft-prd/cloud-run-source-deploy/pdf-processor
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@e427ad8a34f8676edf47cf7d7925499adf3eb74f # v2
+
+      - name: Authenticate Docker with Artifact Registry
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+
+      - name: Build image
+        run: |
+          docker build \
+            -f apps/pdf-processor/Dockerfile \
+            -t ${{ env.IMAGE }}:${{ github.ref_name }} \
+            -t ${{ env.IMAGE }}:latest \
+            .
+
+      - name: Push image
+        run: |
+          docker push ${{ env.IMAGE }}:${{ github.ref_name }}
+          docker push ${{ env.IMAGE }}:latest
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy pdf-processor \
+            --image=${{ env.IMAGE }}:${{ github.ref_name }} \
+            --project=${{ env.PROJECT_ID }} \
+            --region=${{ env.REGION }} \
+            --allow-unauthenticated \
+            --min-instances=0 \
+            --max-instances=5 \
+            --memory=512Mi \
+            --cpu=1 \
+            --port=8080 \
+            --quiet
+
+      - name: Get service URL
+        id: service
+        run: |
+          URL=$(gcloud run services describe pdf-processor \
+            --project=${{ env.PROJECT_ID }} \
+            --region=${{ env.REGION }} \
+            --format='value(status.url)')
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+
+      - name: Verify health endpoint
+        run: |
+          URL="${{ steps.service.outputs.url }}/health"
+          echo "Checking $URL ..."
+          for i in 1 2 3 4 5; do
+            STATUS=$(curl -sf -o /dev/null -w "%{http_code}" "$URL" 2>/dev/null || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "Health check passed (HTTP 200)."
+              exit 0
+            fi
+            echo "Attempt $i/5: HTTP $STATUS — waiting 15s for cold start..."
+            sleep 15
+          done
+          echo "::error::pdf-processor health check failed after 5 attempts. Check Cloud Run logs in pdf-craft-prd."
+          exit 1
+
+  release:
+    name: Publish GitHub Release
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --repo "${{ github.repository }}" \
+            --title "${{ github.ref_name }}" \
+            --notes "Deployed to production: ${{ needs.deploy.outputs.service-url }}
+
+          Commit: ${{ github.sha }}
+          Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
