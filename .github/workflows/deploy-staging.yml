@@ -5,9 +5,6 @@ on:
     tags:
       - 'pdf-craft-v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+'
 
-permissions:
-  contents: read
-
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -15,6 +12,8 @@ jobs:
   guard:
     name: Verify tag is on main
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
@@ -77,3 +76,23 @@ jobs:
       - name: Deploy App Hosting
         working-directory: apps/pdf-craft
         run: firebase deploy --only apphosting --project pdf-craft-stg --force
+
+  release:
+    name: Publish GitHub Release
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --repo "${{ github.repository }}" \
+            --title "${{ github.ref_name }} — staging" \
+            --prerelease \
+            --notes "Deployed to staging: https://stg.pdf-craft.app
+
+          Commit: ${{ github.sha }}
+          Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
