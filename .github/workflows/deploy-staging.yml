@@ -77,6 +77,21 @@ jobs:
         working-directory: apps/pdf-craft
         run: firebase deploy --only apphosting --project pdf-craft-stg --force
 
+  trigger-e2e:
+    name: Trigger E2E tests
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Dispatch e2e-staging.yml
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run e2e-staging.yml \
+            --repo "${{ github.repository }}" \
+            --ref "${{ github.ref_name }}"
+
   release:
     name: Publish GitHub Release
     needs: deploy

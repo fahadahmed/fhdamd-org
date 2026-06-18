@@ -1,0 +1,61 @@
+name: E2E Staging
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  e2e:
+    name: Playwright E2E — staging
+    runs-on: ubuntu-latest
+    environment: staging
+    permissions:
+      contents: read
+      id-token: write  # required for OIDC token exchange with GCP
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@e427ad8a34f8676edf47cf7d7925499adf3eb74f # v2
+
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Fetch runtime secrets from Secret Manager
+        run: |
+          {
+            echo "FIREBASE_SERVICE_ACCOUNT_KEY<<E2E_SECRET_DELIMITER"
+            gcloud secrets versions access latest --secret=firebaseServiceAccountKey --project=pdf-craft-stg
+            echo "E2E_SECRET_DELIMITER"
+          } >> "$GITHUB_ENV"
+          echo "PUBLIC_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret=firebaseApiKey --project=pdf-craft-stg)" >> "$GITHUB_ENV"
+
+      - name: Install Playwright browsers
+        working-directory: apps/pdf-craft
+        run: pnpm exec playwright install chromium --with-deps
+
+      - name: Run E2E tests
+        working-directory: apps/pdf-craft
+        env:
+          BASE_URL: https://stg.pdf-craft.app
+          E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
+          E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
+        run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: playwright-report
+          path: apps/pdf-craft/playwright-report/
+          retention-days: 14

@@ -20,6 +20,8 @@ pnpm-debug.log*
 # test output
 coverage/
 test-results/
+playwright-report/
+e2e/.auth/
 
 # macOS-specific files
 .DS_Store
