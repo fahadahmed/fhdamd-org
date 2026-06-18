@@ -217,7 +217,8 @@ locals {
   apphosting_compute_roles = toset([
     "roles/logging.logWriter",             # write build/runtime logs
     "roles/firebaseapphosting.computeRunner",
-    "roles/secretmanager.secretAccessor",  # read apphosting.yaml secrets
+    "roles/secretmanager.secretAccessor",  # read apphosting.yaml secret payloads
+    "roles/secretmanager.viewer",          # read secret version metadata (build-time resolution)
   ])
 }
 
