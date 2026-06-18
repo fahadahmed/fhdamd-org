@@ -197,6 +197,7 @@ locals {
     "roles/cloudscheduler.admin",       # onSchedule jobs
     "roles/iam.workloadIdentityPoolAdmin", # manage the WIF pool/provider this SA authenticates through
     "roles/iam.serviceAccountAdmin",       # manage IAM policy on its own service account (WIF binding)
+    "roles/resourcemanager.projectIamAdmin", # firebase deploy --only apphosting sets project IAM policy directly
   ])
 }
 
