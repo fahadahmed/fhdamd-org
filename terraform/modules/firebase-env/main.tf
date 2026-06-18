@@ -93,6 +93,14 @@ locals {
     "pdfProcessorUrl",
     "appEnv",
     "resendApiKey",
+    # Bound directly by Cloud Functions via defineSecret(), not apphosting.yaml
+    "STRIPE_SECRET_KEY",
+    "STRIPE_WEBHOOK_SECRET",
+    "APP_BASE_URL",
+    "RESEND_API_KEY",
+    "RESEND_AUDIENCE_ID",
+    "DATOCMS_API_TOKEN",
+    "DATOCMS_ENV",
   ])
 }
 
