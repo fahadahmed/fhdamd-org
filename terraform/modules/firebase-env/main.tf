@@ -12,6 +12,10 @@ terraform {
   }
 }
 
+data "google_project" "current" {
+  project_id = var.project_id
+}
+
 # ─── APIs ────────────────────────────────────────────────────────────────────
 
 resource "google_project_service" "apis" {
@@ -220,4 +224,35 @@ resource "google_project_iam_member" "apphosting_compute" {
   project  = var.project_id
   role     = each.value
   member   = "serviceAccount:firebase-app-hosting-compute@${var.project_id}.iam.gserviceaccount.com"
+}
+
+# ─── Gen2 Cloud Functions service agents ─────────────────────────────────────
+# Required for onMessagePublished/onSchedule triggers (Pub/Sub -> Eventarc ->
+# Cloud Run). `firebase deploy --only functions` checks for these on every
+# deploy and fails outright if the deploying principal can't grant them
+# itself — granting them once via Terraform avoids needing to give
+# github-deploy broad project IAM-admin rights just for this.
+
+resource "google_project_iam_member" "pubsub_token_creator" {
+  project = var.project_id
+  role    = "roles/iam.serviceAccountTokenCreator"
+  member  = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
+
+  depends_on = [google_project_service.apis]
+}
+
+locals {
+  default_compute_sa_roles = toset([
+    "roles/run.invoker",
+    "roles/eventarc.eventReceiver",
+  ])
+}
+
+resource "google_project_iam_member" "default_compute_sa" {
+  for_each = local.default_compute_sa_roles
+  project  = var.project_id
+  role     = each.value
+  member   = "serviceAccount:${data.google_project.current.number}-compute@developer.gserviceaccount.com"
+
+  depends_on = [google_project_service.apis]
 }
