@@ -62,6 +62,11 @@ pnpm --filter=@fhdamd/threads test
 
 See [packages/threads](packages/threads/README.md) for full usage docs.
 
+## Documentation
+
+- [Solution Architecture](docs/solution-architecture.md) — org-level overview: monorepo strategy, products, shared platform decisions, environments
+- [PDF-Craft Solution Architecture Document](docs/sad-pdfcraft.md) — system architecture, data flows, security model, and the full dev/staging/prod deployment pipeline (Terraform, GitHub Actions, the RC → E2E gate → promotion model)
+
 ## Tooling
 
 | Tool | Purpose |

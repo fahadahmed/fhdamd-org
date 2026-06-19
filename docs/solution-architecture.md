@@ -4,7 +4,7 @@
 **Repository:** fhdamd-org (Monorepo) \
 **Author:** Fahad Ahmed \
 **Status:** Draft \
-**Last Updated:** 08 Jun 2026
+**Last Updated:** 19 Jun 2026
 
 ## 1. Purpose & Scope
 
@@ -109,15 +109,15 @@ These apply across every product in the monorepo unless a product's own SAD expl
 
 ## 6. Environments
 
-The long-term target is three environments per product — **DEV**, **STG**, and **PRD** — mapped to separate Firebase projects, so that staging and production behave identically (*Monorepo Parity*, see [§7](#7-architectural-principles)).
+Three environments per product — **DEV**, **STG**, and **PRD** — mapped to separate Firebase projects, so that staging and production behave identically (*Monorepo Parity*, see [§7](#7-architectural-principles)).
 
 | Environment | Purpose | Status |
 |---|---|---|
-| **DEV** | Local development & the `*-dev` Firebase project; auto-deployed from `main` | Active (see `deploy-dev.yml`, `pdf-craft-dev` project) |
-| **STG** | Pre-production verification against production-like config | Planned — referenced in CORS allow-lists and `PUBLIC_APP_ENV`, not yet wired into CI/CD |
-| **PRD** | Live, customer-facing | Planned — referenced in CORS allow-lists and `PUBLIC_APP_ENV`, not yet wired into CI/CD |
+| **DEV** | Local development & the `*-dev` Firebase project; continuous deployment from `main` | **Active** (`deploy-dev.yml`, `pdf-craft-dev` project) |
+| **STG** | Pre-production verification against production-like config; gates promotion to PRD behind an E2E suite | **Active** (`pdf-craft-stg` project, `stg.pdf-craft.app`) |
+| **PRD** | Live, customer-facing; requires manual approval and a verified staging E2E pass before any deploy | **Active** (`pdf-craft-prd` project, `pdf-craft.app`) |
 
-> **Current state**: only the DEV pipeline (`pdf-craft-dev`) is live today. STG/PRD Firebase projects, backends, and deploy workflows are anticipated in the configuration (CORS origins, `PUBLIC_APP_ENV` values, `apphosting.yaml` secret references) but do not yet exist as deployed infrastructure. This gap is tracked as a known item — see [§8](#8-known-gaps--forward-looking-items).
+All three are provisioned by a single reusable Terraform module (`terraform/modules/firebase-env`), one per-project environment directory (`terraform/environments/{dev,staging,prod}`), and a per-environment GitHub Actions deploy identity via Workload Identity Federation — no long-lived service account keys stored anywhere. See [sad-pdfcraft.md §11](sad-pdfcraft.md#11-deployment-plan) for the full provisioning detail, the IAM gaps discovered standing this up, and the RC → staging → E2E gate → prod promotion pipeline (currently PDF-Craft–specific; the pattern generalises to any future product that needs the same three-tier setup).
 
 ## 7. Architectural Principles
 
@@ -132,9 +132,10 @@ These principles guide design decisions across every product:
 
 Documenting these honestly here so the record stays accurate as they're addressed:
 
-- **STG/PRD environments are not yet deployed** — see [§6](#6-environments). CI/CD (`deploy-dev.yml`) and Firebase project configuration currently cover DEV only.
-- **Security rules need hardening** — PDF-Craft's current Firestore rules grant any authenticated user read/write to any document, and its Storage rules deny all access outright (relying entirely on signed download tokens for file access). These are flagged in detail in the [PDF-Craft SAD §9](sad-pdfcraft.md#9-security).
+- **Storage rules deny all access by design**, relying entirely on signed download tokens for file access rather than expiring, time-boxed URLs — flagged in detail in the [PDF-Craft SAD §9.5](sad-pdfcraft.md#95-known-gaps-flagged-honestly-for-future-hardening). (Firestore rules, previously flagged here as overly permissive, are now scoped per-user and resolved.)
+- **E2E coverage is narrow** — the Playwright suite gating PRD promotion covers auth redirects, dashboard load, and one operation (encrypt); payment flows, sign-up, and the other PDF operations aren't yet covered. See [PDF-Craft SAD §9.5](sad-pdfcraft.md#95-known-gaps-flagged-honestly-for-future-hardening).
 - **Per-product SADs** — `fhdamd-web`, `pdf-processor`, and `@fhdamd/threads` do not yet have their own architecture documents. As they grow in complexity, they should follow the template established by [sad-pdfcraft.md](sad-pdfcraft.md).
+- **The RC/E2E/promotion pipeline is PDF-Craft–specific today** — if/when another product needs a STG/PRD split, the Terraform module and workflow shape generalise directly, but the workflows themselves (`deploy-staging.yml`, `deploy-prod.yml`, etc.) would need to be duplicated/parameterised rather than reused as-is.
 
 ## Appendix
 
