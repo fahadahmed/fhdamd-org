@@ -5,7 +5,7 @@
 **Repository:** fhdamd-org (Monorepo) \
 **Author:** Fahad Ahmed \
 **Status:** Draft \
-**Last Updated:** 08 Jun 2026
+**Last Updated:** 19 Jun 2026
 
 ## 1. Purpose & Scope
 
@@ -129,8 +129,10 @@ These are the significant, durable decisions behind PDF-Craft's design. Each is 
 - Resend
 - Sentry
 - Turborepo
-- Github
+- Github (Actions, Environments, Releases)
 - Terraform
+- Playwright
+- Docker
 
 ## 5. Conceptual Architecture
 
@@ -510,11 +512,16 @@ The browser is never trusted with long-lived credentials, service account keys, 
 
 ### 9.5 Known Gaps (flagged honestly for future hardening)
 
-These were identified during review and are recorded here so the architecture record stays accurate — they are **not** yet remediated:
+These were identified during review and are recorded here so the architecture record stays accurate.
 
-1. **Firestore rules are overly permissive.** The current rule (`allow read, write: if request.auth != null`) grants *any authenticated user* read/write access to *any document* in the database — not just their own. In practice, all current access goes through the Admin SDK (which bypasses rules entirely), so this hasn't been exploited, but it provides no defence-in-depth if a client-side Firestore access path is ever introduced. **Recommendation:** scope rules to `request.auth.uid == userId` on the `users/{userId}/**` path, and deny everything else by default.
-2. **Storage rules deny all access**, which is *safe* but means **all** access control for files lives in the download-token scheme described in [ADR-004](#adr-004-signed-download-tokens-over-storage-security-rules-for-file-access) — a leaked `fileUrl` grants indefinite access to that object (until the cleanup job deletes it). **Recommendation:** move to time-boxed signed URLs generated on demand (`file.getSignedUrl({ expires: ... })`) rather than static long-lived tokens, especially for any file containing sensitive content (e.g. decrypted PDFs).
-3. **No automated tests** currently cover the authentication, payment, or PDF-operation flows — regressions in these security-relevant paths would only be caught manually or in production (via Sentry).
+**Resolved:**
+
+1. ~~**Firestore rules are overly permissive.**~~ **Fixed.** Rules now scope `users/{userId}` and `users/{userId}/files/{fileId}` to `request.auth.uid == userId` for reads, and deny all client-side writes outright (every write already went through the Admin SDK, which bypasses rules — denying client writes closes the defence-in-depth gap without changing any actual behaviour).
+2. ~~**No automated tests** currently cover the authentication ... or PDF-operation flows.~~ **Partially addressed.** A Playwright E2E suite ([§11.3](#113-release-strategy--rc-promotion-with-an-e2e-gate)) now covers sign-in page rendering, unauthenticated redirect behaviour, authenticated dashboard load, and a real encrypt operation through `pdf-processor`, and gates every promotion to production. It does **not** yet cover payment/Stripe flows, merge/decrypt/image-to-PDF operations, or sign-up — still a gap, just a narrower one.
+
+**Still open:**
+
+1. **Storage rules deny all access**, which is *safe* but means **all** access control for files lives in the download-token scheme described in [ADR-004](#adr-004-signed-download-tokens-over-storage-security-rules-for-file-access) — a leaked `fileUrl` grants indefinite access to that object (until the cleanup job deletes it). **Recommendation:** move to time-boxed signed URLs generated on demand (`file.getSignedUrl({ expires: ... })`) rather than static long-lived tokens, especially for any file containing sensitive content (e.g. decrypted PDFs).
 
 ## 10. Observability
 
@@ -550,35 +557,143 @@ Both runtimes share a common logging shape (`src/utils/lib/logger.ts` for Astro,
 
 | Environment | Firebase project | Status | Notes |
 |---|---|---|---|
-| **DEV** | `pdf-craft-dev` | **Active** | Auto-deployed from `main` via `.github/workflows/deploy-dev.yml` (path-filtered to `apps/pdf-craft/**`); App Hosting backend `pdf-craft-web` |
-| **STG** | *(not yet provisioned)* | Planned | Referenced in CORS allow-lists (`https://stg.pdf-craft.app`) and `PUBLIC_APP_ENV=stg`; no Firebase project, backend, or pipeline exists yet |
-| **PRD** | *(not yet provisioned)* | Planned | Referenced in CORS allow-lists (`https://pdf-craft.app`) and `PUBLIC_APP_ENV=prod`; no Firebase project, backend, or pipeline exists yet |
+| **DEV** | `pdf-craft-dev` | **Active** | Continuous deployment from `main` (`deploy-dev.yml`, `deploy-pdf-processor-dev.yml`); App Hosting backend `pdf-craft-web` |
+| **STG** | `pdf-craft-stg` | **Active** | Deployed via RC tags; gates promotion to prod behind a Playwright E2E suite; custom domain `stg.pdf-craft.app` |
+| **PRD** | `pdf-craft-prd` | **Active** | Deployed via final version tags on a commit already verified in staging; requires manual approval; custom domain `pdf-craft.app` |
 
-This is the most significant gap between the documented intent (*Monorepo Parity* — [§2](#2-architectural-principles)) and the current deployed reality, and is worth prioritising before the product carries real customer traffic: today, **everything that ships to `main` goes straight to the `dev` project**, with no staging gate.
+All three are now live, closing the gap the original draft of this document flagged here. *Monorepo Parity* (see [§2](#2-architectural-principles)) is realised by provisioning all three from the same Terraform module and the same `firebase.json`/`apphosting.yaml` shape — they differ only in secret values and the gating in front of them.
 
-### 11.2 Release Strategy
+### 11.2 Infrastructure as Code
 
-- **Trigger:** push to `main` with changes under `apps/pdf-craft/**`.
-- **Pipeline (`deploy-dev.yml`):** checkout → Node 22 + pnpm 10 → `pnpm install --frozen-lockfile` → `firebase deploy --project pdf-craft-dev` (authenticated via the `FIREBASE_TOKEN` repository secret).
-- **Functions:** deployed as part of the same `firebase deploy`, with a `predeploy` hook (`pnpm --dir functions run build`) compiling TypeScript to `lib/` first.
-- **Firestore/Storage rules & indexes:** deployed declaratively from `firestore.rules`, `storage.rules`, and `firestore.indexes.json` alongside the app (`firebase.json`).
-- This is a **continuous deployment** model for DEV — there is no manual approval gate, build artifact promotion, or rollback automation documented today.
+All three environments are provisioned by a single reusable Terraform module (`terraform/modules/firebase-env`), parameterised by `project_id` and `environment_label`, with one calling environment per project (`terraform/environments/{dev,staging,prod}`). The module provisions:
 
-### 11.3 Semantic Versioning
+- Required GCP APIs (Firestore, Secret Manager, Cloud Functions, Cloud Run, Artifact Registry, Cloud Build, Pub/Sub, Eventarc, Cloud Billing, App Hosting, Identity Toolkit)
+- The Firestore database and the default Storage bucket (`lifecycle { prevent_destroy = true }` on both, since all three environments now hold real or test data)
+- All 23 application secrets as empty shells — the 16 referenced by `apphosting.yaml` plus 7 bound directly by Cloud Functions via `defineSecret()` that aren't visible from `apphosting.yaml` alone (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `APP_BASE_URL`, `RESEND_API_KEY`, `RESEND_AUDIENCE_ID`, `DATOCMS_API_TOKEN`, `DATOCMS_ENV`). Values are populated out-of-band via `gcloud secrets versions add`, never committed.
+- An Artifact Registry Docker repository for `pdf-processor` images
+- A per-environment GitHub Actions deploy identity via **Workload Identity Federation** — no long-lived service account keys are stored anywhere, in GitHub or otherwise
 
-PDF-Craft itself is versioned as a simple `0.0.1` and shipped via continuous deployment rather than tagged releases — there's no user-facing concept of a "PDF-Craft version".
+**IAM bindings the module had to discover the hard way.** Standing up `pdf-craft-stg` and `pdf-craft-prd` from a clean GCP project surfaced nine distinct permission gaps that only show up when deploying with a narrowly-scoped service account rather than a personal account with broad project access. All are now permanently encoded in the module, so every future environment gets them for free:
 
-This differs from `@fhdamd/threads`, which **is** released via [Release Please](https://github.com/googleapis/release-please) and Conventional Commits, since it's a published, independently-consumed package where semantic versioning carries real meaning for downstream consumers (see [solution-architecture.md §5](solution-architecture.md#5-shared-platform-decisions)).
+- The deploy identity needs `roles/iam.workloadIdentityPoolAdmin` and `roles/iam.serviceAccountAdmin` to manage the very WIF pool and service-account IAM policy the module itself provisions for it (a bootstrapping/self-reference problem).
+- `roles/resourcemanager.projectIamAdmin` — `firebase deploy --only apphosting` sets IAM policy directly as part of its rollout.
+- The App Hosting compute service account needs `secretmanager.viewer` **in addition to** `secretmanager.secretAccessor` — the latter only covers `secretmanager.versions.access` (payload read); the build-time secret-resolution step calls `secretmanager.versions.get` (version metadata), which only `viewer` grants.
+- The App Hosting compute service account also needs `pubsub.publisher` — Astro server actions (`src/actions/operations.ts`) publish directly to the `app-event` Pub/Sub topic, not just Cloud Functions.
+- Gen2 Cloud Functions' `onMessagePublished`/`onSchedule` triggers route through Pub/Sub → Eventarc → Cloud Run, which needs `roles/iam.serviceAccountTokenCreator` on the Pub/Sub service agent and `roles/run.invoker` + `roles/eventarc.eventReceiver` on the default compute service account.
+- `cloudbilling.googleapis.com` must be enabled — `firebase deploy --only functions` checks billing status before deploying and fails outright otherwise.
+
+**What's still manual**, because none of it is exposed by the Terraform provider or the Firebase CLI's non-interactive mode:
+
+- The GCS Terraform state bucket must exist before the first `terraform init` (`gcloud storage buckets create gs://<project>-tfstate ...`).
+- Firebase Storage needs one-time Console activation (**Build → Storage → Get started**) before `google_firebase_storage_bucket` can succeed — the CLI route (`firebase init storage`) stops working once a project reaches a certain state.
+- On a genuinely brand-new project, enabling `pubsub.googleapis.com`/`firebaseapphosting.googleapis.com` doesn't *synchronously* create their service agents — those are lazily provisioned on first real product usage (an App Hosting backend existing, a Pub/Sub topic existing from a Cloud Functions deploy). The bindings above apply cleanly once that first usage has happened; until then, `terraform apply` legitimately fails on just those resources.
+- The App Hosting backend is created via `firebase apphosting:backends:create --non-interactive`, with its associated Firebase web app created **explicitly beforehand** (`--app <id>`) — letting the command auto-create one (the default behaviour) produces a confusingly duplicate, ambiguously-named app on every invocation, which then has to be untangled when configuring App Check.
+
+### 11.3 Release Strategy — RC Promotion with an E2E Gate
+
+`pdf-craft` and `pdf-processor` are tagged and promoted independently, using two tag shapes applied to the **same commit**:
+
+```
+pdf-craft-v1.0.1-rc.1      → staging   (deploy-staging.yml)
+pdf-craft-v1.0.1           → prod      (deploy-prod.yml, gated)
+
+pdf-processor-v1.0.0-rc.1  → staging   (deploy-pdf-processor-staging.yml)
+pdf-processor-v1.0.0       → prod      (deploy-pdf-processor-prod.yml, gated)
+```
+
+```mermaid
+flowchart TD
+  RC["RC tag pushed<br/><code>pdf-craft-v1.0.1-rc.1</code>"] --> Guard1["guard<br/>commit reachable from main?"]
+  Guard1 --> DeployStg["deploy<br/>→ pdf-craft-stg"]
+  DeployStg --> TriggerE2E["trigger-e2e<br/>dispatches e2e-staging.yml"]
+  DeployStg --> RelStg["release<br/>(prerelease)"]
+  TriggerE2E --> E2E["e2e-staging.yml<br/>Playwright vs stg.pdf-craft.app"]
+
+  E2E -- "passes" --> Retag["Same commit re-tagged<br/><code>pdf-craft-v1.0.1</code>"]
+  E2E -- "fails" --> Stop1(["Fix and re-cut a new RC"])
+
+  Retag --> Guard2["guard<br/>on main? not an RC tag?"]
+  Guard2 --> Gate{"e2e-gate<br/>green e2e-staging.yml<br/>for this exact commit?"}
+  Gate -- "missing" --> Stop2(["Hard fail —<br/>no prod deploy"])
+  Gate -- "found" --> Approval["manual approval<br/>(prod GitHub Environment)"]
+  Approval --> DeployPrd["deploy<br/>→ pdf-craft-prd"]
+  DeployPrd --> RelPrd["release"]
+
+  style Stop1 fill:#f8d7da
+  style Stop2 fill:#f8d7da
+  style Approval fill:#fff3cd
+  style E2E fill:#d4edda
+  style Gate fill:#d4edda
+```
+
+> The same shape applies to `pdf-processor`, substituting `deploy-pdf-processor-staging.yml`/`deploy-pdf-processor-prod.yml` and the `pdf-processor-vX.Y.Z[-rc.N]` tag — both apps share the single `e2e-staging.yml` gate, since the suite's encrypt-operation test already exercises `pdf-processor` regardless of which app's tag triggered it.
+
+**Staging pipeline** (`deploy-staging.yml` / `deploy-pdf-processor-staging.yml`), triggered on RC tag push:
+1. `guard` — verifies the tagged commit is reachable from `main`; RC tags can't be cut from arbitrary branches.
+2. `deploy` — authenticates via WIF, deploys Firestore rules, Storage rules, Cloud Functions, and App Hosting (or builds/pushes/deploys the `pdf-processor` Cloud Run image on GitHub's runner — building it locally on Apple Silicon produces an `arm64` image Cloud Run can't execute; this is exactly why the pipeline, not a local shortcut, is the supported path).
+3. `trigger-e2e` (pdf-craft only) — explicitly dispatches `e2e-staging.yml` via the GitHub API once the deploy succeeds. (Originally wired as a `workflow_run` trigger; switched to an explicit dispatch after SonarCloud correctly flagged that `workflow_run` inherits secrets access regardless of the triggering ref — a real risk in general, even though this specific chain has no fork-PR path into it.)
+4. `release` — publishes a **prerelease** GitHub Release with the deployed URL and commit.
+
+**E2E gate** (`e2e-staging.yml`): a Playwright suite (`apps/pdf-craft/e2e/`) runs against `https://stg.pdf-craft.app`, authenticating via a Firebase Admin SDK session-cookie bypass — UI sign-in can't be exercised in a headless browser, since reCAPTCHA v3 blocks it — for a dedicated test-only account (`e2e-test-stg@pdf-craft.app`). Coverage: sign-in page renders, unauthenticated redirects, authenticated dashboard load, and a real **encrypt** operation through `pdf-processor` — deliberately the one test that exercises the inter-service connectivity and IAM wiring described in [§11.2](#112-infrastructure-as-code).
+
+**Promotion to prod**: re-tagging the *same commit* with the final version number (no `-rc` suffix) triggers `deploy-prod.yml` / `deploy-pdf-processor-prod.yml`:
+1. `guard` — verifies the commit is on `main` *and* explicitly rejects any tag containing `-rc.` as defence in depth, in case the tag glob patterns ever overlap unexpectedly.
+2. `e2e-gate` — queries the GitHub Actions API for a successful `e2e-staging.yml` run on the exact same commit SHA and **hard-fails the deploy if none exists**. This is the actual enforcement point: a commit cannot reach production without first having passed E2E in staging.
+3. `deploy` — runs under the `prod` GitHub Environment, which requires **manual approval** before the job executes, regardless of how the gate above resolved.
+4. `release` — publishes a GitHub Release (not marked prerelease, unlike staging's).
+
+This closes most of known gap #3 in [§9.5](#95-known-gaps-flagged-honestly-for-future-hardening) for the specific paths the suite covers, and replaces continuous, ungated deployment to every environment with a verified promotion chain for STG → PRD specifically.
+
+### 11.4 Why DEV Stays Continuous
+
+DEV deliberately does **not** go through the RC/E2E/approval pipeline: it exists to give fast feedback on `main`, holds no real customer data, and gating it would only slow down day-to-day iteration without protecting anything consequential. Promotion gating exists specifically to protect STG → PRD, where a regression has either user-facing or financial (Stripe, live mode) consequences.
+
+### 11.5 Versioning
+
+The application's own `package.json` version stays a flat, unmanaged `0.0.1` — it has no relationship to the deploy tags above. The `pdf-craft-vX.Y.Z[-rc.N]` / `pdf-processor-vX.Y.Z[-rc.N]` tags exist purely as the **deployment pipeline's** versioning scheme (driving RC → staging → promote → prod, and the GitHub Release attached to each step); they are chosen manually per release rather than derived from commit history.
+
+This is a deliberately different model from `@fhdamd/threads`, which **is** released via [Release Please](https://github.com/googleapis/release-please) and Conventional Commits, since it's a published, independently-consumed package where semantic versioning carries real meaning for downstream consumers (see [solution-architecture.md §5](solution-architecture.md#5-shared-platform-decisions)).
 
 ## Appendix
 
 ### How to update environment variables and secrets in Google Secret Manager
 
-> **Status:** placeholder — this section should become a step-by-step runbook once the STG/PRD environments are provisioned (it's the natural moment to write it down, since you'll be doing this for real for the first time across multiple projects).
->
-> At minimum it should cover:
-> - Where secrets are defined today (`apphosting.yaml` → `secret:` references; Functions → `defineSecret`/`.env.<project-id>` files) and how they map to actual Secret Manager entries per Firebase project.
-> - The `firebase apphosting:secrets:set <name> --project=<project-id>` flow for App Hosting secrets, including granting backend service-account access.
-> - How to add a *new* variable end-to-end: declare it in `apphosting.yaml`, create the secret per environment, and (for Functions) add it to the relevant `.env.<project-id>` file.
-> - How local `.env.local` values relate to deployed secrets (they should mirror the shape, with environment-appropriate values — e.g. `PUBLIC_APP_ENV="dev"` locally).
-> - Rotation practice for sensitive values (Stripe keys, Resend API key, DatoCMS token, Sentry auth token).
+All 23 secrets (16 referenced by `apphosting.yaml`, 7 bound directly by Cloud Functions via `defineSecret()`) are created as empty shells by the Terraform module ([§11.2](#112-infrastructure-as-code)). Populating or rotating a value is a direct `gcloud` call against the target project's Secret Manager — there is no separate "promote a secret" step, since each environment's Secret Manager is independent:
+
+```sh
+printf '%s' "the-actual-value" | gcloud secrets versions add <secretName> \
+  --data-file=- --project=<pdf-craft-dev|pdf-craft-stg|pdf-craft-prd>
+```
+
+Adding a new version doesn't take effect immediately for App Hosting — it's resolved at **build time**, not read dynamically at runtime. After updating a secret that an already-deployed backend depends on, trigger a fresh rollout to pick it up:
+
+```sh
+cd apps/pdf-craft
+firebase deploy --only apphosting --project <project-id> --force
+```
+
+(`--force` is required, not `--non-interactive` — the latter doesn't suppress App Hosting's "deploy your local source?" confirmation prompt.)
+
+**Adding a brand-new secret end-to-end:**
+1. Add the name to `local.secret_names` in `terraform/modules/firebase-env/main.tf`.
+2. Run `terraform apply` for each environment that needs it (this creates the empty shell — the App Hosting compute service account already has project-level `secretmanager.secretAccessor`/`secretmanager.viewer`, so no per-secret access grant is needed).
+3. If the app reads it via `apphosting.yaml`, add the `variable:`/`secret:` mapping there. If Cloud Functions reads it, add `defineSecret('NAME')` and include it in the relevant function's `secrets: [...]` array.
+4. Populate the value per environment with the `gcloud secrets versions add` command above.
+5. Local development uses `.env.local` (gitignored) with the equivalent variable name and a dev-appropriate value — there's no automated sync between local and deployed values; keep them manually in parity.
+
+**Rotation practice:** if a secret value is ever pasted in plaintext somewhere it shouldn't be (chat, a terminal scrollback shared in a screenshot, etc.), treat it as compromised regardless of whether it was *used* maliciously — generate a fresh value/key and overwrite the secret, rather than reusing the exposed one. This applies most obviously to `firebaseServiceAccountKey` (rotate via `gcloud iam service-accounts keys create` + `keys delete` on the old key ID) and any third-party API key (Stripe, Resend, DatoCMS).
+
+### One-time environment bootstrap checklist
+
+For provisioning a *new* environment (or recovering one from scratch) beyond what `terraform apply` covers automatically:
+
+1. `gcloud storage buckets create gs://<project>-tfstate --project=<project> --location=US --uniform-bucket-level-access`
+2. `terraform init && terraform apply` from `terraform/environments/<env>` (uses your personal `gcloud` credentials for this one-time run, since the GitHub Actions deploy identity doesn't exist until this apply creates it)
+3. Copy `terraform output -raw workload_identity_provider` / `service_account_email` into the matching GitHub Environment's `GCP_WORKLOAD_IDENTITY_PROVIDER` / `GCP_SERVICE_ACCOUNT` secrets
+4. Activate Firebase Storage via Console (**Build → Storage → Get started**) if `google_firebase_storage_bucket` failed on first apply
+5. Re-run `terraform apply` — expect it to also fail on the Pub/Sub/App Hosting service-agent bindings if this is a genuinely fresh project; that's expected, see [§11.2](#112-infrastructure-as-code)
+6. Create the Firebase web app explicitly (`POST .../webApps`), then `firebase apphosting:backends:create --non-interactive --app <id> --backend pdf-craft-web --primary-region us-central1 --root-dir apps/pdf-craft --runtime nodejs22` — **always pass `--app`**, or the command silently creates a new, confusingly-named duplicate app every time it's run
+7. Populate all 23 secrets (see above) — `pdfProcessorUrl` and `STRIPE_WEBHOOK_SECRET` can only get real values after a first deploy (their URLs aren't known in advance), so populate them with a placeholder and circle back
+8. Deploy once via the real pipeline (an RC tag for staging; a final tag promoted from a verified RC for prod) — this is what creates the Pub/Sub topic and unblocks the remaining Terraform resource from step 5; re-run `terraform apply` afterward to bring it back to zero drift
+9. Get the real `pdf-processor` Cloud Run URL and the real Cloud Functions `stripeWebhook` URL from that deploy, update `pdfProcessorUrl` and (after registering the Stripe webhook endpoint) `STRIPE_WEBHOOK_SECRET`, then trigger one more App Hosting rollout to pick them up
+10. Map the custom domain via Firebase Console (App Hosting backend → Custom domains) and add the DNS record at the registrar — SSL provisions automatically afterward, purely time-based
