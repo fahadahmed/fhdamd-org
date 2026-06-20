@@ -3,9 +3,9 @@ import { Container, Stack, Text, Button, Callout } from '@fhdamd/threads'
 const iconStyle: React.CSSProperties = {
   width: 64,
   height: 64,
-  borderRadius: '50%',
-  background: 'var(--th-color-surface-3)',
-  color: 'var(--th-color-text-2)',
+  borderRadius: 'var(--th-radius-lg)',
+  background: 'var(--th-color-error-subtle)',
+  color: 'var(--th-color-error-text)',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
