@@ -6,7 +6,7 @@ import {
 } from '@fhdamd/threads'
 import * as Sentry from '@sentry/astro'
 import { logEvent } from '../../../utils/lib/analytics'
-import { XIcon, DownloadIcon } from '../../shared'
+import { XIcon, DownloadIcon, ErrorCallout, INSUFFICIENT_CREDITS_ERROR } from '../../shared'
 
 type PermissionPreset = 'full-access' | 'view-and-print' | 'read-only'
 
@@ -46,7 +46,7 @@ export default function EncryptPdf({ creditCost }: { creditCost: number }) {
 
     const creditsResponse = await actions.credits.checkCredits({ task, requestId, creditCost })
     if (!creditsResponse.data?.success) {
-      setError('Insufficient credits for this operation. Please buy more credits.')
+      setError(INSUFFICIENT_CREDITS_ERROR)
       setButtonLabel('Protect PDF')
       setIsProcessing(false)
       return
@@ -205,7 +205,7 @@ export default function EncryptPdf({ creditCost }: { creditCost: number }) {
                           </Stack>
                         </Stack>
 
-                        {error && <Callout variant="error">{error}</Callout>}
+                        {error && <ErrorCallout message={error} />}
                         <Button
                           type="submit"
                           variant="solid-terra"
