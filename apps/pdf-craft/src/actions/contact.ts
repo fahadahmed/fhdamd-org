@@ -52,7 +52,7 @@ async function sendViaResend(payload: {
     },
     body: JSON.stringify({
       from: "PDF Craft <no-reply@pdf-craft.app>",
-      to: ["fahad.ahmed@me.com"],
+      to: ["support@pdf-craft.app"],
       reply_to: fromEmail,
       subject: `[Contact] ${subject} — from ${fromName}`,
       text: `From: ${fromName} <${fromEmail}>\nSubject: ${subject}\n\n${message}`,
