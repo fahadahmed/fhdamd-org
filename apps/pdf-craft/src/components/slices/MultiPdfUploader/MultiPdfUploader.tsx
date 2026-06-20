@@ -6,7 +6,7 @@ import {
 } from '@fhdamd/threads'
 import * as Sentry from '@sentry/astro'
 import { logEvent } from '../../../utils/lib/analytics'
-import { DownloadIcon, DraggableFileList, useDraggableFiles } from '../../shared'
+import { DownloadIcon, DraggableFileList, ErrorCallout, INSUFFICIENT_CREDITS_ERROR, useDraggableFiles } from '../../shared'
 
 const MAX_FILES = 5
 
@@ -26,7 +26,7 @@ export default function MultiPdfUploader({ creditCost }: { creditCost: number })
 
     const response = await actions.credits.checkCredits({ task, requestId, creditCost })
     if (!response.data?.success) {
-      setError('Insufficient credits for this operation. Please buy more credits.')
+      setError(INSUFFICIENT_CREDITS_ERROR)
       setButtonLabel('Merge PDFs')
       setIsMerging(false)
       return
@@ -122,7 +122,7 @@ export default function MultiPdfUploader({ creditCost }: { creditCost: number })
                       <DraggableFileList files={uploadedFiles} sensors={sensors} onDragEnd={handleDragEnd} onDelete={handleDelete} />
                     </Stack>
 
-                    {error && <Callout variant="error">{error}</Callout>}
+                    {error && <ErrorCallout message={error} />}
 
                     <form onSubmit={handleSubmit}>
                       <Button
@@ -136,7 +136,7 @@ export default function MultiPdfUploader({ creditCost }: { creditCost: number })
                   </>
                 )}
 
-                {error && uploadedFiles.length === 0 && <Callout variant="error">{error}</Callout>}
+                {error && uploadedFiles.length === 0 && <ErrorCallout message={error} />}
               </>
             )}
 

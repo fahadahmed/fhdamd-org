@@ -2,7 +2,25 @@ import { useState } from 'react'
 import { DndContext, closestCenter, useSensors, useSensor, PointerSensor, type DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, useSortable, arrayMove } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Stack, Text, Button } from '@fhdamd/threads'
+import { Stack, Text, Button, Callout } from '@fhdamd/threads'
+
+export const INSUFFICIENT_CREDITS_ERROR = 'Insufficient credits for this operation. Please buy more credits.'
+
+export function ErrorCallout({ message }: { readonly message: string }) {
+  return (
+    <Callout variant="error">
+      {message}
+      {message === INSUFFICIENT_CREDITS_ERROR && (
+        <>
+          {' '}
+          <a href="/buy-credits" style={{ color: 'inherit', textDecoration: 'underline', fontWeight: 600 }}>
+            Buy more credits
+          </a>
+        </>
+      )}
+    </Callout>
+  )
+}
 
 export const XIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
