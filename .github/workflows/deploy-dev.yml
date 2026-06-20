@@ -5,6 +5,11 @@ on:
       - main
     paths:
       - apps/pdf-craft/**
+
+concurrency:
+  group: deploy-pdf-craft-dev
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
