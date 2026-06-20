@@ -5,7 +5,8 @@
     "moduleResolution": "bundler",
     "paths": {
       "@fhdamd/threads":        ["../../packages/threads/src/index.ts"],
-      "@fhdamd/threads/tokens": ["../../packages/threads/src/tokens/tokens.css"]
+      "@fhdamd/threads/tokens": ["../../packages/threads/src/tokens/tokens.css"],
+      "@fhdamd/threads/styles": ["../../packages/threads/dist/index.css"]
     }
   },
   "include": [".astro/types.d.ts", "**/*"],
