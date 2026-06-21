@@ -28,9 +28,43 @@ jobs:
           fi
           echo "Commit ${{ github.sha }} is on main. Proceeding."
 
+  sync-version:
+    name: Sync package.json version with release tag
+    needs: guard
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Bump apps/pdf-craft/package.json to the canonical release version
+        run: |
+          TAG="${{ github.ref_name }}"
+          VERSION="${TAG#pdf-craft-v}"
+          VERSION="${VERSION%-rc.*}"
+
+          git fetch origin main
+          git checkout -B main origin/main
+
+          CURRENT=$(node -p "require('./apps/pdf-craft/package.json').version")
+          if [ "$CURRENT" = "$VERSION" ]; then
+            echo "apps/pdf-craft/package.json already at $VERSION, nothing to do."
+            exit 0
+          fi
+
+          (cd apps/pdf-craft && npm pkg set version="$VERSION")
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add apps/pdf-craft/package.json
+          git commit -m "chore(pdf-craft): bump version to $VERSION [skip-deploy]"
+          git push origin main
+
   deploy:
     name: Firebase deploy — staging
-    needs: guard
+    needs: [guard, sync-version]
     runs-on: ubuntu-latest
     environment: staging
     permissions:
