@@ -49,6 +49,7 @@ jobs:
         env:
           BASE_URL: https://stg.pdf-craft.app
           E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
+          E2E_CONTACT_BYPASS_TOKEN: ${{ secrets.E2E_CONTACT_BYPASS_TOKEN }}
           E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
         run: pnpm test:e2e
 

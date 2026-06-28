@@ -28,6 +28,9 @@ export const ContactFormSchema = z.object({
 
 export const ContactActionSchema = ContactFormSchema.extend({
   captchaToken: z.string().min(1),
+  // Lets e2e tests skip reCAPTCHA scoring, which scores headless traffic too
+  // low to pass. Only honored outside production — see contact.ts.
+  e2eBypassToken: z.string().optional(),
 });
 
 export type ContactFormInput = z.infer<typeof ContactFormSchema>;
