@@ -22,6 +22,7 @@ export default defineConfig({
         "src/actions/**",
         "src/pages/**",
         "src/layouts/**",
+        "src/middleware.ts",
         // Firebase init and Pub/Sub — integration concerns
         "src/firebase/**",
         "src/server/**",
