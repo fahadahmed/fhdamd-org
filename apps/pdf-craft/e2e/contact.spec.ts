@@ -13,7 +13,11 @@ test('rejects a too-short message before hitting the network', async ({ page }) 
 });
 
 test('submits a valid message end to end through the contact action', async ({ page }) => {
-  await page.goto('/contact');
+  // Real reCAPTCHA v3 scores headless traffic too low to pass, so this token
+  // (only valid outside production) skips the score check server-side.
+  const bypassToken = process.env.E2E_CONTACT_BYPASS_TOKEN;
+  const query = bypassToken ? `?e2eBypassToken=${encodeURIComponent(bypassToken)}` : '';
+  await page.goto(`/contact${query}`);
 
   await page.getByLabel('Your name').fill('E2E Test');
   await page.getByLabel('Email address').fill('e2e-test-stg@pdf-craft.app');

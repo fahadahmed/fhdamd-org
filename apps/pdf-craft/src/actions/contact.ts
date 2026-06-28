@@ -2,6 +2,12 @@ import { defineAction } from "astro:actions";
 import { ContactActionSchema, SUBJECT_LABELS } from "../lib/contactSchema";
 import { log } from "../utils/lib/logger";
 
+function isE2EBypass(token: string | undefined): boolean {
+  const bypassSecret = import.meta.env.E2E_CONTACT_BYPASS_TOKEN;
+  const isProduction = import.meta.env.PUBLIC_APP_ENV === "production";
+  return !isProduction && !!bypassSecret && token === bypassSecret;
+}
+
 async function verifyRecaptcha(token: string): Promise<boolean> {
   const secret = import.meta.env.PUBLIC_RECAPTCHA_SECRET_KEY;
   if (!secret) return true; // skip in environments without the key
@@ -51,12 +57,12 @@ export const contact = {
     accept: "json",
     input: ContactActionSchema,
     handler: async (input) => {
-      const { name, email, subject, message, captchaToken } = input;
+      const { name, email, subject, message, captchaToken, e2eBypassToken } = input;
       const subjectLabel = SUBJECT_LABELS[subject] ?? subject;
 
       log.event("📬 contact-form", { feature: "contact", status: "start" });
 
-      const isHuman = await verifyRecaptcha(captchaToken);
+      const isHuman = isE2EBypass(e2eBypassToken) || (await verifyRecaptcha(captchaToken));
       if (!isHuman) {
         log.warn("📬 contact-form: captcha failed", {
           feature: "contact",

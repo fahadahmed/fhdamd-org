@@ -46,10 +46,13 @@ export default function ContactForm() {
       return
     }
 
+    const e2eBypassToken = new URLSearchParams(window.location.search).get('e2eBypassToken') ?? undefined
+
     try {
       const res = await actions.contact.sendMessage({
         ...parsed.data,
         captchaToken,
+        e2eBypassToken,
       })
 
       if (res.data?.success) {
