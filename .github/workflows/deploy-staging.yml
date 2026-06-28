@@ -80,9 +80,13 @@ jobs:
 
       - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
 
+      # Pinned below 22.23.0: that Node security release broke node-fetch's
+      # handling of keep-alive socket closures, which breaks firebase-tools'
+      # Workload Identity Federation token exchange ("Failed to authenticate,
+      # have you run firebase login?" / ERR_STREAM_PREMATURE_CLOSE) — see #201.
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: "22"
+          node-version: "22.22.0"
           cache: pnpm
 
       - name: Install dependencies
@@ -95,44 +99,21 @@ jobs:
       - name: Install Firebase CLI
         run: pnpm add -g firebase-tools
 
-      - name: Deploy Firestore rules
+      - name: Deploy Firestore rules and indexes
         working-directory: apps/pdf-craft
-        run: ../../.github/scripts/firebase-deploy.sh --only firestore:rules --project pdf-craft-stg --force
-
-      # firebase-tools' firestore:indexes deploy doesn't accept Workload Identity
-      # Federation credentials ("Failed to authenticate, have you run firebase
-      # login?") even though every other deploy target in this job does — see #201.
-      # Call the Firestore Admin API directly with the WIF access token instead.
-      - name: Deploy Firestore indexes
-        working-directory: apps/pdf-craft
-        run: |
-          TOKEN=$(gcloud auth print-access-token)
-          jq -c '.indexes[]' firestore.indexes.json | while read -r idx; do
-            COLLECTION=$(echo "$idx" | jq -r '.collectionGroup')
-            BODY=$(echo "$idx" | jq 'del(.collectionGroup)')
-            STATUS=$(curl -s -o /tmp/index-resp.json -w "%{http_code}" -X POST \
-              "https://firestore.googleapis.com/v1/projects/pdf-craft-stg/databases/(default)/collectionGroups/$COLLECTION/indexes" \
-              -H "Authorization: Bearer $TOKEN" \
-              -H "Content-Type: application/json" \
-              -d "$BODY")
-            if [ "$STATUS" != "200" ] && ! grep -q ALREADY_EXISTS /tmp/index-resp.json; then
-              echo "::error::Failed to deploy index on $COLLECTION (HTTP $STATUS)"
-              cat /tmp/index-resp.json
-              exit 1
-            fi
-          done
+        run: firebase deploy --only firestore:rules,firestore:indexes --project pdf-craft-stg --force
 
       - name: Deploy Storage rules
         working-directory: apps/pdf-craft
-        run: ../../.github/scripts/firebase-deploy.sh --only storage --project pdf-craft-stg --force
+        run: firebase deploy --only storage --project pdf-craft-stg --force
 
       - name: Deploy Cloud Functions
         working-directory: apps/pdf-craft
-        run: ../../.github/scripts/firebase-deploy.sh --only functions --project pdf-craft-stg --force
+        run: firebase deploy --only functions --project pdf-craft-stg --force
 
       - name: Deploy App Hosting
         working-directory: apps/pdf-craft
-        run: ../../.github/scripts/firebase-deploy.sh --only apphosting --project pdf-craft-stg --force
+        run: firebase deploy --only apphosting --project pdf-craft-stg --force
 
   trigger-e2e:
     name: Trigger E2E tests
