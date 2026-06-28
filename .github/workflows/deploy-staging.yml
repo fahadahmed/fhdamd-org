@@ -95,9 +95,9 @@ jobs:
       - name: Install Firebase CLI
         run: pnpm add -g firebase-tools
 
-      - name: Deploy Firestore rules
+      - name: Deploy Firestore rules and indexes
         working-directory: apps/pdf-craft
-        run: firebase deploy --only firestore:rules --project pdf-craft-stg --force
+        run: firebase deploy --only firestore:rules,firestore:indexes --project pdf-craft-stg --force
 
       - name: Deploy Storage rules
         working-directory: apps/pdf-craft
