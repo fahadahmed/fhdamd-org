@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - apps/pdf-craft/**
+  workflow_dispatch: {}
 
 concurrency:
   group: deploy-pdf-craft-dev
