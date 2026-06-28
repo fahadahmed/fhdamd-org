@@ -65,7 +65,7 @@ describe('ContactForm', () => {
     render(<ContactForm />);
     await user.type(screen.getByLabelText('Your name'), 'Jane');
     await user.type(screen.getByLabelText('Email address'), 'jane@test.com');
-    await user.type(screen.getByLabelText('Message'), 'Hello');
+    await user.type(screen.getByLabelText('Message'), 'Hello there, this is a test message.');
     await user.click(screen.getByRole('button', { name: /Send message/i }));
     await waitFor(() =>
       expect(screen.getByText('Message sent!')).toBeInTheDocument(),
@@ -79,7 +79,7 @@ describe('ContactForm', () => {
     render(<ContactForm />);
     await user.type(screen.getByLabelText('Your name'), 'Jane');
     await user.type(screen.getByLabelText('Email address'), 'jane@test.com');
-    await user.type(screen.getByLabelText('Message'), 'Hello');
+    await user.type(screen.getByLabelText('Message'), 'Hello there, this is a test message.');
     await user.click(screen.getByRole('button', { name: /Send message/i }));
     await waitFor(() =>
       expect(screen.getByRole('alert')).toHaveTextContent('Invalid email address.'),
@@ -92,11 +92,38 @@ describe('ContactForm', () => {
     render(<ContactForm />);
     await user.type(screen.getByLabelText('Your name'), 'Jane');
     await user.type(screen.getByLabelText('Email address'), 'jane@test.com');
-    await user.type(screen.getByLabelText('Message'), 'Hello');
+    await user.type(screen.getByLabelText('Message'), 'Hello there, this is a test message.');
     await user.click(screen.getByRole('button', { name: /Send message/i }));
     await waitFor(() =>
       expect(screen.getByRole('alert')).toHaveTextContent(/Something went wrong/i),
     );
+  });
+
+  it('rejects a too-short message client-side without calling sendMessage', async () => {
+    const user = userEvent.setup();
+    render(<ContactForm />);
+    await user.type(screen.getByLabelText('Your name'), 'Jane');
+    await user.type(screen.getByLabelText('Email address'), 'jane@test.com');
+    await user.type(screen.getByLabelText('Message'), 'Hello');
+    await user.click(screen.getByRole('button', { name: /Send message/i }));
+    await waitFor(() =>
+      expect(screen.getByText(/Message must be at least 10 characters/i)).toBeInTheDocument(),
+    );
+    expect(sendMessage).not.toHaveBeenCalled();
+    expect(mockGetToken).not.toHaveBeenCalled();
+  });
+
+  it('rejects a too-short name client-side and surfaces the field error', async () => {
+    const user = userEvent.setup();
+    render(<ContactForm />);
+    await user.type(screen.getByLabelText('Your name'), 'J');
+    await user.type(screen.getByLabelText('Email address'), 'jane@test.com');
+    await user.type(screen.getByLabelText('Message'), 'Hello there, this is a test message.');
+    await user.click(screen.getByRole('button', { name: /Send message/i }));
+    await waitFor(() =>
+      expect(screen.getByText(/Name must be at least 2 characters/i)).toBeInTheDocument(),
+    );
+    expect(sendMessage).not.toHaveBeenCalled();
   });
 
   it('disables the button while sending', async () => {
@@ -105,7 +132,7 @@ describe('ContactForm', () => {
     render(<ContactForm />);
     await user.type(screen.getByLabelText('Your name'), 'Jane');
     await user.type(screen.getByLabelText('Email address'), 'jane@test.com');
-    await user.type(screen.getByLabelText('Message'), 'Hello');
+    await user.type(screen.getByLabelText('Message'), 'Hello there, this is a test message.');
     await user.click(screen.getByRole('button', { name: /Send message/i }));
     await waitFor(() =>
       expect(screen.getByRole('button', { name: /Sending/i })).toBeDisabled(),
