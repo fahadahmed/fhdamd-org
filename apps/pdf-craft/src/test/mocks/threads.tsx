@@ -52,6 +52,7 @@ export const Input = ({
   onChange,
   required,
   hint,
+  error,
   autoComplete,
 }: any) => (
   <div>
@@ -65,7 +66,8 @@ export const Input = ({
       required={required}
       autoComplete={autoComplete}
     />
-    {hint && <span>{hint}</span>}
+    {hint && !error && <span>{hint}</span>}
+    {error && <span role="alert">{error}</span>}
   </div>
 );
 
@@ -85,20 +87,22 @@ export const FileDropzone = ({ label, accept, multiple, onFiles }: any) => (
   </div>
 );
 
-export const Textarea = ({ id, name, label, value, onChange, required, hint, rows }: any) => (
+export const Textarea = ({ id, name, label, value, onChange, required, hint, error, rows }: any) => (
   <div>
     <label htmlFor={id}>{label}</label>
     <textarea id={id} name={name} value={value} onChange={onChange} required={required} rows={rows} />
-    {hint && <span>{hint}</span>}
+    {hint && !error && <span>{hint}</span>}
+    {error && <span role="alert">{error}</span>}
   </div>
 );
 
-export const Select = ({ id, name, label, value, onChange, required, children }: any) => (
+export const Select = ({ id, name, label, value, onChange, required, error, children }: any) => (
   <div>
     <label htmlFor={id}>{label}</label>
     <select id={id} name={name} value={value} onChange={onChange} required={required}>
       {children}
     </select>
+    {error && <span role="alert">{error}</span>}
   </div>
 );
 

@@ -2,10 +2,12 @@
 import { useState } from 'react'
 import { actions } from 'astro:actions'
 import { Input, Textarea, Select, Button, Stack, Callout } from '@fhdamd/threads'
+import { ContactFormSchema } from '../../../lib/contactSchema'
 import { useRecaptcha } from '../../../utils'
 import FormSuccess from '../FormSuccess/FormSuccess'
 
 type Status = 'idle' | 'sending' | 'success' | 'error'
+type FieldErrors = Partial<Record<'name' | 'email' | 'subject' | 'message', string>>
 
 export default function ContactForm() {
   const [name, setName]       = useState('')
@@ -14,6 +16,7 @@ export default function ContactForm() {
   const [message, setMessage] = useState('')
   const [status, setStatus]   = useState<Status>('idle')
   const [error, setError]     = useState('')
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
   const { getToken } = useRecaptcha('contact')
 
@@ -21,6 +24,20 @@ export default function ContactForm() {
     e.preventDefault()
     setStatus('sending')
     setError('')
+    setFieldErrors({})
+
+    const parsed = ContactFormSchema.safeParse({ name, email, subject, message })
+    if (!parsed.success) {
+      const errors: FieldErrors = {}
+      for (const issue of parsed.error.issues) {
+        const key = issue.path[0] as keyof FieldErrors
+        if (!errors[key]) errors[key] = issue.message
+      }
+      setFieldErrors(errors)
+      setError('Please fix the highlighted fields and try again.')
+      setStatus('error')
+      return
+    }
 
     const captchaToken = await getToken()
     if (!captchaToken) {
@@ -31,10 +48,7 @@ export default function ContactForm() {
 
     try {
       const res = await actions.contact.sendMessage({
-        name,
-        email,
-        subject: subject as 'general' | 'billing' | 'technical' | 'feature' | 'other',
-        message,
+        ...parsed.data,
         captchaToken,
       })
 
@@ -75,6 +89,7 @@ export default function ContactForm() {
             value={name}
             onChange={e => setName(e.target.value)}
             autoComplete="name"
+            error={fieldErrors.name}
             required
           />
           <Input
@@ -85,6 +100,7 @@ export default function ContactForm() {
             value={email}
             onChange={e => setEmail(e.target.value)}
             autoComplete="email"
+            error={fieldErrors.email}
             required
           />
         </div>
@@ -95,6 +111,7 @@ export default function ContactForm() {
           label="Subject"
           value={subject}
           onChange={e => setSubject(e.target.value)}
+          error={fieldErrors.subject}
           required
         >
           <option value="general">General enquiry</option>
@@ -112,6 +129,7 @@ export default function ContactForm() {
           onChange={e => setMessage(e.target.value)}
           rows={6}
           hint="Please include as much detail as possible."
+          error={fieldErrors.message}
           required
         />
 

@@ -8,6 +8,7 @@ import { defineSecret } from "firebase-functions/params";
 import Stripe from "stripe";
 import cors from "cors";
 import { v4 as uuidv4 } from "uuid";
+import { createHmac, timingSafeEqual } from "crypto";
 import type { AppEventPayload } from "./events/types";
 import { eventHandlers } from "./events/handlers";
 import { fetchCMSData, getCmsQuery, datocmsApiToken, datocmsEnv } from "./cms";
@@ -28,6 +29,34 @@ const db = getFirestore();
 const STRIPE_SECRET_KEY = defineSecret("STRIPE_SECRET_KEY");
 const STRIPE_WEBHOOK_SECRET = defineSecret("STRIPE_WEBHOOK_SECRET");
 const APP_BASE_URL = defineSecret("APP_BASE_URL");
+const RESEND_WEBHOOK_SECRET = defineSecret("RESEND_WEBHOOK_SECRET");
+
+// Resend signs webhooks using the Svix scheme: https://docs.svix.com/receiving/verifying-payloads/how
+function verifyResendSignature(
+  secret: string,
+  payload: Buffer,
+  id: string,
+  timestamp: string,
+  signatureHeader: string,
+): boolean {
+  if (!secret || !id || !timestamp || !signatureHeader) return false;
+  const secretBytes = Buffer.from(secret.split("_")[1] ?? secret, "base64");
+  const signedContent = `${id}.${timestamp}.${payload.toString("utf8")}`;
+  const expected = createHmac("sha256", secretBytes)
+    .update(signedContent)
+    .digest("base64");
+  const expectedBytes = Buffer.from(expected, "base64");
+
+  return signatureHeader.split(" ").some((part) => {
+    const sig = part.split(",")[1];
+    if (!sig) return false;
+    const sigBytes = Buffer.from(sig, "base64");
+    return (
+      sigBytes.length === expectedBytes.length &&
+      timingSafeEqual(sigBytes, expectedBytes)
+    );
+  });
+}
 
 function getStripe() {
   const secretKey = STRIPE_SECRET_KEY.value();
@@ -287,6 +316,62 @@ const stripeWebhook = onRequest(
   },
 );
 
+const CONTACT_RECIPIENT = "support@pdf-craft.app";
+const RESEND_DELIVERY_FAILURE_EVENTS = [
+  "email.bounced",
+  "email.complained",
+  "email.delivery_delayed",
+];
+
+const resendWebhook = onRequest(
+  { secrets: [RESEND_WEBHOOK_SECRET] },
+  async (request, response) => {
+    const id = request.headers["svix-id"] as string;
+    const timestamp = request.headers["svix-timestamp"] as string;
+    const signature = request.headers["svix-signature"] as string;
+    const rawBody = request.rawBody as Buffer;
+
+    const isValid = verifyResendSignature(
+      RESEND_WEBHOOK_SECRET.value(),
+      rawBody,
+      id,
+      timestamp,
+      signature,
+    );
+    if (!isValid) {
+      log.warn("📬 resend-webhook: invalid signature", {
+        feature: "contact",
+        status: "fail",
+      });
+      response.status(400).send("Invalid signature");
+      return;
+    }
+
+    const event = JSON.parse(rawBody.toString("utf8"));
+
+    if (RESEND_DELIVERY_FAILURE_EVENTS.includes(event.type)) {
+      const to: string[] = event.data?.to ?? [];
+      const ctx = {
+        feature: "contact",
+        eventType: event.type,
+        to: to.join(","),
+        emailId: event.data?.email_id,
+      };
+
+      if (to.includes(CONTACT_RECIPIENT)) {
+        log.exception(
+          new Error(`Contact form email delivery failed: ${event.type}`),
+          { ...ctx, status: "fail" },
+        );
+      } else {
+        log.warn("📬 resend-webhook: delivery failure", ctx);
+      }
+    }
+
+    response.status(200).send("ok");
+  },
+);
+
 const onAppEvent = onMessagePublished(
   { topic: "app-event", secrets: ["RESEND_API_KEY", "RESEND_AUDIENCE_ID"] },
   async (event) => {
@@ -456,4 +541,12 @@ const onUserCreated = auth.user().onCreate(async (user) => {
   }
 });
 
-export { processPayment, stripeWebhook, onAppEvent, cms, deleteExpiredFiles, onUserCreated };
+export {
+  processPayment,
+  stripeWebhook,
+  resendWebhook,
+  onAppEvent,
+  cms,
+  deleteExpiredFiles,
+  onUserCreated,
+};

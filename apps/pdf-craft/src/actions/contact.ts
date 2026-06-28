@@ -1,25 +1,6 @@
 import { defineAction } from "astro:actions";
-import { z } from "astro:schema";
+import { ContactActionSchema, SUBJECT_LABELS } from "../lib/contactSchema";
 import { log } from "../utils/lib/logger";
-
-const ContactSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  subject: z.enum(["general", "billing", "technical", "feature", "other"]),
-  message: z
-    .string()
-    .min(10, "Message must be at least 10 characters")
-    .max(2000),
-  captchaToken: z.string().min(1),
-});
-
-const SUBJECT_LABELS: Record<string, string> = {
-  general: "General enquiry",
-  billing: "Billing & credits",
-  technical: "Technical issue",
-  feature: "Feature request",
-  other: "Other",
-};
 
 async function verifyRecaptcha(token: string): Promise<boolean> {
   const secret = import.meta.env.PUBLIC_RECAPTCHA_SECRET_KEY;
@@ -68,7 +49,7 @@ async function sendViaResend(payload: {
 export const contact = {
   sendMessage: defineAction({
     accept: "json",
-    input: ContactSchema,
+    input: ContactActionSchema,
     handler: async (input) => {
       const { name, email, subject, message, captchaToken } = input;
       const subjectLabel = SUBJECT_LABELS[subject] ?? subject;
