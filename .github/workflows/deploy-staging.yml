@@ -92,8 +92,11 @@ jobs:
         working-directory: apps/pdf-craft/functions
         run: pnpm run build
 
+      # Pinned below 15.x: firebase-tools 15.x has a Workload Identity Federation
+      # auth regression that breaks `firestore:indexes` deploys in CI.
+      # https://github.com/firebase/firebase-tools/issues/10726
       - name: Install Firebase CLI
-        run: pnpm add -g firebase-tools
+        run: pnpm add -g firebase-tools@14.27.0
 
       - name: Deploy Firestore rules and indexes
         working-directory: apps/pdf-craft
