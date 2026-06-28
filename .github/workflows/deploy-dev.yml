@@ -13,10 +13,19 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: dev
     if: ${{ !contains(github.event.head_commit.message, '[skip-deploy]') }}
+    permissions:
+      contents: read
+      id-token: write  # required for OIDC token exchange with GCP
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -29,10 +38,48 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Deploy to Firebase
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      - name: Build functions
+        working-directory: apps/pdf-craft/functions
+        run: pnpm run build
+
+      - name: Install Firebase CLI
+        run: pnpm add -g firebase-tools
+
+      - name: Deploy Firestore rules
+        working-directory: apps/pdf-craft
+        run: ../../.github/scripts/firebase-deploy.sh --only firestore:rules --project pdf-craft-dev --force
+
+      # firebase-tools' firestore:indexes deploy doesn't accept Workload Identity
+      # Federation credentials ("Failed to authenticate, have you run firebase
+      # login?") even though every other deploy target in this job does — see #201.
+      # Call the Firestore Admin API directly with the WIF access token instead.
+      - name: Deploy Firestore indexes
+        working-directory: apps/pdf-craft
         run: |
-          cd apps/pdf-craft
-          pnpm add -g firebase-tools
-          firebase deploy --project pdf-craft-dev
+          TOKEN=$(gcloud auth print-access-token)
+          jq -c '.indexes[]' firestore.indexes.json | while read -r idx; do
+            COLLECTION=$(echo "$idx" | jq -r '.collectionGroup')
+            BODY=$(echo "$idx" | jq 'del(.collectionGroup)')
+            STATUS=$(curl -s -o /tmp/index-resp.json -w "%{http_code}" -X POST \
+              "https://firestore.googleapis.com/v1/projects/pdf-craft-dev/databases/(default)/collectionGroups/$COLLECTION/indexes" \
+              -H "Authorization: Bearer $TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "$BODY")
+            if [ "$STATUS" != "200" ] && ! grep -q ALREADY_EXISTS /tmp/index-resp.json; then
+              echo "::error::Failed to deploy index on $COLLECTION (HTTP $STATUS)"
+              cat /tmp/index-resp.json
+              exit 1
+            fi
+          done
+
+      - name: Deploy Storage rules
+        working-directory: apps/pdf-craft
+        run: ../../.github/scripts/firebase-deploy.sh --only storage --project pdf-craft-dev --force
+
+      - name: Deploy Cloud Functions
+        working-directory: apps/pdf-craft
+        run: ../../.github/scripts/firebase-deploy.sh --only functions --project pdf-craft-dev --force
+
+      - name: Deploy App Hosting
+        working-directory: apps/pdf-craft
+        run: ../../.github/scripts/firebase-deploy.sh --only apphosting --project pdf-craft-dev --force
