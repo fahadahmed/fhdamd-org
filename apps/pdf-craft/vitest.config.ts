@@ -22,7 +22,6 @@ export default defineConfig({
         "src/actions/**",
         "src/pages/**",
         "src/layouts/**",
-        "src/middleware.ts",
         // Firebase init and Pub/Sub — integration concerns
         "src/firebase/**",
         "src/server/**",
@@ -44,6 +43,7 @@ export default defineConfig({
       // Astro virtual modules
       { find: "astro:actions", replacement: resolve(__dirname, "src/test/mocks/astro-actions.ts") },
       { find: "astro:schema", replacement: resolve(__dirname, "src/test/mocks/astro-schema.ts") },
+      { find: "astro:middleware", replacement: resolve(__dirname, "src/test/mocks/astro-middleware.ts") },
       // Local Firebase client (matches relative imports that resolve to this file)
       {
         find: /^(?:\.\.\/)+firebase\/client$/,
