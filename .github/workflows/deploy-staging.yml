@@ -97,7 +97,7 @@ jobs:
 
       - name: Deploy Firestore rules
         working-directory: apps/pdf-craft
-        run: firebase deploy --only firestore:rules --project pdf-craft-stg --force
+        run: ../../.github/scripts/firebase-deploy.sh --only firestore:rules --project pdf-craft-stg --force
 
       # firebase-tools' firestore:indexes deploy doesn't accept Workload Identity
       # Federation credentials ("Failed to authenticate, have you run firebase
@@ -124,15 +124,15 @@ jobs:
 
       - name: Deploy Storage rules
         working-directory: apps/pdf-craft
-        run: firebase deploy --only storage --project pdf-craft-stg --force
+        run: ../../.github/scripts/firebase-deploy.sh --only storage --project pdf-craft-stg --force
 
       - name: Deploy Cloud Functions
         working-directory: apps/pdf-craft
-        run: firebase deploy --only functions --project pdf-craft-stg --force
+        run: ../../.github/scripts/firebase-deploy.sh --only functions --project pdf-craft-stg --force
 
       - name: Deploy App Hosting
         working-directory: apps/pdf-craft
-        run: firebase deploy --only apphosting --project pdf-craft-stg --force
+        run: ../../.github/scripts/firebase-deploy.sh --only apphosting --project pdf-craft-stg --force
 
   trigger-e2e:
     name: Trigger E2E tests
