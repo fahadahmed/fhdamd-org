@@ -45,7 +45,7 @@ export const AllPositions: Story = {
 };
 
 export const CreditCosts: Story = {
-  name: "Riqa — credit cost hints",
+  name: "PDF-Craft — credit cost hints",
   render: () => (
     <div style={{ display: "flex", gap: "var(--th-space-3)" }}>
       <Tooltip content="2 credits" position="top">

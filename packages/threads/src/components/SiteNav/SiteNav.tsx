@@ -3,7 +3,7 @@ import { Container } from "../Container/Container";
 import { Button } from "../Button/Button";
 import styles from "./SiteNav.module.css";
 
-export type SiteVariant = "riqa" | "fhdamd";
+export type SiteVariant = "pdf-craft" | "fhdamd";
 
 export interface NavLink {
   href: string;
@@ -28,10 +28,10 @@ export interface SiteNavProps {
 
 /* ── Brand marks ─────────────────────────────────────────────────────────── */
 
-function RiqaWordmark() {
+function PdfCraftWordmark() {
   return (
     <span className={styles.wordmark}>
-      Riqa<em className={styles.wordmarkDot}>.</em>
+      PDF-Craft<em className={styles.wordmarkDot}>.</em>
     </span>
   );
 }
@@ -87,7 +87,7 @@ function BurgerIcon({ open }: { open: boolean }) {
 /* ── Component ───────────────────────────────────────────────────────────── */
 
 export function SiteNav({
-  site = "riqa",
+  site = "pdf-craft",
   links = [],
   ctas = [],
   homeHref = "/",
@@ -124,10 +124,10 @@ export function SiteNav({
           <a
             href={homeHref}
             className={styles.brand}
-            aria-label={site === "riqa" ? "Riqa home" : "fhdamd home"}
+            aria-label={site === "pdf-craft" ? "PDF-Craft home" : "fhdamd home"}
           >
-            {site === "riqa" ? (
-              <RiqaWordmark />
+            {site === "pdf-craft" ? (
+              <PdfCraftWordmark />
             ) : (
               <>
                 <FhdamdMark />

@@ -3,9 +3,9 @@ import { Accordion } from "./Accordion";
 
 const pdfCraftFaq = [
   {
-    question: "What is Riqa?",
+    question: "What is PDF-Craft?",
     answer:
-      "Riqa is a pay-per-use PDF tool. You buy a pack of credits and spend them on individual operations — merging, converting, protecting, and more. No subscriptions, no monthly charges, credits never expire.",
+      "PDF-Craft is a pay-per-use PDF tool. You buy a pack of credits and spend them on individual operations — merging, converting, protecting, and more. No subscriptions, no monthly charges, credits never expire.",
   },
   {
     question: "How does the credit system work?",
@@ -23,9 +23,9 @@ const pdfCraftFaq = [
       "Your files are processed on-demand and not stored after the operation completes. We do not retain, index, or access your documents. All transfers use HTTPS encryption.",
   },
   {
-    question: "Can I use Riqa on mobile?",
+    question: "Can I use PDF-Craft on mobile?",
     answer:
-      "Yes. Riqa is fully responsive and works on any device. No app installation required — just open it in your browser.",
+      "Yes. PDF-Craft is fully responsive and works on any device. No app installation required — just open it in your browser.",
   },
   {
     question: "What if I run out of credits mid-operation?",

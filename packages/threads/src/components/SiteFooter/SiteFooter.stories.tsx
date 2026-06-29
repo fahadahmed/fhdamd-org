@@ -41,10 +41,10 @@ const meta = {
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
   argTypes: {
-    site: { control: "radio", options: ["riqa", "fhdamd"] },
+    site: { control: "radio", options: ["pdf-craft", "fhdamd"] },
   },
   args: {
-    site: "riqa",
+    site: "pdf-craft",
   },
 } satisfies Meta<typeof SiteFooter>;
 
@@ -66,25 +66,25 @@ export const FhdamdMinimal: Story = {
   args: { site: "fhdamd", links: [] },
 };
 
-/* ── Riqa — column layout ───────────────────────────────────────────── */
+/* ── PDF-Craft — column layout ───────────────────────────────────────────── */
 
-export const Riqa: Story = {
-  name: "Riqa — column layout",
+export const PdfCraft: Story = {
+  name: "PDF-Craft — column layout",
   args: {
-    site:       "riqa",
+    site:       "pdf-craft",
     tagline:    "Simple tools. Honest pricing.",
     columns:    pdfCraftColumns,
     bottomRight: "Built on the Threads design system",
   },
 };
 
-export const RiqaCustomCopyright: Story = {
-  name: "Riqa — custom copyright",
+export const PdfCraftCustomCopyright: Story = {
+  name: "PDF-Craft — custom copyright",
   args: {
-    site:      "riqa",
+    site:      "pdf-craft",
     tagline:   "Simple tools. Honest pricing.",
     columns:   pdfCraftColumns,
-    copyright: "© 2026 Riqa. All rights reserved.",
+    copyright: "© 2026 PDF-Craft. All rights reserved.",
   },
 };
 
@@ -95,9 +95,9 @@ export const BothSites: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
       <div>
-        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", padding: "8px 24px", background: "var(--th-color-bg)" }}>Riqa (column layout)</div>
+        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", padding: "8px 24px", background: "var(--th-color-bg)" }}>PDF-Craft (column layout)</div>
         <SiteFooter
-          site="riqa"
+          site="pdf-craft"
           tagline="Simple tools. Honest pricing."
           columns={pdfCraftColumns}
           bottomRight="Built on the Threads design system"

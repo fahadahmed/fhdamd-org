@@ -53,7 +53,7 @@ export type { SiteNavProps, SiteVariant, NavLink, NavCta } from "./components/Si
 export { SiteFooter } from "./components/SiteFooter/SiteFooter";
 export type { SiteFooterProps, FooterLink, FooterColumn } from "./components/SiteFooter/SiteFooter";
 
-// Riqa components
+// PDF-Craft components
 export { PriceCard } from "./components/PriceCard/PriceCard";
 export type { PriceCardProps, PriceCardOperation } from "./components/PriceCard/PriceCard";
 

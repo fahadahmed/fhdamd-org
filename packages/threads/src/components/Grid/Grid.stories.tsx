@@ -105,7 +105,7 @@ export const AutoGridStory: Story = {
         minColWidth=280px — resize the window to see auto-fill in action
       </div>
       <AutoGrid minColWidth="280px" gap={4}>
-        {["Riqa", "Jamaal", "fhdamd.dev", "Threads"].map((n) => (
+        {["PDF-Craft", "Jamaal", "fhdamd.dev", "Threads"].map((n) => (
           <SageCol key={n} label={n} />
         ))}
       </AutoGrid>

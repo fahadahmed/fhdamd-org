@@ -39,7 +39,7 @@ describe("ProjectCard — rendering", () => {
   });
 
   it("renders custom icon when icon is provided", () => {
-    render(<ProjectCard name="Riqa" description="Desc." icon={<Icon />} />);
+    render(<ProjectCard name="PDF-Craft" description="Desc." icon={<Icon />} />);
     expect(screen.getByTestId("project-icon")).toBeInTheDocument();
   });
 
@@ -71,7 +71,7 @@ describe("ProjectCard — rendering", () => {
   it("renders pricing pills when provided", () => {
     render(
       <ProjectCard
-        name="Riqa"
+        name="PDF-Craft"
         description="Desc."
         icon={<Icon />}
         pricingPills={[

@@ -21,7 +21,7 @@ export const TitleOnly: Story = { name: "Title only", args: { eyebrow: undefined
 export const NoIntro: Story   = { name: "Eyebrow + title", args: { intro: undefined } };
 
 export const PdfCraftSections: Story = {
-  name: "Riqa — all section headers",
+  name: "PDF-Craft — all section headers",
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--th-space-12)" }}>
       <SectionHeader eyebrow="PDF operations"  title={<>Everything your <em>documents</em> need</>}        intro="Four tools live now. Split, compress, sign and AI-powered summaries are all coming soon." />

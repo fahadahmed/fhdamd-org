@@ -53,7 +53,7 @@ export const Jamaal: Story = {
 };
 
 export const PdfCraft: Story = {
-  name: "Riqa",
+  name: "PDF-Craft",
   args: {
     eyebrow:     "SaaS · Pay-per-use",
     name:        <>PDF-<em style={{ fontStyle: "italic", color: "var(--th-color-sage-text)" }}>Craft</em></>,
@@ -75,7 +75,7 @@ export const Threads: Story = {
   args: {
     eyebrow:     "Design system · Multi-platform",
     name:        "Threads",
-    description: "Earthy ceramic token system powering Jamaal, Riqa, and this site. One set of decisions that works across iOS, macOS, web, and watchOS.",
+    description: "Earthy ceramic token system powering Jamaal, PDF-Craft, and this site. One set of decisions that works across iOS, macOS, web, and watchOS.",
     icon:        <ThreadsIcon />,
     accentColor: "ink",
     tags:        ["CSS tokens", "iOS", "Web", "macOS"],
@@ -125,7 +125,7 @@ export const FhdamdGrid: Story = {
         <ProjectCard
           eyebrow="Design system · Multi-platform"
           name="Threads"
-          description="Earthy ceramic token system powering Jamaal, Riqa, and this site. One set of decisions that works across iOS, macOS, web, and watchOS."
+          description="Earthy ceramic token system powering Jamaal, PDF-Craft, and this site. One set of decisions that works across iOS, macOS, web, and watchOS."
           icon={<ThreadsIcon />}
           accentColor="ink"
           tags={["CSS tokens", "iOS", "Web", "macOS"]}
