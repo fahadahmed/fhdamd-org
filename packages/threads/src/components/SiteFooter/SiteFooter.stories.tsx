@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SiteFooter } from "./SiteFooter";
 
-const fhdamdLinks = [
+const simpleLinks = [
   { href: "/", label: "Work" },
   { href: "/writing", label: "Writing" },
   { href: "/about", label: "About" },
 ];
 
-const pdfCraftColumns = [
+const columns = [
   {
     title: "Tools",
     links: [
@@ -35,77 +35,78 @@ const pdfCraftColumns = [
   },
 ];
 
+/** Example wordmark — in real usage, each app supplies its own brand markup. */
+const ExampleWordmark = () => (
+  <span style={{ fontFamily: "var(--th-font-serif)", fontWeight: 300, fontStyle: "italic", fontSize: "var(--th-text-lg)", color: "var(--th-color-text-inverse)" }}>
+    Acme<em style={{ fontStyle: "normal", color: "var(--th-color-accent-text)" }}>.</em>
+  </span>
+);
+
 const meta = {
   title: "Threads/Site/SiteFooter",
   component: SiteFooter,
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
-  argTypes: {
-    site: { control: "radio", options: ["pdf-craft", "fhdamd"] },
-  },
   args: {
-    site: "pdf-craft",
+    brand: <ExampleWordmark />,
   },
 } satisfies Meta<typeof SiteFooter>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/* ── fhdamd.dev — simple layout ──────────────────────────────────────────── */
+/* ── Simple layout ───────────────────────────────────────────────────────── */
 
-export const Fhdamd: Story = {
-  name: "fhdamd.dev — simple layout",
+export const Simple: Story = {
+  name: "Simple layout, with links",
   args: {
-    site:  "fhdamd",
-    links: fhdamdLinks,
+    links: simpleLinks,
   },
 };
 
-export const FhdamdMinimal: Story = {
-  name: "fhdamd.dev — wordmark + copyright only",
-  args: { site: "fhdamd", links: [] },
+export const SimpleMinimal: Story = {
+  name: "Simple layout — wordmark only",
+  args: { links: [] },
 };
 
-/* ── PDF-Craft — column layout ───────────────────────────────────────────── */
+/* ── Column layout ───────────────────────────────────────────────────────── */
 
-export const PdfCraft: Story = {
-  name: "PDF-Craft — column layout",
+export const Columns: Story = {
+  name: "Column layout",
   args: {
-    site:       "pdf-craft",
-    tagline:    "Simple tools. Honest pricing.",
-    columns:    pdfCraftColumns,
+    tagline:     "Simple tools. Honest pricing.",
+    columns,
     bottomRight: "Built on the Threads design system",
   },
 };
 
-export const PdfCraftCustomCopyright: Story = {
-  name: "PDF-Craft — custom copyright",
+export const ColumnsWithCopyright: Story = {
+  name: "Column layout — custom copyright",
   args: {
-    site:      "pdf-craft",
     tagline:   "Simple tools. Honest pricing.",
-    columns:   pdfCraftColumns,
-    copyright: "© 2026 PDF-Craft. All rights reserved.",
+    columns,
+    copyright: "© 2026 Acme. All rights reserved.",
   },
 };
 
-/* ── Both sites ──────────────────────────────────────────────────────────── */
+/* ── Both layouts ────────────────────────────────────────────────────────── */
 
-export const BothSites: Story = {
-  name: "Both site footers",
+export const BothLayouts: Story = {
+  name: "Both layouts stacked",
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
       <div>
-        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", padding: "8px 24px", background: "var(--th-color-bg)" }}>PDF-Craft (column layout)</div>
+        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", padding: "8px 24px", background: "var(--th-color-bg)" }}>Column layout</div>
         <SiteFooter
-          site="pdf-craft"
+          brand={<ExampleWordmark />}
           tagline="Simple tools. Honest pricing."
-          columns={pdfCraftColumns}
+          columns={columns}
           bottomRight="Built on the Threads design system"
         />
       </div>
       <div>
-        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", padding: "8px 24px", background: "var(--th-color-bg)" }}>fhdamd.dev (simple layout)</div>
-        <SiteFooter site="fhdamd" links={fhdamdLinks} />
+        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", padding: "8px 24px", background: "var(--th-color-bg)" }}>Simple layout</div>
+        <SiteFooter brand={<ExampleWordmark />} links={simpleLinks} />
       </div>
     </div>
   ),

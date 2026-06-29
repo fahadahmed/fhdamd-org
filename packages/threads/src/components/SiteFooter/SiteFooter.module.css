@@ -36,36 +36,6 @@
   flex-shrink: 0;
 }
 
-.logoMark {
-  height: 36px;
-  width: auto;
-  display: block;
-  color: var(--th-color-text-inverse);
-  opacity: 0.32;
-}
-
-.wordmark {
-  font-family: var(--th-font-serif);
-  font-weight: 300;
-  font-style: italic;
-  font-size: var(--th-text-lg);
-  color: var(--th-color-text-inverse);
-  display: block;
-}
-
-.wordmarkAccent {
-  font-style: normal;
-  color: var(--th-color-accent-text);
-}
-
-.brandName {
-  font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--th-color-text-inverse-2);
-}
-
 .tagline {
   font-family: var(--th-font-mono);
   font-size: var(--th-text-xs);

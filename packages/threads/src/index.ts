@@ -48,7 +48,7 @@ export type { TagProps } from "./components/Badge/Tag";
 
 // Site chrome
 export { SiteNav } from "./components/SiteNav/SiteNav";
-export type { SiteNavProps, SiteVariant, NavLink, NavCta } from "./components/SiteNav/SiteNav";
+export type { SiteNavProps, NavLink, NavCta } from "./components/SiteNav/SiteNav";
 
 export { SiteFooter } from "./components/SiteFooter/SiteFooter";
 export type { SiteFooterProps, FooterLink, FooterColumn } from "./components/SiteFooter/SiteFooter";
