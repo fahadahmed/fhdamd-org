@@ -8,7 +8,7 @@ vi.mock("./utils/lib/logger", () => ({
 import { onRequest } from "./middleware";
 
 function makeContext(pathname: string) {
-  return { url: new URL(`https://pdf-craft.app${pathname}`) } as any;
+  return { url: new URL(`https://riqa.app${pathname}`) } as any;
 }
 
 beforeEach(() => {

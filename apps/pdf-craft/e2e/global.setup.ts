@@ -11,7 +11,7 @@ async function globalSetup() {
   const apiKey = process.env.PUBLIC_FIREBASE_API_KEY;
   const email = process.env.E2E_TEST_EMAIL;
   const password = process.env.E2E_TEST_PASSWORD;
-  const baseURL = process.env.BASE_URL ?? 'https://stg.pdf-craft.app';
+  const baseURL = process.env.BASE_URL ?? 'https://stg.riqa.app';
 
   if (!serviceAccountKey || !apiKey || !email || !password) {
     console.warn(

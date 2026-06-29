@@ -71,7 +71,7 @@ export default function Header() {
 
   return (
     <SiteNav
-      site="pdf-craft"
+      site="riqa"
       links={navLinks}
       ctas={ctas}
       homeHref="/"

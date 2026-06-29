@@ -58,7 +58,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  name: "PDF-Craft operations",
+  name: "Riqa operations",
 };
 
 export const WithActions: Story = {

@@ -4,7 +4,7 @@ test('rejects a too-short message before hitting the network', async ({ page }) 
   await page.goto('/contact');
 
   await page.getByLabel('Your name').fill('E2E Test');
-  await page.getByLabel('Email address').fill('e2e-test-stg@pdf-craft.app');
+  await page.getByLabel('Email address').fill('e2e-test-stg@riqa.app');
   await page.getByLabel('Message').fill('too short');
   await page.getByRole('button', { name: /send message/i }).click();
 
@@ -20,7 +20,7 @@ test('submits a valid message end to end through the contact action', async ({ p
   await page.goto(`/contact${query}`);
 
   await page.getByLabel('Your name').fill('E2E Test');
-  await page.getByLabel('Email address').fill('e2e-test-stg@pdf-craft.app');
+  await page.getByLabel('Email address').fill('e2e-test-stg@riqa.app');
   await page.getByLabel('Subject').selectOption('general');
   await page.getByLabel('Message').fill(
     `Automated e2e contact form check — ${new Date().toISOString()}`,

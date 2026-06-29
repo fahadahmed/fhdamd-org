@@ -11,7 +11,7 @@ export const handleDecryptPdf: TypedEventHandler<PdfOperationPayload> = async (p
     const resend = getResend();
     await resend.emails.send({
       to: userEmail,
-      from: "PDF Craft <no-reply@pdf-craft.app>",
+      from: "Riqa <no-reply@riqa.app>",
       subject: pdfOperationSubject("pdf-decrypt"),
       html: pdfOperationEmailHtml({ operationType: "pdf-decrypt", fileName, fileUrl }),
     });

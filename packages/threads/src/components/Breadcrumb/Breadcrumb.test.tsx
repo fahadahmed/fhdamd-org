@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { Breadcrumb } from "./Breadcrumb";
 
 const items = [
-  { label: "PDF-Craft", href: "/" },
+  { label: "Riqa", href: "/" },
   { label: "Tools",     href: "/tools" },
   { label: "Merge PDFs" },
 ];
@@ -15,14 +15,14 @@ describe("Breadcrumb", () => {
 
   it("renders all item labels", () => {
     render(<Breadcrumb items={items} />);
-    expect(screen.getByText("PDF-Craft")).toBeInTheDocument();
+    expect(screen.getByText("Riqa")).toBeInTheDocument();
     expect(screen.getByText("Tools")).toBeInTheDocument();
     expect(screen.getByText("Merge PDFs")).toBeInTheDocument();
   });
 
   it("renders links for non-current items", () => {
     render(<Breadcrumb items={items} />);
-    expect(screen.getByRole("link", { name: "PDF-Craft" })).toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: "Riqa" })).toHaveAttribute("href", "/");
     expect(screen.getByRole("link", { name: "Tools" })).toHaveAttribute("href", "/tools");
   });
 

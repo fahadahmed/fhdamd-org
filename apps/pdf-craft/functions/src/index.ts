@@ -82,6 +82,9 @@ const corsHandler = cors({
     "https://dev.pdf-craft.app",
     "https://stg.pdf-craft.app",
     "https://pdf-craft.app",
+    "https://dev.riqa.app",
+    "https://stg.riqa.app",
+    "https://riqa.app",
   ],
 });
 
@@ -316,7 +319,7 @@ const stripeWebhook = onRequest(
   },
 );
 
-const CONTACT_RECIPIENT = "support@pdf-craft.app";
+const CONTACT_RECIPIENT = "support@riqa.app";
 const RESEND_DELIVERY_FAILURE_EVENTS = [
   "email.bounced",
   "email.complained",

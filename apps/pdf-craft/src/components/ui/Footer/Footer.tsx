@@ -3,7 +3,7 @@ import { SiteFooter } from '@fhdamd/threads'
 export default function Footer() {
   return (
     <SiteFooter
-      site="pdf-craft"
+      site="riqa"
       tagline="Simple tools. Honest pricing."
       columns={[
         {

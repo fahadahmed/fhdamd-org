@@ -51,7 +51,7 @@ export function welcomeEmailHtml(displayName: string): string {
       Welcome, ${firstName}!
     </h1>
     <p style="margin: 0 0 32px; font-family: ${FONT}; font-size: 17px; color: #5A5750; line-height: 1.65;">
-      Your PDF Craft account is ready. Convert, merge, and secure your PDFs — right from your browser.
+      Your Riqa account is ready. Convert, merge, and secure your PDFs — right from your browser.
     </p>
 
     <!-- Divider -->
@@ -72,13 +72,13 @@ export function welcomeEmailHtml(displayName: string): string {
         <td style="background-color: #F7F4EE; border-radius: 12px; padding: 14px 18px;">
           <p style="margin: 0; font-family: ${FONT}; font-size: 14px; color: #5A5750; line-height: 1.6;">
             ✦ &nbsp;Credits are deducted per operation and never expire. Buy more anytime on the
-            <a href="https://pdf-craft.app/buy-credits" style="color: #B5623A; text-decoration: underline;">pricing page</a>.
+            <a href="https://riqa.app/buy-credits" style="color: #B5623A; text-decoration: underline;">pricing page</a>.
           </p>
         </td>
       </tr>
     </table>
 
-    ${emailButton("Go to your dashboard →", "https://pdf-craft.app/dashboard")}
+    ${emailButton("Go to your dashboard →", "https://riqa.app/dashboard")}
 
     <!-- Divider -->
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-top: 32px; margin-bottom: 20px;">
@@ -87,9 +87,9 @@ export function welcomeEmailHtml(displayName: string): string {
 
     <p style="margin: 0; font-family: ${FONT}; font-size: 14px; color: #8C8880; line-height: 1.6; text-align: center;">
       Need help? Reply to this email or visit our
-      <a href="https://pdf-craft.app/help" style="color: #B5623A; text-decoration: underline;">help centre</a>.
+      <a href="https://riqa.app/help" style="color: #B5623A; text-decoration: underline;">help centre</a>.
     </p>
   `;
 
-  return baseEmail(content, `Welcome to PDF Craft, ${firstName}! Your account is ready.`);
+  return baseEmail(content, `Welcome to Riqa, ${firstName}! Your account is ready.`);
 }

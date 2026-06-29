@@ -33,7 +33,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const PdfCraft: Story = {
-  name: "PDF-Craft homepage hero",
+  name: "Riqa homepage hero",
   args: {
     actions: (
       <>
@@ -54,7 +54,7 @@ export const FhdamdDev: Story = {
     eyebrow:    "Solution architect at EY · Melbourne",
     heading:    "I architect enterprise systems by day.",
     subheading: <>I make considered apps <em>by night.</em></>,
-    body:       "14 years across government, finance, and utilities. Leading digital transformation at EY — and building Jamaal, PDF-Craft, and Threads in the hours outside of it.",
+    body:       "14 years across government, finance, and utilities. Leading digital transformation at EY — and building Jamaal, Riqa, and Threads in the hours outside of it.",
     chips:      undefined,
     actions: (
       <>

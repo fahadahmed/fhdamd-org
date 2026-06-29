@@ -21,7 +21,7 @@ type Story = StoryObj<typeof meta>;
 export const Error: Story   = { args: { variant: "error",   children: "Notifications are off. Evening planning reminders won't fire." } };
 export const Success: Story = { args: { variant: "success", children: "All habits complete today. Great work." } };
 export const Warning: Story = { args: { variant: "warning", children: "You're running low on credits — 2 remaining." } };
-export const Info: Story    = { args: { variant: "info",    children: "PDF-Craft is now live. 5 more operations coming soon." } };
+export const Info: Story    = { args: { variant: "info",    children: "Riqa is now live. 5 more operations coming soon." } };
 
 export const Dismissible: Story = {
   name: "With dismiss button",
@@ -39,7 +39,7 @@ export const AllVariants: Story = {
       <Banner variant="success">All habits complete today. Great work.</Banner>
       <Banner variant="warning">You're running low on credits — 2 remaining.</Banner>
       <Banner variant="error">Notifications are off. Enable in iOS Settings to restore.</Banner>
-      <Banner variant="info">PDF-Craft is now live. 5 more operations coming soon.</Banner>
+      <Banner variant="info">Riqa is now live. 5 more operations coming soon.</Banner>
     </div>
   ),
 };

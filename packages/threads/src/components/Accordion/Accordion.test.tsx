@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { Accordion } from "./Accordion";
 
 const items = [
-  { question: "What is PDF-Craft?",        answer: "A pay-per-use PDF tool." },
+  { question: "What is Riqa?",        answer: "A pay-per-use PDF tool." },
   { question: "Do credits expire?",         answer: "No, credits never expire." },
   { question: "Is my data secure?",         answer: "Yes, files are deleted after processing." },
 ];
@@ -11,7 +11,7 @@ const items = [
 describe("Accordion — rendering", () => {
   it("renders all questions", () => {
     render(<Accordion items={items} />);
-    expect(screen.getByText("What is PDF-Craft?")).toBeInTheDocument();
+    expect(screen.getByText("What is Riqa?")).toBeInTheDocument();
     expect(screen.getByText("Do credits expire?")).toBeInTheDocument();
     expect(screen.getByText("Is my data secure?")).toBeInTheDocument();
   });
@@ -46,7 +46,7 @@ describe("Accordion — interaction", () => {
   it("closes an open item on second click", async () => {
     const user = userEvent.setup();
     render(<Accordion items={items} defaultOpenIndex={0} />);
-    const trigger = screen.getByRole("button", { name: "What is PDF-Craft?" });
+    const trigger = screen.getByRole("button", { name: "What is Riqa?" });
     expect(trigger).toHaveAttribute("aria-expanded", "true");
     await user.click(trigger);
     expect(trigger).toHaveAttribute("aria-expanded", "false");
@@ -55,7 +55,7 @@ describe("Accordion — interaction", () => {
   it("closes the previously open item when a new one is opened", async () => {
     const user = userEvent.setup();
     render(<Accordion items={items} defaultOpenIndex={0} />);
-    const first  = screen.getByRole("button", { name: "What is PDF-Craft?" });
+    const first  = screen.getByRole("button", { name: "What is Riqa?" });
     const second = screen.getByRole("button", { name: "Do credits expire?" });
     expect(first).toHaveAttribute("aria-expanded", "true");
     await user.click(second);
@@ -66,10 +66,10 @@ describe("Accordion — interaction", () => {
   it("closes on Escape key", async () => {
     const user = userEvent.setup();
     render(<Accordion items={items} defaultOpenIndex={0} />);
-    screen.getByRole("button", { name: "What is PDF-Craft?" }).focus();
+    screen.getByRole("button", { name: "What is Riqa?" }).focus();
     await user.keyboard("{Escape}");
     // Escape doesn't close accordion (only used in nav/dialogs) — verify trigger is still accessible
-    expect(screen.getByRole("button", { name: "What is PDF-Craft?" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "What is Riqa?" })).toBeInTheDocument();
   });
 });
 
@@ -83,7 +83,7 @@ describe("Accordion — accessibility", () => {
   it("open trigger has aria-expanded=true", () => {
     render(<Accordion items={items} defaultOpenIndex={0} />);
     expect(
-      screen.getByRole("button", { name: "What is PDF-Craft?" })
+      screen.getByRole("button", { name: "What is Riqa?" })
     ).toHaveAttribute("aria-expanded", "true");
   });
 
@@ -98,6 +98,6 @@ describe("Accordion — accessibility", () => {
     const user = userEvent.setup();
     render(<Accordion items={items} defaultOpenIndex={-1} />);
     await user.tab();
-    expect(screen.getByRole("button", { name: "What is PDF-Craft?" })).toHaveFocus();
+    expect(screen.getByRole("button", { name: "What is Riqa?" })).toHaveFocus();
   });
 });

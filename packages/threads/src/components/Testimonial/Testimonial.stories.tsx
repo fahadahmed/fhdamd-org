@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const Grid: Story = {
-  name: "PDF-Craft testimonial grid",
+  name: "Riqa testimonial grid",
   parameters: { layout: "padded" },
   render: () => (
     <div

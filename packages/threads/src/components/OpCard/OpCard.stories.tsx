@@ -143,10 +143,10 @@ export const ComingSoonAI: Story = {
   },
 };
 
-/* ── Full PDF-Craft grid ─────────────────────────────────────────────────── */
+/* ── Full Riqa grid ─────────────────────────────────────────────────── */
 
 export const FullGrid: Story = {
-  name: "PDF-Craft operations grid",
+  name: "Riqa operations grid",
   parameters: { layout: "fullscreen" },
   render: () => (
     <div style={{ padding: "2rem" }}>

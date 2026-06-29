@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SiteNav } from "./SiteNav";
 
-const pdfCraftLinks = [
+const riqaLinks = [
   { href: "/", label: "Home" },
   { href: "/tools", label: "Tools", active: true },
   { href: "/pricing", label: "Pricing" },
@@ -19,24 +19,24 @@ const meta = {
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
   argTypes: {
-    site: { control: "radio", options: ["pdf-craft", "fhdamd"] },
+    site: { control: "radio", options: ["riqa", "fhdamd"] },
   },
   args: {
-    site: "pdf-craft",
-    links: pdfCraftLinks,
+    site: "riqa",
+    links: riqaLinks,
   },
 } satisfies Meta<typeof SiteNav>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/* ── PDF-Craft ───────────────────────────────────────────────────────────── */
+/* ── Riqa ───────────────────────────────────────────────────────────── */
 
-export const PdfCraft: Story = {
-  name: "PDF-Craft — links + Log in / Sign up",
+export const Riqa: Story = {
+  name: "Riqa — links + Log in / Sign up",
   args: {
-    site: "pdf-craft",
-    links: pdfCraftLinks,
+    site: "riqa",
+    links: riqaLinks,
     ctas: [
       { href: "/signin", label: "Log in", variant: "ghost" },
       { href: "/signup", label: "Sign up", variant: "solid-ink" },
@@ -44,9 +44,9 @@ export const PdfCraft: Story = {
   },
 };
 
-export const PdfCraftNoLinks: Story = {
-  name: "PDF-Craft — wordmark only",
-  args: { site: "pdf-craft", links: [] },
+export const RiqaNoLinks: Story = {
+  name: "Riqa — wordmark only",
+  args: { site: "riqa", links: [] },
 };
 
 /* ── fhdamd.dev ──────────────────────────────────────────────────────────── */
@@ -67,8 +67,8 @@ export const PageFrame: Story = {
   render: () => (
     <div>
       <SiteNav
-        site="pdf-craft"
-        links={pdfCraftLinks}
+        site="riqa"
+        links={riqaLinks}
         ctas={[
           { href: "/signin", label: "Log in", variant: "ghost" },
           { href: "/signup", label: "Sign up", variant: "solid-ink" },
@@ -99,8 +99,8 @@ export const BothSites: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--th-space-8)" }}>
       <div>
-        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", padding: "8px 0" }}>PDF-Craft</div>
-        <SiteNav site="pdf-craft" links={pdfCraftLinks} ctas={[{ href: "/signin", label: "Log in", variant: "ghost" }, { href: "/signup", label: "Sign up", variant: "solid-ink" }]} />
+        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", padding: "8px 0" }}>Riqa</div>
+        <SiteNav site="riqa" links={riqaLinks} ctas={[{ href: "/signin", label: "Log in", variant: "ghost" }, { href: "/signup", label: "Sign up", variant: "solid-ink" }]} />
       </div>
       <div>
         <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", padding: "8px 0" }}>fhdamd.dev</div>

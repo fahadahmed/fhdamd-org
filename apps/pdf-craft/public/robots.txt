@@ -9,4 +9,4 @@ Disallow: /payment-success
 Disallow: /payment-cancel
 Disallow: /signin
 
-Sitemap: https://pdf-craft.app/sitemap.xml
+Sitemap: https://riqa.app/sitemap.xml

@@ -80,10 +80,10 @@ export const Pro: Story = {
   },
 };
 
-/* ── PDF-Craft pricing grid ──────────────────────────────────────────────── */
+/* ── Riqa pricing grid ──────────────────────────────────────────────── */
 
 export const PdfCraftGrid: Story = {
-  name: "PDF-Craft pricing grid",
+  name: "Riqa pricing grid",
   parameters: { layout: "padded" },
   render: () => (
     <div

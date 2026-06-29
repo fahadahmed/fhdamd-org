@@ -22,7 +22,7 @@ export const WithError: Story = { args: { error: "File type not supported. Pleas
 export const Disabled: Story  = { args: { disabled: true } };
 
 export const PdfCraftUpload: Story = {
-  name: "PDF-Craft — merge upload",
+  name: "Riqa — merge upload",
   args: {
     label: "Upload files to merge",
     hint: "Select 2 or more PDFs. Max 50 MB each.",

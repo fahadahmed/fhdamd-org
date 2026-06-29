@@ -28,7 +28,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Centered: Story = {
-  name: "Centered CTA — PDF-Craft",
+  name: "Centered CTA — Riqa",
   args: {
     actions: (
       <Button variant="solid-terra" size="lg" href="/signup" icon={<ArrowIcon />}>

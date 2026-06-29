@@ -13,9 +13,9 @@ describe("SiteNav — rendering", () => {
     expect(container.firstChild?.nodeName).toBe("HEADER");
   });
 
-  it("renders the PDF-Craft wordmark when site=pdf-craft", () => {
-    render(<SiteNav site="pdf-craft" />);
-    expect(screen.getByRole("link", { name: /PDF-Craft home/ })).toBeInTheDocument();
+  it("renders the Riqa wordmark when site=riqa", () => {
+    render(<SiteNav site="riqa" />);
+    expect(screen.getByRole("link", { name: /Riqa home/ })).toBeInTheDocument();
   });
 
   it("renders the fhdamd mark (SVG) when site=fhdamd", () => {
@@ -110,7 +110,7 @@ describe("SiteNav — accessibility", () => {
   });
 
   it("home link has descriptive aria-label", () => {
-    render(<SiteNav site="pdf-craft" />);
-    expect(screen.getByRole("link", { name: "PDF-Craft home" })).toBeInTheDocument();
+    render(<SiteNav site="riqa" />);
+    expect(screen.getByRole("link", { name: "Riqa home" })).toBeInTheDocument();
   });
 });

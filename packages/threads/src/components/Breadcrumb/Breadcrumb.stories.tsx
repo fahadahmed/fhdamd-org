@@ -8,7 +8,7 @@ const meta = {
   tags: ["autodocs"],
   args: {
     items: [
-      { label: "PDF-Craft", href: "/" },
+      { label: "Riqa", href: "/" },
       { label: "Tools",     href: "/tools" },
       { label: "Merge PDFs" },
     ],
@@ -21,13 +21,13 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const TwoLevels: Story = {
-  args: { items: [{ label: "PDF-Craft", href: "/" }, { label: "Pricing" }] },
+  args: { items: [{ label: "Riqa", href: "/" }, { label: "Pricing" }] },
 };
 
 export const Deep: Story = {
   args: {
     items: [
-      { label: "PDF-Craft",    href: "/" },
+      { label: "Riqa",    href: "/" },
       { label: "Account",      href: "/account" },
       { label: "Billing",      href: "/account/billing" },
       { label: "Purchase history" },

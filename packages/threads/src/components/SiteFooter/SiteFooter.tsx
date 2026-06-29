@@ -17,7 +17,7 @@ export interface SiteFooterProps extends HTMLAttributes<HTMLElement> {
   site?: SiteVariant;
   /** Simple flat list of links (fhdamd style) */
   links?: FooterLink[];
-  /** Grouped column links (PDF-Craft style) */
+  /** Grouped column links (Riqa style) */
   columns?: FooterColumn[];
   tagline?: string;
   copyright?: string;
@@ -27,10 +27,10 @@ export interface SiteFooterProps extends HTMLAttributes<HTMLElement> {
 
 /* ── Brand marks ─────────────────────────────────────────────────────────── */
 
-function PdfCraftWordmark() {
+function RiqaWordmark() {
   return (
     <span className={styles.wordmark}>
-      PDF<em className={styles.wordmarkAccent}>-Craft</em>
+      Ri<em className={styles.wordmarkAccent}>qa</em>
     </span>
   );
 }
@@ -57,7 +57,7 @@ function FhdamdMarkFaint() {
 /* ── Component ───────────────────────────────────────────────────────────── */
 
 export function SiteFooter({
-  site = "pdf-craft",
+  site = "riqa",
   links = [],
   columns = [],
   tagline,
@@ -72,7 +72,7 @@ export function SiteFooter({
 
   const defaultCopyright = site === "fhdamd"
     ? `fhdamd.dev · Melbourne, VIC · ${year}`
-    : `© ${year} PDF-Craft. All rights reserved.`;
+    : `© ${year} Riqa. All rights reserved.`;
   const copy = copyright ?? defaultCopyright;
 
   return (
@@ -86,11 +86,11 @@ export function SiteFooter({
         <div className={styles.inner}>
 
           {hasColumns ? (
-            /* ── Column layout (PDF-Craft) ────────────────────────────── */
+            /* ── Column layout (Riqa) ────────────────────────────── */
             <>
               <div className={styles.top}>
                 <div className={styles.brand}>
-                  <PdfCraftWordmark />
+                  <RiqaWordmark />
                   {tagline && <p className={styles.tagline}>{tagline}</p>}
                 </div>
                 <div className={styles.columns}>
@@ -123,7 +123,7 @@ export function SiteFooter({
                     <span className={styles.brandName}>Fahad Ahmed</span>
                   </>
                 ) : (
-                  <PdfCraftWordmark />
+                  <RiqaWordmark />
                 )}
               </div>
               {links.length > 0 && (

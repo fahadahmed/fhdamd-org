@@ -28,7 +28,7 @@ export function baseEmail(content: string, previewText?: string): string {
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="x-apple-disable-message-reformatting" />
   <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no" />
-  <title>PDF Craft</title>
+  <title>Riqa</title>
   <!--[if mso]>
   <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
   <![endif]-->
@@ -64,11 +64,11 @@ export function baseEmail(content: string, previewText?: string): string {
           <!-- Wordmark -->
           <tr>
             <td align="center" style="padding-bottom: 28px;">
-              <a href="https://pdf-craft.app" style="text-decoration: none; display: inline-block;">
+              <a href="https://riqa.app" style="text-decoration: none; display: inline-block;">
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                   <tr>
                     <td style="background-color: ${BRAND.accentSubtle}; border-radius: 10px; padding: 8px 14px; text-align: center;">
-                      <span style="font-family: ${FONT}; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: ${BRAND.accentHover};">PDF Craft</span>
+                      <span style="font-family: ${FONT}; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: ${BRAND.accentHover};">Riqa</span>
                     </td>
                   </tr>
                 </table>
@@ -89,13 +89,13 @@ export function baseEmail(content: string, previewText?: string): string {
           <tr>
             <td align="center" style="padding-top: 28px;">
               <p style="margin: 0 0 6px; font-family: ${FONT}; font-size: 12px; color: ${BRAND.text3}; line-height: 1.6;">
-                © ${year} PDF Craft &nbsp;·&nbsp;
-                <a href="https://pdf-craft.app/privacy" style="color: ${BRAND.text3}; text-decoration: underline;">Privacy</a>
+                © ${year} Riqa &nbsp;·&nbsp;
+                <a href="https://riqa.app/privacy" style="color: ${BRAND.text3}; text-decoration: underline;">Privacy</a>
                 &nbsp;·&nbsp;
-                <a href="https://pdf-craft.app/terms" style="color: ${BRAND.text3}; text-decoration: underline;">Terms</a>
+                <a href="https://riqa.app/terms" style="color: ${BRAND.text3}; text-decoration: underline;">Terms</a>
               </p>
               <p style="margin: 0; font-family: ${FONT}; font-size: 11px; color: ${BRAND.text4}; line-height: 1.5;">
-                You're receiving this because you have an account at pdf-craft.app
+                You're receiving this because you have an account at riqa.app
               </p>
             </td>
           </tr>

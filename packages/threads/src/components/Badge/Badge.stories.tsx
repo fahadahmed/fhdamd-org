@@ -78,7 +78,7 @@ export const UseCases: Story = {
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--th-space-5)", fontFamily: "var(--th-font-display)", fontSize: "var(--th-text-base)" }}>
       <div>
         <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", marginBottom: "8px" }}>
-          PDF-Craft operations
+          Riqa operations
         </div>
         <div style={{ display: "flex", gap: "8px" }}>
           <Badge variant="sage">Live</Badge>

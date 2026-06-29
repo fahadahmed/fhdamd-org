@@ -12,10 +12,10 @@ describe("SiteFooter — rendering", () => {
     expect(container.firstChild?.nodeName).toBe("FOOTER");
   });
 
-  it("renders PDF-Craft wordmark when site=pdf-craft", () => {
-    render(<SiteFooter site="pdf-craft" />);
+  it("renders Riqa wordmark when site=riqa", () => {
+    render(<SiteFooter site="riqa" />);
     // getAllByText because parent <a> and child <span> both contain the text
-    expect(screen.getAllByText(/PDF-Craft/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Riqa/).length).toBeGreaterThan(0);
   });
 
   it("renders fhdamd wordmark when site=fhdamd", () => {
@@ -40,9 +40,9 @@ describe("SiteFooter — rendering", () => {
   });
 
   it("renders default copyright with current year and site name", () => {
-    render(<SiteFooter site="pdf-craft" />);
+    render(<SiteFooter site="riqa" />);
     const year = new Date().getFullYear().toString();
-    expect(screen.getByText(new RegExp(`${year}.*PDF-Craft`))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(`${year}.*Riqa`))).toBeInTheDocument();
   });
 
   it("renders custom copyright string", () => {
