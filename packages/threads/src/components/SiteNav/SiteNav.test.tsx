@@ -13,14 +13,15 @@ describe("SiteNav — rendering", () => {
     expect(container.firstChild?.nodeName).toBe("HEADER");
   });
 
-  it("renders the PDF-Craft wordmark when site=pdf-craft", () => {
-    render(<SiteNav site="pdf-craft" />);
-    expect(screen.getByRole("link", { name: /PDF-Craft home/ })).toBeInTheDocument();
+  it("renders whatever brand node the consumer supplies", () => {
+    render(<SiteNav brand={<span>Acme</span>} />);
+    expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
+    expect(screen.getByText("Acme")).toBeInTheDocument();
   });
 
-  it("renders the fhdamd mark (SVG) when site=fhdamd", () => {
-    const { container } = render(<SiteNav site="fhdamd" />);
-    expect(container.querySelector("svg")).toBeInTheDocument();
+  it("uses brandLabel for the home link's aria-label when provided", () => {
+    render(<SiteNav brand={<span>Acme</span>} brandLabel="Acme home" />);
+    expect(screen.getByRole("link", { name: "Acme home" })).toBeInTheDocument();
   });
 
   it("renders nav links", () => {
@@ -44,7 +45,7 @@ describe("SiteNav — rendering", () => {
 
   it("renders home link with correct href", () => {
     render(<SiteNav homeHref="/home" />);
-    expect(screen.getByRole("link", { name: /home/i })).toHaveAttribute("href", "/home");
+    expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/home");
   });
 
   it("renders burger button", () => {
@@ -109,8 +110,8 @@ describe("SiteNav — accessibility", () => {
     );
   });
 
-  it("home link has descriptive aria-label", () => {
-    render(<SiteNav site="pdf-craft" />);
-    expect(screen.getByRole("link", { name: "PDF-Craft home" })).toBeInTheDocument();
+  it("home link falls back to a generic aria-label when none is given", () => {
+    render(<SiteNav />);
+    expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
   });
 });
