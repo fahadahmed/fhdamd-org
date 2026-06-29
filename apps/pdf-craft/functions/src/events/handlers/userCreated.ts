@@ -15,8 +15,8 @@ export const handleUserCreated: TypedEventHandler<UserCreatedPayload> = async (p
   const results = await Promise.allSettled([
     resend.emails.send({
       to: userEmail,
-      from: "PDF Craft <no-reply@pdf-craft.app>",
-      subject: `Welcome to PDF Craft, ${firstName}!`,
+      from: "Riqa <no-reply@riqa.app>",
+      subject: `Welcome to Riqa, ${firstName}!`,
       html: welcomeEmailHtml(displayName),
     }),
     audienceId

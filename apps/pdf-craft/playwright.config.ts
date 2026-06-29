@@ -12,7 +12,7 @@ export default defineConfig({
     ? [['github'], ['html', { open: 'never', outputFolder: 'playwright-report' }]]
     : [['html', { outputFolder: 'playwright-report' }]],
   use: {
-    baseURL: process.env.BASE_URL ?? 'https://stg.pdf-craft.app',
+    baseURL: process.env.BASE_URL ?? 'https://stg.riqa.app',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },

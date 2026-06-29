@@ -1,4 +1,4 @@
-name: Provision PDF-Craft Staging Infra
+name: Provision Riqa Staging Infra
 
 on:
   push:

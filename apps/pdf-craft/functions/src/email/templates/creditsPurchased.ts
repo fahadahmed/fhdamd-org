@@ -76,7 +76,7 @@ export function creditsPurchasedEmailHtml(data: CreditsPurchasedData): string {
       </tr>
     </table>
 
-    ${emailButton("Use your credits →", "https://pdf-craft.app/dashboard")}
+    ${emailButton("Use your credits →", "https://riqa.app/dashboard")}
 
     <!-- Divider -->
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-top: 32px; margin-bottom: 20px;">
@@ -85,12 +85,12 @@ export function creditsPurchasedEmailHtml(data: CreditsPurchasedData): string {
 
     <p style="margin: 0; font-family: ${FONT}; font-size: 14px; color: #8C8880; line-height: 1.6; text-align: center;">
       Credits are deducted per operation and never expire. Questions about your purchase?
-      <a href="mailto:support@pdf-craft.app" style="color: #B5623A; text-decoration: underline;">Contact us</a>.
+      <a href="mailto:support@riqa.app" style="color: #B5623A; text-decoration: underline;">Contact us</a>.
     </p>
   `;
 
   return baseEmail(
     content,
-    `${creditsPurchased} credits added — your PDF Craft balance is now ${creditsTotal}.`
+    `${creditsPurchased} credits added — your Riqa balance is now ${creditsTotal}.`
   );
 }

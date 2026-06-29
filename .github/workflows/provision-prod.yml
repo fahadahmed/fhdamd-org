@@ -1,4 +1,4 @@
-name: Provision PDF-Craft Prod Infra
+name: Provision Riqa Prod Infra
 
 on:
   push:

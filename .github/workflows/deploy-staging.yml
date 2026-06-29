@@ -1,9 +1,9 @@
-name: Deploy PDF-Craft Staging
+name: Deploy Riqa Staging
 
 on:
   push:
     tags:
-      - 'pdf-craft-v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+'
+      - 'riqa-v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+'
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -42,7 +42,7 @@ jobs:
       - name: Bump apps/pdf-craft/package.json to the canonical release version
         run: |
           TAG="${{ github.ref_name }}"
-          VERSION="${TAG#pdf-craft-v}"
+          VERSION="${TAG#riqa-v}"
           VERSION="${VERSION%-rc.*}"
 
           git fetch origin main
@@ -145,7 +145,7 @@ jobs:
             --repo "${{ github.repository }}" \
             --title "${{ github.ref_name }} — staging" \
             --prerelease \
-            --notes "Deployed to staging: https://stg.pdf-craft.app
+            --notes "Deployed to staging: https://stg.riqa.app
 
           Commit: ${{ github.sha }}
           Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

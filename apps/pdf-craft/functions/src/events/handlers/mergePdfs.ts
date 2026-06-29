@@ -11,7 +11,7 @@ export const handleMergePdfs: TypedEventHandler<PdfOperationPayload> = async (pa
     const resend = getResend();
     await resend.emails.send({
       to: userEmail,
-      from: "PDF Craft <no-reply@pdf-craft.app>",
+      from: "Riqa <no-reply@riqa.app>",
       subject: pdfOperationSubject("pdf-merge"),
       html: pdfOperationEmailHtml({ operationType: "pdf-merge", fileName, fileUrl }),
     });

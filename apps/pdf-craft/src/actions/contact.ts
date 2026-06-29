@@ -38,8 +38,8 @@ async function sendViaResend(payload: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "PDF Craft <no-reply@pdf-craft.app>",
-      to: ["support@pdf-craft.app"],
+      from: "Riqa <no-reply@riqa.app>",
+      to: ["support@riqa.app"],
       reply_to: fromEmail,
       subject: `[Contact] ${subject} — from ${fromName}`,
       text: `From: ${fromName} <${fromEmail}>\nSubject: ${subject}\n\n${message}`,

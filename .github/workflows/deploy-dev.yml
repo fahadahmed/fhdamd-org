@@ -1,4 +1,4 @@
-name: Deploy PDF-Craft Dev
+name: Deploy Riqa Dev
 on:
   push:
     branches:

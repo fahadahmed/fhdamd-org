@@ -11,7 +11,7 @@ export const handleCreditsPurchased: TypedEventHandler<CreditsPurchasedPayload> 
     const resend = getResend();
     await resend.emails.send({
       to: userEmail,
-      from: "PDF Craft <no-reply@pdf-craft.app>",
+      from: "Riqa <no-reply@riqa.app>",
       subject: `${creditsPurchased} credits added to your account`,
       html: creditsPurchasedEmailHtml({ displayName, creditsPurchased, creditsTotal, amountCents, currency }),
     });

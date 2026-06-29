@@ -14,13 +14,13 @@ interface Props {
 }
 
 const {
-  title = 'PDF-Craft — Simple PDF Tools. Pay only for what you use.',
+  title = 'Riqa — Simple PDF Tools. Pay only for what you use.',
   description = 'Merge, protect, convert and unlock PDF documents in seconds. Buy credits once — pay only for what you use, no subscriptions, no expiry.',
-  ogImage = 'https://pdf-craft.app/og-default.png',
+  ogImage = 'https://riqa.app/og-default.png',
   noindex = false,
 } = Astro.props;
 
-const canonicalUrl = new URL(Astro.url.pathname, 'https://pdf-craft.app').href;
+const canonicalUrl = new URL(Astro.url.pathname, 'https://riqa.app').href;
 ---
 
 <!doctype html>
@@ -47,7 +47,7 @@ const canonicalUrl = new URL(Astro.url.pathname, 'https://pdf-craft.app').href;
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:type" content="website" />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:site_name" content="PDF-Craft" />
+    <meta property="og:site_name" content="Riqa" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
