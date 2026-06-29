@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.0](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.3.1...threads-v0.4.0) (2026-06-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* **threads:** removes the `site`/`SiteVariant` prop from both components. Replaced with a generic `brand?: ReactNode` slot (and `brandLabel?: string` on SiteNav for the home link's aria-label). Consumers now author their own wordmark markup instead of selecting from a hardcoded set baked into the library. Removed the now-unused internal wordmark/logo components and their CSS.
+
+### Features
+
+* **threads:** decouple SiteNav/SiteFooter from app-specific branding ([#231](https://github.com/fahadahmed/fhdamd-org/issues/231)) ([bd3b020](https://github.com/fahadahmed/fhdamd-org/commit/bd3b02055b650ff4a5a4158923332f18c2265e65))
+
 ## [0.3.1](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.3.0...threads-v0.3.1) (2026-06-05)
 
 
