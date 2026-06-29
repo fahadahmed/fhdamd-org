@@ -1,9 +1,11 @@
 import { SiteFooter } from '@fhdamd/threads'
+import { RiqaWordmark } from '../Brand/Brand'
 
 export default function Footer() {
   return (
     <SiteFooter
-      site="pdf-craft"
+      brand={<RiqaWordmark inverse />}
+      copyright={`© ${new Date().getFullYear()} Riqa. All rights reserved.`}
       tagline="Simple tools. Honest pricing."
       columns={[
         {

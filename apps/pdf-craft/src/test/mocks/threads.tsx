@@ -156,8 +156,9 @@ export const PriceCard = ({ credits, price, priceNote, featured, cta, onCtaClick
   </div>
 );
 
-export const SiteNav = ({ links, ctas }: any) => (
+export const SiteNav = ({ brand, brandLabel, homeHref, links, ctas }: any) => (
   <nav>
+    <a href={homeHref ?? "/"} aria-label={brandLabel ?? "Home"}>{brand}</a>
     {links?.map((l: any) => (
       <a key={l.href} href={l.href}>{l.label}</a>
     ))}
@@ -171,8 +172,9 @@ export const SiteNav = ({ links, ctas }: any) => (
   </nav>
 );
 
-export const SiteFooter = ({ tagline, columns, bottomRight }: any) => (
+export const SiteFooter = ({ brand, tagline, columns, bottomRight, copyright }: any) => (
   <footer>
+    {brand}
     {tagline && <p>{tagline}</p>}
     {columns?.map((col: any) => (
       <div key={col.title}>
@@ -183,6 +185,7 @@ export const SiteFooter = ({ tagline, columns, bottomRight }: any) => (
       </div>
     ))}
     {bottomRight && <span>{bottomRight}</span>}
+    {copyright && <p>{copyright}</p>}
   </footer>
 );
 

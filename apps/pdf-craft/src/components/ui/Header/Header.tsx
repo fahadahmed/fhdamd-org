@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/astro'
 import { auth } from '../../../firebase/client'
 import { SiteNav } from '@fhdamd/threads'
 import type { NavCta } from '@fhdamd/threads'
+import { RiqaWordmark } from '../Brand/Brand'
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -71,7 +72,8 @@ export default function Header() {
 
   return (
     <SiteNav
-      site="pdf-craft"
+      brand={<RiqaWordmark />}
+      brandLabel="Riqa home"
       links={navLinks}
       ctas={ctas}
       homeHref="/"
