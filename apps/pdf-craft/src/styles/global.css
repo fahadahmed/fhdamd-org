@@ -68,6 +68,28 @@ img {
   border-radius: 4px;
 }
 
+/* ─── BRAND WORDMARK ─────────────────────────────────────────────────────── */
+/* Passed as the `brand` slot to SiteNav/SiteFooter — Threads no longer
+   bundles app-specific wordmarks, so each app owns its own. */
+
+.brand-wordmark {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: var(--th-text-lg);
+  color: var(--th-color-text-1);
+  white-space: nowrap;
+}
+
+.brand-wordmark--inverse {
+  color: var(--th-color-text-inverse);
+}
+
+.brand-wordmark-accent {
+  font-style: normal;
+  color: var(--th-color-accent);
+}
+
 /* ─── LEGACY PAGE HELPERS ─────────────────────────────────────────────────── */
 /* Retained for pages not yet migrated to Threads components (dashboard etc.) */
 
