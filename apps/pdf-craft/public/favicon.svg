@@ -1,9 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="PDF-Craft">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Riqa">
   <rect width="512" height="512" fill="#b15a32"></rect>
   
   <path fill="#f3efe6" d="M168,400 L214,400 L242,120 L196,120 Z&#xA;                          M176,120 L262,120 L262,106 L176,106 Z&#xA;                          M150,414 L232,414 L232,400 L150,400 Z"></path>
   
   <path fill="#f3efe6" fill-rule="evenodd" d="M242,120 C300,121 332,146 332,188 C332,230 300,258 228,258 L242,120 Z&#xA;           M240,150 C284,152 298,168 298,188 C298,208 280,226 232,226 L240,150 Z"></path>
   
-  <circle cx="377" cy="399" r="17" fill="#f3efe6"></circle>
+  <path fill="#f3efe6" d="M236,244 L274,238 L356,400 L308,400 Z"></path>
+  
+  <path fill="#f3efe6" d="M300,400 L382,400 L382,414 L300,414 Z"></path>
+  
+  <circle cx="393" cy="401" r="16" fill="#f3efe6"></circle>
 </svg>
