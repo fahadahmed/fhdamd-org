@@ -129,6 +129,19 @@ const ss = { marginBottom: "var(--th-space-8)" }; // shared section style
         },
       })}
     />
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqItems.map(({ question, answer }) => ({
+          "@type": "Question",
+          name: question,
+          acceptedAnswer: { "@type": "Answer", text: answer },
+        })),
+      })}
+    />
   </Fragment>
   <!-- HERO -->
   <Container>

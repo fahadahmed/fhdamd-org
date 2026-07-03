@@ -1,8 +1,9 @@
 export type Faq = {
+  id: string;
   title: string;
   content: string;
-  id: string;
   _createdAt: string;
+  area: string;
 };
 
 export type PricingOption = {

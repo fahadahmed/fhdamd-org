@@ -1,5 +1,5 @@
 const HERO_FIELDS = `key eyebrow heading subheading body chips primaryCtaLabel primaryCtaHref secondaryCtaLabel secondaryCtaHref`;
-const FAQ_FIELDS = `title content id _createdAt`;
+const FAQ_FIELDS = `title content id _createdAt area`;
 const PRICING_FIELDS = `id productName price credits description`;
 const OPERATION_FIELDS = `id _createdAt title detail creditCost active actionLabel actionRoute iconKey sortOrder`;
 const TESTIMONIAL_FIELDS = `id name detail title _createdAt`;
@@ -15,8 +15,8 @@ export const CMS_QUERIES = {
     }
   `,
   faqs: `
-    query FaqsQuery {
-      allFaqs(orderBy: _createdAt_ASC) { ${FAQ_FIELDS} }
+    query FaqsQuery($area: String) {
+      allFaqs(filter: { area: { eq: $area } }, orderBy: _createdAt_ASC) { ${FAQ_FIELDS} }
     }
   `,
   pricing: `
@@ -42,7 +42,7 @@ export const CMS_QUERIES = {
   homePage: `
     query HomePageQuery {
       allHeros(filter: { key: { eq: "home" } }) { ${HERO_FIELDS} }
-      allFaqs(orderBy: _createdAt_ASC) { ${FAQ_FIELDS} }
+      allFaqs(filter: { area: { eq: "home" } }, orderBy: _createdAt_ASC) { ${FAQ_FIELDS} }
       allOperations(orderBy: sortOrder_ASC) { ${OPERATION_FIELDS} }
       allTestimonials(orderBy: sortOrder_ASC) { ${TESTIMONIAL_FIELDS} }
       allSectionHeaders(filter: { key: { matches: { pattern: "^home--" } } }) { ${SECTION_HEADER_FIELDS} }
