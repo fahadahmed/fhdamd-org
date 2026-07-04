@@ -21,6 +21,25 @@ export default function SignupForm() {
   const [isLoading, setIsLoading] = useState(false)
   const { getToken } = useRecaptcha('signup')
 
+  // Resolves the Firebase ID token for the appropriate account creation path.
+  // Returns isNewUser=false when falling back to sign-in for an existing account.
+  const resolveIdToken = async (): Promise<{ idToken: string; isNewUser: boolean }> => {
+    const currentUser = auth.currentUser
+    if (currentUser?.isAnonymous) {
+      const credential = EmailAuthProvider.credential(email, password)
+      try {
+        const linked = await linkWithCredential(currentUser, credential)
+        return { idToken: await linked.user.getIdToken(), isNewUser: true }
+      } catch (linkErr: any) {
+        if (linkErr.code !== 'auth/email-already-in-use') throw linkErr
+        const signed = await signInWithEmailAndPassword(auth, email, password)
+        return { idToken: await signed.user.getIdToken(), isNewUser: false }
+      }
+    }
+    const created = await createUserWithEmailAndPassword(auth, email, password)
+    return { idToken: await created.user.getIdToken(), isNewUser: true }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
@@ -33,36 +52,12 @@ export default function SignupForm() {
       return
     }
 
-    const credential = EmailAuthProvider.credential(email, password)
-    const currentUser = auth.currentUser
-    const isAnonymousSession = currentUser?.isAnonymous ?? false
+    const isAnonymousSession = auth.currentUser?.isAnonymous ?? false
     const claimToken = sessionStorage.getItem('pendingClaimToken')
 
     try {
-      let idToken: string
-      let isNewUser = true
+      const { idToken, isNewUser } = await resolveIdToken()
 
-      if (currentUser?.isAnonymous) {
-        try {
-          const linked = await linkWithCredential(currentUser, credential)
-          idToken = await linked.user.getIdToken()
-          // Same UID preserved — file is already under their account
-        } catch (linkErr: any) {
-          if (linkErr.code === 'auth/email-already-in-use') {
-            // Existing account — sign in and migrate their file
-            isNewUser = false
-            const signed = await signInWithEmailAndPassword(auth, email, password)
-            idToken = await signed.user.getIdToken()
-          } else {
-            throw linkErr
-          }
-        }
-      } else {
-        const created = await createUserWithEmailAndPassword(auth, email, password)
-        idToken = await created.user.getIdToken()
-      }
-
-      // Create session cookie + initialise profile if needed
       const finalizeRes = await actions.user.finalizeLinkedUser({ idToken, name })
       if (!finalizeRes.data?.success) {
         setError(finalizeRes.data?.error || 'Failed to set up your account. Please try again.')
@@ -73,20 +68,12 @@ export default function SignupForm() {
       logEvent('sign_up', { method: 'email' })
       if (auth.currentUser) setUserId(auth.currentUser.uid)
 
+      sessionStorage.removeItem('pendingClaimToken')
       if (!isNewUser && claimToken) {
-        // Existing account path: migrate the anonymous file to their real account
-        sessionStorage.removeItem('pendingClaimToken')
-        try {
-          await actions.claims.migrateFile({ claimToken })
-        } catch {
-          // Non-fatal: file may have expired, user still proceeds to dashboard
-        }
-        window.location.href = '/dashboard'
+        await actions.claims.migrateFile({ claimToken }).catch(() => {})
+        globalThis.location.href = '/dashboard'
       } else {
-        // New account: clear the token (file is already under their UID via link)
-        // Send them to buy credits so they can download the pending file
-        sessionStorage.removeItem('pendingClaimToken')
-        window.location.href = isAnonymousSession ? '/buy-credits' : '/dashboard'
+        globalThis.location.href = isAnonymousSession ? '/buy-credits' : '/dashboard'
       }
     } catch (err: any) {
       if (err.code === 'auth/email-already-in-use') {

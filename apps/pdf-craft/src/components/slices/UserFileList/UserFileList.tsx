@@ -27,8 +27,8 @@ interface FileRow extends Record<string, unknown> {
 }
 
 interface UserFileListProps {
-  files?: any[]
-  mode?: string
+  readonly files?: any[]
+  readonly mode?: string
 }
 
 function DownloadCell({ row }: { row: FileRow }) {
@@ -66,11 +66,11 @@ function DownloadCell({ row }: { row: FileRow }) {
     try {
       const res = await actions.claims.claimFile({ fileId: row.id })
       if (res.data?.success && res.data.payload?.downloadUrl) {
-        window.open(res.data.payload.downloadUrl, '_blank')
+        globalThis.open(res.data.payload.downloadUrl, '_blank')
       } else {
         const msg = res.data?.error ?? 'Failed to download'
         if (msg === 'Insufficient credits') {
-          window.location.href = '/buy-credits'
+          globalThis.location.href = '/buy-credits'
         } else {
           setError(msg)
         }

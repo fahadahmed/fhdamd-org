@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual, randomBytes } from 'crypto';
+import { createHmac, timingSafeEqual } from 'node:crypto';
 
 const SECRET = import.meta.env.CLAIM_SECRET;
 const TTL_MS = 30 * 60 * 1000; // 30 minutes

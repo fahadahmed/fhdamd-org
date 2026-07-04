@@ -51,7 +51,7 @@ export default function SigninForm() {
         }
       }
 
-      window.location.assign('/dashboard')
+      globalThis.location.assign('/dashboard')
     } catch (err) {
       setError('Failed to sign in. Please check your credentials.')
       Sentry.captureException(err)

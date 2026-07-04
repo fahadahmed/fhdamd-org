@@ -18,7 +18,7 @@ const PRESETS: { value: PermissionPreset; label: string; description: string }[]
   { value: 'read-only',      label: 'Read Only',      description: 'View only — no printing, copying, or editing' },
 ]
 
-export default function EncryptPdf({ creditCost, isAuthenticated = false }: { creditCost: number; isAuthenticated?: boolean }) {
+export default function EncryptPdf({ creditCost, isAuthenticated = false }: { readonly creditCost: number; readonly isAuthenticated?: boolean }) {
   const [file, setFile]                   = useState<File | null>(null)
   const [userPassword, setUserPassword]   = useState('')
   const [ownerPassword, setOwnerPassword] = useState('')
@@ -38,6 +38,41 @@ export default function EncryptPdf({ creditCost, isAuthenticated = false }: { cr
     }
   }
 
+  const prepareSession = async (task: string, requestId: string): Promise<boolean> => {
+    if (!isAuthenticated) {
+      setButtonLabel('Processing...')
+      if (!auth.currentUser) {
+        try {
+          const credential = await signInAnonymously(auth)
+          const idToken = await credential.user.getIdToken()
+          const sessionRes = await actions.user.createAnonymousSession({ idToken })
+          if (!sessionRes.data?.success) {
+            setError('Failed to start session. Please try again.')
+            setButtonLabel('Protect PDF')
+            setIsProcessing(false)
+            return false
+          }
+        } catch (err) {
+          setError('Failed to start session. Please try again.')
+          setButtonLabel('Protect PDF')
+          setIsProcessing(false)
+          Sentry.captureException(err)
+          return false
+        }
+      }
+      return true
+    }
+    setButtonLabel('Checking credits...')
+    const creditsResponse = await actions.credits.checkCredits({ task, requestId, creditCost })
+    if (!creditsResponse.data?.success) {
+      setError(INSUFFICIENT_CREDITS_ERROR)
+      setButtonLabel('Protect PDF')
+      setIsProcessing(false)
+      return false
+    }
+    return true
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!file || !userPassword) return
@@ -47,40 +82,7 @@ export default function EncryptPdf({ creditCost, isAuthenticated = false }: { cr
     setError(null)
     setIsProcessing(true)
 
-    const currentUser = auth.currentUser
-    const isAnon = !isAuthenticated
-
-    if (isAnon) {
-      setButtonLabel('Processing...')
-      if (!currentUser) {
-        try {
-          const credential = await signInAnonymously(auth)
-          const idToken = await credential.user.getIdToken()
-          const sessionRes = await actions.user.createAnonymousSession({ idToken })
-          if (!sessionRes.data?.success) {
-            setError('Failed to start session. Please try again.')
-            setButtonLabel('Protect PDF')
-            setIsProcessing(false)
-            return
-          }
-        } catch (err) {
-          setError('Failed to start session. Please try again.')
-          setButtonLabel('Protect PDF')
-          setIsProcessing(false)
-          Sentry.captureException(err)
-          return
-        }
-      }
-    } else {
-      setButtonLabel('Checking credits...')
-      const creditsResponse = await actions.credits.checkCredits({ task, requestId, creditCost })
-      if (!creditsResponse.data?.success) {
-        setError(INSUFFICIENT_CREDITS_ERROR)
-        setButtonLabel('Protect PDF')
-        setIsProcessing(false)
-        return
-      }
-    }
+    if (!await prepareSession(task, requestId)) return
 
     logEvent('pdf_operation_started', { operation_type: task })
     setButtonLabel('Encrypting...')
@@ -126,12 +128,111 @@ export default function EncryptPdf({ creditCost, isAuthenticated = false }: { cr
 
   const goToSignup = () => {
     if (claimToken) sessionStorage.setItem('pendingClaimToken', claimToken)
-    window.location.href = '/signup'
+    globalThis.location.href = '/signup'
   }
 
   const goToSignin = () => {
     if (claimToken) sessionStorage.setItem('pendingClaimToken', claimToken)
-    window.location.href = '/signin'
+    globalThis.location.href = '/signin'
+  }
+
+  const renderContent = () => {
+    if (claimToken) return (
+      <Stack gap={4} align="center" style={{ paddingBlock: 'var(--th-space-4)' }}>
+        <Callout variant="success" title="Your PDF is protected">
+          Create a free account to download it — no credit card required.
+        </Callout>
+        <div style={{ display: 'flex', gap: 'var(--th-space-3)', flexWrap: 'wrap' }}>
+          <Button variant="solid-terra" onClick={goToSignup}>Sign up to download</Button>
+          <Button variant="ghost" onClick={goToSignin}>Already have an account?</Button>
+        </div>
+      </Stack>
+    )
+    if (downloadLink) return (
+      <Stack gap={4} align="center" style={{ paddingBlock: 'var(--th-space-4)' }}>
+        <Callout variant="success" title="Your PDF is protected">
+          The file has been encrypted with the password you provided.
+        </Callout>
+        <div style={{ display: 'flex', gap: 'var(--th-space-3)', flexWrap: 'wrap' }}>
+          <Button href={downloadLink} variant="solid-terra" icon={<DownloadIcon />}>
+            Download protected PDF
+          </Button>
+          <Button variant="ghost" onClick={reset}>Protect another PDF</Button>
+        </div>
+      </Stack>
+    )
+    return (
+      <>
+        {!file ? (
+          <FileDropzone
+            label="Upload PDF"
+            hint="Drag and drop or click to browse — one PDF file"
+            accept="application/pdf"
+            onFiles={handleFiles}
+          />
+        ) : (
+          <Stack gap={3}>
+            <Text size="sm" color="2" weight={500}>Selected file</Text>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: 'var(--th-space-3) var(--th-space-4)',
+              borderRadius: 'var(--th-radius-md)',
+              border: '1px solid var(--th-color-border)',
+              background: 'var(--th-color-surface-2)',
+            }}>
+              <Text size="sm" color="1">{file.name}</Text>
+              <Button type="button" variant="ghost" size="sm" onClick={() => setFile(null)} aria-label="Remove file"><XIcon /></Button>
+            </div>
+          </Stack>
+        )}
+        {file && (
+          <>
+            <Divider />
+            <form onSubmit={handleSubmit}>
+              <Stack gap={6}>
+                <Stack gap={4}>
+                  <Text as="h2" size="base" color="1" weight={600}>Password</Text>
+                  <Input type="password" name="userPassword" id="userPassword" label="Open password"
+                    hint="Users need this password to open the PDF" value={userPassword}
+                    onChange={e => setUserPassword(e.target.value)} required />
+                  <Input type="password" name="ownerPassword" id="ownerPassword" label="Owner password (optional)"
+                    hint="Leave blank to use the same password as above" value={ownerPassword}
+                    onChange={e => setOwnerPassword(e.target.value)} />
+                </Stack>
+                <Stack gap={3}>
+                  <Text as="h2" size="base" color="1" weight={600}>Permissions</Text>
+                  <Stack gap={2}>
+                    {PRESETS.map((preset) => (
+                      <label key={preset.value} style={{
+                        display: 'flex', alignItems: 'center', gap: 'var(--th-space-3)',
+                        padding: 'var(--th-space-3) var(--th-space-4)',
+                        borderRadius: 'var(--th-radius-md)',
+                        border: `1px solid ${permissions === preset.value ? 'var(--th-color-accent)' : 'var(--th-color-border)'}`,
+                        background: permissions === preset.value ? 'var(--th-color-surface-2)' : 'var(--th-color-surface-1)',
+                        cursor: 'pointer',
+                        transition: 'border-color var(--th-duration-base) var(--th-ease-base)',
+                      }}>
+                        <Radio name="permissions" value={preset.value} checked={permissions === preset.value}
+                          onChange={() => setPermissions(preset.value)} label="" />
+                        <Stack gap={0}>
+                          <Text as="span" size="sm" color="1" weight={600}>{preset.label}</Text>
+                          <Text as="span" size="xs" color="2">{preset.description}</Text>
+                        </Stack>
+                      </label>
+                    ))}
+                  </Stack>
+                </Stack>
+                {error && <ErrorCallout message={error} />}
+                <Button type="submit" variant="solid-terra" disabled={isProcessing || !userPassword}
+                  style={{ alignSelf: 'flex-start' }}>
+                  {buttonLabel}
+                </Button>
+              </Stack>
+            </form>
+          </>
+        )}
+      </>
+    )
   }
 
   return (
@@ -148,134 +249,7 @@ export default function EncryptPdf({ creditCost, isAuthenticated = false }: { cr
 
         <Card variant="elevated">
           <Stack gap={5} style={{ padding: 'var(--th-space-6)' }}>
-
-            {claimToken ? (
-              <Stack gap={4} align="center" style={{ paddingBlock: 'var(--th-space-4)' }}>
-                <Callout variant="success" title="Your PDF is protected">
-                  Create a free account to download it — no credit card required.
-                </Callout>
-                <div style={{ display: 'flex', gap: 'var(--th-space-3)', flexWrap: 'wrap' }}>
-                  <Button variant="solid-terra" onClick={goToSignup}>Sign up to download</Button>
-                  <Button variant="ghost" onClick={goToSignin}>Already have an account?</Button>
-                </div>
-              </Stack>
-            ) : downloadLink ? (
-              <Stack gap={4} align="center" style={{ paddingBlock: 'var(--th-space-4)' }}>
-                <Callout variant="success" title="Your PDF is protected">
-                  The file has been encrypted with the password you provided.
-                </Callout>
-                <div style={{ display: 'flex', gap: 'var(--th-space-3)', flexWrap: 'wrap' }}>
-                  <Button href={downloadLink} variant="solid-terra" icon={<DownloadIcon />}>
-                    Download protected PDF
-                  </Button>
-                  <Button variant="ghost" onClick={reset}>Protect another PDF</Button>
-                </div>
-              </Stack>
-            ) : (
-              <>
-                {!file ? (
-                  <FileDropzone
-                    label="Upload PDF"
-                    hint="Drag and drop or click to browse — one PDF file"
-                    accept="application/pdf"
-                    onFiles={handleFiles}
-                  />
-                ) : (
-                  <Stack gap={3}>
-                    <Text size="sm" color="2" weight={500}>Selected file</Text>
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: 'var(--th-space-3) var(--th-space-4)',
-                      borderRadius: 'var(--th-radius-md)',
-                      border: '1px solid var(--th-color-border)',
-                      background: 'var(--th-color-surface-2)',
-                    }}>
-                      <Text size="sm" color="1">{file.name}</Text>
-                      <Button type="button" variant="ghost" size="sm" onClick={() => setFile(null)} aria-label="Remove file"><XIcon /></Button>
-                    </div>
-                  </Stack>
-                )}
-
-                {file && (
-                  <>
-                    <Divider />
-                    <form onSubmit={handleSubmit}>
-                      <Stack gap={6}>
-
-                        <Stack gap={4}>
-                          <Text as="h2" size="base" color="1" weight={600}>Password</Text>
-                          <Input
-                            type="password"
-                            name="userPassword"
-                            id="userPassword"
-                            label="Open password"
-                            hint="Users need this password to open the PDF"
-                            value={userPassword}
-                            onChange={e => setUserPassword(e.target.value)}
-                            required
-                          />
-                          <Input
-                            type="password"
-                            name="ownerPassword"
-                            id="ownerPassword"
-                            label="Owner password (optional)"
-                            hint="Leave blank to use the same password as above"
-                            value={ownerPassword}
-                            onChange={e => setOwnerPassword(e.target.value)}
-                          />
-                        </Stack>
-
-                        <Stack gap={3}>
-                          <Text as="h2" size="base" color="1" weight={600}>Permissions</Text>
-                          <Stack gap={2}>
-                            {PRESETS.map((preset) => (
-                              <label
-                                key={preset.value}
-                                style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: 'var(--th-space-3)',
-                                  padding: 'var(--th-space-3) var(--th-space-4)',
-                                  borderRadius: 'var(--th-radius-md)',
-                                  border: `1px solid ${permissions === preset.value ? 'var(--th-color-accent)' : 'var(--th-color-border)'}`,
-                                  background: permissions === preset.value ? 'var(--th-color-surface-2)' : 'var(--th-color-surface-1)',
-                                  cursor: 'pointer',
-                                  transition: 'border-color var(--th-duration-base) var(--th-ease-base)',
-                                }}
-                              >
-                                <Radio
-                                  name="permissions"
-                                  value={preset.value}
-                                  checked={permissions === preset.value}
-                                  onChange={() => setPermissions(preset.value)}
-                                  label=""
-                                />
-                                <Stack gap={0}>
-                                  <Text as="span" size="sm" color="1" weight={600}>{preset.label}</Text>
-                                  <Text as="span" size="xs" color="2">{preset.description}</Text>
-                                </Stack>
-                              </label>
-                            ))}
-                          </Stack>
-                        </Stack>
-
-                        {error && <ErrorCallout message={error} />}
-                        <Button
-                          type="submit"
-                          variant="solid-terra"
-                          disabled={isProcessing || !userPassword}
-                          style={{ alignSelf: 'flex-start' }}
-                        >
-                          {buttonLabel}
-                        </Button>
-                      </Stack>
-                    </form>
-                  </>
-                )}
-              </>
-            )}
+            {renderContent()}
 
           </Stack>
         </Card>
