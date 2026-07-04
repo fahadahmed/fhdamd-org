@@ -1,39 +1,81 @@
 'use client'
 import { useState } from "react"
 import { actions } from 'astro:actions'
+import { signInAnonymously } from 'firebase/auth'
 import {
   Container, Stack, Text, Button, FileDropzone, Callout, Card, Divider,
 } from '@fhdamd/threads'
 import * as Sentry from '@sentry/astro'
+import { auth } from '../../../firebase/client'
 import { logEvent } from '../../../utils/lib/analytics'
 import { DownloadIcon, DraggableFileList, ErrorCallout, INSUFFICIENT_CREDITS_ERROR, useDraggableFiles } from '../../shared'
 
 const MAX_FILES = 5
 
-export default function MultiPdfUploader({ creditCost }: { creditCost: number }) {
+export default function MultiPdfUploader({ creditCost, isAuthenticated = false }: { creditCost: number; isAuthenticated?: boolean }) {
   const { uploadedFiles, setUploadedFiles, error, setError, handleFiles, sensors, handleDragEnd, handleDelete } = useDraggableFiles(MAX_FILES)
-  const [isMerging, setIsMerging]         = useState(false)
-  const [downloadLink, setDownloadLink]   = useState<string | null>(null)
-  const [buttonLabel, setButtonLabel]     = useState('Merge PDFs')
+  const [isMerging, setIsMerging]       = useState(false)
+  const [downloadLink, setDownloadLink] = useState<string | null>(null)
+  const [claimToken, setClaimToken]     = useState<string | null>(null)
+  const [buttonLabel, setButtonLabel]   = useState('Merge PDFs')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const requestId = crypto.randomUUID()
     const task = 'merge'
     setError(null)
-    setButtonLabel('Checking credits...')
     setIsMerging(true)
 
-    const response = await actions.credits.checkCredits({ task, requestId, creditCost })
-    if (!response.data?.success) {
-      setError(INSUFFICIENT_CREDITS_ERROR)
-      setButtonLabel('Merge PDFs')
-      setIsMerging(false)
-      return
+    const currentUser = auth.currentUser
+    const isAnon = !isAuthenticated
+
+    if (isAnon) {
+      setButtonLabel('Processing...')
+      if (!currentUser) {
+        let idToken: string
+        try {
+          const credential = await signInAnonymously(auth)
+          idToken = await credential.user.getIdToken()
+        } catch (err: any) {
+          console.error('[anon-auth] signInAnonymously failed:', err?.code, err?.message)
+          setError('Failed to start session. Please try again.')
+          setButtonLabel('Merge PDFs')
+          setIsMerging(false)
+          Sentry.captureException(err)
+          return
+        }
+        try {
+          const sessionRes = await actions.user.createAnonymousSession({ idToken })
+          if (!sessionRes.data?.success) {
+            console.error('[anon-auth] createAnonymousSession returned failure:', sessionRes.data?.error)
+            setError('Failed to start session. Please try again.')
+            setButtonLabel('Merge PDFs')
+            setIsMerging(false)
+            return
+          }
+        } catch (err) {
+          console.error('[anon-auth] createAnonymousSession threw:', err)
+          setError('Failed to start session. Please try again.')
+          setButtonLabel('Merge PDFs')
+          setIsMerging(false)
+          Sentry.captureException(err)
+          return
+        }
+      }
+    } else {
+      setButtonLabel('Checking credits...')
+      const response = await actions.credits.checkCredits({ task, requestId, creditCost })
+      if (!response.data?.success) {
+        setError(INSUFFICIENT_CREDITS_ERROR)
+        setButtonLabel('Merge PDFs')
+        setIsMerging(false)
+        return
+      }
     }
 
     logEvent('pdf_operation_started', { operation_type: task, file_count: uploadedFiles.length })
     setButtonLabel('Merging PDFs...')
+
     const formData = new FormData()
     uploadedFiles.forEach(file => formData.append('files', file))
     formData.append('requestId', requestId)
@@ -44,7 +86,12 @@ export default function MultiPdfUploader({ creditCost }: { creditCost: number })
       const mergeResponse = await actions.operations.mergePdfs(formData)
       if (mergeResponse.data) {
         logEvent('pdf_operation_completed', { operation_type: task, file_count: uploadedFiles.length })
-        setDownloadLink(mergeResponse.data?.data?.fileUrl || null)
+        const token = mergeResponse.data?.data?.claimToken
+        if (token) {
+          setClaimToken(token)
+        } else {
+          setDownloadLink(mergeResponse.data?.data?.fileUrl || null)
+        }
       } else if (mergeResponse.error) {
         logEvent('pdf_operation_failed', { operation_type: task })
         setError(
@@ -57,7 +104,6 @@ export default function MultiPdfUploader({ creditCost }: { creditCost: number })
     } catch (err) {
       logEvent('pdf_operation_failed', { operation_type: task })
       setError('An unexpected error occurred. Please try again.')
-      console.error('Error merging PDFs:', err)
       Sentry.captureException(err)
     } finally {
       setButtonLabel('Merge PDFs')
@@ -65,8 +111,18 @@ export default function MultiPdfUploader({ creditCost }: { creditCost: number })
     }
   }
 
-  const reset = () => { setDownloadLink(null); setUploadedFiles([]); setError(null) }
+  const reset = () => { setDownloadLink(null); setClaimToken(null); setUploadedFiles([]); setError(null) }
   const atLimit = uploadedFiles.length >= MAX_FILES
+
+  const goToSignup = () => {
+    if (claimToken) sessionStorage.setItem('pendingClaimToken', claimToken)
+    window.location.href = '/signup'
+  }
+
+  const goToSignin = () => {
+    if (claimToken) sessionStorage.setItem('pendingClaimToken', claimToken)
+    window.location.href = '/signin'
+  }
 
   return (
     <Container>
@@ -83,7 +139,17 @@ export default function MultiPdfUploader({ creditCost }: { creditCost: number })
         <Card variant="elevated">
           <Stack gap={5} style={{ padding: 'var(--th-space-6)' }}>
 
-            {downloadLink ? (
+            {claimToken ? (
+              <Stack gap={4} align="center" style={{ paddingBlock: 'var(--th-space-4)' }}>
+                <Callout variant="success" title="Merge complete">
+                  Create a free account to download your merged PDF — no credit card required.
+                </Callout>
+                <div style={{ display: 'flex', gap: 'var(--th-space-3)', flexWrap: 'wrap' }}>
+                  <Button variant="solid-terra" onClick={goToSignup}>Sign up to download</Button>
+                  <Button variant="ghost" onClick={goToSignin}>Already have an account?</Button>
+                </div>
+              </Stack>
+            ) : downloadLink ? (
               <Stack gap={4} align="center" style={{ paddingBlock: 'var(--th-space-4)' }}>
                 <Callout variant="success" title="Merge complete">
                   Your PDFs have been combined into a single file.

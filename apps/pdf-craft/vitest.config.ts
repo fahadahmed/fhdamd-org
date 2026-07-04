@@ -33,6 +33,7 @@ export default defineConfig({
   define: {
     "import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY": JSON.stringify("test-site-key"),
     "import.meta.env.PUBLIC_BASE_FUNCTIONS_URL": JSON.stringify("https://functions.test"),
+    "import.meta.env.CLAIM_SECRET": JSON.stringify("test-claim-secret-32-bytes-padded!"),
   },
   resolve: {
     alias: [

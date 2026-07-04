@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { getFirebaseAuth, getFirebaseApp } from "../firebase/server";
 import { publish } from "../server/pubsub/publisher";
 import { log } from "../utils/lib/logger";
+import { generateClaimToken } from "../utils/lib/claimToken";
 
 async function callProcessor(path: string, form: FormData): Promise<Response> {
   const processorUrl = import.meta.env.PDF_PROCESSOR_URL;
@@ -84,10 +85,12 @@ export const operations = {
           true,
         );
         const userId = decodedToken.uid;
+        const isAnonymous = decodedToken.firebase.sign_in_provider === 'anonymous';
         log.debug("app-operation: user authenticated", {
           requestId,
           feature: task,
           userId,
+          anonymous: isAnonymous ? 'yes' : 'no',
         });
 
         const fileId = firestore
@@ -126,17 +129,10 @@ export const operations = {
 
         const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(storagePath)}?alt=media&token=${downloadToken}`;
 
-        // Determine retention (24h for free users)
-        const retentionMs = 24 * 60 * 60 * 1000; // adjust per subscription plan
+        const retentionMs = 24 * 60 * 60 * 1000;
         const expiresAt = new Date(Date.now() + retentionMs);
-        log.debug("app-operation: file uploaded", {
-          requestId,
-          feature: task,
-          userId,
-          fileId,
-        });
+        log.debug("app-operation: file uploaded", { requestId, feature: task, userId, fileId });
 
-        // Save Firestore metadata
         await firestore
           .collection("users")
           .doc(userId)
@@ -148,6 +144,8 @@ export const operations = {
             storagePath,
             fileUrl,
             operation: "merge",
+            status: isAnonymous ? "pending" : "ready",
+            creditCost,
             createdAt: FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp(),
             expiresAt,
@@ -155,12 +153,13 @@ export const operations = {
             deletedAt: null,
             deletionReason: null,
           });
-        log.debug("app-operation: file metadata saved", {
-          requestId,
-          feature: task,
-          userId,
-          fileId,
-        });
+        log.debug("app-operation: file metadata saved", { requestId, feature: task, userId, fileId });
+
+        if (isAnonymous) {
+          const claimToken = generateClaimToken(fileId, userId);
+          log.event("📄 app-operation: pending-anonymous", { requestId, feature: task, userId, fileId });
+          return { success: true, data: { claimToken } };
+        }
 
         // Publish event
         await publish(
@@ -181,21 +180,8 @@ export const operations = {
         await firestore.collection("users").doc(userId).update({
           "profile.credits": FieldValue.increment(-creditCost),
         });
-        log.business("💰 credit-deducted", {
-          requestId,
-          feature: task,
-          userId,
-          fileId,
-          creditCost,
-        });
-        log.business("📄 app-operation", {
-          requestId,
-          feature: task,
-          userId,
-          fileId,
-          creditCost,
-          status: "success",
-        });
+        log.business("💰 credit-deducted", { requestId, feature: task, userId, fileId, creditCost });
+        log.business("📄 app-operation", { requestId, feature: task, userId, fileId, creditCost, status: "success" });
 
         return {
           success: true,
@@ -254,10 +240,12 @@ export const operations = {
           true,
         );
         const userId = decodedToken.uid;
+        const isAnonymous = decodedToken.firebase.sign_in_provider === 'anonymous';
         log.debug("app-operation: user authenticated", {
           requestId,
           feature: task,
           userId,
+          anonymous: isAnonymous ? 'yes' : 'no',
         });
 
         // Validate images
@@ -362,6 +350,8 @@ export const operations = {
             storagePath,
             fileUrl,
             operation: "image-to-pdf",
+            status: isAnonymous ? "pending" : "ready",
+            creditCost,
             createdAt: FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp(),
             expiresAt,
@@ -375,6 +365,12 @@ export const operations = {
           userId,
           fileId,
         });
+
+        if (isAnonymous) {
+          const claimToken = generateClaimToken(fileId, userId);
+          log.event("📄 app-operation: pending-anonymous", { requestId, feature: task, userId, fileId });
+          return { success: true, data: { claimToken } };
+        }
 
         // Publish event to Pub/Sub
         await publish(
@@ -453,7 +449,8 @@ export const operations = {
         const auth = await getFirebaseAuth();
         const decodedToken = await auth.verifySessionCookie(sessionCookie, true);
         const userId = decodedToken.uid;
-        log.debug("app-operation: user authenticated", { requestId, feature: task, userId });
+        const isAnonymous = decodedToken.firebase.sign_in_provider === 'anonymous';
+        log.debug("app-operation: user authenticated", { requestId, feature: task, userId, anonymous: isAnonymous ? 'yes' : 'no' });
 
         const fileId = firestore.collection("users").doc(userId).collection("files").doc().id;
 
@@ -492,6 +489,8 @@ export const operations = {
           storagePath,
           fileUrl,
           operation: "encrypt",
+          status: isAnonymous ? "pending" : "ready",
+          creditCost,
           createdAt: FieldValue.serverTimestamp(),
           updatedAt: FieldValue.serverTimestamp(),
           expiresAt,
@@ -500,6 +499,12 @@ export const operations = {
           deletionReason: null,
         });
         log.debug("app-operation: file metadata saved", { requestId, feature: task, userId, fileId });
+
+        if (isAnonymous) {
+          const claimToken = generateClaimToken(fileId, userId);
+          log.event("📄 app-operation: pending-anonymous", { requestId, feature: task, userId, fileId });
+          return { success: true, data: { claimToken } };
+        }
 
         await publish(
           "app-event",
@@ -558,7 +563,8 @@ export const operations = {
         const auth = await getFirebaseAuth();
         const decodedToken = await auth.verifySessionCookie(sessionCookie, true);
         const userId = decodedToken.uid;
-        log.debug("app-operation: user authenticated", { requestId, feature: task, userId });
+        const isAnonymous = decodedToken.firebase.sign_in_provider === 'anonymous';
+        log.debug("app-operation: user authenticated", { requestId, feature: task, userId, anonymous: isAnonymous ? 'yes' : 'no' });
 
         const fileId = firestore.collection("users").doc(userId).collection("files").doc().id;
 
@@ -595,6 +601,8 @@ export const operations = {
           storagePath,
           fileUrl,
           operation: "decrypt",
+          status: isAnonymous ? "pending" : "ready",
+          creditCost,
           createdAt: FieldValue.serverTimestamp(),
           updatedAt: FieldValue.serverTimestamp(),
           expiresAt,
@@ -603,6 +611,12 @@ export const operations = {
           deletionReason: null,
         });
         log.debug("app-operation: file metadata saved", { requestId, feature: task, userId, fileId });
+
+        if (isAnonymous) {
+          const claimToken = generateClaimToken(fileId, userId);
+          log.event("📄 app-operation: pending-anonymous", { requestId, feature: task, userId, fileId });
+          return { success: true, data: { claimToken } };
+        }
 
         await publish(
           "app-event",

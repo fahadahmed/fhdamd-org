@@ -1,39 +1,69 @@
 'use client'
 import { useState } from "react"
 import { actions } from 'astro:actions'
+import { signInAnonymously } from 'firebase/auth'
 import {
   Container, Stack, Text, Button, FileDropzone, Callout, Card, Divider,
 } from '@fhdamd/threads'
 import * as Sentry from '@sentry/astro'
+import { auth } from '../../../firebase/client'
 import { logEvent } from '../../../utils/lib/analytics'
 import { DownloadIcon, DraggableFileList, ErrorCallout, INSUFFICIENT_CREDITS_ERROR, useDraggableFiles } from '../../shared'
 
 const MAX_IMAGES = 10
 
-export default function ImageToPdf({ creditCost }: { creditCost: number }) {
+export default function ImageToPdf({ creditCost, isAuthenticated = false }: { creditCost: number; isAuthenticated?: boolean }) {
   const { uploadedFiles, setUploadedFiles, error, setError, handleFiles, sensors, handleDragEnd, handleDelete } = useDraggableFiles(MAX_IMAGES)
-  const [isConverting, setIsConverting]   = useState(false)
-  const [downloadLink, setDownloadLink]   = useState<string | null>(null)
-  const [buttonLabel, setButtonLabel]     = useState('Convert to PDF')
+  const [isConverting, setIsConverting] = useState(false)
+  const [downloadLink, setDownloadLink] = useState<string | null>(null)
+  const [claimToken, setClaimToken]     = useState<string | null>(null)
+  const [buttonLabel, setButtonLabel]   = useState('Convert to PDF')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const requestId = crypto.randomUUID()
     const task = 'image-to-pdf'
     setError(null)
-    setButtonLabel('Checking credits...')
     setIsConverting(true)
 
-    const response = await actions.credits.checkCredits({ task, requestId, creditCost })
-    if (!response.data?.success) {
-      setError(INSUFFICIENT_CREDITS_ERROR)
-      setButtonLabel('Convert to PDF')
-      setIsConverting(false)
-      return
+    const currentUser = auth.currentUser
+    const isAnon = !isAuthenticated
+
+    if (isAnon) {
+      setButtonLabel('Processing...')
+      if (!currentUser) {
+        try {
+          const credential = await signInAnonymously(auth)
+          const idToken = await credential.user.getIdToken()
+          const sessionRes = await actions.user.createAnonymousSession({ idToken })
+          if (!sessionRes.data?.success) {
+            setError('Failed to start session. Please try again.')
+            setButtonLabel('Convert to PDF')
+            setIsConverting(false)
+            return
+          }
+        } catch (err) {
+          setError('Failed to start session. Please try again.')
+          setButtonLabel('Convert to PDF')
+          setIsConverting(false)
+          Sentry.captureException(err)
+          return
+        }
+      }
+    } else {
+      setButtonLabel('Checking credits...')
+      const response = await actions.credits.checkCredits({ task, requestId, creditCost })
+      if (!response.data?.success) {
+        setError(INSUFFICIENT_CREDITS_ERROR)
+        setButtonLabel('Convert to PDF')
+        setIsConverting(false)
+        return
+      }
     }
 
     logEvent('pdf_operation_started', { operation_type: task, file_count: uploadedFiles.length })
     setButtonLabel('Converting images...')
+
     const formData = new FormData()
     uploadedFiles.forEach(file => formData.append('images', file))
     formData.append('requestId', requestId)
@@ -44,7 +74,12 @@ export default function ImageToPdf({ creditCost }: { creditCost: number }) {
       const convertResponse = await actions.operations.imageToPdf(formData)
       if (convertResponse.data) {
         logEvent('pdf_operation_completed', { operation_type: task, file_count: uploadedFiles.length })
-        setDownloadLink(convertResponse.data?.data?.fileUrl || null)
+        const token = convertResponse.data?.data?.claimToken
+        if (token) {
+          setClaimToken(token)
+        } else {
+          setDownloadLink(convertResponse.data?.data?.fileUrl || null)
+        }
       } else if (convertResponse.error) {
         logEvent('pdf_operation_failed', { operation_type: task })
         setError(
@@ -57,7 +92,6 @@ export default function ImageToPdf({ creditCost }: { creditCost: number }) {
     } catch (err) {
       logEvent('pdf_operation_failed', { operation_type: task })
       setError('An unexpected error occurred. Please try again.')
-      console.error('Error converting images to PDF:', err)
       Sentry.captureException(err)
     } finally {
       setButtonLabel('Convert to PDF')
@@ -65,8 +99,18 @@ export default function ImageToPdf({ creditCost }: { creditCost: number }) {
     }
   }
 
-  const reset = () => { setDownloadLink(null); setUploadedFiles([]); setError(null) }
+  const reset = () => { setDownloadLink(null); setClaimToken(null); setUploadedFiles([]); setError(null) }
   const atLimit = uploadedFiles.length >= MAX_IMAGES
+
+  const goToSignup = () => {
+    if (claimToken) sessionStorage.setItem('pendingClaimToken', claimToken)
+    window.location.href = '/signup'
+  }
+
+  const goToSignin = () => {
+    if (claimToken) sessionStorage.setItem('pendingClaimToken', claimToken)
+    window.location.href = '/signin'
+  }
 
   return (
     <Container>
@@ -83,7 +127,17 @@ export default function ImageToPdf({ creditCost }: { creditCost: number }) {
         <Card variant="elevated">
           <Stack gap={5} style={{ padding: 'var(--th-space-6)' }}>
 
-            {downloadLink ? (
+            {claimToken ? (
+              <Stack gap={4} align="center" style={{ paddingBlock: 'var(--th-space-4)' }}>
+                <Callout variant="success" title="Conversion complete">
+                  Create a free account to download your PDF — no credit card required.
+                </Callout>
+                <div style={{ display: 'flex', gap: 'var(--th-space-3)', flexWrap: 'wrap' }}>
+                  <Button variant="solid-terra" onClick={goToSignup}>Sign up to download</Button>
+                  <Button variant="ghost" onClick={goToSignin}>Already have an account?</Button>
+                </div>
+              </Stack>
+            ) : downloadLink ? (
               <Stack gap={4} align="center" style={{ paddingBlock: 'var(--th-space-4)' }}>
                 <Callout variant="success" title="Conversion complete">
                   Your images have been combined into a PDF file.

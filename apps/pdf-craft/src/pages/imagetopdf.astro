@@ -2,18 +2,58 @@
 import Layout from "../layouts/Layout.astro";
 import { ImageToPdf } from "../components";
 import { fetchCms } from "../utils/lib/cms";
-import type { Operation } from "../utils";
-
-if (!Astro.cookies.has("__session")) {
-  return Astro.redirect("/signin");
-}
+import { resolveIsAuthenticated } from "../firebase/server";
+import { Container, Section, Accordion } from "@fhdamd/threads";
+import type { Operation, Faq } from "../utils";
 
 type OperationsResponse = { data: { allOperations: Operation[] } }
-const opsRes = await fetchCms<OperationsResponse>('operations')
+type FaqsResponse = { data: { allFaqs: Faq[] } }
+
+const [opsRes, faqsRes] = await Promise.all([
+  fetchCms<OperationsResponse>('operations'),
+  fetchCms<FaqsResponse>('faqs', { area: 'imagetopdf' }),
+])
+
 const op = opsRes.data.allOperations.find(o => o.iconKey === 'convert')
 const creditCost = op?.creditCost ?? 2
+const faqItems = faqsRes.data.allFaqs.map(({ title, content }) => ({ question: title, answer: content }))
+const isAuthenticated = await resolveIsAuthenticated(Astro.cookies.get('__session')?.value)
 ---
 
-<Layout title="Image to PDF — Riqa" noindex={true}>
-  <ImageToPdf creditCost={creditCost} client:load />
+<Layout
+  title="Image to PDF — Riqa"
+  description="Convert JPG and PNG images into a PDF. Combine up to 10 images into one document — pay per use, no subscription."
+>
+  <Fragment slot="head">
+    {faqItems.length > 0 && (
+      <script
+        is:inline
+        type="application/ld+json"
+        set:html={JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqItems.map(({ question, answer }) => ({
+            "@type": "Question",
+            name: question,
+            acceptedAnswer: { "@type": "Answer", text: answer },
+          })),
+        })}
+      />
+    )}
+  </Fragment>
+
+  <ImageToPdf creditCost={creditCost} isAuthenticated={isAuthenticated} client:load />
+
+  {faqItems.length > 0 && (
+    <Container>
+      <Section size="md">
+        <h2 style="font-size:var(--th-text-xl);font-weight:650;margin-bottom:var(--th-space-6)">
+          Frequently asked questions
+        </h2>
+        <div style="max-width:680px">
+          <Accordion client:load items={faqItems} />
+        </div>
+      </Section>
+    </Container>
+  )}
 </Layout>

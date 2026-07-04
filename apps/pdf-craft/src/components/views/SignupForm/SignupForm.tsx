@@ -1,8 +1,15 @@
 'use client'
 import { useState } from 'react'
 import { actions } from 'astro:actions'
+import {
+  createUserWithEmailAndPassword,
+  linkWithCredential,
+  EmailAuthProvider,
+  signInWithEmailAndPassword,
+} from 'firebase/auth'
 import { Input, Button, Stack, Callout } from '@fhdamd/threads'
 import * as Sentry from '@sentry/astro'
+import { auth } from '../../../firebase/client'
 import { useRecaptcha } from '../../../utils'
 import { logEvent, setUserId } from '../../../utils/lib/analytics'
 
@@ -11,37 +18,86 @@ export default function SignupForm() {
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
   const [error, setError]       = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const { getToken } = useRecaptcha('signup')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsLoading(true)
+    setError('')
 
     const captchaToken = await getToken()
     if (!captchaToken) {
       setError('Captcha verification failed. Please try again.')
+      setIsLoading(false)
       return
     }
 
-    try {
-      const response = await actions.user.createUser({
-        name,
-        email,
-        password,
-        captchaToken,
-      })
+    const credential = EmailAuthProvider.credential(email, password)
+    const currentUser = auth.currentUser
+    const isAnonymousSession = currentUser?.isAnonymous ?? false
+    const claimToken = sessionStorage.getItem('pendingClaimToken')
 
-      if (response.data?.success) {
-        logEvent('sign_up', { method: 'email' })
-        if (response.data.payload?.userId) {
-          setUserId(response.data.payload.userId)
+    try {
+      let idToken: string
+      let isNewUser = true
+
+      if (currentUser?.isAnonymous) {
+        try {
+          const linked = await linkWithCredential(currentUser, credential)
+          idToken = await linked.user.getIdToken()
+          // Same UID preserved — file is already under their account
+        } catch (linkErr: any) {
+          if (linkErr.code === 'auth/email-already-in-use') {
+            // Existing account — sign in and migrate their file
+            isNewUser = false
+            const signed = await signInWithEmailAndPassword(auth, email, password)
+            idToken = await signed.user.getIdToken()
+          } else {
+            throw linkErr
+          }
         }
-        window.location.href = '/signin'
       } else {
-        setError(response.data?.error || 'An unknown error occurred.')
+        const created = await createUserWithEmailAndPassword(auth, email, password)
+        idToken = await created.user.getIdToken()
+      }
+
+      // Create session cookie + initialise profile if needed
+      const finalizeRes = await actions.user.finalizeLinkedUser({ idToken, name })
+      if (!finalizeRes.data?.success) {
+        setError(finalizeRes.data?.error || 'Failed to set up your account. Please try again.')
+        setIsLoading(false)
+        return
+      }
+
+      logEvent('sign_up', { method: 'email' })
+      if (auth.currentUser) setUserId(auth.currentUser.uid)
+
+      if (!isNewUser && claimToken) {
+        // Existing account path: migrate the anonymous file to their real account
+        sessionStorage.removeItem('pendingClaimToken')
+        try {
+          await actions.claims.migrateFile({ claimToken })
+        } catch {
+          // Non-fatal: file may have expired, user still proceeds to dashboard
+        }
+        window.location.href = '/dashboard'
+      } else {
+        // New account: clear the token (file is already under their UID via link)
+        // Send them to buy credits so they can download the pending file
+        sessionStorage.removeItem('pendingClaimToken')
+        window.location.href = isAnonymousSession ? '/buy-credits' : '/dashboard'
       }
     } catch (err: any) {
-      setError(err.message)
-      Sentry.captureException(err)
+      if (err.code === 'auth/email-already-in-use') {
+        setError('An account with this email already exists. Sign in instead.')
+      } else if (err.code === 'auth/weak-password') {
+        setError('Password must be at least 6 characters.')
+      } else {
+        setError(err.message || 'An unexpected error occurred.')
+        Sentry.captureException(err)
+      }
+      setIsLoading(false)
     }
   }
 
@@ -80,8 +136,8 @@ export default function SignupForm() {
           hint="At least 8 characters recommended"
           required
         />
-        <Button type="submit" variant="solid-terra" style={{ width: '100%' }}>
-          Create account
+        <Button type="submit" variant="solid-terra" disabled={isLoading} style={{ width: '100%' }}>
+          {isLoading ? 'Creating account…' : 'Create account'}
         </Button>
       </Stack>
     </form>

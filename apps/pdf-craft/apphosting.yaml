@@ -38,3 +38,5 @@ env:
     secret: resendApiKey
   - variable: E2E_CONTACT_BYPASS_TOKEN
     secret: e2eContactBypassToken
+  - variable: CLAIM_SECRET
+    secret: CLAIM_SECRET

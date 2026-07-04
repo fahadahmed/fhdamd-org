@@ -1,10 +1,12 @@
 'use client'
 import { useState } from 'react'
 import { actions } from 'astro:actions'
+import { signInAnonymously } from 'firebase/auth'
 import {
   Container, Stack, Text, Button, Input, FileDropzone, Callout, Card, Divider, Radio,
 } from '@fhdamd/threads'
 import * as Sentry from '@sentry/astro'
+import { auth } from '../../../firebase/client'
 import { logEvent } from '../../../utils/lib/analytics'
 import { XIcon, DownloadIcon, ErrorCallout, INSUFFICIENT_CREDITS_ERROR } from '../../shared'
 
@@ -16,13 +18,14 @@ const PRESETS: { value: PermissionPreset; label: string; description: string }[]
   { value: 'read-only',      label: 'Read Only',      description: 'View only — no printing, copying, or editing' },
 ]
 
-export default function EncryptPdf({ creditCost }: { creditCost: number }) {
+export default function EncryptPdf({ creditCost, isAuthenticated = false }: { creditCost: number; isAuthenticated?: boolean }) {
   const [file, setFile]                   = useState<File | null>(null)
   const [userPassword, setUserPassword]   = useState('')
   const [ownerPassword, setOwnerPassword] = useState('')
   const [permissions, setPermissions]     = useState<PermissionPreset>('full-access')
   const [isProcessing, setIsProcessing]   = useState(false)
   const [downloadLink, setDownloadLink]   = useState<string | null>(null)
+  const [claimToken, setClaimToken]       = useState<string | null>(null)
   const [error, setError]                 = useState<string | null>(null)
   const [buttonLabel, setButtonLabel]     = useState('Protect PDF')
 
@@ -30,6 +33,7 @@ export default function EncryptPdf({ creditCost }: { creditCost: number }) {
     if (files.length > 0) {
       setFile(files[0])
       setDownloadLink(null)
+      setClaimToken(null)
       setError(null)
     }
   }
@@ -41,19 +45,46 @@ export default function EncryptPdf({ creditCost }: { creditCost: number }) {
     const requestId = crypto.randomUUID()
     const task = 'pdf-encrypt'
     setError(null)
-    setButtonLabel('Checking credits...')
     setIsProcessing(true)
 
-    const creditsResponse = await actions.credits.checkCredits({ task, requestId, creditCost })
-    if (!creditsResponse.data?.success) {
-      setError(INSUFFICIENT_CREDITS_ERROR)
-      setButtonLabel('Protect PDF')
-      setIsProcessing(false)
-      return
+    const currentUser = auth.currentUser
+    const isAnon = !isAuthenticated
+
+    if (isAnon) {
+      setButtonLabel('Processing...')
+      if (!currentUser) {
+        try {
+          const credential = await signInAnonymously(auth)
+          const idToken = await credential.user.getIdToken()
+          const sessionRes = await actions.user.createAnonymousSession({ idToken })
+          if (!sessionRes.data?.success) {
+            setError('Failed to start session. Please try again.')
+            setButtonLabel('Protect PDF')
+            setIsProcessing(false)
+            return
+          }
+        } catch (err) {
+          setError('Failed to start session. Please try again.')
+          setButtonLabel('Protect PDF')
+          setIsProcessing(false)
+          Sentry.captureException(err)
+          return
+        }
+      }
+    } else {
+      setButtonLabel('Checking credits...')
+      const creditsResponse = await actions.credits.checkCredits({ task, requestId, creditCost })
+      if (!creditsResponse.data?.success) {
+        setError(INSUFFICIENT_CREDITS_ERROR)
+        setButtonLabel('Protect PDF')
+        setIsProcessing(false)
+        return
+      }
     }
 
     logEvent('pdf_operation_started', { operation_type: task })
     setButtonLabel('Encrypting...')
+
     const formData = new FormData()
     formData.append('file', file)
     formData.append('userPassword', userPassword)
@@ -67,7 +98,12 @@ export default function EncryptPdf({ creditCost }: { creditCost: number }) {
       const response = await actions.operations.encryptPdf(formData)
       if (response.data?.success) {
         logEvent('pdf_operation_completed', { operation_type: task })
-        setDownloadLink(response.data.data?.fileUrl || null)
+        const token = response.data.data?.claimToken
+        if (token) {
+          setClaimToken(token)
+        } else {
+          setDownloadLink(response.data.data?.fileUrl || null)
+        }
       } else {
         logEvent('pdf_operation_failed', { operation_type: task })
         setError(response.data?.error || 'Failed to protect PDF.')
@@ -83,9 +119,19 @@ export default function EncryptPdf({ creditCost }: { creditCost: number }) {
   }
 
   const reset = () => {
-    setDownloadLink(null); setFile(null)
+    setDownloadLink(null); setClaimToken(null); setFile(null)
     setUserPassword(''); setOwnerPassword('')
     setError(null); setPermissions('full-access')
+  }
+
+  const goToSignup = () => {
+    if (claimToken) sessionStorage.setItem('pendingClaimToken', claimToken)
+    window.location.href = '/signup'
+  }
+
+  const goToSignin = () => {
+    if (claimToken) sessionStorage.setItem('pendingClaimToken', claimToken)
+    window.location.href = '/signin'
   }
 
   return (
@@ -103,7 +149,17 @@ export default function EncryptPdf({ creditCost }: { creditCost: number }) {
         <Card variant="elevated">
           <Stack gap={5} style={{ padding: 'var(--th-space-6)' }}>
 
-            {downloadLink ? (
+            {claimToken ? (
+              <Stack gap={4} align="center" style={{ paddingBlock: 'var(--th-space-4)' }}>
+                <Callout variant="success" title="Your PDF is protected">
+                  Create a free account to download it — no credit card required.
+                </Callout>
+                <div style={{ display: 'flex', gap: 'var(--th-space-3)', flexWrap: 'wrap' }}>
+                  <Button variant="solid-terra" onClick={goToSignup}>Sign up to download</Button>
+                  <Button variant="ghost" onClick={goToSignin}>Already have an account?</Button>
+                </div>
+              </Stack>
+            ) : downloadLink ? (
               <Stack gap={4} align="center" style={{ paddingBlock: 'var(--th-space-4)' }}>
                 <Callout variant="success" title="Your PDF is protected">
                   The file has been encrypted with the password you provided.

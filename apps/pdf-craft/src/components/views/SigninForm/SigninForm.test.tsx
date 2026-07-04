@@ -22,13 +22,18 @@ vi.mock("../../../utils/lib/analytics", () => ({
 }));
 
 import SigninForm from "./SigninForm";
-import { verifyUser } from "../../../test/mocks/astro-actions";
+import { verifyUser, migrateFile } from "../../../test/mocks/astro-actions";
+
+const mockSessionStorage = { getItem: vi.fn(() => null), removeItem: vi.fn(), setItem: vi.fn() };
 
 beforeEach(() => {
   vi.clearAllMocks();
   mockGetToken.mockResolvedValue("captcha-token");
   mockSignIn.mockResolvedValue({ user: { uid: "uid-1", getIdToken: mockGetIdToken } });
-  verifyUser.mockResolvedValue({ data: { redirected: false }, error: null });
+  verifyUser.mockResolvedValue({ data: { redirected: true, url: "/dashboard" }, error: null });
+  migrateFile.mockResolvedValue({ data: { success: true }, error: null });
+  mockSessionStorage.getItem.mockReturnValue(null);
+  vi.stubGlobal("sessionStorage", mockSessionStorage);
   vi.stubGlobal("location", { assign: vi.fn(), href: "" } as any);
 });
 
@@ -76,7 +81,6 @@ describe("SigninForm", () => {
   });
 
   it("navigates when verifyUser returns redirected=true", async () => {
-    verifyUser.mockResolvedValue({ data: { redirected: true, url: "/dashboard" } });
     const user = userEvent.setup();
     render(<SigninForm />);
     await user.type(screen.getByLabelText("Email address"), "user@test.com");
@@ -95,5 +99,49 @@ describe("SigninForm", () => {
     await waitFor(() =>
       expect(screen.getByRole("alert")).toHaveTextContent(/Failed to sign in/i),
     );
+  });
+
+  // ── Pending claim token migration ─────────────────────────────────────────
+
+  it("does not call migrateFile when sessionStorage has no pending token", async () => {
+    mockSessionStorage.getItem.mockReturnValue(null);
+    const user = userEvent.setup();
+    render(<SigninForm />);
+    await user.type(screen.getByLabelText("Email address"), "user@test.com");
+    await user.type(screen.getByLabelText("Password"), "secret");
+    await user.click(screen.getByRole("button", { name: /Sign in/i }));
+    await waitFor(() => expect(globalThis.location.assign).toHaveBeenCalled());
+    expect(migrateFile).not.toHaveBeenCalled();
+  });
+
+  it("calls migrateFile with the pending claim token before redirecting", async () => {
+    mockSessionStorage.getItem.mockReturnValue("claim-token-abc");
+    const user = userEvent.setup();
+    render(<SigninForm />);
+    await user.type(screen.getByLabelText("Email address"), "user@test.com");
+    await user.type(screen.getByLabelText("Password"), "secret");
+    await user.click(screen.getByRole("button", { name: /Sign in/i }));
+    await waitFor(() => expect(migrateFile).toHaveBeenCalledWith({ claimToken: "claim-token-abc" }));
+  });
+
+  it("removes the claim token from sessionStorage after calling migrateFile", async () => {
+    mockSessionStorage.getItem.mockReturnValue("claim-token-abc");
+    const user = userEvent.setup();
+    render(<SigninForm />);
+    await user.type(screen.getByLabelText("Email address"), "user@test.com");
+    await user.type(screen.getByLabelText("Password"), "secret");
+    await user.click(screen.getByRole("button", { name: /Sign in/i }));
+    await waitFor(() => expect(mockSessionStorage.removeItem).toHaveBeenCalledWith("pendingClaimToken"));
+  });
+
+  it("still redirects to dashboard even when migrateFile throws", async () => {
+    mockSessionStorage.getItem.mockReturnValue("claim-token-abc");
+    migrateFile.mockRejectedValue(new Error("Network error"));
+    const user = userEvent.setup();
+    render(<SigninForm />);
+    await user.type(screen.getByLabelText("Email address"), "user@test.com");
+    await user.type(screen.getByLabelText("Password"), "secret");
+    await user.click(screen.getByRole("button", { name: /Sign in/i }));
+    await waitFor(() => expect(globalThis.location.assign).toHaveBeenCalledWith("/dashboard"));
   });
 });

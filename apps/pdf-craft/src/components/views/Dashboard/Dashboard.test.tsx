@@ -91,4 +91,32 @@ describe("Dashboard", () => {
     await user.click(screen.getByRole("tab", { name: "History" }));
     expect(screen.getByRole("tab", { name: "History" })).toHaveAttribute("aria-selected", "true");
   });
+
+  it("still renders profile when files fetch throws", async () => {
+    (onAuthStateChanged as any).mockImplementation((_auth: any, callback: Function) => {
+      callback({ uid: "user-1" });
+      return () => {};
+    });
+    (getDocs as any).mockRejectedValue(new Error("permission-denied"));
+    (getDoc as any).mockResolvedValue({
+      exists: () => true,
+      data: () => ({ profile: { name: "Bob", credits: 5 } }),
+    });
+    render(<Dashboard operations={mockOperations} />);
+    await waitFor(() => expect(screen.getByText(/Welcome, Bob/)).toBeInTheDocument());
+    expect(screen.getByText(/5 credits remaining/i)).toBeInTheDocument();
+  });
+
+  it("still renders tabs when profile fetch throws", async () => {
+    (onAuthStateChanged as any).mockImplementation((_auth: any, callback: Function) => {
+      callback({ uid: "user-1" });
+      return () => {};
+    });
+    (getDocs as any).mockResolvedValue({ docs: [] });
+    (getDoc as any).mockRejectedValue(new Error("permission-denied"));
+    render(<Dashboard operations={mockOperations} />);
+    await waitFor(() => expect(screen.getByRole("tab", { name: "Files" })).toBeInTheDocument());
+    // Welcome without name when profile unavailable
+    expect(screen.getByText("Welcome")).toBeInTheDocument();
+  });
 });

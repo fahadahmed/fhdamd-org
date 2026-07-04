@@ -11,12 +11,17 @@ export const createUser = vi.fn().mockResolvedValue({ data: { success: true }, e
 export const signOutUser = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
 export const sendPasswordReset = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
 export const sendMessage = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
+export const createAnonymousSession = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
+export const finalizeLinkedUser = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
+export const migrateFile = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
+export const claimFile = vi.fn().mockResolvedValue({ data: { success: true, payload: { downloadUrl: "https://cdn.test/claimed.pdf" } }, error: null });
 
 export const actions = {
   credits: { checkCredits },
   operations: { mergePdfs, encryptPdf, decryptPdf, imageToPdf },
-  user: { verifyUser, createUser, signOutUser, sendPasswordReset },
+  user: { verifyUser, createUser, signOutUser, sendPasswordReset, createAnonymousSession, finalizeLinkedUser },
   contact: { sendMessage },
+  claims: { migrateFile, claimFile },
 };
 
 export const defineAction = vi.fn((config: unknown) => config);
