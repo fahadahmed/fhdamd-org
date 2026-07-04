@@ -1,14 +1,12 @@
 'use client'
 import { useState } from 'react'
 import { actions } from 'astro:actions'
-import { signInAnonymously } from 'firebase/auth'
 import {
   Container, Stack, Text, Button, Input, FileDropzone, Callout, Card, Divider,
 } from '@fhdamd/threads'
-import * as Sentry from '@sentry/astro'
-import { auth } from '../../../firebase/client'
 import { logEvent } from '../../../utils/lib/analytics'
-import { XIcon, DownloadIcon, ErrorCallout, INSUFFICIENT_CREDITS_ERROR } from '../../shared'
+import { buildPrepareSession } from '../../../utils/lib/operationSession'
+import { XIcon, DownloadIcon, ErrorCallout } from '../../shared'
 
 export default function DecryptPdf({ creditCost, isAuthenticated = false }: { readonly creditCost: number; readonly isAuthenticated?: boolean }) {
   const [file, setFile]                 = useState<File | null>(null)
@@ -28,40 +26,10 @@ export default function DecryptPdf({ creditCost, isAuthenticated = false }: { re
     }
   }
 
-  const prepareSession = async (task: string, requestId: string): Promise<boolean> => {
-    if (!isAuthenticated) {
-      setButtonLabel('Processing...')
-      if (!auth.currentUser) {
-        try {
-          const credential = await signInAnonymously(auth)
-          const idToken = await credential.user.getIdToken()
-          const sessionRes = await actions.user.createAnonymousSession({ idToken })
-          if (!sessionRes.data?.success) {
-            setError('Failed to start session. Please try again.')
-            setButtonLabel('Unlock PDF')
-            setIsProcessing(false)
-            return false
-          }
-        } catch (err) {
-          setError('Failed to start session. Please try again.')
-          setButtonLabel('Unlock PDF')
-          setIsProcessing(false)
-          Sentry.captureException(err)
-          return false
-        }
-      }
-      return true
-    }
-    setButtonLabel('Checking credits...')
-    const creditsResponse = await actions.credits.checkCredits({ task, requestId, creditCost })
-    if (!creditsResponse.data?.success) {
-      setError(INSUFFICIENT_CREDITS_ERROR)
-      setButtonLabel('Unlock PDF')
-      setIsProcessing(false)
-      return false
-    }
-    return true
-  }
+  const prepareSession = buildPrepareSession({
+    isAuthenticated, creditCost, defaultLabel: 'Unlock PDF',
+    setButtonLabel, setError: (e) => setError(e), setProcessing: setIsProcessing,
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

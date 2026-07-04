@@ -1,14 +1,12 @@
 'use client'
 import { useState } from "react"
 import { actions } from 'astro:actions'
-import { signInAnonymously } from 'firebase/auth'
 import {
   Container, Stack, Text, Button, FileDropzone, Callout, Card, Divider,
 } from '@fhdamd/threads'
-import * as Sentry from '@sentry/astro'
-import { auth } from '../../../firebase/client'
 import { logEvent } from '../../../utils/lib/analytics'
-import { DownloadIcon, DraggableFileList, ErrorCallout, INSUFFICIENT_CREDITS_ERROR, useDraggableFiles } from '../../shared'
+import { buildPrepareSession } from '../../../utils/lib/operationSession'
+import { DownloadIcon, DraggableFileList, ErrorCallout, useDraggableFiles } from '../../shared'
 
 const MAX_FILES = 5
 
@@ -19,40 +17,10 @@ export default function MultiPdfUploader({ creditCost, isAuthenticated = false }
   const [claimToken, setClaimToken]     = useState<string | null>(null)
   const [buttonLabel, setButtonLabel]   = useState('Merge PDFs')
 
-  const prepareSession = async (task: string, requestId: string): Promise<boolean> => {
-    if (!isAuthenticated) {
-      setButtonLabel('Processing...')
-      if (!auth.currentUser) {
-        try {
-          const credential = await signInAnonymously(auth)
-          const idToken = await credential.user.getIdToken()
-          const sessionRes = await actions.user.createAnonymousSession({ idToken })
-          if (!sessionRes.data?.success) {
-            setError('Failed to start session. Please try again.')
-            setButtonLabel('Merge PDFs')
-            setIsMerging(false)
-            return false
-          }
-        } catch (err) {
-          setError('Failed to start session. Please try again.')
-          setButtonLabel('Merge PDFs')
-          setIsMerging(false)
-          Sentry.captureException(err)
-          return false
-        }
-      }
-      return true
-    }
-    setButtonLabel('Checking credits...')
-    const response = await actions.credits.checkCredits({ task, requestId, creditCost })
-    if (!response.data?.success) {
-      setError(INSUFFICIENT_CREDITS_ERROR)
-      setButtonLabel('Merge PDFs')
-      setIsMerging(false)
-      return false
-    }
-    return true
-  }
+  const prepareSession = buildPrepareSession({
+    isAuthenticated, creditCost, defaultLabel: 'Merge PDFs',
+    setButtonLabel, setError: (e) => setError(e), setProcessing: setIsMerging,
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

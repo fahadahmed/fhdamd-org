@@ -1,14 +1,12 @@
 'use client'
 import { useState } from "react"
 import { actions } from 'astro:actions'
-import { signInAnonymously } from 'firebase/auth'
 import {
   Container, Stack, Text, Button, FileDropzone, Callout, Card, Divider,
 } from '@fhdamd/threads'
-import * as Sentry from '@sentry/astro'
-import { auth } from '../../../firebase/client'
 import { logEvent } from '../../../utils/lib/analytics'
-import { DownloadIcon, DraggableFileList, ErrorCallout, INSUFFICIENT_CREDITS_ERROR, useDraggableFiles } from '../../shared'
+import { buildPrepareSession } from '../../../utils/lib/operationSession'
+import { DownloadIcon, DraggableFileList, ErrorCallout, useDraggableFiles } from '../../shared'
 
 const MAX_IMAGES = 10
 
@@ -19,40 +17,10 @@ export default function ImageToPdf({ creditCost, isAuthenticated = false }: { re
   const [claimToken, setClaimToken]     = useState<string | null>(null)
   const [buttonLabel, setButtonLabel]   = useState('Convert to PDF')
 
-  const prepareSession = async (task: string, requestId: string): Promise<boolean> => {
-    if (!isAuthenticated) {
-      setButtonLabel('Processing...')
-      if (!auth.currentUser) {
-        try {
-          const credential = await signInAnonymously(auth)
-          const idToken = await credential.user.getIdToken()
-          const sessionRes = await actions.user.createAnonymousSession({ idToken })
-          if (!sessionRes.data?.success) {
-            setError('Failed to start session. Please try again.')
-            setButtonLabel('Convert to PDF')
-            setIsConverting(false)
-            return false
-          }
-        } catch (err) {
-          setError('Failed to start session. Please try again.')
-          setButtonLabel('Convert to PDF')
-          setIsConverting(false)
-          Sentry.captureException(err)
-          return false
-        }
-      }
-      return true
-    }
-    setButtonLabel('Checking credits...')
-    const response = await actions.credits.checkCredits({ task, requestId, creditCost })
-    if (!response.data?.success) {
-      setError(INSUFFICIENT_CREDITS_ERROR)
-      setButtonLabel('Convert to PDF')
-      setIsConverting(false)
-      return false
-    }
-    return true
-  }
+  const prepareSession = buildPrepareSession({
+    isAuthenticated, creditCost, defaultLabel: 'Convert to PDF',
+    setButtonLabel, setError: (e) => setError(e), setProcessing: setIsConverting,
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
