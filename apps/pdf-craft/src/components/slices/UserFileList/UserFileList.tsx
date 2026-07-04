@@ -31,7 +31,7 @@ interface UserFileListProps {
   readonly mode?: string
 }
 
-function DownloadCell({ row }: { row: FileRow }) {
+function DownloadCell({ row }: { readonly row: FileRow }) {
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState<string | null>(null)
 
@@ -101,7 +101,7 @@ function DownloadCell({ row }: { row: FileRow }) {
           textUnderlineOffset: '3px',
         }}
       >
-        {loading ? 'Processing…' : `Download — ${row.creditCost} credit${row.creditCost === 1 ? '' : 's'}`}
+        {loading ? 'Processing…' : `Download — ${row.creditCost} ${row.creditCost === 1 ? 'credit' : 'credits'}`}
       </button>
       {error && (
         <span style={{ color: 'var(--th-color-error)', fontSize: 'var(--th-text-xs)' }}>
