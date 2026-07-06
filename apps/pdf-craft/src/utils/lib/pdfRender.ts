@@ -1,17 +1,16 @@
 'use client'
 
-// pdfjs-dist references browser-only globals (DOMMatrix etc.) at module
-// evaluation time, so it must NOT be statically imported — Astro evaluates
-// static imports server-side during SSR even for client:load components.
-// Dynamic import defers evaluation until the function is first called,
-// which only happens in the browser after hydration.
+// Import the worker file as a Vite asset URL — this is just a resolved path
+// string, NOT a module evaluation, so it does NOT trigger the browser-only
+// DOMMatrix reference that lives in the pdfjs library itself.
+import workerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
+
+// The pdfjs library itself is imported dynamically to keep it out of the
+// module-evaluation path during Astro SSR (where DOMMatrix is undefined).
 async function getPdfjsLib() {
   const pdfjs = await import('pdfjs-dist')
   if (!pdfjs.GlobalWorkerOptions.workerSrc) {
-    pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-      'pdfjs-dist/build/pdf.worker.min.mjs',
-      import.meta.url,
-    ).toString()
+    pdfjs.GlobalWorkerOptions.workerSrc = workerSrc
   }
   return pdfjs
 }
