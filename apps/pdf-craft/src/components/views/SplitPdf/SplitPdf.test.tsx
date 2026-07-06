@@ -38,16 +38,15 @@ describe("SplitPdf", () => {
     expect(screen.getByTestId("file-input")).toBeInTheDocument();
   });
 
-  it("shows page strip after file selection", async () => {
+  it("shows the editor UI with Split PDF and Extract Pages tabs after file selection", async () => {
     render(<SplitPdf creditCost={2} isAuthenticated />);
     selectFile();
-    // Filename and page count appear in the toolbar
-    await waitFor(() => expect(screen.getByText(/5 pages/i)).toBeInTheDocument());
-    // Instruction text appears
-    expect(screen.getByText(/click between pages/i)).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByRole("button", { name: /Split PDF/i })).toBeInTheDocument());
+    expect(screen.getByRole("button", { name: /Extract Pages/i })).toBeInTheDocument();
+    expect(screen.getByText(/Click between pages to mark a split point/i)).toBeInTheDocument();
   });
 
-  it("shows an error when getPdfPageCount rejects", async () => {
+  it("shows an error when getPdfPageCount rejects (encrypted PDF)", async () => {
     (getPdfPageCount as any).mockRejectedValue(new Error("encrypted"));
     render(<SplitPdf creditCost={2} isAuthenticated />);
     selectFile();
@@ -56,7 +55,7 @@ describe("SplitPdf", () => {
     );
   });
 
-  it("shows 'Split every page' and Reset and Split buttons after file selection", async () => {
+  it("shows 'Split every page', Reset, and Split buttons", async () => {
     render(<SplitPdf creditCost={2} isAuthenticated />);
     selectFile();
     await waitFor(() => screen.getByText(/Split every page/i));
@@ -71,19 +70,7 @@ describe("SplitPdf", () => {
     expect(screen.getByRole("button", { name: /^Split$/i })).toBeDisabled();
   });
 
-  it("shows error and does not call splitPdf when Split is clicked with no points", async () => {
-    const user = userEvent.setup();
-    render(<SplitPdf creditCost={2} isAuthenticated />);
-    selectFile();
-    await waitFor(() => screen.getByRole("button", { name: /^Split$/i }));
-    // Button is disabled when no split points — click "Split every page" then Reset to test the guard
-    await user.click(screen.getByText(/Split every page/i));
-    // Now there should be 4 split points (5 pages - 1)
-    await waitFor(() => expect(screen.getByText(/5 parts/i)).toBeInTheDocument());
-    expect(screen.getByRole("button", { name: /^Split$/i })).toBeEnabled();
-  });
-
-  it("'Split every page' enables the Split button", async () => {
+  it("'Split every page' enables the Split button and shows part count", async () => {
     const user = userEvent.setup();
     render(<SplitPdf creditCost={2} isAuthenticated />);
     selectFile();
@@ -91,6 +78,21 @@ describe("SplitPdf", () => {
     await user.click(screen.getByText(/Split every page/i));
     await waitFor(() =>
       expect(screen.getByRole("button", { name: /^Split$/i })).not.toBeDisabled(),
+    );
+    // 5 pages split after all → 5 files
+    expect(screen.getByText(/5 files/i)).toBeInTheDocument();
+  });
+
+  it("Reset button clears all split points", async () => {
+    const user = userEvent.setup();
+    render(<SplitPdf creditCost={2} isAuthenticated />);
+    selectFile();
+    await waitFor(() => screen.getByText(/Split every page/i));
+    await user.click(screen.getByText(/Split every page/i));
+    await waitFor(() => expect(screen.getByRole("button", { name: /^Split$/i })).not.toBeDisabled());
+    await user.click(screen.getByRole("button", { name: /Reset/i }));
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: /^Split$/i })).toBeDisabled(),
     );
   });
 
@@ -147,5 +149,17 @@ describe("SplitPdf", () => {
       expect(screen.getByRole("button", { name: /Sign up to download/i })).toBeInTheDocument(),
     );
     expect(screen.getByRole("button", { name: /Already have an account/i })).toBeInTheDocument();
+  });
+
+  it("switches to Extract Pages mode", async () => {
+    const user = userEvent.setup();
+    render(<SplitPdf creditCost={2} isAuthenticated />);
+    selectFile();
+    await waitFor(() => screen.getByRole("button", { name: /Extract Pages/i }));
+    await user.click(screen.getByRole("button", { name: /Extract Pages/i }));
+    await waitFor(() =>
+      expect(screen.getByText(/Select the pages you want to extract/i)).toBeInTheDocument(),
+    );
+    expect(screen.getByRole("button", { name: /^Extract$/i })).toBeDisabled();
   });
 });
