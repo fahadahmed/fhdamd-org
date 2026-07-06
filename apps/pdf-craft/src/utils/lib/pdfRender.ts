@@ -1,19 +1,26 @@
 'use client'
-import * as pdfjs from 'pdfjs-dist'
 
-// Use the bundled worker so no separate worker file needs to be served.
-// The ?url import tells Vite/Astro to resolve the path at build time.
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url,
-).toString()
+// pdfjs-dist references browser-only globals (DOMMatrix etc.) at module
+// evaluation time, so it must NOT be statically imported — Astro evaluates
+// static imports server-side during SSR even for client:load components.
+// Dynamic import defers evaluation until the function is first called,
+// which only happens in the browser after hydration.
+async function getPdfjsLib() {
+  const pdfjs = await import('pdfjs-dist')
+  if (!pdfjs.GlobalWorkerOptions.workerSrc) {
+    pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+      'pdfjs-dist/build/pdf.worker.min.mjs',
+      import.meta.url,
+    ).toString()
+  }
+  return pdfjs
+}
 
 /**
  * Returns the total number of pages in a PDF file.
- * Resolves after pdf.js has parsed the cross-reference table — fast even for
- * large documents since it does not decode page content.
  */
 export async function getPdfPageCount(file: File): Promise<number> {
+  const pdfjs = await getPdfjsLib()
   const bytes = await file.arrayBuffer()
   const doc = await pdfjs.getDocument({ data: bytes }).promise
   const count = doc.numPages
@@ -35,6 +42,7 @@ export async function renderPdfPageToCanvas(
   canvas: HTMLCanvasElement,
   scale: number,
 ): Promise<void> {
+  const pdfjs = await getPdfjsLib()
   const bytes = await file.arrayBuffer()
   const doc = await pdfjs.getDocument({ data: bytes }).promise
   const page = await doc.getPage(pageNumber)
