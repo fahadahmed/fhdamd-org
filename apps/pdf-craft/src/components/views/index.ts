@@ -8,6 +8,6 @@ export { default as PaymentSuccess } from "./PaymentSuccess";
 export { default as PaymentCancel } from "./PaymentCancel";
 export { default as ForgotPasswordForm } from "./ForgotPasswordForm";
 export { default as ResetPasswordForm } from "./ResetPasswordForm";
-export { default as SplitPdf } from "./SplitPdf";
+export { SplitPdf } from "./SplitPdf";
 
 export * from "./SignupForm";
