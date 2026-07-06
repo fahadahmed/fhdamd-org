@@ -8,6 +8,7 @@ import JSZip from "jszip";
 import { getFirebaseAuth, getFirebaseApp } from "../firebase/server";
 import { publish } from "../server/pubsub/publisher";
 import { log } from "../utils/lib/logger";
+import { generateClaimToken } from "../utils/lib/claimToken";
 
 async function callProcessor(path: string, form: FormData): Promise<Response> {
   const processorUrl = import.meta.env.PDF_PROCESSOR_URL;
@@ -376,6 +377,73 @@ export const operations = {
     },
   }),
 
+// ── splitPdf helpers ──────────────────────────────────────────────────────────
+
+const MAX_SPLIT_RANGES = 20;
+
+function parseRangesJson(raw: string): { ranges: { from: number; to: number }[] } | { error: string } {
+  let parsed: unknown;
+  try { parsed = JSON.parse(raw) } catch { return { error: "Invalid ranges format." } }
+  const ranges = parsed as { from: number; to: number }[];
+  if (!Array.isArray(ranges) || ranges.length === 0) return { error: "At least one range is required." };
+  if (ranges.length > MAX_SPLIT_RANGES) return { error: `Maximum ${MAX_SPLIT_RANGES} ranges allowed.` };
+  return { ranges };
+}
+
+function validateRangesAgainstDoc(ranges: { from: number; to: number }[], pageCount: number): string | null {
+  for (const r of ranges) {
+    if (!Number.isInteger(r.from) || !Number.isInteger(r.to)) return "Range values must be integers.";
+    if (r.from < 1 || r.to > pageCount || r.from > r.to) {
+      return `Range ${r.from}–${r.to} is outside the document (${pageCount} pages).`;
+    }
+  }
+  return null;
+}
+
+async function loadSourcePdf(file: File): Promise<{ doc: PDFDocument } | { error: string }> {
+  try {
+    const doc = await PDFDocument.load(await file.arrayBuffer());
+    return { doc };
+  } catch (err: any) {
+    const msg = (err?.message ?? "") as string;
+    if (msg.includes("encrypted") || msg.includes("password")) {
+      return { error: "This PDF is password-protected. Please decrypt it first using the Unlock PDF tool." };
+    }
+    throw err;
+  }
+}
+
+async function extractPdfParts(
+  sourceDoc: PDFDocument,
+  ranges: { from: number; to: number }[],
+): Promise<{ name: string; bytes: Uint8Array }[]> {
+  const parts: { name: string; bytes: Uint8Array }[] = [];
+  for (let i = 0; i < ranges.length; i++) {
+    const { from, to } = ranges[i];
+    const partDoc = await PDFDocument.create();
+    const indices = Array.from({ length: to - from + 1 }, (_, k) => from - 1 + k);
+    const copied = await partDoc.copyPages(sourceDoc, indices);
+    copied.forEach((p) => partDoc.addPage(p));
+    parts.push({ name: `part-${i + 1}.pdf`, bytes: await partDoc.save() });
+  }
+  return parts;
+}
+
+async function buildSplitOutput(
+  parts: { name: string; bytes: Uint8Array }[],
+): Promise<{ bytes: Buffer; outputFileName: string; contentType: string }> {
+  if (parts.length === 1) {
+    return { bytes: Buffer.from(parts[0].bytes), outputFileName: `split-${Date.now()}.pdf`, contentType: "application/pdf" };
+  }
+  const zip = new JSZip();
+  parts.forEach(({ name, bytes }) => zip.file(name, bytes));
+  return {
+    bytes: Buffer.from(await zip.generateAsync({ type: "uint8array" })),
+    outputFileName: `split-${Date.now()}.zip`,
+    contentType: "application/zip",
+  };
+}
+
   splitPdf: defineAction({
     accept: "form",
     input: z.object({
@@ -393,78 +461,23 @@ export const operations = {
         if (!ctx) return { success: false, error: "Unauthorized" };
         const { userId, isAnonymous } = ctx;
 
-        // Parse + validate ranges
-        let ranges: { from: number; to: number }[];
-        try {
-          ranges = JSON.parse(rangesJson);
-        } catch {
-          return { success: false, error: "Invalid ranges format." };
-        }
+        const parsedRanges = parseRangesJson(rangesJson);
+        if ("error" in parsedRanges) return { success: false, error: parsedRanges.error };
 
-        const MAX_SPLIT_RANGES = 20;
-        if (!Array.isArray(ranges) || ranges.length === 0) {
-          return { success: false, error: "At least one range is required." };
-        }
-        if (ranges.length > MAX_SPLIT_RANGES) {
-          return { success: false, error: `Maximum ${MAX_SPLIT_RANGES} ranges allowed.` };
-        }
+        const loaded = await loadSourcePdf(file);
+        if ("error" in loaded) return { success: false, error: loaded.error };
 
-        // Load source PDF — detect encrypted PDFs
-        const fileBytes = await file.arrayBuffer();
-        let sourceDoc: PDFDocument;
-        try {
-          sourceDoc = await PDFDocument.load(fileBytes);
-        } catch (err: any) {
-          const msg = err?.message ?? "";
-          if (msg.includes("encrypted") || msg.includes("password")) {
-            return { success: false, error: "This PDF is password-protected. Please decrypt it first using the Unlock PDF tool." };
-          }
-          throw err;
-        }
-        const pageCount = sourceDoc.getPageCount();
+        const rangeError = validateRangesAgainstDoc(parsedRanges.ranges, loaded.doc.getPageCount());
+        if (rangeError) return { success: false, error: rangeError };
 
-        // Validate each range against actual page count
-        for (const r of ranges) {
-          if (!Number.isInteger(r.from) || !Number.isInteger(r.to)) {
-            return { success: false, error: "Range values must be integers." };
-          }
-          if (r.from < 1 || r.to > pageCount || r.from > r.to) {
-            return { success: false, error: `Range ${r.from}–${r.to} is outside the document (${pageCount} pages).` };
-          }
-        }
+        const parts = await extractPdfParts(loaded.doc, parsedRanges.ranges);
+        const { bytes, outputFileName, contentType } = await buildSplitOutput(parts);
 
-        // Extract each range into a separate PDF buffer
-        const parts: { name: string; bytes: Uint8Array }[] = [];
-        for (let i = 0; i < ranges.length; i++) {
-          const { from, to } = ranges[i];
-          const partDoc = await PDFDocument.create();
-          const indices = Array.from({ length: to - from + 1 }, (_, k) => from - 1 + k);
-          const copied = await partDoc.copyPages(sourceDoc, indices);
-          copied.forEach((p) => partDoc.addPage(p));
-          parts.push({ name: `part-${i + 1}.pdf`, bytes: await partDoc.save() });
-        }
-
-        // Upload: single PDF if one range, zip if multiple
         const fileId = firestore.collection("users").doc(userId).collection("files").doc().id;
         const downloadToken = uuidv4();
-        let uploadBytes: Uint8Array | Buffer;
-        let outputFileName: string;
-        let contentType: string;
-
-        if (parts.length === 1) {
-          uploadBytes = parts[0].bytes;
-          outputFileName = `split-${Date.now()}.pdf`;
-          contentType = "application/pdf";
-        } else {
-          const zip = new JSZip();
-          parts.forEach(({ name, bytes }) => zip.file(name, bytes));
-          uploadBytes = Buffer.from(await zip.generateAsync({ type: "uint8array" }));
-          outputFileName = `split-${Date.now()}.zip`;
-          contentType = "application/zip";
-        }
 
         const storagePath = `users/${userId}/${outputFileName}`;
-        await bucket.file(storagePath).save(Buffer.from(uploadBytes), {
+        await bucket.file(storagePath).save(bytes, {
           metadata: { contentType, metadata: { firebaseStorageDownloadTokens: downloadToken } },
         });
 
