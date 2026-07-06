@@ -21,7 +21,8 @@ export async function getPdfPageCount(file: File): Promise<number> {
   const bytes = await file.arrayBuffer()
   const doc = await pdfjs.getDocument({ data: bytes }).promise
   const count = doc.numPages
-  doc.destroy()
+  // pdfjs-dist v4+ removed destroy() — cleanup() releases internal resources
+  await doc.cleanup()
   return count
 }
 
@@ -54,5 +55,5 @@ export async function renderPdfPageToCanvas(
   await page.render({ canvasContext: ctx, viewport }).promise
 
   page.cleanup()
-  doc.destroy()
+  await doc.cleanup()
 }
