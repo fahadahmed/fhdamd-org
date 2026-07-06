@@ -286,4 +286,80 @@ export const user = {
       return { success: true };
     },
   }),
+
+  // Creates a short-lived session cookie for an anonymous Firebase user so
+  // server-side actions can verify them via verifySessionCookie as usual.
+  createAnonymousSession: defineAction({
+    accept: 'json',
+    input: z.object({ idToken: z.string() }),
+    handler: async (input, context) => {
+      const auth = await getFirebaseAuth();
+      try {
+        const decoded = await auth.verifyIdToken(input.idToken);
+        if (decoded.firebase.sign_in_provider !== 'anonymous') {
+          return { success: false, error: 'Invalid token type' };
+        }
+        const oneHour = 60 * 60 * 1000;
+        const sessionCookie = await auth.createSessionCookie(input.idToken, { expiresIn: oneHour });
+        context.cookies.set('__session', sessionCookie, {
+          path: '/',
+          httpOnly: true,
+          secure: import.meta.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 60 * 60,
+        });
+        log.event("👤 anon-session-created", { feature: "anonymous-auth", userId: decoded.uid });
+        return { success: true };
+      } catch (error) {
+        log.exception(error as Error, { feature: "anonymous-auth" });
+        return { success: false, error: 'Failed to create anonymous session' };
+      }
+    },
+  }),
+
+  // Called after linkWithCredential succeeds client-side. Creates a real
+  // session cookie for the now-permanent account and initialises their
+  // Firestore profile if it doesn't exist yet (anon users have none).
+  finalizeLinkedUser: defineAction({
+    accept: 'json',
+    input: z.object({ idToken: z.string(), name: z.string().optional() }),
+    handler: async (input, context) => {
+      const auth = await getFirebaseAuth();
+      try {
+        const decoded = await auth.verifyIdToken(input.idToken);
+        if (decoded.firebase.sign_in_provider === 'anonymous') {
+          return { success: false, error: 'Token is still anonymous' };
+        }
+
+        const firestore = await getFirebaseFirestore();
+        const userRef = firestore.collection('users').doc(decoded.uid);
+        const userDoc = await userRef.get();
+        if (!userDoc.exists) {
+          await userRef.set({
+            profile: {
+              name: input.name ?? decoded.name ?? decoded.email ?? 'Riqa user',
+              isSubscriber: false,
+              credits: 0,
+            },
+          });
+        }
+
+        const fiveDays = 60 * 60 * 24 * 5 * 1000;
+        const sessionCookie = await auth.createSessionCookie(input.idToken, { expiresIn: fiveDays });
+        context.cookies.set('__session', sessionCookie, {
+          path: '/',
+          httpOnly: true,
+          secure: import.meta.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 60 * 60 * 24 * 5,
+        });
+
+        log.business("🔐 user-linked", { feature: "anonymous-upgrade", userId: decoded.uid });
+        return { success: true };
+      } catch (error) {
+        log.exception(error as Error, { feature: "anonymous-upgrade" });
+        return { success: false, error: 'Failed to finalise account' };
+      }
+    },
+  }),
 };

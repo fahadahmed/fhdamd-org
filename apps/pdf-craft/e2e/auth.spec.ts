@@ -11,7 +11,19 @@ test('unauthenticated user is redirected from /dashboard to /signin', async ({ p
   await expect(page).toHaveURL(/\/signin/);
 });
 
-test('unauthenticated user is redirected from /encryptpdf to /signin', async ({ page }) => {
+// Operation pages are now public — unauthenticated visitors see the tool, not a redirect.
+// The file <input> is hidden by CSS inside the FileDropzone — check the visible heading and
+// the dropzone button text instead.
+test('unauthenticated user can access /encryptpdf without being redirected', async ({ page }) => {
   await page.goto('/encryptpdf');
-  await expect(page).toHaveURL(/\/signin/);
+  await expect(page).toHaveURL('/encryptpdf');
+  await expect(page.getByRole('heading', { name: /protect pdf/i })).toBeVisible();
+  await expect(page.getByText(/drag and drop or click to browse/i)).toBeVisible();
+});
+
+test('unauthenticated user can access /mergepdf without being redirected', async ({ page }) => {
+  await page.goto('/mergepdf');
+  await expect(page).toHaveURL('/mergepdf');
+  await expect(page.getByRole('heading', { name: /merge pdfs/i })).toBeVisible();
+  await expect(page.getByText(/drag and drop or click to browse/i)).toBeVisible();
 });

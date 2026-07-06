@@ -60,3 +60,16 @@ export async function getFirebaseFirestore() {
   }
   return _db;
 }
+
+// Returns true when the __session cookie belongs to a real (non-anonymous) account.
+// Used by operation pages to tell their client components whether to skip the anon flow.
+export async function resolveIsAuthenticated(sessionCookieValue: string | undefined): Promise<boolean> {
+  if (!sessionCookieValue) return false;
+  try {
+    const auth = await getFirebaseAuth();
+    const decoded = await auth.verifySessionCookie(sessionCookieValue, true);
+    return decoded.firebase.sign_in_provider !== 'anonymous';
+  } catch {
+    return false;
+  }
+}

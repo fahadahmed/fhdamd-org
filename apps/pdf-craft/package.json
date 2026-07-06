@@ -12,6 +12,7 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
+    "test:e2e:local": "BASE_URL=http://localhost:4321 playwright test",
     "test:e2e:report": "playwright show-report"
   },
   "dependencies": {

@@ -4,15 +4,16 @@ import { actions } from 'astro:actions'
 import {
   Container, Stack, Text, Button, Input, FileDropzone, Callout, Card, Divider,
 } from '@fhdamd/threads'
-import * as Sentry from '@sentry/astro'
 import { logEvent } from '../../../utils/lib/analytics'
-import { XIcon, DownloadIcon, ErrorCallout, INSUFFICIENT_CREDITS_ERROR } from '../../shared'
+import { buildPrepareSession } from '../../../utils/lib/operationSession'
+import { XIcon, DownloadIcon, ErrorCallout } from '../../shared'
 
-export default function DecryptPdf({ creditCost }: { creditCost: number }) {
+export default function DecryptPdf({ creditCost, isAuthenticated = false }: { readonly creditCost: number; readonly isAuthenticated?: boolean }) {
   const [file, setFile]                 = useState<File | null>(null)
   const [password, setPassword]         = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
   const [downloadLink, setDownloadLink] = useState<string | null>(null)
+  const [claimToken, setClaimToken]     = useState<string | null>(null)
   const [error, setError]               = useState<string | null>(null)
   const [buttonLabel, setButtonLabel]   = useState('Unlock PDF')
 
@@ -20,9 +21,15 @@ export default function DecryptPdf({ creditCost }: { creditCost: number }) {
     if (files.length > 0) {
       setFile(files[0])
       setDownloadLink(null)
+      setClaimToken(null)
       setError(null)
     }
   }
+
+  const prepareSession = buildPrepareSession({
+    isAuthenticated, creditCost, defaultLabel: 'Unlock PDF',
+    setButtonLabel, setError: (e) => setError(e), setProcessing: setIsProcessing,
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,19 +38,13 @@ export default function DecryptPdf({ creditCost }: { creditCost: number }) {
     const requestId = crypto.randomUUID()
     const task = 'pdf-decrypt'
     setError(null)
-    setButtonLabel('Checking credits...')
     setIsProcessing(true)
 
-    const creditsResponse = await actions.credits.checkCredits({ task, requestId, creditCost })
-    if (!creditsResponse.data?.success) {
-      setError(INSUFFICIENT_CREDITS_ERROR)
-      setButtonLabel('Unlock PDF')
-      setIsProcessing(false)
-      return
-    }
+    if (!await prepareSession(task, requestId)) return
 
     logEvent('pdf_operation_started', { operation_type: task })
     setButtonLabel('Unlocking...')
+
     const formData = new FormData()
     formData.append('file', file)
     formData.append('password', password)
@@ -55,7 +56,12 @@ export default function DecryptPdf({ creditCost }: { creditCost: number }) {
       const response = await actions.operations.decryptPdf(formData)
       if (response.data?.success) {
         logEvent('pdf_operation_completed', { operation_type: task })
-        setDownloadLink(response.data.data?.fileUrl || null)
+        const token = response.data.data?.claimToken
+        if (token) {
+          setClaimToken(token)
+        } else {
+          setDownloadLink(response.data.data?.fileUrl || null)
+        }
       } else {
         logEvent('pdf_operation_failed', { operation_type: task })
         setError(response.data?.error || 'Failed to unlock PDF.')
@@ -70,7 +76,83 @@ export default function DecryptPdf({ creditCost }: { creditCost: number }) {
     }
   }
 
-  const reset = () => { setDownloadLink(null); setFile(null); setPassword(''); setError(null) }
+  const reset = () => { setDownloadLink(null); setClaimToken(null); setFile(null); setPassword(''); setError(null) }
+
+  const goToSignup = () => {
+    if (claimToken) sessionStorage.setItem('pendingClaimToken', claimToken)
+    globalThis.location.href = '/signup'
+  }
+
+  const goToSignin = () => {
+    if (claimToken) sessionStorage.setItem('pendingClaimToken', claimToken)
+    globalThis.location.href = '/signin'
+  }
+
+  const renderContent = () => {
+    if (claimToken) return (
+      <Stack gap={4} align="center" style={{ paddingBlock: 'var(--th-space-4)' }}>
+        <Callout variant="success" title="Your PDF is unlocked">
+          Create a free account to download it — no credit card required.
+        </Callout>
+        <div style={{ display: 'flex', gap: 'var(--th-space-3)', flexWrap: 'wrap' }}>
+          <Button variant="solid-terra" onClick={goToSignup}>Sign up to download</Button>
+          <Button variant="ghost" onClick={goToSignin}>Already have an account?</Button>
+        </div>
+      </Stack>
+    )
+    if (downloadLink) return (
+      <Stack gap={4} align="center" style={{ paddingBlock: 'var(--th-space-4)' }}>
+        <Callout variant="success" title="Your PDF is unlocked">
+          The password protection has been removed successfully.
+        </Callout>
+        <div style={{ display: 'flex', gap: 'var(--th-space-3)', flexWrap: 'wrap' }}>
+          <Button href={downloadLink} variant="solid-terra" icon={<DownloadIcon />}>
+            Download unlocked PDF
+          </Button>
+          <Button variant="ghost" onClick={reset}>Unlock another PDF</Button>
+        </div>
+      </Stack>
+    )
+    return (
+      <>
+        {!file ? (
+          <FileDropzone label="Upload PDF" hint="Drag and drop or click to browse — one PDF file"
+            accept="application/pdf" onFiles={handleFiles} />
+        ) : (
+          <Stack gap={3}>
+            <Text size="sm" color="2" weight={500}>Selected file</Text>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: 'var(--th-space-3) var(--th-space-4)',
+              borderRadius: 'var(--th-radius-md)',
+              border: '1px solid var(--th-color-border)',
+              background: 'var(--th-color-surface-2)',
+            }}>
+              <Text size="sm" color="1">{file.name}</Text>
+              <Button type="button" variant="ghost" size="sm" onClick={() => setFile(null)} aria-label="Remove file"><XIcon /></Button>
+            </div>
+          </Stack>
+        )}
+        {file && (
+          <>
+            <Divider />
+            <form onSubmit={handleSubmit}>
+              <Stack gap={4}>
+                <Input type="password" name="password" id="password" label="PDF password"
+                  hint="Enter the password that protects this file" value={password}
+                  onChange={e => setPassword(e.target.value)} autoComplete="current-password" required />
+                {error && <ErrorCallout message={error} />}
+                <Button type="submit" variant="solid-terra" disabled={isProcessing || !password}
+                  style={{ alignSelf: 'flex-start' }}>
+                  {buttonLabel}
+                </Button>
+              </Stack>
+            </form>
+          </>
+        )}
+      </>
+    )
+  }
 
   return (
     <Container>
@@ -86,77 +168,7 @@ export default function DecryptPdf({ creditCost }: { creditCost: number }) {
 
         <Card variant="elevated">
           <Stack gap={5} style={{ padding: 'var(--th-space-6)' }}>
-
-            {downloadLink ? (
-              <Stack gap={4} align="center" style={{ paddingBlock: 'var(--th-space-4)' }}>
-                <Callout variant="success" title="Your PDF is unlocked">
-                  The password protection has been removed successfully.
-                </Callout>
-                <div style={{ display: 'flex', gap: 'var(--th-space-3)', flexWrap: 'wrap' }}>
-                  <Button href={downloadLink} variant="solid-terra" icon={<DownloadIcon />}>
-                    Download unlocked PDF
-                  </Button>
-                  <Button variant="ghost" onClick={reset}>Unlock another PDF</Button>
-                </div>
-              </Stack>
-            ) : (
-              <>
-                {!file ? (
-                  <FileDropzone
-                    label="Upload PDF"
-                    hint="Drag and drop or click to browse — one PDF file"
-                    accept="application/pdf"
-                    onFiles={handleFiles}
-                  />
-                ) : (
-                  <Stack gap={3}>
-                    <Text size="sm" color="2" weight={500}>Selected file</Text>
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: 'var(--th-space-3) var(--th-space-4)',
-                      borderRadius: 'var(--th-radius-md)',
-                      border: '1px solid var(--th-color-border)',
-                      background: 'var(--th-color-surface-2)',
-                    }}>
-                      <Text size="sm" color="1">{file.name}</Text>
-                      <Button type="button" variant="ghost" size="sm" onClick={() => setFile(null)} aria-label="Remove file"><XIcon /></Button>
-                    </div>
-                  </Stack>
-                )}
-
-                {file && (
-                  <>
-                    <Divider />
-                    <form onSubmit={handleSubmit}>
-                      <Stack gap={4}>
-                        <Input
-                          type="password"
-                          name="password"
-                          id="password"
-                          label="PDF password"
-                          hint="Enter the password that protects this file"
-                          value={password}
-                          onChange={e => setPassword(e.target.value)}
-                          autoComplete="current-password"
-                          required
-                        />
-                        {error && <ErrorCallout message={error} />}
-                        <Button
-                          type="submit"
-                          variant="solid-terra"
-                          disabled={isProcessing || !password}
-                          style={{ alignSelf: 'flex-start' }}
-                        >
-                          {buttonLabel}
-                        </Button>
-                      </Stack>
-                    </form>
-                  </>
-                )}
-              </>
-            )}
+            {renderContent()}
 
           </Stack>
         </Card>

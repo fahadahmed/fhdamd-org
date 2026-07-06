@@ -17,21 +17,26 @@ export default function Dashboard({ operations }: { operations: Operation[] }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        // Fetch files and profile independently so a failure in one doesn't block the other
         try {
-          const filesRef  = collection(db, 'users', user.uid, 'files');
-          const snapshot  = await getDocs(filesRef);
+          const filesRef = collection(db, 'users', user.uid, 'files');
+          const snapshot = await getDocs(filesRef);
           setFiles(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+        } catch (error) {
+          console.error('Error fetching files:', error);
+          Sentry.captureException(error);
+          setFiles([]);
+        }
 
-          const profileRef  = doc(db, 'users', user.uid);
-          const profileSnap = await getDoc(profileRef);
+        try {
+          const profileSnap = await getDoc(doc(db, 'users', user.uid));
           if (profileSnap.exists()) {
             const data = profileSnap.data();
             if (data.profile) setProfile(data.profile);
           }
         } catch (error) {
-          console.error('Error fetching dashboard data:', error);
+          console.error('Error fetching profile:', error);
           Sentry.captureException(error);
-          setFiles([]);
         }
       }
       setLoading(false);

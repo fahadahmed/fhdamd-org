@@ -12,7 +12,7 @@ if (Astro.cookies.has("__session")) {
   if (sessionCookie) {
     try {
       const decodedCookie = await auth.verifySessionCookie(sessionCookie, true);
-      if (decodedCookie) {
+      if (decodedCookie && decodedCookie.firebase.sign_in_provider !== 'anonymous') {
         return Astro.redirect("/dashboard");
       }
     } catch (error: any) {
