@@ -2,7 +2,7 @@ import { baseEmail, emailButton, emailLabel } from "./base";
 
 const FONT = `'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif`;
 
-type OperationType = "pdf-merge" | "image-to-pdf" | "pdf-encrypt" | "pdf-decrypt";
+type OperationType = "pdf-merge" | "image-to-pdf" | "pdf-encrypt" | "pdf-decrypt" | "pdf-split";
 
 interface OperationConfig {
   icon: string;
@@ -54,6 +54,16 @@ const OPERATION_CONFIG: Record<OperationType, OperationConfig> = {
       `Password protection has been removed from <strong style="color: #2E2C28;">${fileName}</strong>.`,
     ctaLabel: "Download unlocked PDF",
     note: "Your unlocked PDF will be available for 24 hours.",
+  },
+  "pdf-split": {
+    icon: "✂️",
+    iconBg: "#E8F0FE",
+    subject: "Your Split PDF is Ready!",
+    heading: "Your PDF has been split",
+    description: (fileName) =>
+      `Your page ranges have been extracted and saved as <strong style="color: #2E2C28;">${fileName}</strong>.`,
+    ctaLabel: "Download split PDF",
+    note: "Your file will be available for 24 hours.",
   },
 };
 

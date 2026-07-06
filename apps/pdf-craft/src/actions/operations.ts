@@ -4,6 +4,7 @@ import { PDFDocument } from "pdf-lib";
 import { FieldValue } from "firebase-admin/firestore";
 import admin from "firebase-admin";
 import { v4 as uuidv4 } from "uuid";
+import JSZip from "jszip";
 import { getFirebaseAuth, getFirebaseApp } from "../firebase/server";
 import { publish } from "../server/pubsub/publisher";
 import { log } from "../utils/lib/logger";
@@ -371,6 +372,121 @@ export const operations = {
       } catch (error) {
         log.exception(error as Error, { requestId, feature: task });
         return { success: false, error: "Failed to decrypt PDF" };
+      }
+    },
+  }),
+
+  splitPdf: defineAction({
+    accept: "form",
+    input: z.object({
+      file: z.instanceof(File),
+      ranges: z.string(), // JSON string: {from:number,to:number}[]  (1-indexed, inclusive)
+      requestId: z.string(),
+      task: z.string(),
+      creditCost: z.coerce.number().int().positive(),
+    }),
+    handler: async (input, context) => {
+      const { file, ranges: rangesJson, requestId, task, creditCost } = input;
+      log.event("📄 app-operation", { requestId, feature: task, status: "start" });
+      try {
+        const ctx = await resolveAuth(context, requestId, task);
+        if (!ctx) return { success: false, error: "Unauthorized" };
+        const { userId, isAnonymous } = ctx;
+
+        // Parse + validate ranges
+        let ranges: { from: number; to: number }[];
+        try {
+          ranges = JSON.parse(rangesJson);
+        } catch {
+          return { success: false, error: "Invalid ranges format." };
+        }
+
+        const MAX_SPLIT_RANGES = 20;
+        if (!Array.isArray(ranges) || ranges.length === 0) {
+          return { success: false, error: "At least one range is required." };
+        }
+        if (ranges.length > MAX_SPLIT_RANGES) {
+          return { success: false, error: `Maximum ${MAX_SPLIT_RANGES} ranges allowed.` };
+        }
+
+        // Load source PDF — detect encrypted PDFs
+        const fileBytes = await file.arrayBuffer();
+        let sourceDoc: PDFDocument;
+        try {
+          sourceDoc = await PDFDocument.load(fileBytes);
+        } catch (err: any) {
+          const msg = err?.message ?? "";
+          if (msg.includes("encrypted") || msg.includes("password")) {
+            return { success: false, error: "This PDF is password-protected. Please decrypt it first using the Unlock PDF tool." };
+          }
+          throw err;
+        }
+        const pageCount = sourceDoc.getPageCount();
+
+        // Validate each range against actual page count
+        for (const r of ranges) {
+          if (!Number.isInteger(r.from) || !Number.isInteger(r.to)) {
+            return { success: false, error: "Range values must be integers." };
+          }
+          if (r.from < 1 || r.to > pageCount || r.from > r.to) {
+            return { success: false, error: `Range ${r.from}–${r.to} is outside the document (${pageCount} pages).` };
+          }
+        }
+
+        // Extract each range into a separate PDF buffer
+        const parts: { name: string; bytes: Uint8Array }[] = [];
+        for (let i = 0; i < ranges.length; i++) {
+          const { from, to } = ranges[i];
+          const partDoc = await PDFDocument.create();
+          const indices = Array.from({ length: to - from + 1 }, (_, k) => from - 1 + k);
+          const copied = await partDoc.copyPages(sourceDoc, indices);
+          copied.forEach((p) => partDoc.addPage(p));
+          parts.push({ name: `part-${i + 1}.pdf`, bytes: await partDoc.save() });
+        }
+
+        // Upload: single PDF if one range, zip if multiple
+        const fileId = firestore.collection("users").doc(userId).collection("files").doc().id;
+        const downloadToken = uuidv4();
+        let uploadBytes: Uint8Array | Buffer;
+        let outputFileName: string;
+        let contentType: string;
+
+        if (parts.length === 1) {
+          uploadBytes = parts[0].bytes;
+          outputFileName = `split-${Date.now()}.pdf`;
+          contentType = "application/pdf";
+        } else {
+          const zip = new JSZip();
+          parts.forEach(({ name, bytes }) => zip.file(name, bytes));
+          uploadBytes = Buffer.from(await zip.generateAsync({ type: "uint8array" }));
+          outputFileName = `split-${Date.now()}.zip`;
+          contentType = "application/zip";
+        }
+
+        const storagePath = `users/${userId}/${outputFileName}`;
+        await bucket.file(storagePath).save(Buffer.from(uploadBytes), {
+          metadata: { contentType, metadata: { firebaseStorageDownloadTokens: downloadToken } },
+        });
+
+        const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(storagePath)}?alt=media&token=${downloadToken}`;
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        log.debug("app-operation: file uploaded", { requestId, feature: task, userId, fileId });
+
+        await firestore.collection("users").doc(userId).collection("files").doc(fileId).set({
+          fileId, fileName: outputFileName, storagePath, fileUrl, operation: "split",
+          status: isAnonymous ? "pending" : "ready", creditCost,
+          createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp(),
+          expiresAt, deleted: false, deletedAt: null, deletionReason: null,
+        });
+        log.debug("app-operation: file metadata saved", { requestId, feature: task, userId, fileId });
+
+        if (isAnonymous) return anonPending(fileId, userId, requestId, task);
+
+        await finaliseOperation({ userId, email: ctx.email, fileId, fileName: outputFileName, fileUrl, eventType: "pdf-split", creditCost, requestId, task });
+        return { success: true, message: "PDF split successfully", data: { fileUrl } };
+      } catch (error) {
+        log.exception(error as Error, { requestId, feature: task });
+        return { success: false, error: "Failed to split PDF" };
       }
     },
   }),
