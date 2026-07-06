@@ -78,7 +78,8 @@ export default function SplitPdf({ creditCost, isAuthenticated = false }: { read
       const count = await getPdfPageCount(f)
       setPageCount(count)
       setRanges([{ from: 1, to: count }])
-    } catch {
+    } catch (err) {
+      console.error('[SplitPdf] getPdfPageCount failed:', err)
       setError('Could not read the PDF. Make sure it is a valid, unencrypted file.')
       setFile(null)
     }

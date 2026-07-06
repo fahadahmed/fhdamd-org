@@ -1,16 +1,14 @@
 'use client'
 
-// Import the worker file as a Vite asset URL — this is just a resolved path
-// string, NOT a module evaluation, so it does NOT trigger the browser-only
-// DOMMatrix reference that lives in the pdfjs library itself.
-import workerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
-
-// The pdfjs library itself is imported dynamically to keep it out of the
-// module-evaluation path during Astro SSR (where DOMMatrix is undefined).
+// The pdfjs library references browser-only globals (DOMMatrix) at evaluation
+// time, so we import it dynamically to keep it out of Astro's SSR module graph.
+// The worker is loaded from unpkg.com (version-locked) to avoid Vite/Astro
+// asset-resolution issues with node_modules ?url imports.
 async function getPdfjsLib() {
   const pdfjs = await import('pdfjs-dist')
   if (!pdfjs.GlobalWorkerOptions.workerSrc) {
-    pdfjs.GlobalWorkerOptions.workerSrc = workerSrc
+    pdfjs.GlobalWorkerOptions.workerSrc =
+      `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
   }
   return pdfjs
 }
