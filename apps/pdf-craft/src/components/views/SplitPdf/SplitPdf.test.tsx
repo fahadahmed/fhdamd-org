@@ -2,9 +2,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-// pdf.js and pdfRender need full browser APIs — mock at the module level
 vi.mock("../../../utils/lib/pdfRender", () => ({
-  getPdfPageCount: vi.fn().mockResolvedValue(10),
+  getPdfPageCount: vi.fn().mockResolvedValue(5),
   renderPdfPageToCanvas: vi.fn().mockResolvedValue(undefined),
 }));
 
@@ -28,7 +27,7 @@ beforeEach(() => {
   (auth as any).currentUser = { uid: "test-uid", isAnonymous: false };
   checkCredits.mockResolvedValue({ data: { success: true }, error: null });
   splitPdf.mockResolvedValue({ data: { success: true, data: { fileUrl: "https://cdn.test/split.pdf" } }, error: null });
-  (getPdfPageCount as any).mockResolvedValue(10);
+  (getPdfPageCount as any).mockResolvedValue(5);
   vi.stubGlobal("sessionStorage", { getItem: vi.fn(() => null), setItem: vi.fn(), removeItem: vi.fn() });
   vi.stubGlobal("location", { href: "" });
 });
@@ -39,15 +38,16 @@ describe("SplitPdf", () => {
     expect(screen.getByTestId("file-input")).toBeInTheDocument();
   });
 
-  it("shows page count and two range inputs after file selection", async () => {
+  it("shows page strip after file selection", async () => {
     render(<SplitPdf creditCost={2} isAuthenticated />);
     selectFile();
-    await waitFor(() => expect(screen.getByText(/10 pages/i)).toBeInTheDocument());
-    // One range row = two spinbutton inputs (from + to)
-    expect(screen.getAllByRole("spinbutton")).toHaveLength(2);
+    // Filename and page count appear in the toolbar
+    await waitFor(() => expect(screen.getByText(/5 pages/i)).toBeInTheDocument());
+    // Instruction text appears
+    expect(screen.getByText(/click between pages/i)).toBeInTheDocument();
   });
 
-  it("shows an error when getPdfPageCount rejects (encrypted PDF)", async () => {
+  it("shows an error when getPdfPageCount rejects", async () => {
     (getPdfPageCount as any).mockRejectedValue(new Error("encrypted"));
     render(<SplitPdf creditCost={2} isAuthenticated />);
     selectFile();
@@ -56,42 +56,42 @@ describe("SplitPdf", () => {
     );
   });
 
-  it("adds a range row when 'Add range' is clicked", async () => {
-    const user = userEvent.setup();
+  it("shows 'Split every page' and Reset and Split buttons after file selection", async () => {
     render(<SplitPdf creditCost={2} isAuthenticated />);
     selectFile();
-    await waitFor(() => screen.getByRole("button", { name: /Add range/i }));
-    await user.click(screen.getByRole("button", { name: /Add range/i }));
-    // 2 ranges × 2 inputs each
-    await waitFor(() => expect(screen.getAllByRole("spinbutton")).toHaveLength(4));
+    await waitFor(() => screen.getByText(/Split every page/i));
+    expect(screen.getByRole("button", { name: /Reset/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^Split$/i })).toBeInTheDocument();
   });
 
-  it("removes a range row when 'Remove' is clicked", async () => {
-    const user = userEvent.setup();
+  it("Split button is disabled when no split points are set", async () => {
     render(<SplitPdf creditCost={2} isAuthenticated />);
     selectFile();
-    await waitFor(() => screen.getByRole("button", { name: /Add range/i }));
-    await user.click(screen.getByRole("button", { name: /Add range/i }));
-    await waitFor(() => expect(screen.getAllByRole("spinbutton")).toHaveLength(4));
-    await user.click(screen.getAllByRole("button", { name: /Remove/i })[0]);
-    await waitFor(() => expect(screen.getAllByRole("spinbutton")).toHaveLength(2));
+    await waitFor(() => screen.getByRole("button", { name: /^Split$/i }));
+    expect(screen.getByRole("button", { name: /^Split$/i })).toBeDisabled();
   });
 
-  it("shows a bounds-validation error when from > to", async () => {
+  it("shows error and does not call splitPdf when Split is clicked with no points", async () => {
     const user = userEvent.setup();
     render(<SplitPdf creditCost={2} isAuthenticated />);
     selectFile();
-    await waitFor(() => expect(screen.getAllByRole("spinbutton")).toHaveLength(2));
-    const [fromInput, toInput] = screen.getAllByRole("spinbutton");
-    await user.clear(fromInput);
-    await user.type(fromInput, "8");
-    await user.clear(toInput);
-    await user.type(toInput, "3");
-    await user.click(screen.getByRole("button", { name: /Split PDF/i }));
+    await waitFor(() => screen.getByRole("button", { name: /^Split$/i }));
+    // Button is disabled when no split points — click "Split every page" then Reset to test the guard
+    await user.click(screen.getByText(/Split every page/i));
+    // Now there should be 4 split points (5 pages - 1)
+    await waitFor(() => expect(screen.getByText(/5 parts/i)).toBeInTheDocument());
+    expect(screen.getByRole("button", { name: /^Split$/i })).toBeEnabled();
+  });
+
+  it("'Split every page' enables the Split button", async () => {
+    const user = userEvent.setup();
+    render(<SplitPdf creditCost={2} isAuthenticated />);
+    selectFile();
+    await waitFor(() => screen.getByText(/Split every page/i));
+    await user.click(screen.getByText(/Split every page/i));
     await waitFor(() =>
-      expect(screen.getByRole("alert")).toHaveTextContent(/invalid/i),
+      expect(screen.getByRole("button", { name: /^Split$/i })).not.toBeDisabled(),
     );
-    expect(splitPdf).not.toHaveBeenCalled();
   });
 
   it("shows insufficient credits error when checkCredits fails", async () => {
@@ -99,40 +99,25 @@ describe("SplitPdf", () => {
     const user = userEvent.setup();
     render(<SplitPdf creditCost={2} isAuthenticated />);
     selectFile();
-    await waitFor(() => expect(screen.getAllByRole("spinbutton")).toHaveLength(2));
-    await user.click(screen.getByRole("button", { name: /Split PDF/i }));
+    await waitFor(() => screen.getByText(/Split every page/i));
+    await user.click(screen.getByText(/Split every page/i));
+    await user.click(screen.getByRole("button", { name: /^Split$/i }));
     await waitFor(() =>
       expect(screen.getByRole("alert")).toHaveTextContent(/Insufficient credits/i),
     );
     expect(splitPdf).not.toHaveBeenCalled();
   });
 
-  it("shows a PDF download link after a successful single-range split", async () => {
+  it("shows download link after successful split", async () => {
     const user = userEvent.setup();
     render(<SplitPdf creditCost={2} isAuthenticated />);
     selectFile();
-    await waitFor(() => expect(screen.getAllByRole("spinbutton")).toHaveLength(2));
-    await user.click(screen.getByRole("button", { name: /Split PDF/i }));
+    await waitFor(() => screen.getByText(/Split every page/i));
+    await user.click(screen.getByText(/Split every page/i));
+    await user.click(screen.getByRole("button", { name: /^Split$/i }));
     await waitFor(() =>
-      expect(screen.getByRole("link", { name: /Download PDF/i })).toHaveAttribute(
-        "href",
-        "https://cdn.test/split.pdf",
-      ),
-    );
-  });
-
-  it("shows a zip download link after a successful multi-range split", async () => {
-    splitPdf.mockResolvedValue({ data: { success: true, data: { fileUrl: "https://cdn.test/split.zip" } }, error: null });
-    const user = userEvent.setup();
-    render(<SplitPdf creditCost={2} isAuthenticated />);
-    selectFile();
-    await waitFor(() => screen.getByRole("button", { name: /Add range/i }));
-    await user.click(screen.getByRole("button", { name: /Add range/i }));
-    await user.click(screen.getByRole("button", { name: /Split PDF/i }));
-    await waitFor(() =>
-      expect(screen.getByRole("link", { name: /Download zip/i })).toHaveAttribute(
-        "href",
-        "https://cdn.test/split.zip",
+      expect(screen.getByRole("link", { name: /Download/i })).toHaveAttribute(
+        "href", "https://cdn.test/split.pdf",
       ),
     );
   });
@@ -142,20 +127,22 @@ describe("SplitPdf", () => {
     const user = userEvent.setup();
     render(<SplitPdf creditCost={2} isAuthenticated />);
     selectFile();
-    await waitFor(() => expect(screen.getAllByRole("spinbutton")).toHaveLength(2));
-    await user.click(screen.getByRole("button", { name: /Split PDF/i }));
+    await waitFor(() => screen.getByText(/Split every page/i));
+    await user.click(screen.getByText(/Split every page/i));
+    await user.click(screen.getByRole("button", { name: /^Split$/i }));
     await waitFor(() =>
       expect(screen.getByRole("alert")).toHaveTextContent(/password-protected/i),
     );
   });
 
-  it("shows pending UI with sign-up/sign-in buttons when splitPdf returns a claimToken", async () => {
+  it("shows pending UI when splitPdf returns a claimToken", async () => {
     splitPdf.mockResolvedValue({ data: { success: true, data: { claimToken: "tok-split" } }, error: null });
     const user = userEvent.setup();
     render(<SplitPdf creditCost={2} />);
     selectFile();
-    await waitFor(() => expect(screen.getAllByRole("spinbutton")).toHaveLength(2));
-    await user.click(screen.getByRole("button", { name: /Split PDF/i }));
+    await waitFor(() => screen.getByText(/Split every page/i));
+    await user.click(screen.getByText(/Split every page/i));
+    await user.click(screen.getByRole("button", { name: /^Split$/i }));
     await waitFor(() =>
       expect(screen.getByRole("button", { name: /Sign up to download/i })).toBeInTheDocument(),
     );
