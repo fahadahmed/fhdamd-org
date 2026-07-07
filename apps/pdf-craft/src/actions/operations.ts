@@ -529,9 +529,15 @@ export const operations = {
 
         const processorRes = await callProcessor("/compress", processorForm);
         if (!processorRes.ok) {
-          const body = await processorRes.json() as { error?: string };
-          log.warn("app-operation: processor error", { requestId, feature: task, error: body.error });
-          return { success: false, error: body.error || "Compression failed" };
+          let errorMessage = "Compression failed";
+          try {
+            const body = await processorRes.json() as { error?: string };
+            errorMessage = body.error || errorMessage;
+          } catch {
+            // Processor returned a non-JSON body (e.g. HTML 404 — route not yet deployed)
+          }
+          log.warn("app-operation: processor error", { requestId, feature: task, error: errorMessage });
+          return { success: false, error: errorMessage };
         }
 
         const alreadyOptimised = processorRes.headers.get("X-Already-Optimised") === "true";
