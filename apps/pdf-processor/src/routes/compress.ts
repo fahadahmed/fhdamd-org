@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import multer from 'multer';
-import { execFile } from 'child_process';
-import { promisify } from 'util';
-import { writeFile, readFile } from 'fs/promises';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { writeFile, readFile } from 'node:fs/promises';
 import { withTempFiles } from '../utils/tempFile';
 
 const execFileAsync = promisify(execFile);
-const upload = multer({ storage: multer.memoryStorage() });
+// 50 MB limit — consistent with the encrypt/decrypt routes
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 50 * 1024 * 1024 } });
 const router = Router();
 
 type Quality = 'low' | 'medium' | 'high';
