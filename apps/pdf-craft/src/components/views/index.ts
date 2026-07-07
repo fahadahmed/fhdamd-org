@@ -9,5 +9,6 @@ export { default as PaymentCancel } from "./PaymentCancel";
 export { default as ForgotPasswordForm } from "./ForgotPasswordForm";
 export { default as ResetPasswordForm } from "./ResetPasswordForm";
 export { SplitPdf } from "./SplitPdf";
+export { default as CompressPdf } from "./CompressPdf";
 
 export * from "./SignupForm";

@@ -1,0 +1,59 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { CompressPdf } from "../components";
+import { fetchCms } from "../utils/lib/cms";
+import { resolveIsAuthenticated } from "../firebase/server";
+import { Container, Section, Accordion } from "@fhdamd/threads";
+import type { Operation, Faq } from "../utils";
+
+type OperationsResponse = { data: { allOperations: Operation[] } }
+type FaqsResponse = { data: { allFaqs: Faq[] } }
+
+const [opsRes, faqsRes] = await Promise.all([
+  fetchCms<OperationsResponse>('operations'),
+  fetchCms<FaqsResponse>('faqs', { area: 'compress' }),
+])
+
+const op = opsRes.data.allOperations.find(o => o.iconKey === 'compress')
+const creditCost = op?.creditCost ?? 2
+const faqItems = faqsRes.data.allFaqs.map(({ title, content }) => ({ question: title, answer: content }))
+const isAuthenticated = await resolveIsAuthenticated(Astro.cookies.get('__session')?.value)
+---
+
+<Layout
+  title="Compress PDF — Riqa"
+  description="Reduce your PDF file size with three quality presets. See before and after sizes instantly. Pay per use — no subscription."
+>
+  <Fragment slot="head">
+    {faqItems.length > 0 && (
+      <script
+        is:inline
+        type="application/ld+json"
+        set:html={JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqItems.map(({ question, answer }) => ({
+            "@type": "Question",
+            name: question,
+            acceptedAnswer: { "@type": "Answer", text: answer },
+          })),
+        })}
+      />
+    )}
+  </Fragment>
+
+  <CompressPdf creditCost={creditCost} isAuthenticated={isAuthenticated} client:load />
+
+  {faqItems.length > 0 && (
+    <Container>
+      <Section size="md">
+        <h2 style="font-size:var(--th-text-xl);font-weight:650;margin-bottom:var(--th-space-6)">
+          Frequently asked questions
+        </h2>
+        <div style="max-width:680px">
+          <Accordion client:load items={faqItems} />
+        </div>
+      </Section>
+    </Container>
+  )}
+</Layout>

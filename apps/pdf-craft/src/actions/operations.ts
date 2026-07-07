@@ -503,4 +503,66 @@ export const operations = {
       }
     },
   }),
+
+  compressPdf: defineAction({
+    accept: "form",
+    input: z.object({
+      file: z.instanceof(File),
+      quality: z.enum(["low", "medium", "high"]).default("medium"),
+      requestId: z.string(),
+      task: z.string(),
+      creditCost: z.coerce.number().int().positive(),
+    }),
+    handler: async (input, context) => {
+      const { file, quality, requestId, task, creditCost } = input;
+      log.event("📄 app-operation", { requestId, feature: task, status: "start" });
+      try {
+        const ctx = await resolveAuth(context, requestId, task);
+        if (!ctx) return { success: false, error: "Unauthorized" };
+        const { userId, isAnonymous } = ctx;
+
+        const fileId = firestore.collection("users").doc(userId).collection("files").doc().id;
+
+        const processorForm = new FormData();
+        processorForm.append("file", file);
+        processorForm.append("quality", quality);
+
+        const processorRes = await callProcessor("/compress", processorForm);
+        if (!processorRes.ok) {
+          const body = await processorRes.json() as { error?: string };
+          log.warn("app-operation: processor error", { requestId, feature: task, error: body.error });
+          return { success: false, error: body.error || "Compression failed" };
+        }
+
+        const alreadyOptimised = processorRes.headers.get("X-Already-Optimised") === "true";
+        const pdfBytes = Buffer.from(await processorRes.arrayBuffer());
+        const compressedFileName = `compressed-${Date.now()}.pdf`;
+        const storagePath = `users/${userId}/${compressedFileName}`;
+        const downloadToken = uuidv4();
+
+        await bucket.file(storagePath).save(pdfBytes, {
+          metadata: { contentType: "application/pdf", metadata: { firebaseStorageDownloadTokens: downloadToken } },
+        });
+
+        const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(storagePath)}?alt=media&token=${downloadToken}`;
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+        await firestore.collection("users").doc(userId).collection("files").doc(fileId).set({
+          fileId, fileName: compressedFileName, storagePath, fileUrl, operation: "compress",
+          status: isAnonymous ? "pending" : "ready", creditCost,
+          createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp(),
+          expiresAt, deleted: false, deletedAt: null, deletionReason: null,
+        });
+        log.debug("app-operation: file metadata saved", { requestId, feature: task, userId, fileId });
+
+        if (isAnonymous) return anonPending(fileId, userId, requestId, task);
+
+        await finaliseOperation({ userId, email: ctx.email, fileId, fileName: compressedFileName, fileUrl, eventType: "pdf-compress", creditCost, requestId, task });
+        return { success: true, message: "PDF compressed successfully", data: { fileUrl, alreadyOptimised } };
+      } catch (error) {
+        log.exception(error as Error, { requestId, feature: task });
+        return { success: false, error: "Failed to compress PDF" };
+      }
+    },
+  }),
 };

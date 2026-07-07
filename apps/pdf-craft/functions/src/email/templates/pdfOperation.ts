@@ -2,7 +2,7 @@ import { baseEmail, emailButton, emailLabel } from "./base";
 
 const FONT = `'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif`;
 
-type OperationType = "pdf-merge" | "image-to-pdf" | "pdf-encrypt" | "pdf-decrypt" | "pdf-split";
+type OperationType = "pdf-merge" | "image-to-pdf" | "pdf-encrypt" | "pdf-decrypt" | "pdf-split" | "pdf-compress";
 
 interface OperationConfig {
   icon: string;
@@ -64,6 +64,16 @@ const OPERATION_CONFIG: Record<OperationType, OperationConfig> = {
       `Your page ranges have been extracted and saved as <strong style="color: #2E2C28;">${fileName}</strong>.`,
     ctaLabel: "Download split PDF",
     note: "Your file will be available for 24 hours.",
+  },
+  "pdf-compress": {
+    icon: "🗜️",
+    iconBg: "#FDF3E7",
+    subject: "Your Compressed PDF is Ready!",
+    heading: "Your PDF has been compressed",
+    description: (fileName) =>
+      `<strong style="color: #2E2C28;">${fileName}</strong> has been compressed and is ready to download.`,
+    ctaLabel: "Download compressed PDF",
+    note: "Your compressed PDF will be available for 24 hours.",
   },
 };
 
