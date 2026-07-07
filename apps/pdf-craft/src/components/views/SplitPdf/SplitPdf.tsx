@@ -102,6 +102,7 @@ function PageThumb({ file, pageNumber, scale, mode, isSelected, onToggleSelect }
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', padding: '0 4px', flexShrink: 0 }}>
       <button
         onClick={onToggleSelect}
+        aria-label={`Page ${pageNumber}`}
         style={{
           position: 'relative', display: 'inline-flex', padding: '4px',
           border: 'none', borderRadius: 'var(--th-radius-sm)',
@@ -323,7 +324,7 @@ export default function SplitPdf({
 
     const ranges = mode === 'split'
       ? splits.actionRanges
-      : ops.pages.filter(p => ops.selected.has(p.id)).map((_, i) => ({ from: i + 1, to: i + 1 }))
+      : ops.pages.flatMap((p, i) => (ops.selected.has(p.id) ? [{ from: i + 1, to: i + 1 }] : []))
 
     const formData = new FormData()
     formData.append('file', file)
