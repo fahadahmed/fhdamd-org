@@ -13,7 +13,7 @@ COPY apps/pdf-processor/src apps/pdf-processor/src
 RUN pnpm --filter=pdf-processor run build
 
 FROM node:22-alpine
-RUN apk add --no-cache qpdf && corepack enable
+RUN apk add --no-cache qpdf ghostscript && corepack enable
 WORKDIR /app
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/pdf-processor/package.json apps/pdf-processor/
