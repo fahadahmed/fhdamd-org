@@ -3,6 +3,7 @@ import { handleImageToPdf } from "./imageToPdf";
 import { handleMergePdfs } from "./mergePdfs";
 import { handleEncryptPdf } from "./encrypt";
 import { handleDecryptPdf } from "./decrypt";
+import { handleSplitPdf } from "./split";
 import { handleUserCreated } from "./userCreated";
 import { handleCreditsPurchased } from "./creditsPurchased";
 
@@ -11,6 +12,7 @@ export const eventHandlers: Record<string, AppEventHandler> = {
   "pdf-merge": handleMergePdfs,
   "pdf-encrypt": handleEncryptPdf,
   "pdf-decrypt": handleDecryptPdf,
+  "pdf-split": handleSplitPdf,
   "user-created": handleUserCreated,
   "credits-purchased": handleCreditsPurchased,
 };

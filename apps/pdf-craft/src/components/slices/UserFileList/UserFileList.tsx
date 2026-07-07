@@ -8,6 +8,7 @@ const OP_META: Record<string, { label: string; variant: BadgeVariant }> = {
   'image-to-pdf': { label: 'Image to PDF', variant: 'sage'    },
   'encrypt':      { label: 'Protect',      variant: 'info'    },
   'decrypt':      { label: 'Unlock',       variant: 'neutral' },
+  'split':        { label: 'Split',        variant: 'terra'   },
 }
 
 function OperationBadge({ op }: { op: string }) {

@@ -1,5 +1,5 @@
 export interface PdfOperationPayload {
-  eventType: "pdf-merge" | "image-to-pdf" | "pdf-encrypt" | "pdf-decrypt";
+  eventType: "pdf-merge" | "image-to-pdf" | "pdf-encrypt" | "pdf-decrypt" | "pdf-split";
   userId: string;
   userEmail: string;
   fileId: string;
