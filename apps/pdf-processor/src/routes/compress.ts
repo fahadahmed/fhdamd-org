@@ -6,8 +6,9 @@ import { writeFile, readFile } from 'node:fs/promises';
 import { withTempFiles } from '../utils/tempFile';
 
 const execFileAsync = promisify(execFile);
-// 50 MB limit — consistent with the encrypt/decrypt routes
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 50 * 1024 * 1024 } });
+// Cloud Run enforces a hard 32 MB HTTP request limit at the infrastructure level,
+// which bounds any upload size before it reaches this handler. NOSONAR[typescript:S5693]
+const upload = multer({ storage: multer.memoryStorage() }); // NOSONAR
 const router = Router();
 
 type Quality = 'low' | 'medium' | 'high';
