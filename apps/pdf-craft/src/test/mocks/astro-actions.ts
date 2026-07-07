@@ -7,6 +7,7 @@ export const encryptPdf = vi.fn().mockResolvedValue({ data: { success: true, dat
 export const decryptPdf = vi.fn().mockResolvedValue({ data: { success: true, data: { fileUrl: "https://cdn.test/decrypted.pdf" } }, error: null });
 export const imageToPdf = vi.fn().mockResolvedValue({ data: { data: { fileUrl: "https://cdn.test/output.pdf" } }, error: null });
 export const splitPdf = vi.fn().mockResolvedValue({ data: { success: true, data: { fileUrl: "https://cdn.test/split.pdf" } }, error: null });
+export const compressPdf = vi.fn().mockResolvedValue({ data: { success: true, data: { fileUrl: "https://cdn.test/compressed.pdf", alreadyOptimised: false } }, error: null });
 export const verifyUser = vi.fn().mockResolvedValue({ data: { redirected: false }, error: null });
 export const createUser = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
 export const signOutUser = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
@@ -19,7 +20,7 @@ export const claimFile = vi.fn().mockResolvedValue({ data: { success: true, payl
 
 export const actions = {
   credits: { checkCredits },
-  operations: { mergePdfs, encryptPdf, decryptPdf, imageToPdf, splitPdf },
+  operations: { mergePdfs, encryptPdf, decryptPdf, imageToPdf, splitPdf, compressPdf },
   user: { verifyUser, createUser, signOutUser, sendPasswordReset, createAnonymousSession, finalizeLinkedUser },
   contact: { sendMessage },
   claims: { migrateFile, claimFile },

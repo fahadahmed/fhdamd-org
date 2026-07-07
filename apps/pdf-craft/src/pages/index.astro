@@ -171,7 +171,7 @@ const ss = { marginBottom: "var(--th-space-8)" }; // shared section style
         <div class="op-grid">
           {
             operations.map((op, i) => (
-              <div class={op.active ? "op-live" : ""}>
+              <div>
                 <OpCard
                   name={op.title}
                   description={op.detail}
@@ -281,35 +281,21 @@ const ss = { marginBottom: "var(--th-space-8)" }; // shared section style
 </Layout>
 
 <style is:global>
-  /* OpCard grid — matches the reference HTML breakpoints exactly */
   .op-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 14px;
   }
 
-  /* Live ops span 2 columns on desktop */
-  .op-live {
-    grid-column: span 2;
-  }
-
-  /* Tablet — collapse to 2-column grid, live cards still span 2 */
   @media (max-width: 900px) {
     .op-grid {
       grid-template-columns: repeat(2, 1fr);
     }
-    .op-live {
-      grid-column: span 2;
-    }
   }
 
-  /* Mobile — single column, everything full width */
   @media (max-width: 480px) {
     .op-grid {
       grid-template-columns: 1fr;
-    }
-    .op-live {
-      grid-column: span 1;
     }
   }
 </style>
