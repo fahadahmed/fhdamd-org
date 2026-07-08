@@ -1,6 +1,6 @@
 import { defineAction } from "astro:actions";
 import { z } from "astro:schema";
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, PDFDict, PDFName, PDFHexString, StandardFonts, rgb } from "pdf-lib";
 import { FieldValue } from "firebase-admin/firestore";
 import admin from "firebase-admin";
 import { v4 as uuidv4 } from "uuid";
@@ -568,6 +568,132 @@ export const operations = {
       } catch (error) {
         log.exception(error as Error, { requestId, feature: task });
         return { success: false, error: "Failed to compress PDF" };
+      }
+    },
+  }),
+
+  signPdf: defineAction({
+    accept: "form",
+    input: z.object({
+      file: z.instanceof(File),
+      signatureImage: z.string(), // base64 data URL: "data:image/png;base64,..."
+      placements: z.string(),     // JSON: {page,x,y,width,height}[] — PDF point-space (bottom-left origin)
+      signerName: z.string().min(1),
+      signatureMethod: z.enum(["typed", "drawn", "uploaded"]).default("typed"),
+      requestId: z.string(),
+      task: z.string(),
+      creditCost: z.coerce.number().int().positive(),
+    }),
+    handler: async (input, context) => {
+      const { file, signatureImage, placements: placementsJson, signerName, signatureMethod, requestId, task, creditCost } = input;
+      log.event("📄 app-operation", { requestId, feature: task, status: "start" });
+      try {
+        const ctx = await resolveAuth(context, requestId, task);
+        if (!ctx) return { success: false, error: "Unauthorized" };
+        const { userId, isAnonymous } = ctx;
+
+        // Parse placements
+        let placements: { page: number; x: number; y: number; width: number; height: number }[];
+        try {
+          placements = JSON.parse(placementsJson);
+        } catch {
+          return { success: false, error: "Invalid placements format." };
+        }
+        if (!Array.isArray(placements) || placements.length === 0) {
+          return { success: false, error: "At least one placement is required." };
+        }
+
+        // Load PDF — detect encrypted
+        const fileBytes = await file.arrayBuffer();
+        let pdfDoc: PDFDocument;
+        try {
+          pdfDoc = await PDFDocument.load(fileBytes);
+        } catch (err: any) {
+          const msg = (err?.message ?? "") as string;
+          if (msg.includes("encrypted") || msg.includes("password")) {
+            return { success: false, error: "This PDF is password-protected. Please decrypt it first using the Unlock PDF tool." };
+          }
+          throw err;
+        }
+
+        // Embed signature PNG once — re-used for every placement
+        const base64 = signatureImage.replace(/^data:image\/png;base64,/, "");
+        const pngBytes = Buffer.from(base64, "base64");
+        const pngImage = await pdfDoc.embedPng(pngBytes);
+
+        // Standard font for audit lines — no font embedding needed
+        const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+        // Timestamp must come from the server — never trust a client-supplied value
+        const signedAt = new Date();
+        const isoTimestamp = signedAt.toISOString();
+        const auditText = `Signed electronically by ${signerName} · ${signedAt.toUTCString()}`;
+
+        // Apply each placement
+        for (const p of placements) {
+          const pageIndex = p.page - 1; // convert 1-indexed to 0-indexed
+          if (pageIndex < 0 || pageIndex >= pdfDoc.getPageCount()) {
+            return { success: false, error: `Page ${p.page} does not exist in this document.` };
+          }
+          const page = pdfDoc.getPage(pageIndex);
+          const { width: pw, height: ph } = page.getSize();
+
+          // Bounds-check against actual page dimensions
+          if (p.x < 0 || p.y < 0 || p.x + p.width > pw || p.y + p.height > ph) {
+            return { success: false, error: `Placement on page ${p.page} is outside the page boundaries.` };
+          }
+
+          page.drawImage(pngImage, { x: p.x, y: p.y, width: p.width, height: p.height });
+
+          // Audit line drawn just below the signature, falling back to above if near bottom edge
+          const auditFontSize = 6.5;
+          const auditY = p.y > 20 ? p.y - 12 : p.y + p.height + 4;
+          page.drawText(auditText, {
+            x: p.x,
+            y: auditY,
+            size: auditFontSize,
+            font: helvetica,
+            color: rgb(0.45, 0.44, 0.42),
+            maxWidth: pw - p.x - 10,
+          });
+        }
+
+        // Metadata — setModificationDate must be called first to ensure Info dict exists
+        pdfDoc.setModificationDate(signedAt);
+        pdfDoc.setSubject(`Electronically signed by ${signerName} on ${isoTimestamp}`);
+        const infoDict = pdfDoc.context.lookup(pdfDoc.context.trailerInfo.Info!, PDFDict);
+        infoDict.set(PDFName.of("PDFCraftSignedBy"), PDFHexString.fromText(signerName));
+        infoDict.set(PDFName.of("PDFCraftSignedAtUTC"), PDFHexString.fromText(isoTimestamp));
+        infoDict.set(PDFName.of("PDFCraftSignatureMethod"), PDFHexString.fromText(signatureMethod));
+
+        const signedBytes = await pdfDoc.save();
+        const fileId = firestore.collection("users").doc(userId).collection("files").doc().id;
+        const signedFileName = `signed-${Date.now()}.pdf`;
+        const storagePath = `users/${userId}/${signedFileName}`;
+        const downloadToken = uuidv4();
+
+        await bucket.file(storagePath).save(Buffer.from(signedBytes), {
+          metadata: { contentType: "application/pdf", metadata: { firebaseStorageDownloadTokens: downloadToken } },
+        });
+
+        const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(storagePath)}?alt=media&token=${downloadToken}`;
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+        await firestore.collection("users").doc(userId).collection("files").doc(fileId).set({
+          fileId, fileName: signedFileName, storagePath, fileUrl, operation: "sign",
+          status: isAnonymous ? "pending" : "ready", creditCost,
+          createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp(),
+          expiresAt, deleted: false, deletedAt: null, deletionReason: null,
+        });
+        log.debug("app-operation: file metadata saved", { requestId, feature: task, userId, fileId });
+
+        if (isAnonymous) return anonPending(fileId, userId, requestId, task);
+
+        await finaliseOperation({ userId, email: ctx.email, fileId, fileName: signedFileName, fileUrl, eventType: "pdf-sign", creditCost, requestId, task });
+        return { success: true, message: "PDF signed successfully", data: { fileUrl } };
+      } catch (error) {
+        log.exception(error as Error, { requestId, feature: task });
+        return { success: false, error: "Failed to sign PDF" };
       }
     },
   }),

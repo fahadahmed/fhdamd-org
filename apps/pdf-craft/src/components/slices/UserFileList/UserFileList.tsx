@@ -10,6 +10,7 @@ const OP_META: Record<string, { label: string; variant: BadgeVariant }> = {
   'decrypt':      { label: 'Unlock',       variant: 'neutral' },
   'split':        { label: 'Split',        variant: 'terra'   },
   'compress':     { label: 'Compress',     variant: 'info'    },
+  'sign':         { label: 'Sign',         variant: 'neutral' },
 }
 
 function OperationBadge({ op }: { op: string }) {
