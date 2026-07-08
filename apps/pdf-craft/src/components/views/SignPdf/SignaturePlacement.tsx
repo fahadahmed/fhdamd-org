@@ -247,7 +247,7 @@ export default function SignaturePlacement({
                 draggable={false}
               />
               {/* Resize handle — bottom-right corner */}
-              <div
+              <button
                 onPointerDown={onResizePointerDown}
                 onPointerMove={onResizePointerMove}
                 onPointerUp={onResizePointerUp}
@@ -257,7 +257,7 @@ export default function SignaturePlacement({
                   width: '12px', height: '12px',
                   backgroundColor: 'var(--th-color-accent)',
                   borderRadius: '2px', cursor: 'nwse-resize',
-                  touchAction: 'none',
+                  touchAction: 'none', border: 'none', padding: 0,
                 }}
               />
             </div>
