@@ -133,13 +133,16 @@ export default function SignatureModal({ isOpen, onClose, onConfirm }: Signature
     }
   }, [isOpen])
 
-  // Re-render all font previews when name or ink changes
+  // Re-render all font previews when name, ink, or open state changes.
+  // isOpen must be in the dependency array: when the modal first opens the canvas
+  // refs are freshly mounted and won't render unless this effect re-fires.
   useEffect(() => {
+    if (!isOpen) return
     FONT_STYLES.forEach(fs => {
       const canvas = previewCanvasRefs.current[fs.id]
       if (canvas) renderSignatureToCanvas(canvas, signerName || 'Your Name', fs, inkColor)
     })
-  }, [signerName, inkColor])
+  }, [signerName, inkColor, isOpen])
 
   // ── Draw tab handlers ──────────────────────────────────────────────────────
 
@@ -342,7 +345,7 @@ export default function SignatureModal({ isOpen, onClose, onConfirm }: Signature
                     >
                       <canvas
                         ref={el => { previewCanvasRefs.current[fs.id] = el }}
-                        style={{ display: 'block', maxWidth: '100%', pointerEvents: 'none' }}
+                        style={{ display: 'block', width: '100%', aspectRatio: `${CANVAS_W}/${CANVAS_H}`, pointerEvents: 'none' }}
                         width={CANVAS_W}
                         height={CANVAS_H}
                       />
