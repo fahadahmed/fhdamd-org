@@ -1,12 +1,15 @@
 User-agent: *
 Allow: /
+
+# Authenticated-only and utility pages — no crawlable content
 Disallow: /dashboard
-Disallow: /mergepdf
-Disallow: /encryptpdf
-Disallow: /decryptpdf
-Disallow: /imagetopdf
+Disallow: /buy-credits
 Disallow: /payment-success
 Disallow: /payment-cancel
 Disallow: /signin
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
 
-Sitemap: https://riqa.app/sitemap.xml
+# Sitemap is now generated dynamically at build time by @astrojs/sitemap
+Sitemap: https://riqa.app/sitemap-index.xml
