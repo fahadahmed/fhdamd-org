@@ -189,6 +189,38 @@ async function buildSplitOutput(
   };
 }
 
+// ── signPdf helpers ───────────────────────────────────────────────────────────
+
+type SignPlacement = { page: number; x: number; y: number; width: number; height: number };
+
+/** Draws the signature + audit line at each placement. Returns an error string or null. */
+function applySignaturePlacements(
+  pdfDoc: PDFDocument,
+  placements: SignPlacement[],
+  pngImage: Awaited<ReturnType<PDFDocument["embedPng"]>>,
+  helvetica: Awaited<ReturnType<PDFDocument["embedFont"]>>,
+  auditText: string,
+): string | null {
+  for (const p of placements) {
+    const pageIndex = p.page - 1;
+    if (pageIndex < 0 || pageIndex >= pdfDoc.getPageCount()) {
+      return `Page ${p.page} does not exist in this document.`;
+    }
+    const page = pdfDoc.getPage(pageIndex);
+    const { width: pw, height: ph } = page.getSize();
+    if (p.x < 0 || p.y < 0 || p.x + p.width > pw || p.y + p.height > ph) {
+      return `Placement on page ${p.page} is outside the page boundaries.`;
+    }
+    page.drawImage(pngImage, { x: p.x, y: p.y, width: p.width, height: p.height });
+    const auditY = p.y > 20 ? p.y - 12 : p.y + p.height + 4;
+    page.drawText(auditText, {
+      x: p.x, y: auditY, size: 6.5, font: helvetica,
+      color: rgb(0.45, 0.44, 0.42), maxWidth: pw - p.x - 10,
+    });
+  }
+  return null;
+}
+
 export const operations = {
   mergePdfs: defineAction({
     accept: "form",
@@ -629,34 +661,8 @@ export const operations = {
         const isoTimestamp = signedAt.toISOString();
         const auditText = `Signed electronically by ${signerName} · ${signedAt.toUTCString()}`;
 
-        // Apply each placement
-        for (const p of placements) {
-          const pageIndex = p.page - 1; // convert 1-indexed to 0-indexed
-          if (pageIndex < 0 || pageIndex >= pdfDoc.getPageCount()) {
-            return { success: false, error: `Page ${p.page} does not exist in this document.` };
-          }
-          const page = pdfDoc.getPage(pageIndex);
-          const { width: pw, height: ph } = page.getSize();
-
-          // Bounds-check against actual page dimensions
-          if (p.x < 0 || p.y < 0 || p.x + p.width > pw || p.y + p.height > ph) {
-            return { success: false, error: `Placement on page ${p.page} is outside the page boundaries.` };
-          }
-
-          page.drawImage(pngImage, { x: p.x, y: p.y, width: p.width, height: p.height });
-
-          // Audit line drawn just below the signature, falling back to above if near bottom edge
-          const auditFontSize = 6.5;
-          const auditY = p.y > 20 ? p.y - 12 : p.y + p.height + 4;
-          page.drawText(auditText, {
-            x: p.x,
-            y: auditY,
-            size: auditFontSize,
-            font: helvetica,
-            color: rgb(0.45, 0.44, 0.42),
-            maxWidth: pw - p.x - 10,
-          });
-        }
+        const placementError = applySignaturePlacements(pdfDoc, placements, pngImage, helvetica, auditText);
+        if (placementError) return { success: false, error: placementError };
 
         // Metadata — setModificationDate must be called first to ensure Info dict exists
         pdfDoc.setModificationDate(signedAt);
