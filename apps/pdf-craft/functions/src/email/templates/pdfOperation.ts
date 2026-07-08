@@ -2,7 +2,7 @@ import { baseEmail, emailButton, emailLabel } from "./base";
 
 const FONT = `'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif`;
 
-type OperationType = "pdf-merge" | "image-to-pdf" | "pdf-encrypt" | "pdf-decrypt" | "pdf-split" | "pdf-compress";
+type OperationType = "pdf-merge" | "image-to-pdf" | "pdf-encrypt" | "pdf-decrypt" | "pdf-split" | "pdf-compress" | "pdf-sign";
 
 interface OperationConfig {
   icon: string;
@@ -74,6 +74,16 @@ const OPERATION_CONFIG: Record<OperationType, OperationConfig> = {
       `<strong style="color: #2E2C28;">${fileName}</strong> has been compressed and is ready to download.`,
     ctaLabel: "Download compressed PDF",
     note: "Your compressed PDF will be available for 24 hours.",
+  },
+  "pdf-sign": {
+    icon: "✍️",
+    iconBg: "#EDE9FE",
+    subject: "Your Signed PDF is Ready!",
+    heading: "Your PDF has been signed",
+    description: (fileName) =>
+      `Your signature has been embedded in <strong style="color: #2E2C28;">${fileName}</strong> along with an audit record.`,
+    ctaLabel: "Download signed PDF",
+    note: "Your signed PDF will be available for 24 hours.",
   },
 };
 
