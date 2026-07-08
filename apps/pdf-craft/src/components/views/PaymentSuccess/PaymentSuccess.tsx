@@ -1,4 +1,36 @@
+import { useEffect } from 'react'
 import { Container, Stack, Text, Button, Card, CardTitle, CardBody } from '@fhdamd/threads'
+import { logEvent } from '../../../utils/lib/analytics'
+
+const PENDING_KEY = 'pending_purchase'
+
+interface PendingPurchase {
+  value: number
+  credits: number
+  productName: string
+  items: { item_id: string; item_name: string; price: number; quantity: number }[]
+}
+
+function usePurchaseCompleteEvent() {
+  useEffect(() => {
+    const raw = sessionStorage.getItem(PENDING_KEY)
+    if (!raw) return
+    // Clear immediately — prevents the event firing again on a page refresh
+    sessionStorage.removeItem(PENDING_KEY)
+    try {
+      const purchase: PendingPurchase = JSON.parse(raw)
+      logEvent('purchase_complete', {
+        currency: 'USD',
+        value: purchase.value,
+        items: purchase.items,
+        credits_purchased: purchase.credits,
+        product_name: purchase.productName,
+      })
+    } catch {
+      // Malformed payload — swallow silently, nothing to report
+    }
+  }, [])
+}
 
 const iconStyle: React.CSSProperties = {
   width: 64,
@@ -13,6 +45,8 @@ const iconStyle: React.CSSProperties = {
 }
 
 export default function PaymentSuccess() {
+  usePurchaseCompleteEvent()
+
   return (
     <Container style={{ paddingBlock: 'var(--th-space-16)' }}>
       <Stack gap={8} align="center" style={{ maxWidth: 480, marginInline: 'auto', textAlign: 'center' }}>
@@ -36,7 +70,7 @@ export default function PaymentSuccess() {
           <CardTitle>Your credits work across</CardTitle>
           <CardBody>
             <Stack as="ul" gap={2} style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {['Merge PDFs', 'Image to PDF', 'Encrypt & decrypt PDFs'].map(tool => (
+              {['Merge PDFs', 'Image to PDF', 'Encrypt & decrypt PDFs', 'Split PDFs', 'Compress PDFs', 'Sign PDFs'].map(tool => (
                 <li key={tool} style={{ display: 'flex', alignItems: 'center', gap: 'var(--th-space-3)' }}>
                   <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--th-color-accent)', flexShrink: 0, display: 'inline-block' }} aria-hidden="true" />
                   <Text as="span" size="base" color="1">{tool}</Text>
