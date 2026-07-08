@@ -10,5 +10,6 @@ export { default as ForgotPasswordForm } from "./ForgotPasswordForm";
 export { default as ResetPasswordForm } from "./ResetPasswordForm";
 export { SplitPdf } from "./SplitPdf";
 export { CompressPdf } from "./CompressPdf";
+export { SignPdf } from "./SignPdf";
 
 export * from "./SignupForm";

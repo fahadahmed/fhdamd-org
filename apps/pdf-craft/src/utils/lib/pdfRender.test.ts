@@ -19,7 +19,7 @@ vi.mock("pdfjs-dist", () => ({
   getDocument: (...args: unknown[]) => mockGetDocument(...args),
 }));
 
-import { getPdfPageCount, renderPdfPageToCanvas } from "./pdfRender";
+import { getPdfPageCount, getPdfPageDimensions, renderPdfPageToCanvas } from "./pdfRender";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -82,5 +82,34 @@ describe("renderPdfPageToCanvas", () => {
     await renderPdfPageToCanvas(file, 1, canvas, 1);
     expect(mockPage.cleanup).toHaveBeenCalled();
     expect(mockDoc.cleanup).toHaveBeenCalled();
+  });
+});
+
+describe("getPdfPageDimensions", () => {
+  it("returns width and height for each page at scale=1", async () => {
+    const file = new File(["pdf"], "test.pdf", { type: "application/pdf" });
+    const dims = await getPdfPageDimensions(file);
+    expect(dims).toHaveLength(5); // mockDoc.numPages = 5
+    expect(dims[0]).toEqual({ width: 100, height: 150 }); // from mockPage.getViewport
+  });
+
+  it("calls getPage for each page (1-indexed)", async () => {
+    const file = new File(["pdf"], "test.pdf", { type: "application/pdf" });
+    await getPdfPageDimensions(file);
+    expect(mockDoc.getPage).toHaveBeenCalledWith(1);
+    expect(mockDoc.getPage).toHaveBeenCalledWith(5);
+  });
+
+  it("calls cleanup on each page and the document", async () => {
+    const file = new File(["pdf"], "test.pdf", { type: "application/pdf" });
+    await getPdfPageDimensions(file);
+    expect(mockPage.cleanup).toHaveBeenCalledTimes(5);
+    expect(mockDoc.cleanup).toHaveBeenCalled();
+  });
+
+  it("uses scale=1 for the viewport (returns PDF point dimensions)", async () => {
+    const file = new File(["pdf"], "test.pdf", { type: "application/pdf" });
+    await getPdfPageDimensions(file);
+    expect(mockPage.getViewport).toHaveBeenCalledWith({ scale: 1 });
   });
 });

@@ -27,6 +27,28 @@ export async function getPdfPageCount(file: File): Promise<number> {
 }
 
 /**
+ * Returns the width and height (in PDF points) for every page in a file.
+ * Pages within a single document may have different sizes, so per-page
+ * dimensions are required for accurate signature placement.
+ */
+export async function getPdfPageDimensions(
+  file: File,
+): Promise<Array<{ width: number; height: number }>> {
+  const pdfjs = await getPdfjsLib()
+  const bytes = await file.arrayBuffer()
+  const doc = await pdfjs.getDocument({ data: bytes }).promise
+  const dims: Array<{ width: number; height: number }> = []
+  for (let i = 1; i <= doc.numPages; i++) {
+    const page = await doc.getPage(i)
+    const { width, height } = page.getViewport({ scale: 1 })
+    dims.push({ width, height })
+    page.cleanup()
+  }
+  await doc.cleanup()
+  return dims
+}
+
+/**
  * Renders a single page of a PDF file onto an existing <canvas> element.
  *
  * @param file       The PDF File object to render from.

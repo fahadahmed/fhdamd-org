@@ -9,6 +9,7 @@ export const imageToPdf = vi.fn().mockResolvedValue({ data: { data: { fileUrl: "
 export const splitPdf = vi.fn().mockResolvedValue({ data: { success: true, data: { fileUrl: "https://cdn.test/split.pdf" } }, error: null });
 export const compressPdf = vi.fn().mockResolvedValue({ data: { success: true, data: { fileUrl: "https://cdn.test/compressed.pdf", alreadyOptimised: false } }, error: null });
 export const signPdf = vi.fn().mockResolvedValue({ data: { success: true, data: { fileUrl: "https://cdn.test/signed.pdf" } }, error: null });
+
 export const verifyUser = vi.fn().mockResolvedValue({ data: { redirected: false }, error: null });
 export const createUser = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
 export const signOutUser = vi.fn().mockResolvedValue({ data: { success: true }, error: null });
