@@ -2,7 +2,22 @@
 import { defineConfig } from 'astro/config';
 import node from '@apphosting/astro-adapter';
 import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
 import sentry from '@sentry/astro';
+
+// Pages that should not appear in the sitemap:
+// - Authenticated-only utility pages (dashboard, buy-credits, payment flow)
+// - Auth pages with no useful crawlable content (signin, signup, password reset)
+const PRIVATE_PATHS = new Set([
+  '/dashboard/',
+  '/buy-credits/',
+  '/payment-success/',
+  '/payment-cancel/',
+  '/signin/',
+  '/signup/',
+  '/forgot-password/',
+  '/reset-password/',
+]);
 
 // https://astro.build/config
 export default defineConfig({
@@ -19,6 +34,12 @@ export default defineConfig({
   },
   integrations: [
     react(),
+    sitemap({
+      filter: (page) => {
+        const path = new URL(page).pathname;
+        return !PRIVATE_PATHS.has(path);
+      },
+    }),
     sentry({
       org: 'fhdamd',
       project: 'pdf-craft',
