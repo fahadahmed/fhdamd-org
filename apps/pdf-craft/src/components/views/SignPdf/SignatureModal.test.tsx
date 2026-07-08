@@ -98,7 +98,7 @@ describe("SignatureModal — Type tab", () => {
     render(<SignatureModal {...defaultProps} />);
     // Only font grid canvases are present in Type tab (draw canvas not mounted)
     const canvases = document.querySelectorAll("canvas");
-    expect(canvases.length).toBe(9);
+    expect(canvases).toHaveLength(9);
   });
 
   it("selecting a font cell updates the selected font", async () => {
@@ -106,7 +106,7 @@ describe("SignatureModal — Type tab", () => {
     render(<SignatureModal {...defaultProps} />);
     // Get all font preview buttons — first one is selected by default (Caveat)
     const fontCells = document.querySelectorAll("button > canvas");
-    expect(fontCells.length).toBe(9);
+    expect(fontCells).toHaveLength(9);
     // Click the second font cell (Dancing Script) via its parent button
     await user.click((fontCells[1] as HTMLElement).parentElement!);
     // After clicking, canvas renders with new font — just verify no crash

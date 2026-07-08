@@ -1,6 +1,6 @@
 'use client'
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Stack, Text, Button, Input, FileDropzone } from '@fhdamd/threads'
+import { Text, Button, Input, FileDropzone } from '@fhdamd/threads'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -217,9 +217,8 @@ export default function SignatureModal({ isOpen, onClose, onConfirm }: Signature
     onConfirm({ dataUrl, source, signerName })
   }
 
-  const canConfirm = tab === 'typed'
-    ? signerName.trim().length > 0
-    : tab === 'drawn' ? !!drawDataUrl : !!uploadDataUrl
+  const canConfirmAnon = tab === 'drawn' ? !!drawDataUrl : !!uploadDataUrl
+  const canConfirm = tab === 'typed' ? signerName.trim().length > 0 : canConfirmAnon
 
   if (!isOpen) return null
 
@@ -230,17 +229,19 @@ export default function SignatureModal({ isOpen, onClose, onConfirm }: Signature
   ]
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
+    <dialog
+      open
       aria-label="Create your signature"
+      onKeyDown={e => { if (e.key === 'Escape') onClose() }}
+      onClick={e => { if (e.target === e.currentTarget) onClose() }}
       style={{
-        position: 'fixed', inset: 0, zIndex: 1000,
+        position: 'fixed', inset: 0, zIndex: 1000, margin: 0,
+        width: '100%', height: '100%', maxWidth: '100vw', maxHeight: '100vh',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         backgroundColor: 'rgba(0,0,0,0.5)',
-        padding: 'var(--th-space-4)',
+        padding: 'var(--th-space-4)', border: 'none',
+        boxSizing: 'border-box' as const,
       }}
-      onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       <div style={{
         background: 'var(--th-color-surface-1)',
@@ -405,13 +406,13 @@ export default function SignatureModal({ isOpen, onClose, onConfirm }: Signature
               onChange={e => setSaveForLater(e.target.checked)}
               style={{ accentColor: 'var(--th-color-accent)', width: '16px', height: '16px' }}
             />
-            Save for future use
+            <span>Save for future use</span>
           </label>
           <Button variant="solid-terra" onClick={handleConfirm} disabled={!canConfirm}>
             Place in PDF
           </Button>
         </div>
       </div>
-    </div>
+    </dialog>
   )
 }
