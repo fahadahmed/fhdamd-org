@@ -54,6 +54,7 @@ export default function Header() {
     { href: '/#tools',        label: 'Tools' },
     { href: '/#how-it-works', label: 'How it works' },
     { href: '/#pricing',      label: 'Pricing' },
+    { href: '/resources',     label: 'Resources' },
     { href: '/#faq',          label: 'FAQ' },
   ]
 

@@ -1,0 +1,32 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { ResourceList } from "../../components";
+import { fetchCms } from "../../utils/lib/cms";
+import { Container, Section, Stack, Text } from "@fhdamd/threads";
+import type { Resource } from "../../utils";
+
+type ResourcesResponse = { data: { allResources: Resource[] } }
+
+const { data } = await fetchCms<ResourcesResponse>('resources')
+const resources = data.allResources
+---
+
+<Layout
+  title="Resources — Riqa"
+  description="How-to guides, tips, and tutorials for working with PDFs using Riqa."
+>
+  <Container>
+    <Section size="md">
+      <Stack gap={8}>
+        <Stack gap={2}>
+          <Text as="h1" size="3xl" color="1" weight={650} width={90}>Resources</Text>
+          <Text as="p" size="base" color="2">
+            Practical guides for getting the most out of Riqa's PDF tools.
+          </Text>
+        </Stack>
+
+        <ResourceList resources={resources} client:load />
+      </Stack>
+    </Section>
+  </Container>
+</Layout>

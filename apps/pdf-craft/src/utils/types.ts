@@ -54,6 +54,18 @@ export type HeroData = {
   secondaryCtaHref: string;
 };
 
+export type Resource = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  coverImage?: { url: string } | null;
+  relatedOperationIds: string[];
+  _createdAt: string;
+  _updatedAt: string;
+};
+
 export type Step = {
   id: string;
   number: string;
