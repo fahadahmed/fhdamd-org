@@ -26,6 +26,9 @@ export async function fetchCMSData(
     );
   }
 
-  const data = await response.json();
-  return data;
+  const payload = await response.json();
+  if (payload.errors?.length) {
+    throw new Error(`DatoCMS GraphQL error: ${JSON.stringify(payload.errors)}`);
+  }
+  return payload;
 }
