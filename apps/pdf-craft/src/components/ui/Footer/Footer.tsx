@@ -9,11 +9,20 @@ export default function Footer() {
       tagline="Simple tools. Honest pricing."
       columns={[
         {
-          title: 'Tools',
+          title: 'Edit & Convert',
           links: [
             { href: '/splitpdf',    label: 'Split PDF' },
+            { href: '/mergepdf',    label: 'Merge PDFs' },
             { href: '/compresspdf', label: 'Compress PDF' },
-            { href: '/signpdf',     label: 'Sign PDF' },
+            { href: '/imagetopdf',  label: 'Image to PDF' },
+          ],
+        },
+        {
+          title: 'Protect & Sign',
+          links: [
+            { href: '/signpdf',    label: 'Sign PDF' },
+            { href: '/encryptpdf', label: 'Protect PDF' },
+            { href: '/decryptpdf', label: 'Unlock PDF' },
           ],
         },
         {
