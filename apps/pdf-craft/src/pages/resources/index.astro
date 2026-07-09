@@ -5,10 +5,10 @@ import { fetchCms } from "../../utils/lib/cms";
 import { Container, Section, Stack, Text } from "@fhdamd/threads";
 import type { Resource } from "../../utils";
 
-type ResourcesResponse = { data: { allResources: Resource[] } }
+type ResourcesResponse = { data: { allArticles: Resource[] } }
 
 const { data } = await fetchCms<ResourcesResponse>('resources')
-const resources = data.allResources
+const resources = data.allArticles
 ---
 
 <Layout

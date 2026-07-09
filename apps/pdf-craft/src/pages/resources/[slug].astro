@@ -6,14 +6,13 @@ import { Container, Section, Stack, Text, Button } from "@fhdamd/threads";
 import type { Resource } from "../../utils";
 import '../../styles/prose.css';
 
-type ResourcesResponse = { data: { allResources: Resource[] } }
-type ResourceResponse = { data: { resource: Resource | null } }
+type ResourcesResponse = { data: { allArticles: Resource[] } }
 
 // getStaticPaths is required so @astrojs/sitemap can discover these routes at
 // build time and include them in the generated sitemap-0.xml.
 export async function getStaticPaths() {
   const { data } = await fetchCms<ResourcesResponse>('resources')
-  return data.allResources.map(r => ({
+  return data.allArticles.map(r => ({
     params: { slug: r.slug },
     props: { resource: r },
   }))

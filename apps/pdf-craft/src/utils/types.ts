@@ -61,7 +61,7 @@ export type Resource = {
   excerpt: string;
   content: string;
   coverImage?: { url: string } | null;
-  relatedOperationIds: string[];
+  relatedOperationsId: string[] | null;
   _createdAt: string;
   _updatedAt: string;
 };

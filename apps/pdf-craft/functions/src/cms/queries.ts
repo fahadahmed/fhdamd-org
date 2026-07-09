@@ -7,7 +7,7 @@ const SECTION_HEADER_FIELDS = `key eyebrow title intro`;
 const STEP_FIELDS = `id number title body`;
 
 const LEGAL_PAGE_FIELDS = `title slug eyebrow metaDescription _updatedAt content`;
-const RESOURCE_FIELDS = `id title slug excerpt content coverImage { url } relatedOperationIds _createdAt _updatedAt`;
+const RESOURCE_FIELDS = `id title slug excerpt content coverImage { url } relatedOperationsId _createdAt _updatedAt`;
 
 export const CMS_QUERIES = {
   legalPage: `
@@ -42,12 +42,12 @@ export const CMS_QUERIES = {
   `,
   resources: `
     query ResourcesQuery {
-      allResources(orderBy: _createdAt_DESC) { ${RESOURCE_FIELDS} }
+      allArticles(orderBy: _createdAt_DESC) { ${RESOURCE_FIELDS} }
     }
   `,
   resource: `
     query ResourceQuery($slug: String!) {
-      resource(filter: { slug: { eq: $slug } }) { ${RESOURCE_FIELDS} }
+      article(filter: { slug: { eq: $slug } }) { ${RESOURCE_FIELDS} }
     }
   `,
   homePage: `

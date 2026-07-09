@@ -10,7 +10,7 @@ const makeResource = (overrides: Partial<Resource> = {}): Resource => ({
   excerpt: "Learn how to divide a PDF into separate files using Riqa.",
   content: "# Split PDF\n\nSome content here.",
   coverImage: null,
-  relatedOperationIds: ["split"],
+  relatedOperationsId: ["split"],
   _createdAt: "2026-07-01T10:00:00Z",
   _updatedAt: "2026-07-01T10:00:00Z",
   ...overrides,
