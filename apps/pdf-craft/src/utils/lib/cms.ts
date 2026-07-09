@@ -1,4 +1,4 @@
-type CmsQueryKey = "faqs" | "pricing" | "operations" | "testimonials" | "sectionHeaders" | "homePage" | "legalPage";
+type CmsQueryKey = "faqs" | "pricing" | "operations" | "testimonials" | "sectionHeaders" | "homePage" | "legalPage" | "resources" | "resource";
 
 const _cache = new Map<string, { data: unknown; expiresAt: number }>();
 const CACHE_TTL = 5 * 60 * 1000;

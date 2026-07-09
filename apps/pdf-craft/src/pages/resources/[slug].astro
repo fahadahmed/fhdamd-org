@@ -1,0 +1,84 @@
+---
+import { marked } from 'marked';
+import Layout from "../../layouts/Layout.astro";
+import { fetchCms } from "../../utils/lib/cms";
+import { Container, Section, Stack, Text, Button } from "@fhdamd/threads";
+import type { Resource } from "../../utils";
+import '../../styles/prose.css';
+
+type ResourcesResponse = { data: { allArticles: Resource[] } }
+
+// prerender = true opts this page into static generation so that:
+// 1. getStaticPaths() is called at build/dev time (required for SSR output mode)
+// 2. @astrojs/sitemap discovers all article routes at build time
+export const prerender = true
+
+export async function getStaticPaths() {
+  const { data } = await fetchCms<ResourcesResponse>('resources')
+  return data.allArticles.map(r => ({
+    params: { slug: r.slug },
+    props: { resource: r },
+  }))
+}
+
+const { resource } = Astro.props as { resource: Resource }
+
+const publishDate = new Date(resource._createdAt).toLocaleDateString('en-GB', {
+  day: 'numeric', month: 'long', year: 'numeric',
+})
+
+const contentHtml = resource.content ? (marked(resource.content) as string) : ''
+const ogImage = resource.coverImage?.url ?? undefined
+---
+
+<Layout
+  title={`${resource.title} — Riqa`}
+  description={resource.excerpt}
+  ogImage={ogImage}
+>
+  <Fragment slot="head">
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: resource.title,
+        description: resource.excerpt,
+        datePublished: resource._createdAt,
+        dateModified: resource._updatedAt,
+        publisher: {
+          "@type": "Organization",
+          name: "Riqa",
+          url: "https://riqa.app",
+        },
+        ...(ogImage ? { image: ogImage } : {}),
+      })}
+    />
+  </Fragment>
+
+  <Container>
+    <Section size="md">
+      <Stack gap={8} style={{ maxWidth: '720px', marginInline: 'auto' }}>
+
+        {/* Back link */}
+        <Button href="/resources" variant="ghost" size="sm">
+          ← All articles
+        </Button>
+
+        {/* Header */}
+        <Stack gap={3}>
+          <Text as="p" size="xs" color="3">{publishDate}</Text>
+          <Text as="h1" size="3xl" color="1" weight={650} style={{ lineHeight: 1.2 }}>
+            {resource.title}
+          </Text>
+          <Text as="p" size="lg" color="2">{resource.excerpt}</Text>
+        </Stack>
+
+        {/* Body */}
+        <div class="prose" set:html={contentHtml} />
+
+      </Stack>
+    </Section>
+  </Container>
+</Layout>
