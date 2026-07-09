@@ -11,10 +11,15 @@ export default function Footer() {
         {
           title: 'Tools',
           links: [
-            { href: '/mergepdf',   label: 'Merge PDFs' },
-            { href: '/imagetopdf', label: 'Image to PDF' },
-            { href: '/encryptpdf', label: 'Protect PDF' },
-            { href: '/decryptpdf', label: 'Unlock PDF' },
+            { href: '/splitpdf',    label: 'Split PDF' },
+            { href: '/compresspdf', label: 'Compress PDF' },
+            { href: '/signpdf',     label: 'Sign PDF' },
+          ],
+        },
+        {
+          title: 'Resources',
+          links: [
+            { href: '/resources', label: 'Articles' },
           ],
         },
         {

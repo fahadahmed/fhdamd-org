@@ -8,12 +8,16 @@ describe("Footer", () => {
     expect(screen.getByText("Simple tools. Honest pricing.")).toBeInTheDocument();
   });
 
-  it("renders Tools column with all links", () => {
+  it("renders Tools column with current operation links", () => {
     render(<Footer />);
-    expect(screen.getByRole("link", { name: "Merge PDFs" })).toHaveAttribute("href", "/mergepdf");
-    expect(screen.getByRole("link", { name: "Image to PDF" })).toHaveAttribute("href", "/imagetopdf");
-    expect(screen.getByRole("link", { name: "Protect PDF" })).toHaveAttribute("href", "/encryptpdf");
-    expect(screen.getByRole("link", { name: "Unlock PDF" })).toHaveAttribute("href", "/decryptpdf");
+    expect(screen.getByRole("link", { name: "Split PDF" })).toHaveAttribute("href", "/splitpdf");
+    expect(screen.getByRole("link", { name: "Compress PDF" })).toHaveAttribute("href", "/compresspdf");
+    expect(screen.getByRole("link", { name: "Sign PDF" })).toHaveAttribute("href", "/signpdf");
+  });
+
+  it("renders Resources column", () => {
+    render(<Footer />);
+    expect(screen.getByRole("link", { name: "Articles" })).toHaveAttribute("href", "/resources");
   });
 
   it("renders Account column with all links", () => {
@@ -35,9 +39,10 @@ describe("Footer", () => {
     expect(screen.getByText("Built on the Threads design system")).toBeInTheDocument();
   });
 
-  it("renders all three column headings", () => {
+  it("renders all four column headings", () => {
     render(<Footer />);
     expect(screen.getByText("Tools")).toBeInTheDocument();
+    expect(screen.getByText("Resources")).toBeInTheDocument();
     expect(screen.getByText("Account")).toBeInTheDocument();
     expect(screen.getByText("Legal")).toBeInTheDocument();
   });
