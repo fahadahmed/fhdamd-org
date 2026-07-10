@@ -98,6 +98,9 @@ locals {
     "pdfProcessorUrl",
     "appEnv",
     "resendApiKey",
+    # apphosting.yaml secrets added after initial provisioning
+    "e2eContactBypassToken",  # E2E test reCAPTCHA bypass — was created manually, now tracked here
+    "CLAIM_SECRET",           # HMAC key for anonymous operation claim tokens (v1.1.0)
     # Bound directly by Cloud Functions via defineSecret(), not apphosting.yaml
     "STRIPE_SECRET_KEY",
     "STRIPE_WEBHOOK_SECRET",

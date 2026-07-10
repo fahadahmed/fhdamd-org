@@ -631,7 +631,7 @@ All three environments are provisioned by a single reusable Terraform module (`t
 
 - Required GCP APIs (Firestore, Secret Manager, Cloud Functions, Cloud Run, Artifact Registry, Cloud Build, Pub/Sub, Eventarc, Cloud Billing, App Hosting, Identity Toolkit)
 - The Firestore database and the default Storage bucket (`lifecycle { prevent_destroy = true }` on both, since all three environments now hold real or test data)
-- All 23 application secrets as empty shells — the 16 referenced by `apphosting.yaml` plus 7 bound directly by Cloud Functions via `defineSecret()` that aren't visible from `apphosting.yaml` alone (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `APP_BASE_URL`, `RESEND_API_KEY`, `RESEND_AUDIENCE_ID`, `DATOCMS_API_TOKEN`, `DATOCMS_ENV`). Values are populated out-of-band via `gcloud secrets versions add`, never committed.
+- All 25 application secrets as empty shells — the 18 referenced by `apphosting.yaml` (including `CLAIM_SECRET` for anonymous claim token signing and `e2eContactBypassToken` for the E2E reCAPTCHA bypass) plus 7 bound directly by Cloud Functions via `defineSecret()` that aren't visible from `apphosting.yaml` alone (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `APP_BASE_URL`, `RESEND_API_KEY`, `RESEND_AUDIENCE_ID`, `DATOCMS_API_TOKEN`, `DATOCMS_ENV`). Values are populated out-of-band via `gcloud secrets versions add`, never committed.
 - An Artifact Registry Docker repository for `pdf-processor` images
 - A per-environment GitHub Actions deploy identity via **Workload Identity Federation** — no long-lived service account keys are stored anywhere, in GitHub or otherwise
 
@@ -720,7 +720,7 @@ This is a deliberately different model from `@fhdamd/threads`, which **is** rele
 
 ### How to update environment variables and secrets in Google Secret Manager
 
-All 23 secrets (16 referenced by `apphosting.yaml`, 7 bound directly by Cloud Functions via `defineSecret()`) are created as empty shells by the Terraform module ([§11.2](#112-infrastructure-as-code)). Populating or rotating a value is a direct `gcloud` call against the target project's Secret Manager — there is no separate "promote a secret" step, since each environment's Secret Manager is independent:
+All 25 secrets (18 referenced by `apphosting.yaml`, 7 bound directly by Cloud Functions via `defineSecret()`) are created as empty shells by the Terraform module ([§11.2](#112-infrastructure-as-code)). Populating or rotating a value is a direct `gcloud` call against the target project's Secret Manager — there is no separate "promote a secret" step, since each environment's Secret Manager is independent:
 
 ```sh
 printf '%s' "the-actual-value" | gcloud secrets versions add <secretName> \

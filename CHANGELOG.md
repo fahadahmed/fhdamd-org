@@ -64,6 +64,10 @@ New Playwright tests covering:
 - Stripe `success_url` / `cancel_url` were pointing to the old `pdf-craft.app` domain. Fixed by updating the `APP_BASE_URL` secret in Secret Manager to `riqa.app` for each environment.
 - DatoCMS GraphQL errors (HTTP 200 with `errors` body, no `data` key) were passing through the CMS proxy silently and surfacing as cryptic `Cannot read properties of undefined` errors in Astro pages. Fixed by detecting and throwing on `payload.errors` in `fetchCMSData`.
 
+### Infrastructure
+
+- `CLAIM_SECRET` and `e2eContactBypassToken` added to `terraform/modules/firebase-env/main.tf` so all environments get these secret shells automatically on `terraform apply`. Both were previously missing from the module (created manually), causing the v1.1.0-rc.0 staging deploy to fail with a "secret not found" error.
+
 ---
 
 ## [1.0.5] — 2026-06-30
