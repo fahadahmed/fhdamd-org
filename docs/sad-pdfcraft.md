@@ -5,7 +5,7 @@
 **Repository:** fhdamd-org (Monorepo) \
 **Author:** Fahad Ahmed \
 **Status:** Draft \
-**Last Updated:** 19 Jun 2026
+**Last Updated:** 10 Jul 2026
 
 ## 1. Purpose & Scope
 
@@ -84,9 +84,9 @@ These are the significant, durable decisions behind PDF-Craft's design. Each is 
 
 ### ADR-003: A dedicated `pdf-processor` microservice for CPU-bound, native-dependency operations
 
-**Decision:** Encrypt and decrypt operations are delegated over HTTP to `apps/pdf-processor`, a small stateless Express service running on Cloud Run that shells out to the `qpdf` CLI. Merge and image-to-PDF operations, by contrast, run in-process inside the Astro Action using `pdf-lib` (a pure-JS library).
+**Decision:** Encrypt, decrypt, and compress operations are delegated over HTTP to `apps/pdf-processor`, a small stateless Express service running on Cloud Run that shells out to `qpdf` (encrypt/decrypt) and Ghostscript (compress). Merge, image-to-PDF, split, and sign operations, by contrast, run in-process inside the Astro Action using `pdf-lib` (a pure-JS library).
 
-**Why:** `qpdf` is a native binary dependency that cannot run inside the Astro App Hosting / Cloud Run container alongside the web app, and PDF encryption/decryption is CPU-bound work that shouldn't block the request-handling runtime serving every other user. A separate, independently scalable Cloud Run service isolates this dependency and workload.
+**Why:** `qpdf` and Ghostscript are native binary dependencies that cannot run inside the Astro App Hosting / Cloud Run container alongside the web app, and these operations are CPU-bound work that shouldn't block the request-handling runtime serving every other user. A separate, independently scalable Cloud Run service isolates these dependencies and workloads.
 
 **Trade-offs:** An extra network hop, an extra service to deploy/monitor, and a service-to-service authentication concern (solved via GCP metadata-server identity tokens in production — see [§9](#9-security)). `pdf-processor` exists solely to serve `pdf-craft` and has no independent lifecycle today.
 
@@ -282,7 +282,7 @@ sequenceDiagram
 
 > **Design note:** Logout intentionally does **not** require reCAPTCHA verification — it's an authenticated, idempotent, low-risk operation, and gating it behind a third-party verification call only introduced an avoidable failure mode (an expired/reused token would abort the cookie deletion while the client still proceeded to sign out locally, leaving the UI and server session out of sync). Sign-in and sign-up retain reCAPTCHA, generating a **fresh token at the moment of submission** (not cached on mount) since reCAPTCHA v3 tokens are single-use and expire after ~2 minutes.
 
-### 6.3 PDF Operation — Merge Example (representative of Merge / Image-to-PDF / Encrypt / Decrypt)
+### 6.3 PDF Operation — Authenticated User (representative of all 7 operations)
 
 ```mermaid
 sequenceDiagram
@@ -294,28 +294,87 @@ sequenceDiagram
   participant ST as Cloud Storage
   participant PS as Pub/Sub
 
-  U->>W: Upload PDFs, click "Merge"
-  W->>A: actions.credits.checkCredits({ task: 'merge', creditCost })
+  U->>W: Upload file(s), click operation button
+  W->>A: actions.credits.checkCredits({ task, creditCost })
   A->>FS: users/{uid}.profile.credits
   A-->>W: { success: true }
 
-  W->>A: actions.operations.mergePdfs(formData)
+  W->>A: actions.operations.[operation](formData)
   A->>A: Extract & verify __session cookie
   A->>FA: verifySessionCookie(cookie, true)
   FA-->>A: { uid, email }
-  A->>A: Merge PDFs in-process (pdf-lib)
-  A->>ST: bucket.file('users/{uid}/merged-{ts}.pdf').save(bytes, { firebaseStorageDownloadTokens })
+  alt Encrypt / Decrypt / Compress
+    A->>P: POST /encrypt, /decrypt, or /compress (multipart)
+    P-->>A: Processed PDF bytes
+  else Merge / Image-to-PDF / Split / Sign
+    Note over A: Processed in-process via pdf-lib
+  end
+  A->>ST: bucket.file('users/{uid}/{fileName}').save(bytes, { firebaseStorageDownloadTokens })
   A->>A: Build fileUrl = storage URL + ?alt=media&token={uuid}
-  A->>FS: users/{uid}/files/{fileId}.set({ fileUrl, operation: 'merge', expiresAt: now+24h, deleted: false, ... })
-  A->>PS: publish('app-event', { eventType: 'pdf-merge', fileUrl, userEmail, requestId })
+  A->>FS: users/{uid}/files/{fileId}.set({ fileUrl, operation, expiresAt: now+24h, deleted: false, ... })
+  A->>PS: publish('app-event', { eventType, fileUrl, userEmail, requestId })
   A->>FS: users/{uid}.profile.credits -= creditCost
   A-->>W: { success: true, data: { fileUrl } }
   W-->>U: Show download link
 ```
 
-> Encrypt and decrypt follow the same shape, with one difference: between cookie verification and the storage upload, the Action calls out to **pdf-processor** (`POST /encrypt` or `POST /decrypt`, multipart) and uses the returned bytes as the file to store — see [ADR-003](#adr-003-a-dedicated-pdf-processor-microservice-for-cpu-bound-native-dependency-operations).
+> Operations routed through `pdf-processor` (encrypt, decrypt, compress) insert a call to that service between cookie verification and the storage upload. Operations processed in-process (merge, image-to-PDF, split, sign) use `pdf-lib` directly in the Action — see [ADR-003](#adr-003-a-dedicated-pdf-processor-microservice-for-cpu-bound-native-dependency-operations).
 
-### 6.4 Stripe Payment & Credit Purchase
+### 6.4 Anonymous User Operation Flow
+
+Users can perform any operation without an account. A Firebase anonymous session is created transparently; the result is held server-side until the user signs up or signs in.
+
+```mermaid
+sequenceDiagram
+  actor U as User
+  participant W as Web App
+  participant A as Astro Actions
+  participant FA as Firebase Auth
+  participant FS as Firestore
+  participant ST as Cloud Storage
+
+  U->>W: Upload file, click operation (not signed in)
+  W->>FA: signInAnonymously() — client SDK
+  FA-->>W: anonymous uid
+  W->>A: actions.operations.createAnonymousSession({ uid })
+  A->>FS: users/{uid}/profile.set({ isAnonymous: true, credits: [operation credit allocation] })
+  A-->>W: { success: true }
+
+  W->>A: actions.operations.[operation](formData)
+  A->>FA: verifySessionCookie (anonymous session cookie)
+  FA-->>A: { uid, isAnonymous: true }
+  Note over A: Operation runs identically to authenticated path
+  A->>ST: Upload result
+  A->>FS: Write file metadata (expiresAt: now+24h)
+  A->>FS: Decrement anonymous credits
+  A-->>W: { success: true, data: { claimToken } }
+
+  W-->>U: "Your file is ready — sign up to download"
+  W->>W: sessionStorage.set('pendingClaimToken', claimToken)
+
+  alt User signs up
+    U->>W: Complete sign-up form
+    W->>A: actions.user.signUp(...)
+    A->>FA: createUser / createSessionCookie
+    A->>FS: Migrate anonymous file metadata to new uid
+    A-->>W: Redirect → /dashboard
+    W->>A: actions.operations.claimResult({ claimToken })
+    A->>FS: Verify token ownership, return fileUrl
+    A-->>W: { fileUrl }
+    W-->>U: Download link
+  else User signs in (existing account)
+    U->>W: Sign in with existing credentials
+    W->>A: actions.user.verifyUser(...)
+    A-->>W: Redirect → /dashboard
+    W->>A: actions.operations.claimResult({ claimToken })
+    A-->>W: { fileUrl }
+    W-->>U: Download link
+  end
+```
+
+> The `claimToken` is a one-time server-side token tied to the anonymous user's file. It cannot be used to download the file directly — it requires an authenticated session to redeem, ensuring unclaimed files for accounts that are never created are still cleaned up by the 24 h retention job.
+
+### 6.5 Stripe Payment & Credit Purchase
 
 ```mermaid
 sequenceDiagram
@@ -348,7 +407,7 @@ sequenceDiagram
 
 > Crediting the account happens **only** via the verified webhook (`checkout.session.completed`), not on the client redirect — this is the source of truth and is resilient to the user closing the tab before the success redirect completes. The webhook responds `200` immediately after updating Firestore so Stripe doesn't retry a successfully-processed event.
 
-### 6.5 Scheduled Cleanup — Expired File Deletion
+### 6.6 Scheduled Cleanup — Expired File Deletion
 
 > Corrected from the original placeholder title ("Daily Cron Job") — the job actually runs **hourly**.
 
@@ -372,7 +431,7 @@ sequenceDiagram
 
 > Files are retained for **24 hours** by default (`retentionMs` in `operations.ts`, currently a flat constant — the code notes this should vary "per subscription plan", which is not yet implemented). The 500-per-user-per-run limit bounds the cost and duration of each invocation; a user with more than 500 simultaneously-expired files would have the remainder cleaned up on the next run.
 
-### 6.6 Transactional Email Delivery (Pub/Sub → Functions → Resend)
+### 6.7 Transactional Email Delivery (Pub/Sub → Functions → Resend)
 
 ```mermaid
 sequenceDiagram
@@ -403,6 +462,9 @@ sequenceDiagram
 | `image-to-pdf` | `handleImageToPdf` | "Your Image to PDF is Ready!" |
 | `pdf-encrypt` | `handleEncryptPdf` | "Your Protected PDF is Ready!" |
 | `pdf-decrypt` | `handleDecryptPdf` | "Your Unlocked PDF is Ready!" |
+| `pdf-split` | `handleSplitPdf` | "Your Split PDF is Ready!" |
+| `pdf-compress` | `handleCompressPdf` | "Your Compressed PDF is Ready!" |
+| `pdf-sign` | `handleSignPdf` | "Your Signed PDF is Ready!" |
 
 > The handler **re-throws on failure** (`functions/src/index.ts`), which is intentional — it causes Pub/Sub to redeliver the message, giving transient failures (e.g. a Resend outage) a chance to succeed on retry rather than silently dropping the notification.
 
@@ -428,7 +490,7 @@ PDF-Craft's data lives in **Firestore**, scoped almost entirely under a per-user
 | `fileName` | string | e.g. `merged-<timestamp>.pdf` |
 | `storagePath` | string | `users/{userId}/{fileName}` — the Cloud Storage object path |
 | `fileUrl` | string | Public download URL embedding the per-object download token |
-| `operation` | string | `merge` \| `image-to-pdf` \| `encrypt` \| `decrypt` |
+| `operation` | string | `merge` \| `image-to-pdf` \| `encrypt` \| `decrypt` \| `split` \| `compress` \| `sign` |
 | `createdAt` / `updatedAt` | Timestamp | Server timestamps |
 | `expiresAt` | Timestamp | `createdAt + 24h` (flat constant today — see [§6.5](#65-scheduled-cleanup--expired-file-deletion)) |
 | `deleted` | boolean | Flips to `true` once the cleanup job removes the underlying object |
@@ -517,7 +579,7 @@ These were identified during review and are recorded here so the architecture re
 **Resolved:**
 
 1. ~~**Firestore rules are overly permissive.**~~ **Fixed.** Rules now scope `users/{userId}` and `users/{userId}/files/{fileId}` to `request.auth.uid == userId` for reads, and deny all client-side writes outright (every write already went through the Admin SDK, which bypasses rules — denying client writes closes the defence-in-depth gap without changing any actual behaviour).
-2. ~~**No automated tests** currently cover the authentication ... or PDF-operation flows.~~ **Partially addressed.** A Playwright E2E suite ([§11.3](#113-release-strategy--rc-promotion-with-an-e2e-gate)) now covers sign-in page rendering, unauthenticated redirect behaviour, authenticated dashboard load, and a real encrypt operation through `pdf-processor`, and gates every promotion to production. It does **not** yet cover payment/Stripe flows, merge/decrypt/image-to-PDF operations, or sign-up — still a gap, just a narrower one.
+2. ~~**No automated tests** currently cover the authentication ... or PDF-operation flows.~~ **Partially addressed.** A Playwright E2E suite ([§11.3](#113-release-strategy--rc-promotion-with-an-e2e-gate)) now covers sign-in page rendering, unauthenticated redirect behaviour for all 7 operation pages, authenticated dashboard load, real encrypt/compress/split operations through the full stack, sign PDF page load, and the Resources listing + article navigation. Payment/Stripe flows, sign-up, and the anonymous claim flow remain uncovered by e2e — still a gap, substantially narrower.
 
 **Still open:**
 
@@ -634,7 +696,7 @@ flowchart TD
 3. `trigger-e2e` (pdf-craft only) — explicitly dispatches `e2e-staging.yml` via the GitHub API once the deploy succeeds. (Originally wired as a `workflow_run` trigger; switched to an explicit dispatch after SonarCloud correctly flagged that `workflow_run` inherits secrets access regardless of the triggering ref — a real risk in general, even though this specific chain has no fork-PR path into it.)
 4. `release` — publishes a **prerelease** GitHub Release with the deployed URL and commit.
 
-**E2E gate** (`e2e-staging.yml`): a Playwright suite (`apps/pdf-craft/e2e/`) runs against `https://stg.pdf-craft.app`, authenticating via a Firebase Admin SDK session-cookie bypass — UI sign-in can't be exercised in a headless browser, since reCAPTCHA v3 blocks it — for a dedicated test-only account (`e2e-test-stg@pdf-craft.app`). Coverage: sign-in page renders, unauthenticated redirects, authenticated dashboard load, and a real **encrypt** operation through `pdf-processor` — deliberately the one test that exercises the inter-service connectivity and IAM wiring described in [§11.2](#112-infrastructure-as-code).
+**E2E gate** (`e2e-staging.yml`): a Playwright suite (`apps/pdf-craft/e2e/`) runs against `https://stg.riqa.app`, authenticating via a Firebase Admin SDK session-cookie bypass — UI sign-in can't be exercised in a headless browser, since reCAPTCHA v3 blocks it — for a dedicated test-only account (`e2e-test-stg@riqa.app`). Coverage: sign-in page renders, unauthenticated access to all 7 operation pages, authenticated dashboard load, real **encrypt**, **compress**, and **split** operations through the full stack, sign PDF page load + canvas render, and Resources listing + article navigation.
 
 **Promotion to prod**: re-tagging the *same commit* with the final version number (no `-rc` suffix) triggers `deploy-prod.yml` / `deploy-pdf-processor-prod.yml`:
 1. `guard` — verifies the commit is on `main` *and* explicitly rejects any tag containing `-rc.` as defence in depth, in case the tag glob patterns ever overlap unexpectedly.
