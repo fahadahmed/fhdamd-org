@@ -6,22 +6,13 @@ import { Container, Section, Stack, Text, Button } from "@fhdamd/threads";
 import type { Resource } from "../../utils";
 import '../../styles/prose.css';
 
-type ResourcesResponse = { data: { allArticles: Resource[] } }
+type ResourceResponse = { data: { article: Resource | null } }
 
-// prerender = true opts this page into static generation so that:
-// 1. getStaticPaths() is called at build/dev time (required for SSR output mode)
-// 2. @astrojs/sitemap discovers all article routes at build time
-export const prerender = true
+const { slug } = Astro.params
+const { data } = await fetchCms<ResourceResponse>('resource', { slug })
+const resource = data.article
 
-export async function getStaticPaths() {
-  const { data } = await fetchCms<ResourcesResponse>('resources')
-  return data.allArticles.map(r => ({
-    params: { slug: r.slug },
-    props: { resource: r },
-  }))
-}
-
-const { resource } = Astro.props as { resource: Resource }
+if (!resource) return Astro.redirect('/resources', 307)
 
 const publishDate = new Date(resource._createdAt).toLocaleDateString('en-GB', {
   day: 'numeric', month: 'long', year: 'numeric',

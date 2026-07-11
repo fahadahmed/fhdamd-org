@@ -19,6 +19,25 @@ const PRIVATE_PATHS = new Set([
   '/reset-password/',
 ]);
 
+async function fetchArticleSlugs() {
+  const functionsUrl = process.env.PUBLIC_BASE_FUNCTIONS_URL;
+  if (!functionsUrl) return [];
+  try {
+    const res = await fetch(`${functionsUrl}/cms`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ queryKey: 'resources' }),
+    });
+    if (!res.ok) return [];
+    const { data } = await res.json();
+    return (data?.allArticles ?? []).map((a) => `https://riqa.app/resources/${a.slug}`);
+  } catch {
+    return [];
+  }
+}
+
+const articlePages = await fetchArticleSlugs();
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://riqa.app',
@@ -39,6 +58,7 @@ export default defineConfig({
         const path = new URL(page).pathname;
         return !PRIVATE_PATHS.has(path);
       },
+      customPages: articlePages,
     }),
     sentry({
       org: 'fhdamd',
