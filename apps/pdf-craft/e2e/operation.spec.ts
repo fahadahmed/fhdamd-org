@@ -23,7 +23,7 @@ test('compress a PDF end to end through pdf-processor', async ({ page }) => {
   await expect(page).toHaveURL('/compresspdf');
 
   await page.getByLabel('Upload PDF').setInputFiles(SAMPLE_PDF);
-  await page.getByRole('button', { name: /compress pdf/i }).click();
+  await page.getByRole('button', { name: 'Compress PDF', exact: true }).click();
 
   // Authenticated users see "Compression complete" callout + download link.
   // Anonymous users see "Your PDF has been compressed" — different text, so check the link.
@@ -39,11 +39,11 @@ test('split a PDF end to end using extract mode', async ({ page }) => {
   // Wait for pdfjs to parse the PDF and render at least the first page before switching mode.
   // Without this, selectAll fires against an empty page list and Extract stays disabled.
   await expect(page.getByLabel('Page 1')).toBeVisible({ timeout: 30_000 });
-  await page.getByRole('button', { name: /extract/i }).click();
+  await page.getByRole('button', { name: 'Extract Pages', exact: true }).click();
 
   // Select all pages and extract
   await page.getByRole('button', { name: /select all/i }).click();
-  await page.getByRole('button', { name: /extract/i, exact: true }).last().click();
+  await page.getByRole('button', { name: 'Extract', exact: true }).click();
 
   await expect(page.getByText(/your pdf has been processed/i)).toBeVisible({ timeout: 60_000 });
   await expect(page.getByRole('link', { name: /download pdf/i })).toBeVisible();
