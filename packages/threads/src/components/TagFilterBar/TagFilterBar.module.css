@@ -1,0 +1,30 @@
+.bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border-radius: var(--th-radius-pill);
+  border: 1px solid var(--th-color-border-default);
+  background: var(--th-color-surface-1);
+  color: var(--th-color-text-3);
+  cursor: pointer;
+  transition: all var(--th-duration-base) var(--th-ease-out);
+}
+
+.pill:hover {
+  border-color: var(--th-color-border-strong);
+  color: var(--th-color-text-1);
+}
+
+.pill.active {
+  background: var(--th-color-text-1);
+  border-color: var(--th-color-text-1);
+  color: var(--th-color-text-inverse);
+}

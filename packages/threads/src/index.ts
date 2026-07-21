@@ -100,6 +100,15 @@ export type { FormSuccessPanelProps } from "./components/FormSuccessPanel/FormSu
 export { CaseStudySpotlight } from "./components/CaseStudySpotlight/CaseStudySpotlight";
 export type { CaseStudySpotlightProps, CaseStudyStat } from "./components/CaseStudySpotlight/CaseStudySpotlight";
 
+export { ContentCard } from "./components/ContentCard/ContentCard";
+export type { ContentCardProps, ContentCardBadge } from "./components/ContentCard/ContentCard";
+
+export { FeaturedCard } from "./components/FeaturedCard/FeaturedCard";
+export type { FeaturedCardProps, FeaturedCardBadge } from "./components/FeaturedCard/FeaturedCard";
+
+export { TagFilterBar } from "./components/TagFilterBar/TagFilterBar";
+export type { TagFilterBarProps, TagFilterOption } from "./components/TagFilterBar/TagFilterBar";
+
 // Feedback
 export { Callout } from "./components/Callout/Callout";
 export type { CalloutProps, CalloutVariant } from "./components/Callout/Callout";
