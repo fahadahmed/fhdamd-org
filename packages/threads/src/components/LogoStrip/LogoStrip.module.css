@@ -1,0 +1,40 @@
+.strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--th-space-3) var(--th-space-8);
+  align-items: center;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--th-space-2);
+}
+
+.mark {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  opacity: 0.55;
+  transition: opacity var(--th-duration-base);
+  color: var(--th-color-text-2);
+}
+
+.mark img,
+.mark svg {
+  height: 28px;
+  width: auto;
+}
+
+.item:hover .mark {
+  opacity: 1;
+}
+
+.label {
+  font-family: var(--th-font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--th-color-text-4);
+}

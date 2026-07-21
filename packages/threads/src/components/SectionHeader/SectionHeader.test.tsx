@@ -41,4 +41,14 @@ describe("SectionHeader", () => {
     const { container } = render(<SectionHeader title="Title" className="custom" />);
     expect(container.firstChild).toHaveClass("custom");
   });
+
+  it("renders meta when provided", () => {
+    render(<SectionHeader title="Title" meta="14 years" />);
+    expect(screen.getByText("14 years")).toBeInTheDocument();
+  });
+
+  it("does not render meta when omitted", () => {
+    render(<SectionHeader title="Title" />);
+    expect(screen.queryByText("14 years")).not.toBeInTheDocument();
+  });
 });

@@ -3,6 +3,29 @@
   flex-direction: column;
 }
 
+/* Header row — title block on the start side, optional meta trailing on the same baseline */
+.headerRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--th-space-4);
+  flex-wrap: wrap;
+}
+
+.headingBlock {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--th-color-text-3);
+  white-space: nowrap;
+}
+
 /* Eyebrow — mono label with leading accent line */
 .eyebrow {
   font-family: var(--th-font-mono);

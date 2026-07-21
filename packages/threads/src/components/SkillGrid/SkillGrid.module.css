@@ -1,0 +1,27 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--th-space-3);
+}
+
+.item {
+  background: var(--th-color-surface-1);
+  border: 1px solid var(--th-color-border-default);
+  border-radius: var(--th-radius-lg);
+  padding: var(--th-space-4) var(--th-space-5);
+}
+
+.category {
+  font-family: var(--th-font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--th-color-text-4);
+  margin-block-end: var(--th-space-2);
+}
+
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
