@@ -20,6 +20,16 @@ export const WithAll: Story   = { name: "Eyebrow + title + intro" };
 export const TitleOnly: Story = { name: "Title only", args: { eyebrow: undefined, intro: undefined } };
 export const NoIntro: Story   = { name: "Eyebrow + title", args: { intro: undefined } };
 
+export const WithMeta: Story = {
+  name: "Title + trailing meta (no eyebrow)",
+  args: {
+    eyebrow: undefined,
+    intro:   undefined,
+    title:   <>Organisations I've <em>worked with</em></>,
+    meta:    "Employers & clients",
+  },
+};
+
 export const PdfCraftSections: Story = {
   name: "PDF-Craft — all section headers",
   render: () => (

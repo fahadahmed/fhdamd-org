@@ -1,0 +1,137 @@
+.spotlight {
+  background: var(--th-color-surface-1);
+  border: 1px solid var(--th-color-border-default);
+  border-radius: var(--th-radius-xl);
+  padding: var(--th-space-8);
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: var(--th-space-10);
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 3px;
+  background: var(--th-color-accent);
+}
+
+.eyebrow {
+  font-family: var(--th-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--th-color-text-4);
+  margin-block-end: 14px;
+}
+
+.title {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--th-color-text-1);
+  margin-block-end: 14px;
+}
+
+.title em {
+  font-style: italic;
+  color: var(--th-color-accent);
+}
+
+.desc {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: var(--th-text-md);
+  line-height: 1.65;
+  color: var(--th-color-text-3);
+  margin-block-end: var(--th-space-5);
+  max-inline-size: 480px;
+}
+
+.tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-block-end: var(--th-space-6);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stat {
+  background: var(--th-color-bg);
+  border: 1px solid var(--th-color-border-default);
+  border-radius: var(--th-radius-md);
+  padding: 14px 18px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.num {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+  color: var(--th-color-accent);
+  white-space: nowrap;
+}
+
+.num em {
+  font-style: normal;
+  font-size: var(--th-text-md);
+  color: var(--th-color-text-3);
+  margin-inline-start: 2px;
+}
+
+.label {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: var(--th-color-text-3);
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .spotlight {
+    grid-template-columns: 1fr;
+  }
+
+  .stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    flex: 1 1 160px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .label {
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats {
+    flex-direction: column;
+  }
+}

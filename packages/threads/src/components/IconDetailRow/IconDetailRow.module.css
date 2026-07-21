@@ -1,0 +1,68 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--th-space-3);
+}
+
+.icon {
+  border-radius: var(--th-radius-sm);
+  background: var(--th-color-surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon svg {
+  stroke: var(--th-color-text-3);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ─── COMPACT — About sidebar card ───────────────────────────────────────── */
+.compact .icon {
+  width: 28px;
+  height: 28px;
+}
+
+.compact .icon svg {
+  width: 13px;
+  height: 13px;
+}
+
+.compactText {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: var(--th-color-text-2);
+}
+
+/* ─── LABELED — Contact aside card ───────────────────────────────────────── */
+.labeled .icon {
+  width: 32px;
+  height: 32px;
+}
+
+.labeled .icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.label {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: var(--th-color-text-3);
+  display: block;
+  margin-block-end: 2px;
+}
+
+.labeled .value {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 400;
+  font-size: var(--th-text-md);
+  color: var(--th-color-text-1);
+  display: block;
+}

@@ -79,6 +79,27 @@ export type { EssayRowProps, EssayCategory } from "./components/EssayRow/EssayRo
 export { AvailabilityPill } from "./components/AvailabilityPill/AvailabilityPill";
 export type { AvailabilityPillProps } from "./components/AvailabilityPill/AvailabilityPill";
 
+export { IconDetailRow } from "./components/IconDetailRow/IconDetailRow";
+export type { IconDetailRowProps, IconDetailRowVariant } from "./components/IconDetailRow/IconDetailRow";
+
+export { LogoStrip, LogoItem } from "./components/LogoStrip/LogoStrip";
+export type { LogoStripProps, LogoItemProps } from "./components/LogoStrip/LogoStrip";
+
+export { SkillGrid } from "./components/SkillGrid/SkillGrid";
+export type { SkillGridProps, SkillCategoryItem } from "./components/SkillGrid/SkillGrid";
+
+export { ThemeToggle } from "./components/ThemeToggle/ThemeToggle";
+export type { ThemeToggleProps, Theme } from "./components/ThemeToggle/ThemeToggle";
+
+export { LanguageSwitch } from "./components/LanguageSwitch/LanguageSwitch";
+export type { LanguageSwitchProps, Language } from "./components/LanguageSwitch/LanguageSwitch";
+
+export { FormSuccessPanel } from "./components/FormSuccessPanel/FormSuccessPanel";
+export type { FormSuccessPanelProps } from "./components/FormSuccessPanel/FormSuccessPanel";
+
+export { CaseStudySpotlight } from "./components/CaseStudySpotlight/CaseStudySpotlight";
+export type { CaseStudySpotlightProps, CaseStudyStat } from "./components/CaseStudySpotlight/CaseStudySpotlight";
+
 // Feedback
 export { Callout } from "./components/Callout/Callout";
 export type { CalloutProps, CalloutVariant } from "./components/Callout/Callout";

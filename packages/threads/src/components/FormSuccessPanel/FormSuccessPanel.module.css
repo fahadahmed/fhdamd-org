@@ -1,0 +1,35 @@
+.panel {
+  background: var(--th-color-sage-subtle);
+  border: 1px solid var(--th-color-sage);
+  border-radius: var(--th-radius-lg);
+  padding: var(--th-space-6);
+  text-align: center;
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--th-color-sage);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--th-space-4);
+}
+
+.title {
+  font-family: var(--th-font-serif);
+  font-weight: 400;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  color: var(--th-color-sage-text);
+  margin-block-end: var(--th-space-2);
+}
+
+.message {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 0.875rem;
+  color: var(--th-color-sage-text);
+  opacity: 0.8;
+}
