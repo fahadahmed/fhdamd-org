@@ -1,0 +1,48 @@
+.box {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  background: var(--th-color-surface-1);
+  border: 1px solid var(--th-color-border-default);
+  border-radius: var(--th-radius-xl);
+  padding: var(--th-space-6);
+  margin-block-start: var(--th-space-8);
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 99px;
+  background: var(--th-color-surface-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--th-font-serif);
+  font-style: italic;
+  font-size: 1.375rem;
+  color: var(--th-color-text-2);
+  flex-shrink: 0;
+}
+
+.name {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 92, "wght" 640;
+  font-size: 1rem;
+  color: var(--th-color-text-1);
+  margin-block-end: 4px;
+}
+
+.role {
+  font-family: var(--th-font-mono);
+  font-size: 0.75rem;
+  color: var(--th-color-text-4);
+  margin-block-end: 10px;
+}
+
+.bio {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--th-color-text-3);
+}

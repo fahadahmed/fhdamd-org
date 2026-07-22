@@ -109,6 +109,41 @@ export type { FeaturedCardProps, FeaturedCardBadge } from "./components/Featured
 export { TagFilterBar } from "./components/TagFilterBar/TagFilterBar";
 export type { TagFilterBarProps, TagFilterOption } from "./components/TagFilterBar/TagFilterBar";
 
+export { Prose } from "./components/Prose/Prose";
+export type { ProseProps } from "./components/Prose/Prose";
+
+export { CodeBlock } from "./components/CodeBlock/CodeBlock";
+export type { CodeBlockProps } from "./components/CodeBlock/CodeBlock";
+
+export { MermaidDiagramCard } from "./components/MermaidDiagramCard/MermaidDiagramCard";
+export type { MermaidDiagramCardProps } from "./components/MermaidDiagramCard/MermaidDiagramCard";
+
+export { EmbedCard } from "./components/EmbedCard/EmbedCard";
+export type {
+  EmbedCardProps,
+  YoutubeEmbedProps,
+  TweetEmbedProps,
+  InstagramEmbedProps,
+} from "./components/EmbedCard/EmbedCard";
+
+export { ScreenshotFigure } from "./components/ScreenshotFigure/ScreenshotFigure";
+export type { ScreenshotFigureProps } from "./components/ScreenshotFigure/ScreenshotFigure";
+
+export { TableOfContents } from "./components/TableOfContents/TableOfContents";
+export type { TableOfContentsProps, TableOfContentsItem } from "./components/TableOfContents/TableOfContents";
+
+export { FactStrip } from "./components/FactStrip/FactStrip";
+export type { FactStripProps, Fact } from "./components/FactStrip/FactStrip";
+
+export { StatRow } from "./components/StatRow/StatRow";
+export type { StatRowProps, Stat } from "./components/StatRow/StatRow";
+
+export { AuthorBox } from "./components/AuthorBox/AuthorBox";
+export type { AuthorBoxProps } from "./components/AuthorBox/AuthorBox";
+
+export { ReadingProgressBar } from "./components/ReadingProgressBar/ReadingProgressBar";
+export type { ReadingProgressBarProps } from "./components/ReadingProgressBar/ReadingProgressBar";
+
 // Feedback
 export { Callout } from "./components/Callout/Callout";
 export type { CalloutProps, CalloutVariant } from "./components/Callout/Callout";

@@ -1,0 +1,80 @@
+.block {
+  --code-bg: #2a2724;
+  --code-text: #e8e4dc;
+  --code-comment: #8c8680;
+
+  background: var(--code-bg);
+  border-radius: var(--th-radius-lg);
+  overflow: hidden;
+  margin: var(--th-space-7) 0;
+  box-shadow: var(--th-shadow-md);
+}
+
+[data-theme="dark"] .block {
+  --code-bg: #15130f;
+  --code-text: #ede9e0;
+}
+
+.chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border-block-end: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.filename {
+  font-family: var(--th-font-mono);
+  font-size: 0.75rem;
+  color: var(--code-comment);
+  letter-spacing: 0.02em;
+}
+
+.copy {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--code-comment);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--th-radius-sm);
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: all 0.14s;
+}
+
+.copy:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--code-text);
+}
+
+.pre {
+  margin: 0;
+  padding: 18px 20px;
+  overflow-x: auto;
+}
+
+.code {
+  font-family: var(--th-font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--code-text);
+  white-space: pre;
+}

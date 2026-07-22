@@ -1,0 +1,32 @@
+.card {
+  border: 1px dashed var(--th-color-border-strong);
+  border-radius: var(--th-radius-lg);
+  background: var(--th-color-surface-1);
+  padding: var(--th-space-6);
+  margin: var(--th-space-7) 0;
+}
+
+.label {
+  font-family: var(--th-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--th-color-text-4);
+  margin-block-end: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.diagram {
+  display: flex;
+  justify-content: center;
+}
+
+.caption {
+  font-family: var(--th-font-mono);
+  font-size: 0.75rem;
+  color: var(--th-color-text-4);
+  text-align: center;
+  margin-block-start: 14px;
+}

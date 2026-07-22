@@ -1,0 +1,126 @@
+.toc {
+  position: sticky;
+  top: 90px;
+  align-self: start;
+  height: fit-content;
+}
+
+/* Below 900px the article layout collapses to a single column, and a sticky
+   sidebar no longer makes sense as a sidebar — swap to the mobile dropdown bar. */
+@media (max-width: 900px) {
+  .toc {
+    display: none;
+  }
+}
+
+.label {
+  font-family: var(--th-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--th-color-text-4);
+  margin-block-end: 14px;
+}
+
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-inline-start: 1px solid var(--th-color-border-default);
+  margin: 0;
+  padding: 0;
+}
+
+.link {
+  display: block;
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 420;
+  font-size: 0.8125rem;
+  color: var(--th-color-text-3);
+  text-decoration: none;
+  padding-block: 6px;
+  padding-inline-start: 16px;
+  border-inline-start: 2px solid transparent;
+  margin-inline-start: -1px;
+  transition:
+    color 0.14s,
+    border-color 0.14s;
+}
+
+.link:hover {
+  color: var(--th-color-text-1);
+}
+
+.link.active {
+  color: var(--th-color-accent);
+  border-inline-start-color: var(--th-color-accent);
+}
+
+/* ─── MOBILE — sticky collapsed bar, expands into a dropdown ─────────────── */
+.mobileBar {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mobileBar {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--th-color-bg) 92%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-block-end: 1px solid var(--th-color-border-default);
+    margin-block-end: var(--th-space-4);
+  }
+}
+
+.mobileTrigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: start;
+  color: var(--th-color-text-1);
+}
+
+.mobileLabel {
+  font-family: var(--th-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--th-color-text-4);
+  flex-shrink: 0;
+}
+
+.mobileActive {
+  flex: 1;
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 500;
+  font-size: 0.8125rem;
+  color: var(--th-color-text-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobileMenu {
+  display: none;
+  border-block-start: 1px solid var(--th-color-border-subtle);
+  padding: 8px 16px 12px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.mobileMenuOpen {
+  display: block;
+}
+
+.mobileMenu .list {
+  border-inline-start: none;
+}

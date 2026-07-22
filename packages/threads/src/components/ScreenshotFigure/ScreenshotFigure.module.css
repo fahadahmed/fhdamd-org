@@ -1,0 +1,38 @@
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  aspect-ratio: 16 / 9;
+  background: var(--th-color-surface-2);
+  border: 1px dashed var(--th-color-border-strong);
+  border-radius: var(--th-radius-lg);
+  margin: var(--th-space-7) 0;
+  color: var(--th-color-text-4);
+}
+
+.placeholder span {
+  font-family: var(--th-font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+.figure {
+  margin: var(--th-space-7) 0;
+}
+
+.image {
+  width: 100%;
+  border-radius: var(--th-radius-lg);
+  border: 1px solid var(--th-color-border-default);
+  display: block;
+}
+
+.caption {
+  font-family: var(--th-font-mono);
+  font-size: 0.75rem;
+  color: var(--th-color-text-4);
+  text-align: center;
+  margin-block-start: 10px;
+}
