@@ -41,9 +41,6 @@ importers:
       '@astrojs/react':
         specifier: ^6.0.1
         version: 6.0.1(@types/node@25.9.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(esbuild@0.28.0)(jiti@2.6.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tsx@4.22.3)(yaml@2.9.0)
-      '@fhdamd/threads':
-        specifier: ^0.5.0
-        version: 0.5.0
       astro:
         specifier: ^7.1.1
         version: 7.1.1(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@25.9.1)(jiti@2.6.1)(rollup@4.60.4)(tsx@4.22.3)(yaml@2.9.0)
@@ -1524,9 +1521,6 @@ packages:
 
   '@fhdamd/threads@0.4.0':
     resolution: {integrity: sha512-DeAVPkJl1qcHrlxhJ92boVgNISbRGWyCvOQfuZulbRetoenoJCl5AnuLEuHLliWRuRWnwdCs4uri4+rlpKldMw==}
-
-  '@fhdamd/threads@0.5.0':
-    resolution: {integrity: sha512-/SI8fDy4uvVfXvr6lrNivwlIJkQJWpeE041koGT0331yrHPTbq+LU6s/mt4CnJ9kypO+yBEBjwDpSnyrRw90HA==}
 
   '@firebase/ai@2.12.0':
     resolution: {integrity: sha512-b+OL4vdyiSLZL/7dLd67V55CjKJvU9MpNmwnday7eA6GG2+J4iwUEsEHgw0/jKY3A41FfkF0SrnYFvtKbQZ65A==}
@@ -9633,11 +9627,6 @@ snapshots:
   '@fastify/busboy@3.2.0': {}
 
   '@fhdamd/threads@0.4.0':
-    dependencies:
-      react: 19.2.6
-      react-dom: 19.2.6(react@19.2.6)
-
-  '@fhdamd/threads@0.5.0':
     dependencies:
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
