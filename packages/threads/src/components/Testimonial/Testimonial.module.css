@@ -31,3 +31,43 @@
     padding: var(--th-space-5);
   }
 }
+
+/* ─── RESERVED — empty-state placeholder ─────────────────────────────────── */
+.slot {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background: var(--th-color-surface-1);
+  border: 1px dashed var(--th-color-border-strong);
+  border-radius: var(--th-radius-lg);
+  padding: var(--th-space-5);
+  margin: var(--th-space-6) 0;
+}
+
+.slotIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 99px;
+  background: var(--th-color-surface-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--th-color-text-4);
+}
+
+.slotTitle {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 92, "wght" 620;
+  font-size: 0.8125rem;
+  color: var(--th-color-text-3);
+  margin-block-end: 4px;
+}
+
+.slotDesc {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--th-color-text-4);
+}

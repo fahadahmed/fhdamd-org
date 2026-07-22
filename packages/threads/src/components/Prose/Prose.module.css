@@ -1,0 +1,96 @@
+.prose {
+  max-inline-size: 720px;
+}
+
+.prose h2 {
+  font-family: var(--th-font-serif);
+  font-weight: 400;
+  font-size: 1.75rem;
+  letter-spacing: -0.02em;
+  color: var(--th-color-text-1);
+  margin: var(--th-space-12) 0 var(--th-space-4);
+  scroll-margin-top: 90px;
+}
+
+.prose h2 em {
+  font-style: italic;
+  color: var(--th-color-accent);
+}
+
+.prose h3 {
+  font-family: var(--th-font-serif);
+  font-weight: 400;
+  font-size: 1.3125rem;
+  letter-spacing: -0.01em;
+  color: var(--th-color-text-1);
+  margin: var(--th-space-8) 0 var(--th-space-3);
+  scroll-margin-top: 90px;
+}
+
+.prose p {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 380;
+  font-size: var(--th-text-base);
+  line-height: 1.8;
+  color: var(--th-color-text-2);
+  margin-block-end: var(--th-space-5);
+}
+
+.prose p b,
+.prose p strong {
+  font-variation-settings: "wdth" 90, "wght" 600;
+  color: var(--th-color-text-1);
+  font-weight: normal;
+}
+
+.prose p code,
+.prose li code {
+  font-family: var(--th-font-mono);
+  font-size: 0.875em;
+  background: var(--th-color-surface-2);
+  border: 1px solid var(--th-color-border-default);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: var(--th-color-accent-text);
+}
+
+.prose a:not([class]) {
+  color: var(--th-color-accent);
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.2s var(--th-ease-out);
+}
+
+.prose a:not([class]):hover {
+  background-size: 100% 1px;
+}
+
+.prose ul,
+.prose ol {
+  margin: 0 0 var(--th-space-5);
+  padding-inline-start: 1.3em;
+  color: var(--th-color-text-2);
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 380;
+  font-size: var(--th-text-base);
+  line-height: 1.75;
+}
+
+.prose li {
+  margin-block-end: 8px;
+}
+
+.prose blockquote {
+  border-inline-start: 3px solid var(--th-color-accent);
+  padding-block: 4px;
+  padding-inline-start: 20px;
+  margin: var(--th-space-6) 0;
+  font-family: var(--th-font-serif);
+  font-style: italic;
+  font-size: 1.1875rem;
+  color: var(--th-color-text-1);
+  line-height: 1.6;
+}

@@ -44,4 +44,38 @@ describe("Testimonial", () => {
     );
     expect(screen.getByTestId("testi")).toBeInTheDocument();
   });
+
+  describe("reserved variant", () => {
+    it("renders the default title and the given description", () => {
+      render(<Testimonial reserved description="A quote goes here once confirmed." />);
+      expect(screen.getByText("Client testimonial — reserved")).toBeInTheDocument();
+      expect(screen.getByText("A quote goes here once confirmed.")).toBeInTheDocument();
+    });
+
+    it("respects a custom title", () => {
+      render(<Testimonial reserved title="Coming soon" description="d" />);
+      expect(screen.getByText("Coming soon")).toBeInTheDocument();
+    });
+
+    it("does not render quote/attribution markup", () => {
+      render(<Testimonial reserved description="d" />);
+      expect(screen.queryByText("Author")).not.toBeInTheDocument();
+    });
+
+    it("does not leak the reserved prop onto the DOM node", () => {
+      const { container } = render(<Testimonial reserved description="d" data-testid="slot" />);
+      expect(screen.getByTestId("slot")).not.toHaveAttribute("reserved");
+      expect(container.firstChild).not.toHaveAttribute("reserved");
+    });
+
+    it("merges custom className", () => {
+      render(<Testimonial reserved description="d" className="custom" data-testid="slot" />);
+      expect(screen.getByTestId("slot")).toHaveClass("custom");
+    });
+  });
+
+  it("does not leak the reserved prop onto the DOM node for the filled variant", () => {
+    render(<Testimonial quote="Quote" attribution="Author" data-testid="testi" />);
+    expect(screen.getByTestId("testi")).not.toHaveAttribute("reserved");
+  });
 });
