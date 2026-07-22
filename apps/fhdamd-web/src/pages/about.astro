@@ -32,7 +32,7 @@ const skillList = await getSkills();
 // Astro's template compiler intercepts bare JSX written as a prop-expression
 // value and hands React an internal object instead of a real element, so
 // every such value must be precomputed here and passed as a plain variable.
-const heroHeading = titleToReact(about.heroHeading);
+const heroHeading = titleToReact(about.heroHeading, { color: "var(--th-color-accent)" });
 const employersTitle = titleToReact("Organisations I've *worked with*");
 const clientWorkTitle = titleToReact("Client *work*");
 const stackTitle = titleToReact("Core *stack*");
@@ -54,7 +54,7 @@ const employerItems = employerList.map((employer) => ({
 
 <Layout title={`About — Fahad Ahmed · fhdamd.dev`}>
   <Container>
-    <Hero eyebrow={about.heroKicker} heading={heroHeading} subheading={about.heroSubheading} />
+    <Hero eyebrow={about.heroKicker} heading={heroHeading} body={about.heroSubheading} />
   </Container>
 
   <section style={borderStyle}>
