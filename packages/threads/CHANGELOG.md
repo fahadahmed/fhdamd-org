@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.5.0](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.4.0...threads-v0.5.0) (2026-07-22)
+
+
+### Features
+
+* **threads:** batch 1 components for fhdamd-web — About, Contact, Homepage ([#277](https://github.com/fahadahmed/fhdamd-org/issues/277)) ([d3ca0b9](https://github.com/fahadahmed/fhdamd-org/commit/d3ca0b95b103e776f28ae54e892fd81d874803d8))
+* **threads:** batch 2 components for fhdamd-web — Blog, Case Studies, Lab listing pages ([#282](https://github.com/fahadahmed/fhdamd-org/issues/282)) ([fd1923b](https://github.com/fahadahmed/fhdamd-org/commit/fd1923b6ee4ebbdefbdd67786f54748499c090ad))
+* **threads:** batch 3 components for fhdamd-web — long-form article template + case-study pieces ([#284](https://github.com/fahadahmed/fhdamd-org/issues/284)) ([a8d174b](https://github.com/fahadahmed/fhdamd-org/commit/a8d174b312127dfa9b6942469cbca7bbb83a97e7))
+
 ## [0.4.0](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.3.1...threads-v0.4.0) (2026-06-29)
 
 
