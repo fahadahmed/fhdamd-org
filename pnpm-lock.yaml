@@ -245,13 +245,6 @@ importers:
         version: 5.9.2
 
   packages/threads:
-    dependencies:
-      react:
-        specifier: ^19.1.0
-        version: 19.2.3
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.2.3(react@19.2.3)
     devDependencies:
       '@chromatic-com/storybook':
         specifier: ^5.2.1
@@ -316,6 +309,12 @@ importers:
       playwright:
         specifier: ^1.56.0
         version: 1.57.0
+      react:
+        specifier: ^19.1.0
+        version: 19.2.3
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.2.3(react@19.2.3)
       storybook:
         specifier: ^10.4.1
         version: 10.4.2(@testing-library/dom@10.4.1)(@types/react@19.1.0)(prettier@3.8.3)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
