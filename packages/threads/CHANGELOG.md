@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.5.0...threads-v0.5.1) (2026-07-22)
+
+
+### Bug Fixes
+
+* **threads:** move react/react-dom to peerDependencies ([#287](https://github.com/fahadahmed/fhdamd-org/issues/287)) ([58ba3ba](https://github.com/fahadahmed/fhdamd-org/commit/58ba3ba5c837ba20d2cf6523c1dff7b3d59867e0))
+
 ## [0.5.0](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.4.0...threads-v0.5.0) (2026-07-22)
 
 
