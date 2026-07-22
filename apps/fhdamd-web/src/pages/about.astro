@@ -17,7 +17,7 @@ import {
 } from "@fhdamd/threads";
 import { getAboutPage, getSiteSettings, getEmployers, getClientWork, getExperience, getSkills } from "../lib/cms";
 import { titleToReact } from "../utils/titleToReact";
-import { LocationIcon, BriefcaseIcon, GithubIcon } from "../components/icons/icons";
+import { LocationIcon, BriefcaseIcon, GithubIcon, ArrowRightIcon } from "../components/icons/icons";
 import { LogoPlaceholder } from "../components/icons/LogoPlaceholder";
 
 const borderStyle = "border-top:1px solid var(--th-color-border-default)";
@@ -40,6 +40,7 @@ const stackTitle = titleToReact("Core *stack*");
 const locationIcon = createElement(LocationIcon);
 const briefcaseIcon = createElement(BriefcaseIcon);
 const githubIcon = createElement(GithubIcon);
+const arrowRightIcon = createElement(ArrowRightIcon);
 
 const clientWorkItems = clientWorkList.map((item) => ({
   ...item,
@@ -80,7 +81,9 @@ const employerItems = employerList.map((employer) => ({
               <IconDetailRow variant="compact" value={settings.github} icon={githubIcon} />
             </Stack>
             <Stack gap={2} style={{ marginTop: "var(--th-space-5)" }}>
-              <Button href="/contact" variant="solid-ink">Get in touch</Button>
+              <Button href="/contact" variant="solid-ink" icon={arrowRightIcon}>
+                Get in touch
+              </Button>
               <Button href="/services" variant="ghost">View services</Button>
             </Stack>
           </Card>
