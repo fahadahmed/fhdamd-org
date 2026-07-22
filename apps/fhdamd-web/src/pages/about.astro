@@ -1,0 +1,241 @@
+---
+import { createElement } from "react";
+import Layout from "../layouts/Layout.astro";
+import {
+  Container,
+  Section,
+  Hero,
+  SectionHeader,
+  Card,
+  IconDetailRow,
+  LogoStrip,
+  LogoItem,
+  ClientWorkRow,
+  SkillGrid,
+  Button,
+} from "@fhdamd/threads";
+import { getAboutPage, getSiteSettings, getEmployers, getClientWork, getExperience, getSkills } from "../lib/cms";
+import { titleToReact } from "../utils/titleToReact";
+import { LocationIcon, BriefcaseIcon, GithubIcon } from "../components/icons/icons";
+import { LogoPlaceholder } from "../components/icons/LogoPlaceholder";
+
+const borderStyle = "border-top:1px solid var(--th-color-border-default)";
+
+const about = await getAboutPage();
+const settings = await getSiteSettings();
+const employerList = await getEmployers();
+const clientWorkList = await getClientWork();
+const experienceList = await getExperience();
+const skillList = await getSkills();
+
+// Astro's template compiler intercepts bare JSX written as a prop-expression
+// value and hands React an internal object instead of a real element, so
+// every such value must be precomputed here and passed as a plain variable.
+const heroHeading = titleToReact(about.heroHeading);
+const employersTitle = titleToReact("Organisations I've *worked with*");
+const clientWorkTitle = titleToReact("Client *work*");
+const stackTitle = titleToReact("Core *stack*");
+
+const locationIcon = createElement(LocationIcon);
+const briefcaseIcon = createElement(BriefcaseIcon);
+const githubIcon = createElement(GithubIcon);
+
+const clientWorkItems = clientWorkList.map((item) => ({
+  ...item,
+  titleNode: titleToReact(item.title),
+}));
+
+const employerItems = employerList.map((employer) => ({
+  ...employer,
+  logoNode: createElement(LogoPlaceholder, { name: employer.name }),
+}));
+---
+
+<Layout title={`About — Fahad Ahmed · fhdamd.dev`}>
+  <Container>
+    <Hero eyebrow={about.heroKicker} heading={heroHeading} subheading={about.heroSubheading} />
+  </Container>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <div class="about-grid">
+          <div class="about-body">
+            {about.bio.map((paragraph) => <p set:html={paragraph} />)}
+          </div>
+
+          <Card className="about-card">
+            <div class="about-card__label">{about.sidebarLabel}</div>
+            <div class="about-card__name">Fahad Ahmed</div>
+            <div class="about-card__title">{settings.currentTitle}</div>
+            <div class="about-card__divider"></div>
+            <div class="about-card__rows">
+              <IconDetailRow variant="compact" value={settings.location} icon={locationIcon} />
+              <IconDetailRow
+                variant="compact"
+                value={`${settings.currentEmployer} · Sep 2022–present`}
+                icon={briefcaseIcon}
+              />
+              <IconDetailRow variant="compact" value={settings.github} icon={githubIcon} />
+            </div>
+            <div class="about-card__actions">
+              <Button href="/contact" variant="solid-ink">Get in touch</Button>
+              <Button href="/services" variant="ghost">View services</Button>
+            </div>
+          </Card>
+        </div>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <SectionHeader title={employersTitle} meta="Employers & clients" />
+        <LogoStrip>
+          {employerItems.map((employer) => <LogoItem logo={employer.logoNode} label={employer.label} />)}
+        </LogoStrip>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <SectionHeader title={clientWorkTitle} meta="EY · 2022–present" />
+        <div class="client-list">
+          {clientWorkItems.map((item) => (
+            <ClientWorkRow
+              client={item.client}
+              dateRange={item.dateRange}
+              title={item.titleNode}
+              description={item.description}
+              tags={item.tags}
+              value={item.value}
+            />
+          ))}
+        </div>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <SectionHeader title="Experience" meta="14 years" />
+        <div class="client-list">
+          {experienceList.map((item) => (
+            <ClientWorkRow
+              client={item.company}
+              dateRange={item.period}
+              title={item.role}
+              description={item.description}
+            />
+          ))}
+        </div>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <SectionHeader title={stackTitle} meta="Tools of the trade" />
+        <SkillGrid categories={skillList} />
+      </Section>
+    </Container>
+  </section>
+</Layout>
+
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: var(--th-space-12);
+    align-items: start;
+  }
+
+  .about-body p {
+    font-family: var(--th-font-display);
+    font-variation-settings: "wdth" 90, "wght" 370;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--th-color-text-2);
+    margin-bottom: var(--th-space-5);
+  }
+
+  .about-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .about-body :global(b) {
+    font-variation-settings: "wdth" 90, "wght" 580;
+    color: var(--th-color-text-1);
+    font-weight: normal;
+  }
+
+  /* Card's own CSS is a flex column with a gap between every direct child —
+     override back to block so each child's own margin-bottom below isn't
+     doubled up with that gap. */
+  .about-card {
+    display: block;
+    position: sticky;
+    top: 80px;
+  }
+
+  .about-card__label {
+    font-family: var(--th-font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--th-color-text-4);
+    margin-bottom: var(--th-space-3);
+  }
+
+  .about-card__name {
+    font-family: var(--th-font-serif);
+    font-weight: 400;
+    font-size: 1.375rem;
+    letter-spacing: -0.01em;
+    color: var(--th-color-text-1);
+    margin-bottom: 4px;
+  }
+
+  .about-card__title {
+    font-family: var(--th-font-display);
+    font-variation-settings: "wdth" 90, "wght" 380;
+    font-size: 0.875rem;
+    color: var(--th-color-text-3);
+    margin-bottom: var(--th-space-5);
+  }
+
+  .about-card__divider {
+    height: 1px;
+    background: var(--th-color-border-subtle);
+    margin-bottom: var(--th-space-5);
+  }
+
+  .about-card__rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--th-space-3);
+  }
+
+  .about-card__actions {
+    margin-top: var(--th-space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--th-space-2);
+  }
+
+  .client-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (max-width: 900px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
