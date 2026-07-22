@@ -1,0 +1,105 @@
+.card {
+  background: var(--th-color-surface-1);
+  border: 1px solid var(--th-color-border-default);
+  border-radius: var(--th-radius-lg);
+  padding: var(--th-space-5);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform 0.16s var(--th-ease-out),
+    box-shadow 0.16s var(--th-ease-out),
+    border-color 0.16s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--th-shadow-md);
+  border-color: var(--th-color-border-strong);
+}
+
+.badges {
+  display: flex;
+  gap: 6px;
+  margin-block-end: 14px;
+}
+
+.title {
+  font-family: var(--th-font-serif);
+  font-weight: 400;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  line-height: 1.18;
+  margin-block-end: var(--th-space-2);
+  color: var(--th-color-text-1);
+  flex: 1;
+}
+
+.title em {
+  font-style: italic;
+  color: var(--th-color-accent);
+}
+
+.desc {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 0.8125rem;
+  line-height: 1.58;
+  color: var(--th-color-text-3);
+  margin-block-end: var(--th-space-4);
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block-start: var(--th-space-3);
+  border-block-start: 1px solid var(--th-color-border-subtle);
+}
+
+.date {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--th-color-text-4);
+}
+
+.arr {
+  width: 26px;
+  height: 26px;
+  border-radius: 99px;
+  border: 1px solid var(--th-color-border-strong);
+  background: var(--th-color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.14s;
+  color: var(--th-color-text-2);
+}
+
+.card:hover .arr {
+  background: var(--th-color-text-1);
+  color: var(--th-color-text-inverse);
+}
+
+/* ─── COMING SOON — dashed, non-interactive placeholder ─────────────────── */
+.comingSoon {
+  border-style: dashed;
+  cursor: default;
+  background: transparent;
+}
+
+.comingSoon:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--th-color-border-default);
+}
+
+.comingSoon .title,
+.comingSoon .date {
+  color: var(--th-color-text-4);
+}
