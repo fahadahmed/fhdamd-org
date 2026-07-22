@@ -4,6 +4,7 @@ import Layout from "../layouts/Layout.astro";
 import {
   Container,
   Section,
+  Stack,
   Hero,
   SectionHeader,
   Card,
@@ -60,16 +61,16 @@ const employerItems = employerList.map((employer) => ({
     <Container>
       <Section size="md">
         <div class="about-grid">
-          <div class="about-body">
+          <Stack gap={5} className="about-body">
             {about.bio.map((paragraph) => <p set:html={paragraph} />)}
-          </div>
+          </Stack>
 
           <Card className="about-card">
             <div class="about-card__label">{about.sidebarLabel}</div>
             <div class="about-card__name">Fahad Ahmed</div>
             <div class="about-card__title">{settings.currentTitle}</div>
             <div class="about-card__divider"></div>
-            <div class="about-card__rows">
+            <Stack gap={3}>
               <IconDetailRow variant="compact" value={settings.location} icon={locationIcon} />
               <IconDetailRow
                 variant="compact"
@@ -77,11 +78,11 @@ const employerItems = employerList.map((employer) => ({
                 icon={briefcaseIcon}
               />
               <IconDetailRow variant="compact" value={settings.github} icon={githubIcon} />
-            </div>
-            <div class="about-card__actions">
+            </Stack>
+            <Stack gap={2} style={{ marginTop: "var(--th-space-5)" }}>
               <Button href="/contact" variant="solid-ink">Get in touch</Button>
               <Button href="/services" variant="ghost">View services</Button>
-            </div>
+            </Stack>
           </Card>
         </div>
       </Section>
@@ -91,10 +92,12 @@ const employerItems = employerList.map((employer) => ({
   <section style={borderStyle}>
     <Container>
       <Section size="md">
-        <SectionHeader title={employersTitle} meta="Employers & clients" />
-        <LogoStrip>
-          {employerItems.map((employer) => <LogoItem logo={employer.logoNode} label={employer.label} />)}
-        </LogoStrip>
+        <Stack gap={8}>
+          <SectionHeader title={employersTitle} meta="Employers & clients" />
+          <LogoStrip>
+            {employerItems.map((employer) => <LogoItem logo={employer.logoNode} label={employer.label} />)}
+          </LogoStrip>
+        </Stack>
       </Section>
     </Container>
   </section>
@@ -102,19 +105,21 @@ const employerItems = employerList.map((employer) => ({
   <section style={borderStyle}>
     <Container>
       <Section size="md">
-        <SectionHeader title={clientWorkTitle} meta="EY · 2022–present" />
-        <div class="client-list">
-          {clientWorkItems.map((item) => (
-            <ClientWorkRow
-              client={item.client}
-              dateRange={item.dateRange}
-              title={item.titleNode}
-              description={item.description}
-              tags={item.tags}
-              value={item.value}
-            />
-          ))}
-        </div>
+        <Stack gap={8}>
+          <SectionHeader title={clientWorkTitle} meta="EY · 2022–present" />
+          <div class="client-list">
+            {clientWorkItems.map((item) => (
+              <ClientWorkRow
+                client={item.client}
+                dateRange={item.dateRange}
+                title={item.titleNode}
+                description={item.description}
+                tags={item.tags}
+                value={item.value}
+              />
+            ))}
+          </div>
+        </Stack>
       </Section>
     </Container>
   </section>
@@ -122,17 +127,19 @@ const employerItems = employerList.map((employer) => ({
   <section style={borderStyle}>
     <Container>
       <Section size="md">
-        <SectionHeader title="Experience" meta="14 years" />
-        <div class="client-list">
-          {experienceList.map((item) => (
-            <ClientWorkRow
-              client={item.company}
-              dateRange={item.period}
-              title={item.role}
-              description={item.description}
-            />
-          ))}
-        </div>
+        <Stack gap={8}>
+          <SectionHeader title="Experience" meta="14 years" />
+          <div class="client-list">
+            {experienceList.map((item) => (
+              <ClientWorkRow
+                client={item.company}
+                dateRange={item.period}
+                title={item.role}
+                description={item.description}
+              />
+            ))}
+          </div>
+        </Stack>
       </Section>
     </Container>
   </section>
@@ -140,8 +147,10 @@ const employerItems = employerList.map((employer) => ({
   <section style={borderStyle}>
     <Container>
       <Section size="md">
-        <SectionHeader title={stackTitle} meta="Tools of the trade" />
-        <SkillGrid categories={skillList} />
+        <Stack gap={8}>
+          <SectionHeader title={stackTitle} meta="Tools of the trade" />
+          <SkillGrid categories={skillList} />
+        </Stack>
       </Section>
     </Container>
   </section>
@@ -161,11 +170,6 @@ const employerItems = employerList.map((employer) => ({
     font-size: 1.0625rem;
     line-height: 1.75;
     color: var(--th-color-text-2);
-    margin-bottom: var(--th-space-5);
-  }
-
-  .about-body p:last-child {
-    margin-bottom: 0;
   }
 
   .about-body :global(b) {
@@ -213,19 +217,6 @@ const employerItems = employerList.map((employer) => ({
     height: 1px;
     background: var(--th-color-border-subtle);
     margin-bottom: var(--th-space-5);
-  }
-
-  .about-card__rows {
-    display: flex;
-    flex-direction: column;
-    gap: var(--th-space-3);
-  }
-
-  .about-card__actions {
-    margin-top: var(--th-space-5);
-    display: flex;
-    flex-direction: column;
-    gap: var(--th-space-2);
   }
 
   .client-list {
