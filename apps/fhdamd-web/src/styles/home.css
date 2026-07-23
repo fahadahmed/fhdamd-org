@@ -7,7 +7,7 @@
   border: 1px solid var(--th-color-border-default);
   border-radius: var(--th-radius-lg);
   overflow: hidden;
-  margin-top: var(--th-space-10);
+  margin-block: var(--th-space-10) var(--th-space-12);
 }
 
 .hire-strip__item {
