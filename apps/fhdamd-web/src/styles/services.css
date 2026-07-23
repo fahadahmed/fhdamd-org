@@ -1,0 +1,320 @@
+/* ─── OFFER CARDS ────────────────────────────────────────────────────────── */
+.offer-card__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--th-radius-md);
+  background: var(--th-color-surface-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.offer-card__icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--th-color-text-2);
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.offer-card__eyebrow {
+  font-family: var(--th-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--th-color-text-4);
+}
+
+.offer-card__title {
+  font-family: var(--th-font-serif);
+  font-weight: 400;
+  font-size: 1.5rem;
+  letter-spacing: -0.015em;
+  color: var(--th-color-text-1);
+  line-height: 1.15;
+}
+
+.offer-card__title em {
+  font-style: italic;
+  color: var(--th-color-accent);
+}
+
+.offer-card__desc {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--th-color-text-3);
+}
+
+.offer-card__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.offer-card__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--th-space-2);
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--th-color-text-3);
+}
+
+.offer-card__list svg {
+  width: 13px;
+  height: 13px;
+  stroke: var(--th-color-sage);
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+/* ─── PRICING NOTE ───────────────────────────────────────────────────────── */
+/* Card's own layout is a flex column — this needs a row on desktop that
+   collapses to a column on mobile, which inline style can't express. */
+.pricing-note {
+  display: flex;
+  flex-direction: row;
+  gap: var(--th-space-5);
+  align-items: flex-start;
+  border-style: dashed;
+  border-color: var(--th-color-border-strong);
+}
+
+@media (max-width: 600px) {
+  .pricing-note {
+    flex-direction: column;
+  }
+}
+
+.pricing-note__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--th-radius-pill);
+  background: var(--th-color-accent-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pricing-note__icon svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--th-color-accent-text);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pricing-note__title {
+  font-family: var(--th-font-serif);
+  font-weight: 400;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  color: var(--th-color-text-1);
+  margin-bottom: 8px;
+}
+
+.pricing-note__title em {
+  font-style: italic;
+  color: var(--th-color-accent);
+}
+
+.pricing-note__desc {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--th-color-text-3);
+  max-width: 760px;
+}
+
+/* ─── ADD-ONS ────────────────────────────────────────────────────────────── */
+.addon-card__name {
+  font-family: var(--th-font-serif);
+  font-weight: 400;
+  font-size: 1.125rem;
+  letter-spacing: -0.01em;
+  color: var(--th-color-text-1);
+}
+
+.addon-card__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--th-space-2);
+}
+
+.addon-card__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--th-space-2);
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--th-color-text-3);
+}
+
+.addon-card__list li::before {
+  content: "–";
+  color: var(--th-color-text-4);
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  margin-top: 2px;
+}
+
+/* ─── DELIVERY FRAMEWORK ─────────────────────────────────────────────────── */
+.framework {
+  display: flex;
+  flex-direction: column;
+}
+
+.fw-phase {
+  display: grid;
+  grid-template-columns: 56px 200px 1fr;
+  align-items: stretch;
+  border-top: 1px solid var(--th-color-border-subtle);
+}
+
+.fw-phase:last-child {
+  border-bottom: 1px solid var(--th-color-border-subtle);
+}
+
+.fw-phase__num {
+  display: flex;
+  align-items: flex-start;
+  padding: var(--th-space-6) var(--th-space-4) var(--th-space-6) 0;
+  padding-top: calc(var(--th-space-6) + 2px);
+}
+
+.fw-phase__num span {
+  font-family: var(--th-font-serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.5rem;
+  color: var(--th-color-text-4);
+  line-height: 1;
+}
+
+.fw-phase__left {
+  padding: var(--th-space-6) var(--th-space-6) var(--th-space-6) 0;
+  border-right: 1px solid var(--th-color-border-subtle);
+}
+
+.fw-phase__name {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 92, "wght" 680;
+  font-size: 0.9375rem;
+  color: var(--th-color-text-1);
+  margin-bottom: 6px;
+}
+
+.fw-phase__body {
+  padding: var(--th-space-6) 0 var(--th-space-6) var(--th-space-6);
+}
+
+.fw-phase__desc {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--th-color-text-3);
+  margin-bottom: var(--th-space-4);
+}
+
+.fw-phase__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.fw-phase__pill {
+  font-family: var(--th-font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: var(--th-radius-pill);
+  background: var(--th-color-surface-2);
+  border: 1px solid var(--th-color-border-default);
+  color: var(--th-color-text-3);
+}
+
+.fw-differentiator-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--th-space-6);
+}
+
+.fw-diff__title {
+  font-family: var(--th-font-serif);
+  font-weight: 400;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  color: var(--th-color-text-1);
+  margin-bottom: var(--th-space-2);
+}
+
+.fw-diff__title em {
+  font-style: italic;
+  color: var(--th-color-accent);
+}
+
+.fw-diff__desc {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  color: var(--th-color-text-3);
+}
+
+@media (max-width: 900px) {
+  .fw-phase {
+    grid-template-columns: 40px 1fr;
+  }
+
+  .fw-phase__left {
+    display: none;
+  }
+
+  .fw-differentiator-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .fw-phase {
+    grid-template-columns: 36px 1fr;
+  }
+}
+
+/* ─── TECH STACK ─────────────────────────────────────────────────────────── */
+.stack-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--th-space-2);
+}
+
+.stack-note {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--th-color-text-3);
+  max-width: 680px;
+  margin-top: var(--th-space-6);
+}
