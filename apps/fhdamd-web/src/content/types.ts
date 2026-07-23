@@ -26,6 +26,15 @@ export interface AboutPage {
   sidebarLabel: string;
 }
 
+export interface ContactPage {
+  heroKicker: string;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  heroHeading: string;
+  heroSubheading: string;
+  formNote: string;
+  expectList: string[];
+}
+
 export interface Employer {
   name: string;
   label: string;
