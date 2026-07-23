@@ -55,7 +55,7 @@ export const servicesPage: ServicesPage = {
   addonCards: [
     {
       name: 'Strategic discovery',
-      badge: { label: 'Credited if you proceed', variant: 'sage' },
+      badge: { label: 'Credited if you proceed', variant: 'neutral' },
       items: [
         'For clients unsure what they need yet',
         'Competitive & content audit',
