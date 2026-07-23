@@ -1,6 +1,7 @@
 ---
 import "@fhdamd/threads/tokens";
 import "@fhdamd/threads/styles";
+import "../styles/global.css";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 
@@ -75,12 +76,3 @@ const canonicalUrl = new URL(Astro.url.pathname, "https://fhdamd.dev").href;
     <Footer copyright={`fhdamd.dev · Melbourne, VIC · ${new Date().getFullYear()}`} />
   </body>
 </html>
-
-<style is:global>
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-    background: var(--th-color-bg);
-  }
-</style>
