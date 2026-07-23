@@ -97,6 +97,54 @@ export interface HomePage {
   essays: EssayTeaser[];
 }
 
+export interface OfferCard {
+  iconKey: "design" | "phone" | "fileCheck";
+  eyebrow: string;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  title: string;
+  description: string;
+  checklist: string[];
+}
+
+export interface AddonCard {
+  name: string;
+  badge: { label: string; variant: "sage" | "neutral" };
+  items: string[];
+}
+
+export interface DeliveryPhase {
+  number: string;
+  name: string;
+  badge: { label: string; variant: "terra" | "sage" | "neutral" };
+  description: string;
+  pills: string[];
+}
+
+export interface Differentiator {
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  title: string;
+  description: string;
+}
+
+export interface ServicesPage {
+  heroKicker: string;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  heroHeading: string;
+  heroSubheading: string;
+  offerCards: OfferCard[];
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  pricingNoteTitle: string;
+  pricingNoteDesc: string;
+  addonCards: AddonCard[];
+  deliveryPhases: DeliveryPhase[];
+  differentiators: Differentiator[];
+  techStackTags: string[];
+  techStackNote: string;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  ctaTitle: string;
+  ctaSubtitle: string;
+}
+
 export interface Employer {
   name: string;
   label: string;

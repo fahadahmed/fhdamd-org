@@ -1,0 +1,191 @@
+---
+import { createElement } from "react";
+import Layout from "../layouts/Layout.astro";
+import { Container, Section, Stack, Hero, SectionHeader, Card, Grid, Badge, Tag, Button, DarkStrip } from "@fhdamd/threads";
+import { getServicesPage } from "../lib/cms";
+import { titleToReact, markupToHtml } from "../utils/titleToReact";
+import { DesignIcon, PhoneIcon, FileCheckIcon, DollarIcon, CheckIcon, ArrowRightIcon } from "../components/icons/icons";
+import "../styles/services.css";
+
+const borderStyle = "border-top:1px solid var(--th-color-border-default)";
+
+const services = await getServicesPage();
+
+// Astro's template compiler intercepts bare JSX written as a prop-expression
+// value and hands React an internal object instead of a real element, so
+// every such value must be precomputed here and passed as a plain variable.
+const heroHeading = titleToReact(services.heroHeading, { color: "var(--th-color-accent)" });
+const arrowRightIcon = createElement(ArrowRightIcon);
+
+const offerIcons = {
+  design: DesignIcon,
+  phone: PhoneIcon,
+  fileCheck: FileCheckIcon,
+};
+
+const offerTitle = titleToReact("What I *offer*");
+const pricingNoteTitleHtml = markupToHtml(services.pricingNoteTitle);
+const addonsTitle = titleToReact("Add-*ons*");
+const buildTitle = titleToReact("How I *build*");
+const stackTitle = titleToReact("Built on a *considered stack*");
+const ctaHeading = titleToReact(services.ctaTitle);
+
+// SectionHeader's meta span is white-space:nowrap with no responsive
+// override, so long meta text overflows the viewport on mobile instead of
+// wrapping. meta accepts a ReactNode, so wrap it to opt back into wrapping.
+const wrapMeta = (text: string) => createElement("span", { style: { whiteSpace: "normal" } }, text);
+const offerMeta = wrapMeta("Three ways to work together");
+const addonsMeta = wrapMeta("Scoped into your proposal, not pre-priced");
+const buildMeta = wrapMeta("Websites & products · advisory is scoped separately");
+const stackMeta = wrapMeta("No WordPress. No page builders. No default choices.");
+
+const ctaActions = createElement(
+  "div",
+  { style: { display: "flex", gap: "var(--th-space-3)", flexWrap: "wrap" } },
+  createElement(Button, { href: "/contact", variant: "solid-ink", icon: arrowRightIcon }, "Get in touch"),
+  createElement(Button, { href: "/about", variant: "ghost" }, "About me"),
+);
+---
+
+<Layout title={`Services — Fahad Ahmed · fhdamd.dev`}>
+  <Container>
+    <Hero eyebrow={services.heroKicker} heading={heroHeading} body={services.heroSubheading} />
+  </Container>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <Stack gap={8}>
+          <SectionHeader title={offerTitle} meta={offerMeta} />
+          <Grid cols={3} gap={4}>
+            {services.offerCards.map((card, i) => {
+              const Icon = offerIcons[card.iconKey];
+              return (
+                <Card key={i}>
+                  <div class="offer-card__icon">
+                    <Icon />
+                  </div>
+                  <div class="offer-card__eyebrow">{card.eyebrow}</div>
+                  <h3 class="offer-card__title" set:html={markupToHtml(card.title)} />
+                  <p class="offer-card__desc">{card.description}</p>
+                  <ul class="offer-card__list">
+                    {card.checklist.map((item) => (
+                      <li>
+                        <CheckIcon />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button href="/contact" variant="ghost" icon={arrowRightIcon}>
+                    Get a proposal
+                  </Button>
+                </Card>
+              );
+            })}
+          </Grid>
+        </Stack>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <Card className="pricing-note">
+          <div class="pricing-note__icon">
+            <DollarIcon />
+          </div>
+          <div>
+            <h3 class="pricing-note__title" set:html={pricingNoteTitleHtml} />
+            <p class="pricing-note__desc">{services.pricingNoteDesc}</p>
+          </div>
+        </Card>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <Stack gap={8}>
+          <SectionHeader title={addonsTitle} meta={addonsMeta} />
+          <Grid cols={3} gap={4}>
+            {services.addonCards.map((card, i) => (
+              <Card key={i}>
+                <div class="addon-card__name">{card.name}</div>
+                <Badge variant={card.badge.variant}>{card.badge.label}</Badge>
+                <ul class="addon-card__list">
+                  {card.items.map((item) => <li>{item}</li>)}
+                </ul>
+              </Card>
+            ))}
+          </Grid>
+        </Stack>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <Stack gap={8}>
+          <SectionHeader title={buildTitle} meta={buildMeta} />
+          <div>
+            <div class="framework">
+              {services.deliveryPhases.map((phase) => (
+                <div class="fw-phase">
+                  <div class="fw-phase__num">
+                    <span>{phase.number}</span>
+                  </div>
+                  <div class="fw-phase__left">
+                    <div class="fw-phase__name">{phase.name}</div>
+                    <Badge variant={phase.badge.variant}>{phase.badge.label}</Badge>
+                  </div>
+                  <div class="fw-phase__body">
+                    <p class="fw-phase__desc">{phase.description}</p>
+                    <div class="fw-phase__details">
+                      {phase.pills.map((pill) => <span class="fw-phase__pill">{pill}</span>)}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <Card style={{ padding: "var(--th-space-8)", marginTop: "var(--th-space-8)" }}>
+              <div class="fw-differentiator-grid">
+                {services.differentiators.map((d) => (
+                  <div>
+                    <h4 class="fw-diff__title" set:html={markupToHtml(d.title)} />
+                    <p class="fw-diff__desc">{d.description}</p>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+        </Stack>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <Stack gap={8}>
+          <SectionHeader title={stackTitle} meta={stackMeta} />
+          <div>
+            <div class="stack-strip">
+              {services.techStackTags.map((tag) => <Tag>{tag}</Tag>)}
+            </div>
+            <p class="stack-note">{services.techStackNote}</p>
+          </div>
+        </Stack>
+      </Section>
+    </Container>
+  </section>
+
+  <Container>
+    <Section size="md">
+      <DarkStrip heading={ctaHeading} body={services.ctaSubtitle} align="start" actions={ctaActions} />
+    </Section>
+  </Container>
+</Layout>
