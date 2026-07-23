@@ -1,0 +1,79 @@
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--th-space-12);
+  align-items: start;
+}
+
+.about-body p {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--th-color-text-2);
+}
+
+.about-body b {
+  font-variation-settings: "wdth" 90, "wght" 580;
+  color: var(--th-color-text-1);
+  font-weight: normal;
+}
+
+/* LogoStrip centers each item's logo/label by default; the varying label
+   widths (e.g. "SPARK NZ" vs "AUSTRALIAN TAX OFFICE") look uneven centered,
+   so left-align the mark and label within each item instead. */
+.logo-item-left {
+  align-items: flex-start;
+}
+
+/* Card's own CSS is a flex column with a gap between every direct child —
+   override back to block so each child's own margin-bottom below isn't
+   doubled up with that gap. */
+.about-card {
+  display: block;
+  position: sticky;
+  top: 80px;
+}
+
+.about-card__label {
+  font-family: var(--th-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--th-color-text-4);
+  margin-bottom: var(--th-space-3);
+}
+
+.about-card__name {
+  font-family: var(--th-font-serif);
+  font-weight: 400;
+  font-size: 1.375rem;
+  letter-spacing: -0.01em;
+  color: var(--th-color-text-1);
+  margin-bottom: 4px;
+}
+
+.about-card__title {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 380;
+  font-size: 0.875rem;
+  color: var(--th-color-text-3);
+  margin-bottom: var(--th-space-5);
+}
+
+.about-card__divider {
+  height: 1px;
+  background: var(--th-color-border-subtle);
+  margin-bottom: var(--th-space-5);
+}
+
+.client-list {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 900px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+}
