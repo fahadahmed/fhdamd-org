@@ -3,6 +3,7 @@ import { aboutPage } from "../../content/mock/aboutPage";
 import { contactPage } from "../../content/mock/contactPage";
 import { homePage } from "../../content/mock/homePage";
 import { servicesPage } from "../../content/mock/servicesPage";
+import { blogPage } from "../../content/mock/blogPage";
 import { employers } from "../../content/mock/employers";
 import { clientWork } from "../../content/mock/clientWork";
 import { experience } from "../../content/mock/experience";
@@ -13,6 +14,7 @@ import type {
   ContactPage,
   HomePage,
   ServicesPage,
+  BlogPage,
   Employer,
   ClientWorkItem,
   ExperienceItem,
@@ -44,6 +46,10 @@ export async function getHomePage(): Promise<HomePage> {
 
 export async function getServicesPage(): Promise<ServicesPage> {
   return servicesPage;
+}
+
+export async function getBlogPage(): Promise<BlogPage> {
+  return blogPage;
 }
 
 export async function getEmployers(): Promise<Employer[]> {
