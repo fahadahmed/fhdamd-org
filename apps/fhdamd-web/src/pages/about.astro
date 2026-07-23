@@ -47,9 +47,21 @@ const clientWorkItems = clientWorkList.map((item) => ({
   titleNode: titleToReact(item.title),
 }));
 
+// Fixed bounding box + object-fit so wildly different logo aspect ratios
+// (a square ATO mark vs. a wide Latitude wordmark) all read at the same
+// visual weight instead of scaling purely by height.
+const logoBoxStyle = {
+  height: "28px",
+  width: "84px",
+  objectFit: "contain" as const,
+  objectPosition: "left center",
+};
+
 const employerItems = employerList.map((employer) => ({
   ...employer,
-  logoNode: createElement(LogoPlaceholder, { name: employer.name }),
+  logoNode: employer.logo
+    ? createElement("img", { src: employer.logo, alt: "", style: logoBoxStyle })
+    : createElement(LogoPlaceholder, { name: employer.name }),
 }));
 ---
 
@@ -97,8 +109,10 @@ const employerItems = employerList.map((employer) => ({
       <Section size="md">
         <Stack gap={8}>
           <SectionHeader title={employersTitle} meta="Employers & clients" />
-          <LogoStrip>
-            {employerItems.map((employer) => <LogoItem logo={employer.logoNode} label={employer.label} />)}
+          <LogoStrip style={{ gap: "var(--th-space-10) var(--th-space-12)" }}>
+            {employerItems.map((employer) => (
+              <LogoItem className="logo-item-left" logo={employer.logoNode} label={employer.label} />
+            ))}
           </LogoStrip>
         </Stack>
       </Section>
@@ -179,6 +193,13 @@ const employerItems = employerList.map((employer) => ({
     font-variation-settings: "wdth" 90, "wght" 580;
     color: var(--th-color-text-1);
     font-weight: normal;
+  }
+
+  /* LogoStrip centers each item's logo/label by default; the varying label
+     widths (e.g. "SPARK NZ" vs "AUSTRALIAN TAX OFFICE") look uneven centered,
+     so left-align the mark and label within each item instead. */
+  .logo-item-left {
+    align-items: flex-start;
   }
 
   /* Card's own CSS is a flex column with a gap between every direct child —

@@ -29,6 +29,8 @@ export interface AboutPage {
 export interface Employer {
   name: string;
   label: string;
+  /** Public path to the brand mark SVG — falls back to a text placeholder when unset. */
+  logo?: string;
 }
 
 export interface ClientWorkItem {
