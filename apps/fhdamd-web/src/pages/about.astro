@@ -49,18 +49,25 @@ const clientWorkItems = clientWorkList.map((item) => ({
 
 // Fixed bounding box + object-fit so wildly different logo aspect ratios
 // (a square ATO mark vs. a wide Latitude wordmark) all read at the same
-// visual weight instead of scaling purely by height.
+// visual weight instead of scaling purely by height. ANZ's wordmark is
+// already dense/wide at the default size, so it keeps the smaller box
+// while everything else is scaled up to match its visual weight.
 const logoBoxStyle = {
-  height: "28px",
-  width: "84px",
+  height: "40px",
+  width: "120px",
   objectFit: "contain" as const,
   objectPosition: "left center",
 };
+const anzLogoBoxStyle = { ...logoBoxStyle, height: "28px", width: "84px" };
 
 const employerItems = employerList.map((employer) => ({
   ...employer,
   logoNode: employer.logo
-    ? createElement("img", { src: employer.logo, alt: "", style: logoBoxStyle })
+    ? createElement("img", {
+        src: employer.logo,
+        alt: "",
+        style: employer.name === "ANZ" ? anzLogoBoxStyle : logoBoxStyle,
+      })
     : createElement(LogoPlaceholder, { name: employer.name }),
 }));
 ---
