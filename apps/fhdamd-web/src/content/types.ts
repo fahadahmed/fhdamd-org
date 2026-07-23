@@ -145,6 +145,29 @@ export interface ServicesPage {
   ctaSubtitle: string;
 }
 
+export interface BlogPost {
+  slug: string;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  title: string;
+  description: string;
+  date: string;
+  /** First tag is the displayed badge; the full set drives tag-filter matching. */
+  tags: string[];
+}
+
+export interface FeaturedPost extends BlogPost {
+  readTime: string;
+}
+
+export interface BlogPage {
+  heroKicker: string;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  heroHeading: string;
+  heroSubheading: string;
+  featuredPost: FeaturedPost;
+  posts: BlogPost[];
+}
+
 export interface Employer {
   name: string;
   label: string;
