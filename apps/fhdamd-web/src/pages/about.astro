@@ -5,6 +5,7 @@ import {
   Container,
   Section,
   Stack,
+  Prose,
   Hero,
   SectionHeader,
   Card,
@@ -82,11 +83,11 @@ const employerItems = employerList.map((employer) => ({
     <Container>
       <Section size="md">
         <div class="about-grid">
-          <Stack gap={5} className="about-body">
+          <Prose>
             {about.bio.map((paragraph) => <p set:html={paragraph} />)}
-          </Stack>
+          </Prose>
 
-          <Card className="about-card">
+          <Card style={{ display: "block", position: "sticky", top: "80px" }}>
             <div class="about-card__label">{about.sidebarLabel}</div>
             <div class="about-card__name">Fahad Ahmed</div>
             <div class="about-card__title">{settings.currentTitle}</div>
@@ -119,7 +120,7 @@ const employerItems = employerList.map((employer) => ({
           <SectionHeader title={employersTitle} meta="Employers & clients" />
           <LogoStrip style={{ gap: "var(--th-space-10) var(--th-space-12)" }}>
             {employerItems.map((employer) => (
-              <LogoItem className="logo-item-left" logo={employer.logoNode} label={employer.label} />
+              <LogoItem style={{ alignItems: "flex-start" }} logo={employer.logoNode} label={employer.label} />
             ))}
           </LogoStrip>
         </Stack>

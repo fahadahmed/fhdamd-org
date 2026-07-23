@@ -5,36 +5,6 @@
   align-items: start;
 }
 
-.about-body p {
-  font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 370;
-  font-size: 1.0625rem;
-  line-height: 1.75;
-  color: var(--th-color-text-2);
-}
-
-.about-body b {
-  font-variation-settings: "wdth" 90, "wght" 580;
-  color: var(--th-color-text-1);
-  font-weight: normal;
-}
-
-/* LogoStrip centers each item's logo/label by default; the varying label
-   widths (e.g. "SPARK NZ" vs "AUSTRALIAN TAX OFFICE") look uneven centered,
-   so left-align the mark and label within each item instead. */
-.logo-item-left {
-  align-items: flex-start;
-}
-
-/* Card's own CSS is a flex column with a gap between every direct child —
-   override back to block so each child's own margin-bottom below isn't
-   doubled up with that gap. */
-.about-card {
-  display: block;
-  position: sticky;
-  top: 80px;
-}
-
 .about-card__label {
   font-family: var(--th-font-mono);
   font-size: 0.625rem;
