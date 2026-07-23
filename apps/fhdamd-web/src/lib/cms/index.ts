@@ -1,5 +1,6 @@
 import { siteSettings } from "../../content/mock/siteSettings";
 import { aboutPage } from "../../content/mock/aboutPage";
+import { contactPage } from "../../content/mock/contactPage";
 import { employers } from "../../content/mock/employers";
 import { clientWork } from "../../content/mock/clientWork";
 import { experience } from "../../content/mock/experience";
@@ -7,6 +8,7 @@ import { skills } from "../../content/mock/skills";
 import type {
   SiteSettings,
   AboutPage,
+  ContactPage,
   Employer,
   ClientWorkItem,
   ExperienceItem,
@@ -26,6 +28,10 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 
 export async function getAboutPage(): Promise<AboutPage> {
   return aboutPage;
+}
+
+export async function getContactPage(): Promise<ContactPage> {
+  return contactPage;
 }
 
 export async function getEmployers(): Promise<Employer[]> {

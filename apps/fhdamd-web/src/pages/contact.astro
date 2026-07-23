@@ -1,0 +1,69 @@
+---
+import { createElement } from "react";
+import Layout from "../layouts/Layout.astro";
+import { Container, Section, Hero, Card, CardTitle, IconDetailRow, AvailabilityPill } from "@fhdamd/threads";
+import { getContactPage, getSiteSettings } from "../lib/cms";
+import { titleToReact } from "../utils/titleToReact";
+import { MailIcon, GithubIcon, LocationIcon, CheckIcon } from "../components/icons/icons";
+import { ContactForm } from "../components/ContactForm/ContactForm";
+import { INTEREST_OPTIONS, TIMELINE_OPTIONS } from "../data/contactOptions";
+import "../styles/contact.css";
+
+const borderStyle = "border-top:1px solid var(--th-color-border-default)";
+
+const contact = await getContactPage();
+const settings = await getSiteSettings();
+
+// Astro's template compiler intercepts bare JSX written as a prop-expression
+// value and hands React an internal object instead of a real element, so
+// every such value must be precomputed here and passed as a plain variable.
+const heroHeading = titleToReact(contact.heroHeading, { color: "var(--th-color-accent)" });
+
+const mailIcon = createElement(MailIcon);
+const githubIcon = createElement(GithubIcon);
+const locationIcon = createElement(LocationIcon);
+---
+
+<Layout title={`Contact — Fahad Ahmed · fhdamd.dev`}>
+  <Container>
+    <Hero eyebrow={contact.heroKicker} heading={heroHeading} body={contact.heroSubheading} />
+  </Container>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <div class="contact-grid">
+          <ContactForm
+            client:load
+            formNote={contact.formNote}
+            interestOptions={INTEREST_OPTIONS}
+            timelineOptions={TIMELINE_OPTIONS}
+          />
+
+          <div class="contact-aside">
+            <AvailabilityPill label={settings.availabilityLabel} available={settings.availabilityStatus} />
+
+            <Card>
+              <CardTitle>Direct contact</CardTitle>
+              <IconDetailRow variant="labeled" label="Email" value={settings.email} icon={mailIcon} />
+              <IconDetailRow variant="labeled" label="GitHub" value={settings.github} icon={githubIcon} />
+              <IconDetailRow variant="labeled" label="Based in" value={settings.location} icon={locationIcon} />
+            </Card>
+
+            <Card>
+              <CardTitle>What to expect</CardTitle>
+              <ul class="expect-list">
+                {contact.expectList.map((item) => (
+                  <li>
+                    <span class="expect-list__icon"><CheckIcon /></span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </div>
+        </div>
+      </Section>
+    </Container>
+  </section>
+</Layout>
