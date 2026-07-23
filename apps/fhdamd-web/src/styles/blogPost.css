@@ -1,0 +1,152 @@
+/* ─── POST HERO ──────────────────────────────────────────────────────────── */
+/* Narrower than Container's own max-width and centered independently within
+   it — overrides Container's max-width via load order. */
+.post-hero {
+  max-width: 820px;
+  margin-inline: auto;
+  padding-top: 56px;
+}
+
+.post-hero__title {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-size: clamp(1.875rem, 4.4vw, 3.375rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--th-color-text-1);
+}
+
+.post-hero__title em {
+  font-style: italic;
+  color: var(--th-color-accent);
+}
+
+.post-hero__dek {
+  font-family: var(--th-font-display);
+  font-variation-settings:
+    "wdth" 90,
+    "wght" 380;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--th-color-text-2);
+}
+
+/* Layout (display/gap/align) comes from the wrapping Cluster — this is just
+   the visual separator above the byline row. */
+.post-byline {
+  padding-top: var(--th-space-6);
+  border-top: 1px solid var(--th-color-border-subtle);
+}
+
+.post-byline__avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 99px;
+  background: var(--th-color-surface-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--th-font-serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--th-color-text-2);
+  flex-shrink: 0;
+}
+
+.post-byline__name {
+  font-family: var(--th-font-display);
+  font-variation-settings:
+    "wdth" 92,
+    "wght" 600;
+  font-size: 0.875rem;
+  color: var(--th-color-text-1);
+}
+
+.post-byline__role {
+  font-family: var(--th-font-mono);
+  font-size: 0.6875rem;
+  color: var(--th-color-text-4);
+}
+
+.post-byline__sep {
+  color: var(--th-color-text-4);
+}
+
+.post-byline__item {
+  font-family: var(--th-font-mono);
+  font-size: 0.75rem;
+  color: var(--th-color-text-3);
+}
+
+/* ─── LAYOUT — TOC + article ─────────────────────────────────────────────── */
+.post-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: var(--th-space-10);
+  padding-bottom: var(--th-space-16);
+}
+
+/* Grid items default to min-width:auto, so a wide code block's <pre> (which
+   handles its own overflow-x) blows out the column instead of scrolling. */
+.post-layout > * {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .post-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* TableOfContents' mobile bar is sticky at top:0 with no way to offset it via
+   a className prop (only the desktop <aside> forwards one) — it collides
+   with the site header, which is also sticky at top:0 with a higher z-index
+   and wins the stack, covering the bar. Override via its stable data-testid
+   instead, matching the header's real rendered height. */
+[data-testid="toc-mobile"] {
+  top: 59px;
+}
+
+/* Mermaid's rendered SVG is scaled up to fill the card (see MermaidDiagram),
+   so trim the card's own horizontal padding to give it more room to grow. */
+.mermaid-diagram-card {
+  padding-inline: var(--th-space-4);
+}
+
+/* ─── FOOTER META — share + tags ─────────────────────────────────────────── */
+/* Layout comes from the wrapping Cluster — this is just the separator. */
+.post-footer-meta {
+  margin-top: var(--th-space-10);
+  padding-top: var(--th-space-6);
+  border-top: 1px solid var(--th-color-border-subtle);
+}
+
+.share-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 99px;
+  border: 1px solid var(--th-color-border-default);
+  background: var(--th-color-surface-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.14s;
+  color: var(--th-color-text-3);
+}
+
+.share-btn:hover {
+  background: var(--th-color-text-1);
+  border-color: var(--th-color-text-1);
+  color: var(--th-color-text-inverse);
+}
+
+.share-btn svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
