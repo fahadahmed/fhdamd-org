@@ -1,21 +1,4 @@
-import type { DeliveryPhase, ServicesPage } from '../types';
-
-function phase(
-  number: string,
-  name: string,
-  badgeLabel: string,
-  badgeVariant: DeliveryPhase['badge']['variant'],
-  description: string,
-  pills: string[],
-): DeliveryPhase {
-  return {
-    number,
-    name,
-    badge: { label: badgeLabel, variant: badgeVariant },
-    description,
-    pills,
-  };
-}
+import type { ServicesPage } from '../types';
 
 export const servicesPage: ServicesPage = {
   heroKicker: 'What I do',
@@ -102,77 +85,80 @@ export const servicesPage: ServicesPage = {
   ],
 
   deliveryPhases: [
-    phase(
-      '1',
-      'Discovery',
-      'Included in project',
-      'terra',
-      "A brand or product questionnaire is sent 24–48 hours before the call so we skip the basics and have a real conversation. The 45–60 minute video call covers your context, goals, and constraints. For a product build this goes deeper into scope and integrations; for advisory work it's framed around the problem you're trying to solve. Nothing in the proposal will surprise you.",
-      [
+    {
+      number: '1',
+      name: 'Discovery',
+      badge: { label: 'Included in project', variant: 'terra' },
+      description:
+        "A brand or product questionnaire is sent 24–48 hours before the call so we skip the basics and have a real conversation. The 45–60 minute video call covers your context, goals, and constraints. For a product build this goes deeper into scope and integrations; for advisory work it's framed around the problem you're trying to solve. Nothing in the proposal will surprise you.",
+      pills: [
         'Pre-call questionnaire',
         '45–60 min video call',
         'Written discovery summary within 48 hrs',
       ],
-    ),
-    phase(
-      '2',
-      'Brand foundation',
-      'The step most skip',
-      'terra',
-      "Before a single page is designed, I build a component library from your brand palette — colour, typography, spacing, interactive states, form elements, cards. Every component is consistent before the first page is touched. This is how enterprise agencies work. It's also why the finished site looks coherent rather than assembled.",
-      [
+    },
+    {
+      number: '2',
+      name: 'Brand foundation',
+      badge: { label: 'The step most skip', variant: 'terra' },
+      description:
+        "Before a single page is designed, I build a component library from your brand palette — colour, typography, spacing, interactive states, form elements, cards. Every component is consistent before the first page is touched. This is how enterprise agencies work. It's also why the finished site looks coherent rather than assembled.",
+      pills: [
         'Brand palette extraction',
         'AI-assisted component generation',
         'Client brand review before build starts',
       ],
-    ),
-    phase(
-      '3',
-      'Architecture',
-      'Technical setup',
-      'neutral',
-      "Content model defined and structured in DatoCMS. Firebase project initialised — hosting, functions, Firestore if needed. Astro site scaffolded against the component library. Where a project needs e-commerce, that's when payments, catalogue schema, and cart logic get designed. The architecture is deliberate — no decisions made by default.",
-      [
+    },
+    {
+      number: '3',
+      name: 'Architecture',
+      badge: { label: 'Technical setup', variant: 'neutral' },
+      description:
+        "Content model defined and structured in DatoCMS. Firebase project initialised — hosting, functions, Firestore if needed. Astro site scaffolded against the component library. Where a project needs e-commerce, that's when payments, catalogue schema, and cart logic get designed. The architecture is deliberate — no decisions made by default.",
+      pills: [
         'DatoCMS content model',
         'Firebase project setup',
         'Astro scaffolding',
         'Stripe payments where needed',
       ],
-    ),
-    phase(
-      '4',
-      'Build',
-      'Direct to code',
-      'neutral',
-      'Pages are built in code against your confirmed content — no Figma handoff, no design agency in the loop, no translation loss between what was designed and what was built. Two rounds of client review are included. Changes within agreed scope are addressed without back-and-forth quoting. What you see in review is what goes live.',
-      [
+    },
+    {
+      number: '4',
+      name: 'Build',
+      badge: { label: 'Direct to code', variant: 'neutral' },
+      description:
+        'Pages are built in code against your confirmed content — no Figma handoff, no design agency in the loop, no translation loss between what was designed and what was built. Two rounds of client review are included. Changes within agreed scope are addressed without back-and-forth quoting. What you see in review is what goes live.',
+      pills: [
         'No Figma handoff',
         'Two review rounds included',
         'Mobile-responsive from day one',
         'Content supplied by client before build',
       ],
-    ),
-    phase(
-      '5',
-      'Launch',
-      'Performance-first',
-      'sage',
-      'QA across devices, browsers, and screen sizes. Performance audit targeting green Core Web Vitals scores — not as an afterthought but as a build requirement. SEO foundations in place: page titles, meta descriptions, Open Graph, sitemap, robots.txt. A 30-minute handover call and CMS walkthrough before DNS is pointed. Balance due on launch day.',
-      [
+    },
+    {
+      number: '5',
+      name: 'Launch',
+      badge: { label: 'Performance-first', variant: 'sage' },
+      description:
+        'QA across devices, browsers, and screen sizes. Performance audit targeting green Core Web Vitals scores — not as an afterthought but as a build requirement. SEO foundations in place: page titles, meta descriptions, Open Graph, sitemap, robots.txt. A 30-minute handover call and CMS walkthrough before DNS is pointed. Balance due on launch day.',
+      pills: [
         'Core Web Vitals audit',
         'SEO foundations',
         '30-min CMS handover call',
         'DNS + go-live',
       ],
-    ),
-    phase(
-      '6',
-      'Support',
-      'Included post-launch',
-      'sage',
-      'A support window is included after every launch — the length is scoped to the project in your proposal. Covers bugs, minor content adjustments, and anything that surfaces in production. After that window, ongoing work is available on a retainer basis for clients who want fast turnaround on updates without scoping new work each time.',
-      ['Support window scoped per project', 'Retainer available post-launch'],
-    ),
+    },
+    {
+      number: '6',
+      name: 'Support',
+      badge: { label: 'Included post-launch', variant: 'sage' },
+      description:
+        'A support window is included after every launch — the length is scoped to the project in your proposal. Covers bugs, minor content adjustments, and anything that surfaces in production. After that window, ongoing work is available on a retainer basis for clients who want fast turnaround on updates without scoping new work each time.',
+      pills: [
+        'Support window scoped per project',
+        'Retainer available post-launch',
+      ],
+    },
   ],
 
   differentiators: [
