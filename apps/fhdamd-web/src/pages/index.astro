@@ -1,61 +1,256 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import { createElement, Fragment as ReactFragment } from "react";
+import Layout from "../layouts/Layout.astro";
+import {
+  Container,
+  Section,
+  Stack,
+  Hero,
+  SectionHeader,
+  Card,
+  Grid,
+  ProjectCard,
+  CaseStudySpotlight,
+  EssayRow,
+  DarkStrip,
+  AvailabilityPill,
+  Button,
+} from "@fhdamd/threads";
+import { getHomePage, getSiteSettings } from "../lib/cms";
+import { titleToReact, markupToHtml } from "../utils/titleToReact";
+import {
+  ArrowRightIcon,
+  MailIcon,
+  DesignIcon,
+  PhoneIcon,
+  FileCheckIcon,
+  FileTextIcon,
+  SettingsIcon,
+} from "../components/icons/icons";
+import "../styles/home.css";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const borderStyle = "border-top:1px solid var(--th-color-border-default)";
 
-const response = await fetch('https://graphql.datocms.com/', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-    Authorization: `Bearer ${import.meta.env.DATOCMS_API_TOKEN}`,
-  },
-  body: JSON.stringify({
-    query: `query PostsQuery {
-					allPosts {
-						id
-						title
-						content
-						_status
-						_firstPublishedAt
-					}
+const home = await getHomePage();
+const settings = await getSiteSettings();
 
-					_allPostsMeta {
-						count
-					}
-				}
-      `,
-  }),
-});
+// Astro's template compiler intercepts bare JSX written as a prop-expression
+// value and hands React an internal object instead of a real element, so
+// every such value must be precomputed here and passed as a plain variable.
+const heroHeading = titleToReact(home.heroHeading, { color: "var(--th-color-accent)" });
+const arrowRightIcon = createElement(ArrowRightIcon);
 
-const json = await response.json();
-const data = json.data.allPosts;
+const heroActions = createElement(
+  ReactFragment,
+  null,
+  createElement(Button, { href: "/services", variant: "solid-ink", icon: arrowRightIcon }, "View services"),
+  createElement(
+    Button,
+    { href: "/contact", variant: "ghost", icon: createElement(MailIcon), iconPosition: "start" },
+    "Get in touch",
+  ),
+  createElement(AvailabilityPill, { label: settings.availabilityLabel, available: settings.availabilityStatus }),
+);
 
+const hireStripIcons = {
+  design: DesignIcon,
+  phone: PhoneIcon,
+  fileCheck: FileCheckIcon,
+};
+
+const builtTitle = titleToReact("Things I've *built*");
+const personalProjectsData = home.personalProjects.map((project) => ({
+  ...project,
+  nameNode: titleToReact(project.name, { color: "var(--th-color-sage-text)" }),
+  iconNode:
+    project.iconKey === "fileText"
+      ? createElement(FileTextIcon)
+      : project.iconKey === "settings"
+        ? createElement(SettingsIcon)
+        : undefined,
+}));
+
+const hireMeTitle = titleToReact("Hire me to *build it*");
+const servicesTeaserTitleHtml = markupToHtml(home.servicesTeaserTitle);
+
+const caseStudiesTitle = titleToReact("Case *studies*");
+const caseStudyTitle = titleToReact(home.caseStudyTitle);
+const caseStudyStatsData = home.caseStudyStats.map((stat) => ({
+  value: titleToReact(stat.value),
+  label: stat.label,
+}));
+const caseStudyActions = createElement(
+  ReactFragment,
+  null,
+  createElement(Button, { href: "/case-studies/rzest", variant: "solid-ink", icon: arrowRightIcon }, "Read the case study"),
+  createElement(Button, { href: "/case-studies", variant: "ghost" }, "View all case studies"),
+);
+
+const labTeaserTitleHtml = markupToHtml(home.labTeaserTitle);
+
+const blogTitle = titleToReact("From the *blog*");
+
+const ctaHeading = titleToReact(settings.ctaTitle);
+const ctaActions = createElement(
+  ReactFragment,
+  null,
+  createElement(Button, { href: "/services", variant: "solid-ink", icon: arrowRightIcon }, "View services"),
+  createElement(Button, { href: "/contact", variant: "ghost" }, "Get in touch"),
+);
 ---
 
 <Layout>
-	<div class="post-container">
-		{data.map((post: any) => (
-			<article>
-				<h2>{post.title}</h2>
-				<div set:html={post.content}></div>
-				<p>Status: {post._status}</p>
-				<p>Published at: {new Date(post._firstPublishedAt).toLocaleDateString()}</p>
-			</article>
-		))}
-	</div>
-</Layout>
+  <Container>
+    <Hero eyebrow={home.heroKicker} heading={heroHeading} body={home.heroBody} actions={heroActions} />
 
-<style>
-	.post-container {
-		padding: 16px;
-	}
-	article {
-		margin-bottom: 24px;
-		padding: 16px;
-		border: 1px solid #ccc;
-		border-radius: 8px;
-		background-color: #f8f8f8;
-	}
-</style>
+    <div class="hire-strip">
+      {home.hireStrip.map((item) => {
+        const Icon = hireStripIcons[item.iconKey];
+        return (
+          <div class="hire-strip__item">
+            <div class="hire-strip__icon">
+              <Icon />
+            </div>
+            <div class="hire-strip__title">{item.title}</div>
+            <p class="hire-strip__desc">{item.description}</p>
+          </div>
+        );
+      })}
+    </div>
+  </Container>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <Stack gap={8}>
+          <SectionHeader title={builtTitle} meta="Building in the gaps" />
+          <Grid cols={3} gap={4}>
+            {personalProjectsData.map((project, i) => (
+              <ProjectCard
+                key={i}
+                eyebrow={project.eyebrow}
+                name={project.nameNode}
+                description={project.description}
+                tags={project.tags}
+                badge={project.badge}
+                accentColor={project.accentColor}
+                icon={project.iconNode}
+                jamaalIcon={project.jamaalIcon}
+                pricingPills={project.pricingPills}
+              />
+            ))}
+          </Grid>
+        </Stack>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <Stack gap={8}>
+          <SectionHeader title={hireMeTitle} meta="Scoped in a proposal" />
+          <Card
+            className="svc-teaser"
+            style={{ padding: "var(--th-space-8)", borderRadius: "var(--th-radius-xl)" }}
+          >
+            <div>
+              <h3 class="svc-teaser__title" set:html={servicesTeaserTitleHtml} />
+              <p class="svc-teaser__desc">{home.servicesTeaserDesc}</p>
+              <Button href="/services" variant="solid-ink" icon={arrowRightIcon}>
+                See what's included
+              </Button>
+            </div>
+            <div class="svc-tiers">
+              {home.serviceTiers.map((tier) => (
+                <a class="svc-tier-row" href="/services">
+                  <span class="svc-tier-row__name">{tier.name}</span>
+                  <span class="svc-tier-row__price">{tier.price}</span>
+                </a>
+              ))}
+            </div>
+          </Card>
+        </Stack>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <Stack gap={8}>
+          <SectionHeader title={caseStudiesTitle} meta="Client work outside EY" />
+          <CaseStudySpotlight
+            eyebrow={home.caseStudyEyebrow}
+            title={caseStudyTitle}
+            description={home.caseStudyDescription}
+            tags={home.caseStudyTags}
+            stats={caseStudyStatsData}
+            actions={caseStudyActions}
+          />
+        </Stack>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <Card
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "var(--th-space-8)",
+            flexWrap: "wrap",
+            padding: "var(--th-space-7) var(--th-space-8)",
+            borderRadius: "var(--th-radius-xl)",
+            borderStyle: "dashed",
+            borderColor: "var(--th-color-border-strong)",
+          }}
+        >
+          <div>
+            <div class="lab-teaser__eyebrow">{home.labTeaserEyebrow}</div>
+            <h3 class="lab-teaser__title" set:html={labTeaserTitleHtml} />
+            <p class="lab-teaser__desc">{home.labTeaserDesc}</p>
+          </div>
+          <Button href="/lab" variant="ghost" icon={arrowRightIcon}>
+            Visit the lab
+          </Button>
+        </Card>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <Stack gap={6}>
+          <SectionHeader title={blogTitle} meta="Notes from the work" />
+          <div>
+            {home.essays.map((essay, i) => (
+              <EssayRow
+                key={i}
+                date={essay.date}
+                title={essay.title}
+                subtitle={essay.subtitle}
+                category={essay.category}
+                first={i === 0}
+                href="/blog/post"
+              />
+            ))}
+          </div>
+          <Button href="/blog" variant="ghost" icon={arrowRightIcon}>
+            Read the blog
+          </Button>
+        </Stack>
+      </Section>
+    </Container>
+  </section>
+
+  <Container>
+    <Section size="md">
+      <DarkStrip heading={ctaHeading} body={settings.ctaSubtitle} align="start" actions={ctaActions} />
+    </Section>
+  </Container>
+</Layout>

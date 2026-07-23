@@ -1,0 +1,167 @@
+/* ─── HIRE STRIP ─────────────────────────────────────────────────────────── */
+.hire-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--th-color-border-default);
+  border: 1px solid var(--th-color-border-default);
+  border-radius: var(--th-radius-lg);
+  overflow: hidden;
+  margin-block: var(--th-space-10) var(--th-space-12);
+}
+
+.hire-strip__item {
+  background: var(--th-color-bg);
+  padding: var(--th-space-6);
+}
+
+.hire-strip__icon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--th-radius-sm);
+  background: var(--th-color-surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--th-space-4);
+}
+
+.hire-strip__icon svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--th-color-text-2);
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hire-strip__title {
+  font-family: var(--th-font-serif);
+  font-weight: 400;
+  font-size: 1.0625rem;
+  color: var(--th-color-text-1);
+  margin-bottom: 6px;
+}
+
+.hire-strip__desc {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--th-color-text-3);
+}
+
+@media (max-width: 800px) {
+  .hire-strip {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── SERVICES TEASER ────────────────────────────────────────────────────── */
+.svc-teaser__title {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-size: clamp(1.5rem, 2.6vw, 2.125rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--th-color-text-1);
+  margin-bottom: var(--th-space-4);
+}
+
+.svc-teaser__title em {
+  font-style: italic;
+  color: var(--th-color-accent);
+}
+
+.svc-teaser__desc {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--th-color-text-3);
+  margin-bottom: var(--th-space-5);
+  max-width: 480px;
+}
+
+.svc-tiers {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.svc-tier-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--th-color-bg);
+  border: 1px solid var(--th-color-border-default);
+  border-radius: var(--th-radius-md);
+  transition: border-color 0.14s, transform 0.14s;
+}
+
+.svc-tier-row:hover {
+  border-color: var(--th-color-border-strong);
+  transform: translateX(3px);
+}
+
+.svc-tier-row__name {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 92, "wght" 600;
+  font-size: 0.875rem;
+  color: var(--th-color-text-1);
+}
+
+.svc-tier-row__price {
+  font-family: var(--th-font-mono);
+  font-size: 0.75rem;
+  color: var(--th-color-text-3);
+}
+
+/* Overrides Card's own flex column layout — inline style can't express the
+   mobile breakpoint below, so this needs to be a real class. */
+.svc-teaser {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--th-space-10);
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .svc-teaser {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── LAB TEASER ─────────────────────────────────────────────────────────── */
+.lab-teaser__eyebrow {
+  font-family: var(--th-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--th-color-text-4);
+  margin-bottom: 8px;
+}
+
+.lab-teaser__title {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-size: clamp(1.25rem, 2.2vw, 1.625rem);
+  letter-spacing: -0.015em;
+  color: var(--th-color-text-1);
+  margin-bottom: 8px;
+}
+
+.lab-teaser__title em {
+  font-style: italic;
+  color: var(--th-color-accent);
+}
+
+.lab-teaser__desc {
+  font-family: var(--th-font-display);
+  font-variation-settings: "wdth" 90, "wght" 370;
+  font-size: 0.875rem;
+  color: var(--th-color-text-3);
+  max-width: 480px;
+}

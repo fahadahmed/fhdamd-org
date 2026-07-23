@@ -8,7 +8,7 @@ export const siteSettings: SiteSettings = {
   currentTitle: "Technology Consulting Manager · Solution Architect",
   availabilityLabel: "Open to select projects",
   availabilityStatus: true,
-  ctaTitle: "Need something built? Let's talk.",
+  ctaTitle: "Need something built? *Let's talk.*",
   ctaSubtitle: "I take on a small number of consulting projects alongside the day job. If timing works, let's find out.",
   footerCopyrightNote: `fhdamd.dev · Melbourne, VIC · ${new Date().getFullYear()}`,
 };

@@ -12,6 +12,7 @@ export interface SiteSettings {
   currentTitle: string;
   availabilityLabel: string;
   availabilityStatus: boolean;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
   ctaTitle: string;
   ctaSubtitle: string;
   footerCopyrightNote: string;
@@ -33,6 +34,67 @@ export interface ContactPage {
   heroSubheading: string;
   formNote: string;
   expectList: string[];
+}
+
+export interface HireStripItem {
+  iconKey: "design" | "phone" | "fileCheck";
+  title: string;
+  description: string;
+}
+
+export interface PersonalProject {
+  eyebrow: string;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  name: string;
+  description: string;
+  tags: string[];
+  badge: { label: string; variant: "sage" | "terra" | "neutral" };
+  accentColor: "terra" | "sage" | "ink";
+  iconKey?: "fileText" | "settings";
+  /** Threads' ProjectCard special-cases Jamaal with a "J" avatar instead of an icon. */
+  jamaalIcon?: boolean;
+  pricingPills?: { price: string; label: string }[];
+}
+
+export interface ServiceTier {
+  name: string;
+  price: string;
+}
+
+export interface CaseStudyStatItem {
+  /** Plain string; wrap a segment in *asterisks* for an <em> unit, e.g. "100*%*". */
+  value: string;
+  label: string;
+}
+
+export interface EssayTeaser {
+  date: string;
+  title: string;
+  subtitle: string;
+  category: "design" | "product" | "dev";
+}
+
+export interface HomePage {
+  heroKicker: string;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  heroHeading: string;
+  heroBody: string;
+  hireStrip: HireStripItem[];
+  personalProjects: PersonalProject[];
+  servicesTeaserTitle: string;
+  servicesTeaserDesc: string;
+  serviceTiers: ServiceTier[];
+  caseStudyEyebrow: string;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  caseStudyTitle: string;
+  caseStudyDescription: string;
+  caseStudyTags: string[];
+  caseStudyStats: CaseStudyStatItem[];
+  labTeaserEyebrow: string;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  labTeaserTitle: string;
+  labTeaserDesc: string;
+  essays: EssayTeaser[];
 }
 
 export interface Employer {

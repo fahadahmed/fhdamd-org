@@ -13,3 +13,14 @@ export function titleToReact(text: string, emStyle?: CSSProperties): ReactNode {
     );
   return parts.length === 1 ? parts[0] : parts;
 }
+
+/**
+ * String-based sibling of titleToReact, for the rare case where the
+ * asterisk-marked text renders as plain Astro-template HTML (via set:html)
+ * rather than as a prop into a React component — a precomputed React
+ * element inserted as bare Astro children renders as "[object Object]"
+ * instead of being handed off to React, so this stays at the HTML level.
+ */
+export function markupToHtml(text: string): string {
+  return text.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+}
