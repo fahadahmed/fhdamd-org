@@ -30,6 +30,15 @@ const buildTitle = titleToReact("How I *build*");
 const stackTitle = titleToReact("Built on a *considered stack*");
 const ctaHeading = titleToReact(services.ctaTitle);
 
+// SectionHeader's meta span is white-space:nowrap with no responsive
+// override, so long meta text overflows the viewport on mobile instead of
+// wrapping. meta accepts a ReactNode, so wrap it to opt back into wrapping.
+const wrapMeta = (text: string) => createElement("span", { style: { whiteSpace: "normal" } }, text);
+const offerMeta = wrapMeta("Three ways to work together");
+const addonsMeta = wrapMeta("Scoped into your proposal, not pre-priced");
+const buildMeta = wrapMeta("Websites & products · advisory is scoped separately");
+const stackMeta = wrapMeta("No WordPress. No page builders. No default choices.");
+
 const ctaActions = createElement(
   "div",
   { style: { display: "flex", gap: "var(--th-space-3)", flexWrap: "wrap" } },
@@ -47,7 +56,7 @@ const ctaActions = createElement(
     <Container>
       <Section size="md">
         <Stack gap={8}>
-          <SectionHeader title={offerTitle} meta="Three ways to work together" />
+          <SectionHeader title={offerTitle} meta={offerMeta} />
           <Grid cols={3} gap={4}>
             {services.offerCards.map((card, i) => {
               const Icon = offerIcons[card.iconKey];
@@ -99,7 +108,7 @@ const ctaActions = createElement(
     <Container>
       <Section size="md">
         <Stack gap={8}>
-          <SectionHeader title={addonsTitle} meta="Scoped into your proposal, not pre-priced" />
+          <SectionHeader title={addonsTitle} meta={addonsMeta} />
           <Grid cols={3} gap={4}>
             {services.addonCards.map((card, i) => (
               <Card key={i}>
@@ -120,7 +129,7 @@ const ctaActions = createElement(
     <Container>
       <Section size="md">
         <Stack gap={8}>
-          <SectionHeader title={buildTitle} meta="Websites & products · advisory is scoped separately" />
+          <SectionHeader title={buildTitle} meta={buildMeta} />
           <div>
             <div class="framework">
               {services.deliveryPhases.map((phase) => (
@@ -162,7 +171,7 @@ const ctaActions = createElement(
     <Container>
       <Section size="md">
         <Stack gap={8}>
-          <SectionHeader title={stackTitle} meta="No WordPress. No page builders. No default choices." />
+          <SectionHeader title={stackTitle} meta={stackMeta} />
           <div>
             <div class="stack-strip">
               {services.techStackTags.map((tag) => <Tag>{tag}</Tag>)}
