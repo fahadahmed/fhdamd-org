@@ -1,13 +1,14 @@
-import { siteSettings } from "../../content/mock/siteSettings";
-import { aboutPage } from "../../content/mock/aboutPage";
-import { contactPage } from "../../content/mock/contactPage";
-import { homePage } from "../../content/mock/homePage";
-import { servicesPage } from "../../content/mock/servicesPage";
-import { blogPage } from "../../content/mock/blogPage";
-import { employers } from "../../content/mock/employers";
-import { clientWork } from "../../content/mock/clientWork";
-import { experience } from "../../content/mock/experience";
-import { skills } from "../../content/mock/skills";
+import { siteSettings } from '../../content/mock/siteSettings';
+import { aboutPage } from '../../content/mock/aboutPage';
+import { contactPage } from '../../content/mock/contactPage';
+import { homePage } from '../../content/mock/homePage';
+import { servicesPage } from '../../content/mock/servicesPage';
+import { blogPage } from '../../content/mock/blogPage';
+import { blogPostDetails } from '../../content/mock/blogPostDetails';
+import { employers } from '../../content/mock/employers';
+import { clientWork } from '../../content/mock/clientWork';
+import { experience } from '../../content/mock/experience';
+import { skills } from '../../content/mock/skills';
 import type {
   SiteSettings,
   AboutPage,
@@ -15,11 +16,12 @@ import type {
   HomePage,
   ServicesPage,
   BlogPage,
+  BlogPostDetail,
   Employer,
   ClientWorkItem,
   ExperienceItem,
   SkillCategory,
-} from "../../content/types";
+} from '../../content/types';
 
 /**
  * Thin data-access layer — one function per content type, each currently
@@ -50,6 +52,10 @@ export async function getServicesPage(): Promise<ServicesPage> {
 
 export async function getBlogPage(): Promise<BlogPage> {
   return blogPage;
+}
+
+export async function getBlogPostDetails(): Promise<BlogPostDetail[]> {
+  return blogPostDetails;
 }
 
 export async function getEmployers(): Promise<Employer[]> {

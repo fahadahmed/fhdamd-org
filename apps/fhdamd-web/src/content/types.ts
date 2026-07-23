@@ -168,6 +168,50 @@ export interface BlogPage {
   posts: BlogPost[];
 }
 
+export type BlogEmbed =
+  | { kind: "youtube"; videoUrl: string; title: string }
+  | {
+      kind: "tweet";
+      authorName: string;
+      handle: string;
+      text: string;
+      foot?: string;
+    }
+  | { kind: "instagram"; accountName: string; caption?: string };
+
+export type BlogContentBlock =
+  /** id must be unique on the page — TableOfContents links to it and scroll-spies it. */
+  | { type: "heading"; id: string; text: string }
+  | { type: "subheading"; id: string; text: string }
+  /** Raw HTML for a paragraph, blockquote, or list — rendered inside <Prose>, whose
+   *  descendant selectors style p/blockquote/ul/li/code/b regardless of wrapper depth. */
+  | { type: "html"; html: string }
+  | { type: "callout"; variant: "tip" | "warn"; title: string; body: string }
+  /** lang is a Shiki grammar name (e.g. "ts") — defaults to "ts" when unset. */
+  | { type: "code"; filename?: string; lang?: string; code: string }
+  /** source is raw Mermaid syntax, rendered client-side — see MermaidDiagram island. */
+  | { type: "diagram"; label: string; caption?: string; source: string }
+  | ({ type: "embed" } & BlogEmbed);
+
+export interface BlogPostDetail {
+  slug: string;
+  breadcrumbCategory: string;
+  badges: string[];
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  title: string;
+  dek: string;
+  authorInitials: string;
+  authorName: string;
+  /** Byline title, e.g. "Solution Architect" */
+  authorRole: string;
+  publishedDate: string;
+  readTime: string;
+  body: BlogContentBlock[];
+  postTags: string[];
+  /** Slugs into BlogPage's posts/featuredPost, for the related-posts grid. */
+  relatedSlugs: string[];
+}
+
 export interface Employer {
   name: string;
   label: string;

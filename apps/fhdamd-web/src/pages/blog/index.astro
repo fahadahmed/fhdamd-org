@@ -1,7 +1,15 @@
 ---
 import { createElement, Fragment as ReactFragment } from "react";
 import Layout from "../../layouts/Layout.astro";
-import { Container, Section, Stack, Hero, FeaturedCard, Button, DarkStrip } from "@fhdamd/threads";
+import {
+  Container,
+  Section,
+  Stack,
+  Hero,
+  FeaturedCard,
+  Button,
+  DarkStrip,
+} from "@fhdamd/threads";
 import { getBlogPage, getSiteSettings } from "../../lib/cms";
 import { titleToReact } from "../../utils/titleToReact";
 import { ArrowRightIcon } from "../../components/icons/icons";
@@ -13,12 +21,23 @@ const settings = await getSiteSettings();
 // Astro's template compiler intercepts bare JSX written as a prop-expression
 // value and hands React an internal object instead of a real element, so
 // every such value must be precomputed here and passed as a plain variable.
-const heroHeading = titleToReact(blog.heroHeading, { color: "var(--th-color-accent)" });
+const heroHeading = titleToReact(blog.heroHeading, {
+  color: "var(--th-color-accent)",
+});
 const arrowRightIcon = createElement(ArrowRightIcon);
-const featuredTitle = titleToReact(blog.featuredPost.title, { color: "var(--th-color-accent)" });
+const featuredTitle = titleToReact(blog.featuredPost.title, {
+  color: "var(--th-color-accent)",
+});
 
 const featuredMetaBadges = blog.featuredPost.tags.map((tag) => ({
-  label: tag === "dev" ? "Dev" : tag === "architecture" ? "Architecture" : tag === "product" ? "Product" : "Design",
+  label:
+    tag === "dev"
+      ? "Dev"
+      : tag === "architecture"
+        ? "Architecture"
+        : tag === "product"
+          ? "Product"
+          : "Design",
   variant: "neutral" as const,
 }));
 
@@ -26,14 +45,22 @@ const ctaHeading = titleToReact(settings.ctaTitle);
 const ctaActions = createElement(
   ReactFragment,
   null,
-  createElement(Button, { href: "/services", variant: "solid-ink", icon: arrowRightIcon }, "View services"),
+  createElement(
+    Button,
+    { href: "/services", variant: "solid-ink", icon: arrowRightIcon },
+    "View services",
+  ),
   createElement(Button, { href: "/contact", variant: "ghost" }, "Get in touch"),
 );
 ---
 
 <Layout title={`Blog — Fahad Ahmed · fhdamd.dev`}>
   <Container>
-    <Hero eyebrow={blog.heroKicker} heading={heroHeading} body={blog.heroSubheading} />
+    <Hero
+      eyebrow={blog.heroKicker}
+      heading={heroHeading}
+      body={blog.heroSubheading}
+    />
   </Container>
 
   <Container>
@@ -54,7 +81,12 @@ const ctaActions = createElement(
 
   <Container>
     <Section size="md">
-      <DarkStrip heading={ctaHeading} body={settings.ctaSubtitle} align="start" actions={ctaActions} />
+      <DarkStrip
+        heading={ctaHeading}
+        body={settings.ctaSubtitle}
+        align="start"
+        actions={ctaActions}
+      />
     </Section>
   </Container>
 </Layout>

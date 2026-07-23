@@ -1,0 +1,309 @@
+---
+import { createElement, Fragment as ReactFragment } from "react";
+import Layout from "../../layouts/Layout.astro";
+import {
+  Container,
+  Section,
+  Stack,
+  Cluster,
+  Grid,
+  Badge,
+  Tag,
+  Button,
+  DarkStrip,
+  Breadcrumb,
+  Prose,
+  CodeBlock,
+  MermaidDiagramCard,
+  EmbedCard,
+  TableOfContents,
+  Callout,
+  ContentCard,
+  SectionHeader,
+} from "@fhdamd/threads";
+import {
+  getBlogPostDetails,
+  getBlogPage,
+  getSiteSettings,
+} from "../../lib/cms";
+import { titleToReact, markupToHtml } from "../../utils/titleToReact";
+import { BLOG_TAG_LABELS, BLOG_TAG_BADGE_VARIANT } from "../../utils/blogTags";
+import {
+  ArrowRightIcon,
+  TwitterIcon,
+  LinkedInIcon,
+  StarIcon,
+} from "../../components/icons/icons";
+import { MermaidDiagram } from "../../components/MermaidDiagram/MermaidDiagram";
+import { ArticleReadingProgress } from "../../components/ArticleReadingProgress/ArticleReadingProgress";
+import { CopyLinkButton } from "../../components/CopyLinkButton/CopyLinkButton";
+import { highlightCode } from "../../utils/highlightCode";
+import type { BlogContentBlock } from "../../content/types";
+import "../../styles/blogPost.css";
+
+export async function getStaticPaths() {
+  const posts = await getBlogPostDetails();
+  return posts.map((post) => ({ params: { slug: post.slug } }));
+}
+
+const { slug } = Astro.params;
+const posts = await getBlogPostDetails();
+// getStaticPaths only generates a route per mock post above, so this is always found.
+const post = posts.find((p) => p.slug === slug)!;
+
+const blog = await getBlogPage();
+const settings = await getSiteSettings();
+
+const heroTitleHtml = markupToHtml(post.title);
+const arrowRightIcon = createElement(ArrowRightIcon);
+const starIcon = createElement(StarIcon);
+
+const breadcrumbItems = [
+  { label: "Blog", href: "/blog" },
+  { label: post.breadcrumbCategory },
+];
+
+const isHeading = (
+  block: BlogContentBlock,
+): block is Extract<BlogContentBlock, { type: "heading" }> =>
+  block.type === "heading";
+const tocItems = post.body
+  .filter(isHeading)
+  .map((block) => ({ id: block.id, label: block.text.replace(/\*/g, "") }));
+
+// Astro templates can't await inline, so every code block's syntax
+// highlighting is resolved up front here, keyed by its index in post.body.
+const highlightedCode = new Map<
+  number,
+  Awaited<ReturnType<typeof highlightCode>>
+>();
+for (let i = 0; i < post.body.length; i++) {
+  const block = post.body[i];
+  if (block.type === "code") {
+    highlightedCode.set(i, await highlightCode(block.code, block.lang ?? "ts"));
+  }
+}
+
+const allPosts = [blog.featuredPost, ...blog.posts];
+const relatedPosts = post.relatedSlugs
+  .map((relSlug) => allPosts.find((p) => p.slug === relSlug))
+  .filter((p): p is (typeof allPosts)[number] => Boolean(p));
+const relatedTitle = titleToReact("Related *posts*");
+
+const canonicalUrl = new URL(Astro.url.pathname, "https://fhdamd.dev").href;
+const shareText = encodeURIComponent(post.title.replace(/\*/g, ""));
+const twitterShareHref = `https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(canonicalUrl)}`;
+const linkedinShareHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonicalUrl)}`;
+
+const ctaHeading = titleToReact(settings.ctaTitle);
+const ctaActions = createElement(
+  ReactFragment,
+  null,
+  createElement(
+    Button,
+    { href: "/services", variant: "solid-ink", icon: arrowRightIcon },
+    "View services",
+  ),
+  createElement(Button, { href: "/contact", variant: "ghost" }, "Get in touch"),
+);
+---
+
+<Layout
+  title={`${post.title.replace(/\*/g, "")} — Fahad Ahmed · fhdamd.dev`}
+  description={post.dek}
+>
+  <ArticleReadingProgress client:load targetSelector=".post-article" />
+
+  <Container>
+    <Stack gap={5} className="post-hero">
+      <Breadcrumb items={breadcrumbItems} />
+      <Cluster gap={2}>
+        {
+          post.badges.map((tag) => (
+            <Badge variant="neutral">{BLOG_TAG_LABELS[tag] ?? tag}</Badge>
+          ))
+        }
+      </Cluster>
+      <h1 class="post-hero__title" set:html={heroTitleHtml} />
+      <p class="post-hero__dek">{post.dek}</p>
+      <Cluster gap={3} className="post-byline">
+        <Cluster gap={2}>
+          <div class="post-byline__avatar">{post.authorInitials}</div>
+          <div>
+            <div class="post-byline__name">{post.authorName}</div>
+            <div class="post-byline__role">{post.authorRole}</div>
+          </div>
+        </Cluster>
+        <span class="post-byline__sep">·</span>
+        <span class="post-byline__item">{post.publishedDate}</span>
+        <span class="post-byline__sep">·</span>
+        <span class="post-byline__item">{post.readTime}</span>
+      </Cluster>
+    </Stack>
+  </Container>
+
+  <Container>
+    <div class="post-layout">
+      <TableOfContents client:load items={tocItems} />
+
+      <Prose className="post-article">
+        {
+          post.body.map((block, i) => {
+            if (block.type === "heading") {
+              return <h2 id={block.id} set:html={markupToHtml(block.text)} />;
+            }
+            if (block.type === "subheading") {
+              return <h3 id={block.id} set:html={markupToHtml(block.text)} />;
+            }
+            if (block.type === "html") {
+              return <Fragment set:html={block.html} />;
+            }
+            if (block.type === "callout") {
+              return (
+                <Callout
+                  variant={block.variant === "tip" ? "success" : "warning"}
+                  title={block.title}
+                  icon={block.variant === "tip" ? starIcon : undefined}
+                >
+                  {block.body}
+                </Callout>
+              );
+            }
+            if (block.type === "code") {
+              const tokenLines = highlightedCode.get(i) ?? [];
+              return (
+                <CodeBlock filename={block.filename}>
+                  {tokenLines.map((line, li) => (
+                    <Fragment key={li}>
+                      {line.map((token, ti) => (
+                        <span key={ti} style={{ color: token.color }}>
+                          {token.content}
+                        </span>
+                      ))}
+                      {li < tokenLines.length - 1 ? "\n" : null}
+                    </Fragment>
+                  ))}
+                </CodeBlock>
+              );
+            }
+            if (block.type === "diagram") {
+              return (
+                <MermaidDiagramCard
+                  label={block.label}
+                  caption={block.caption}
+                  className="mermaid-diagram-card"
+                >
+                  <MermaidDiagram
+                    client:load
+                    id={`diagram-${i}`}
+                    source={block.source}
+                  />
+                </MermaidDiagramCard>
+              );
+            }
+            if (block.kind === "youtube") {
+              return (
+                <EmbedCard
+                  type="youtube"
+                  videoUrl={block.videoUrl}
+                  title={block.title}
+                />
+              );
+            }
+            if (block.kind === "tweet") {
+              return (
+                <EmbedCard
+                  type="tweet"
+                  authorName={block.authorName}
+                  handle={block.handle}
+                  text={block.text}
+                  foot={block.foot}
+                />
+              );
+            }
+            return (
+              <EmbedCard
+                type="instagram"
+                accountName={block.accountName}
+                caption={block.caption}
+              />
+            );
+          })
+        }
+
+        <Cluster gap={4} justify="between" className="post-footer-meta">
+          <Cluster gap={2}>
+            {post.postTags.map((tag) => <Tag>{tag}</Tag>)}
+          </Cluster>
+          <Cluster gap={2}>
+            <a
+              class="share-btn"
+              href={twitterShareHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Share on X"
+              title="Share on X"
+            >
+              <TwitterIcon />
+            </a>
+            <a
+              class="share-btn"
+              href={linkedinShareHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Share on LinkedIn"
+              title="Share on LinkedIn"
+            >
+              <LinkedInIcon />
+            </a>
+            <CopyLinkButton client:load />
+          </Cluster>
+        </Cluster>
+      </Prose>
+    </div>
+  </Container>
+
+  {
+    relatedPosts.length > 0 && (
+      <section style="border-top:1px solid var(--th-color-border-default)">
+        <Container>
+          <Section size="md">
+            <Stack gap={8}>
+              <SectionHeader title={relatedTitle} meta="More from the blog" />
+              <Grid cols={3} gap={4}>
+                {relatedPosts.map((rp) => (
+                  <ContentCard
+                    key={rp.slug}
+                    href={`/blog/${rp.slug}`}
+                    date={rp.date}
+                    description={rp.description}
+                    title={titleToReact(rp.title, {
+                      color: "var(--th-color-accent)",
+                    })}
+                    badges={[
+                      {
+                        label: BLOG_TAG_LABELS[rp.tags[0]] ?? rp.tags[0],
+                        variant: BLOG_TAG_BADGE_VARIANT[rp.tags[0]],
+                      },
+                    ]}
+                  />
+                ))}
+              </Grid>
+            </Stack>
+          </Section>
+        </Container>
+      </section>
+    )
+  }
+
+  <Container>
+    <Section size="md">
+      <DarkStrip
+        heading={ctaHeading}
+        body={settings.ctaSubtitle}
+        align="start"
+        actions={ctaActions}
+      />
+    </Section>
+  </Container>
+</Layout>
