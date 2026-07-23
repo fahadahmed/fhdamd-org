@@ -1,0 +1,183 @@
+---
+import { createElement } from "react";
+import Layout from "../layouts/Layout.astro";
+import {
+  Container,
+  Section,
+  Stack,
+  Prose,
+  Hero,
+  SectionHeader,
+  Card,
+  IconDetailRow,
+  LogoStrip,
+  LogoItem,
+  ClientWorkRow,
+  SkillGrid,
+  Button,
+} from "@fhdamd/threads";
+import { getAboutPage, getSiteSettings, getEmployers, getClientWork, getExperience, getSkills } from "../lib/cms";
+import { titleToReact } from "../utils/titleToReact";
+import { LocationIcon, BriefcaseIcon, GithubIcon, ArrowRightIcon } from "../components/icons/icons";
+import { LogoPlaceholder } from "../components/icons/LogoPlaceholder";
+import "../styles/about.css";
+
+const borderStyle = "border-top:1px solid var(--th-color-border-default)";
+
+const about = await getAboutPage();
+const settings = await getSiteSettings();
+const employerList = await getEmployers();
+const clientWorkList = await getClientWork();
+const experienceList = await getExperience();
+const skillList = await getSkills();
+
+// Astro's template compiler intercepts bare JSX written as a prop-expression
+// value and hands React an internal object instead of a real element, so
+// every such value must be precomputed here and passed as a plain variable.
+const heroHeading = titleToReact(about.heroHeading, { color: "var(--th-color-accent)" });
+const employersTitle = titleToReact("Organisations I've *worked with*");
+const clientWorkTitle = titleToReact("Client *work*");
+const stackTitle = titleToReact("Core *stack*");
+
+const locationIcon = createElement(LocationIcon);
+const briefcaseIcon = createElement(BriefcaseIcon);
+const githubIcon = createElement(GithubIcon);
+const arrowRightIcon = createElement(ArrowRightIcon);
+
+const clientWorkItems = clientWorkList.map((item) => ({
+  ...item,
+  titleNode: titleToReact(item.title),
+}));
+
+// Fixed bounding box + object-fit so wildly different logo aspect ratios
+// (a square ATO mark vs. a wide Latitude wordmark) all read at the same
+// visual weight instead of scaling purely by height. ANZ's wordmark is
+// already dense/wide at the default size, so it keeps the smaller box
+// while everything else is scaled up to match its visual weight.
+const logoBoxStyle = {
+  height: "40px",
+  width: "120px",
+  objectFit: "contain" as const,
+  objectPosition: "left center",
+};
+const anzLogoBoxStyle = { ...logoBoxStyle, height: "28px", width: "84px" };
+
+const employerItems = employerList.map((employer) => ({
+  ...employer,
+  logoNode: employer.logo
+    ? createElement("img", {
+        src: employer.logo,
+        alt: "",
+        style: employer.name === "ANZ" ? anzLogoBoxStyle : logoBoxStyle,
+      })
+    : createElement(LogoPlaceholder, { name: employer.name }),
+}));
+---
+
+<Layout title={`About — Fahad Ahmed · fhdamd.dev`}>
+  <Container>
+    <Hero eyebrow={about.heroKicker} heading={heroHeading} body={about.heroSubheading} />
+  </Container>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <div class="about-grid">
+          <Prose>
+            {about.bio.map((paragraph) => <p set:html={paragraph} />)}
+          </Prose>
+
+          <Card style={{ display: "block", position: "sticky", top: "80px" }}>
+            <div class="about-card__label">{about.sidebarLabel}</div>
+            <div class="about-card__name">Fahad Ahmed</div>
+            <div class="about-card__title">{settings.currentTitle}</div>
+            <div class="about-card__divider"></div>
+            <Stack gap={3}>
+              <IconDetailRow variant="compact" value={settings.location} icon={locationIcon} />
+              <IconDetailRow
+                variant="compact"
+                value={`${settings.currentEmployer} · Sep 2022–present`}
+                icon={briefcaseIcon}
+              />
+              <IconDetailRow variant="compact" value={settings.github} icon={githubIcon} />
+            </Stack>
+            <Stack gap={2} style={{ marginTop: "var(--th-space-5)" }}>
+              <Button href="/contact" variant="solid-ink" icon={arrowRightIcon}>
+                Get in touch
+              </Button>
+              <Button href="/services" variant="ghost">View services</Button>
+            </Stack>
+          </Card>
+        </div>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <Stack gap={8}>
+          <SectionHeader title={employersTitle} meta="Employers & clients" />
+          <LogoStrip style={{ gap: "var(--th-space-10) var(--th-space-12)" }}>
+            {employerItems.map((employer) => (
+              <LogoItem style={{ alignItems: "flex-start" }} logo={employer.logoNode} label={employer.label} />
+            ))}
+          </LogoStrip>
+        </Stack>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <Stack gap={8}>
+          <SectionHeader title={clientWorkTitle} meta="EY · 2022–present" />
+          <div class="client-list">
+            {clientWorkItems.map((item) => (
+              <ClientWorkRow
+                client={item.client}
+                dateRange={item.dateRange}
+                title={item.titleNode}
+                description={item.description}
+                tags={item.tags}
+                value={item.value}
+              />
+            ))}
+          </div>
+        </Stack>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <Stack gap={8}>
+          <SectionHeader title="Experience" meta="14 years" />
+          <div class="client-list">
+            {experienceList.map((item) => (
+              <ClientWorkRow
+                client={item.company}
+                dateRange={item.period}
+                title={item.role}
+                description={item.description}
+              />
+            ))}
+          </div>
+        </Stack>
+      </Section>
+    </Container>
+  </section>
+
+  <section style={borderStyle}>
+    <Container>
+      <Section size="md">
+        <Stack gap={8}>
+          <SectionHeader title={stackTitle} meta="Tools of the trade" />
+          <SkillGrid categories={skillList} />
+        </Stack>
+      </Section>
+    </Container>
+  </section>
+</Layout>
