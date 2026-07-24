@@ -206,7 +206,7 @@ export type BlogEmbed =
     }
   | { kind: "instagram"; accountName: string; caption?: string };
 
-export type BlogContentBlock =
+export type ArticleContentBlock =
   /** id must be unique on the page — TableOfContents links to it and scroll-spies it. */
   | { type: "heading"; id: string; text: string }
   | { type: "subheading"; id: string; text: string }
@@ -218,7 +218,14 @@ export type BlogContentBlock =
   | { type: "code"; filename?: string; lang?: string; code: string }
   /** source is raw Mermaid syntax, rendered client-side — see MermaidDiagram island. */
   | { type: "diagram"; label: string; caption?: string; source: string }
-  | ({ type: "embed" } & BlogEmbed);
+  | ({ type: "embed" } & BlogEmbed)
+  /** No src yet — always the placeholder state until real screenshots exist. */
+  | { type: "screenshot"; caption?: string }
+  | {
+      type: "statRow";
+      stats: { number: string; unit?: string; label: string }[];
+    }
+  | { type: "testimonialReserved"; title?: string; description: string };
 
 export interface BlogPostDetail {
   slug: string;
@@ -233,10 +240,41 @@ export interface BlogPostDetail {
   authorRole: string;
   publishedDate: string;
   readTime: string;
-  body: BlogContentBlock[];
+  body: ArticleContentBlock[];
   postTags: string[];
   /** Slugs into BlogPage's posts/featuredPost, for the related-posts grid. */
   relatedSlugs: string[];
+}
+
+export interface CaseStudyRelatedItem {
+  badgeLabel: string;
+  badgeVariant: "terra" | "sage" | "neutral";
+  title: string;
+  dateLabel: string;
+  href: string;
+}
+
+export interface CaseStudyDetail {
+  slug: string;
+  breadcrumbCategory: string;
+  badges: { label: string; variant: "terra" | "sage" | "neutral" }[];
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  title: string;
+  dek: string;
+  authorInitials: string;
+  authorName: string;
+  authorRole: string;
+  clientName: string;
+  location: string;
+  facts: { label: string; value: string }[];
+  body: ArticleContentBlock[];
+  postTags: string[];
+  buildCreditName: string;
+  buildCreditRole: string;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent, and a trailing
+   *  "[Get a proposal](/contact)"-style link is appended in the page itself. */
+  buildCreditBio: string;
+  relatedItems: CaseStudyRelatedItem[];
 }
 
 export interface Employer {
