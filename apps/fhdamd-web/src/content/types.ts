@@ -168,6 +168,33 @@ export interface BlogPage {
   posts: BlogPost[];
 }
 
+export interface CaseStudyItem {
+  slug: string;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  title: string;
+  description: string;
+  /** Display label, e.g. "Delivered" or "Coming soon" — not a real date. */
+  dateLabel: string;
+  tag: "website" | "app" | "advisory";
+  /** Dashed, non-interactive placeholder tile — no href, no arrow. */
+  comingSoon?: boolean;
+}
+
+export interface FeaturedCaseStudy extends CaseStudyItem {
+  eyebrowMeta: string;
+  /** Secondary meta badge, e.g. "Astro · DatoCMS". */
+  techBadge: string;
+}
+
+export interface CaseStudiesPage {
+  heroKicker: string;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  heroHeading: string;
+  heroSubheading: string;
+  featured: FeaturedCaseStudy;
+  items: CaseStudyItem[];
+}
+
 export type BlogEmbed =
   | { kind: "youtube"; videoUrl: string; title: string }
   | {
