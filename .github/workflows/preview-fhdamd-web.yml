@@ -1,0 +1,50 @@
+name: Preview fhdamd-web
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - apps/fhdamd-web/**
+
+permissions:
+  checks: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  preview:
+    name: Build and deploy fhdamd-web (preview)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      # Pinned below 22.23.0: that Node security release broke node-fetch's
+      # handling of keep-alive socket closures, which breaks firebase-tools'
+      # Firebase Hosting deploy calls (ERR_STREAM_PREMATURE_CLOSE) — see #201.
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22.22.0"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Build fhdamd-web
+        run: pnpm --filter fhdamd-web build
+
+      - name: Deploy to Firebase Hosting (preview channel)
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FAHAD_WEB }}
+          projectId: fahad-web
+          expires: 7d
+          entryPoint: apps/fhdamd-web
