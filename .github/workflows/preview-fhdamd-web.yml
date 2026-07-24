@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           version: 10
 
@@ -41,7 +41,7 @@ jobs:
         run: pnpm --filter fhdamd-web build
 
       - name: Deploy to Firebase Hosting (preview channel)
-        uses: FirebaseExtended/action-hosting-deploy@v0
+        uses: FirebaseExtended/action-hosting-deploy@500ac625ca2dd40cbd15f7659af953801858032a # v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FAHAD_WEB }}
