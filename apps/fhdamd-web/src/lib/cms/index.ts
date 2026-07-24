@@ -7,6 +7,7 @@ import { blogPage } from "../../content/mock/blogPage";
 import { blogPostDetails } from "../../content/mock/blogPostDetails";
 import { caseStudiesPage } from "../../content/mock/caseStudiesPage";
 import { caseStudyDetails } from "../../content/mock/caseStudyDetails";
+import { labPage } from "../../content/mock/labPage";
 import { employers } from "../../content/mock/employers";
 import { clientWork } from "../../content/mock/clientWork";
 import { experience } from "../../content/mock/experience";
@@ -21,6 +22,7 @@ import type {
   BlogPostDetail,
   CaseStudiesPage,
   CaseStudyDetail,
+  LabPage,
   Employer,
   ClientWorkItem,
   ExperienceItem,
@@ -68,6 +70,10 @@ export async function getCaseStudiesPage(): Promise<CaseStudiesPage> {
 
 export async function getCaseStudyDetails(): Promise<CaseStudyDetail[]> {
   return caseStudyDetails;
+}
+
+export async function getLabPage(): Promise<LabPage> {
+  return labPage;
 }
 
 export async function getEmployers(): Promise<Employer[]> {

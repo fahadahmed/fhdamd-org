@@ -195,6 +195,27 @@ export interface CaseStudiesPage {
   items: CaseStudyItem[];
 }
 
+export interface LabItem {
+  /** Omitted for comingSoon placeholders — Lab items have no detail pages of
+   *  their own, so a real item links out (e.g. to a blog post). */
+  href?: string;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  title: string;
+  description: string;
+  dateLabel: string;
+  /** First tag is the displayed badge; the full set drives tag-filter matching. */
+  tags: string[];
+  comingSoon?: boolean;
+}
+
+export interface LabPage {
+  heroKicker: string;
+  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
+  heroHeading: string;
+  heroSubheading: string;
+  items: LabItem[];
+}
+
 export type BlogEmbed =
   | { kind: "youtube"; videoUrl: string; title: string }
   | {
