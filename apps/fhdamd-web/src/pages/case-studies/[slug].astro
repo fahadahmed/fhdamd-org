@@ -15,19 +15,18 @@ import {
   Prose,
   CodeBlock,
   MermaidDiagramCard,
-  EmbedCard,
   TableOfContents,
   Callout,
   ContentCard,
   SectionHeader,
+  FactStrip,
+  ScreenshotFigure,
+  StatRow,
+  Testimonial,
+  AuthorBox,
 } from "@fhdamd/threads";
-import {
-  getBlogPostDetails,
-  getBlogPage,
-  getSiteSettings,
-} from "../../lib/cms";
+import { getCaseStudyDetails, getSiteSettings } from "../../lib/cms";
 import { titleToReact, markupToHtml } from "../../utils/titleToReact";
-import { BLOG_TAG_LABELS, BLOG_TAG_BADGE_VARIANT } from "../../utils/blogTags";
 import {
   ArrowRightIcon,
   TwitterIcon,
@@ -42,56 +41,59 @@ import type { ArticleContentBlock } from "../../content/types";
 import "../../styles/blogPost.css";
 
 export async function getStaticPaths() {
-  const posts = await getBlogPostDetails();
-  return posts.map((post) => ({ params: { slug: post.slug } }));
+  const items = await getCaseStudyDetails();
+  return items.map((item) => ({ params: { slug: item.slug } }));
 }
 
 const { slug } = Astro.params;
-const posts = await getBlogPostDetails();
-// getStaticPaths only generates a route per mock post above, so this is always found.
-const post = posts.find((p) => p.slug === slug)!;
+const items = await getCaseStudyDetails();
+// getStaticPaths only generates a route per mock item above, so this is always found.
+const study = items.find((i) => i.slug === slug)!;
 
-const blog = await getBlogPage();
 const settings = await getSiteSettings();
 
-const heroTitleHtml = markupToHtml(post.title);
+const heroTitleHtml = markupToHtml(study.title);
 const arrowRightIcon = createElement(ArrowRightIcon);
 const starIcon = createElement(StarIcon);
 
 const breadcrumbItems = [
-  { label: "Blog", href: "/blog" },
-  { label: post.breadcrumbCategory },
+  { label: "Case Studies", href: "/case-studies" },
+  { label: study.breadcrumbCategory },
 ];
 
 const isHeading = (
   block: ArticleContentBlock,
 ): block is Extract<ArticleContentBlock, { type: "heading" }> =>
   block.type === "heading";
-const tocItems = post.body
+const tocItems = study.body
   .filter(isHeading)
   .map((block) => ({ id: block.id, label: block.text.replace(/\*/g, "") }));
 
 // Astro templates can't await inline, so every code block's syntax
-// highlighting is resolved up front here, keyed by its index in post.body.
+// highlighting is resolved up front here, keyed by its index in study.body.
 const highlightedCode = new Map<
   number,
   Awaited<ReturnType<typeof highlightCode>>
 >();
-for (let i = 0; i < post.body.length; i++) {
-  const block = post.body[i];
+for (let i = 0; i < study.body.length; i++) {
+  const block = study.body[i];
   if (block.type === "code") {
     highlightedCode.set(i, await highlightCode(block.code, block.lang ?? "ts"));
   }
 }
 
-const allPosts = [blog.featuredPost, ...blog.posts];
-const relatedPosts = post.relatedSlugs
-  .map((relSlug) => allPosts.find((p) => p.slug === relSlug))
-  .filter((p): p is (typeof allPosts)[number] => Boolean(p));
-const relatedTitle = titleToReact("Related *posts*");
+const buildCreditBio = createElement(
+  ReactFragment,
+  null,
+  `${study.buildCreditBio} Considering something similar? `,
+  createElement("a", { href: "/contact" }, "Get a proposal"),
+  ".",
+);
+
+const relatedTitle = titleToReact("More *case studies*");
 
 const canonicalUrl = new URL(Astro.url.pathname, "https://fhdamd.dev").href;
-const shareText = encodeURIComponent(post.title.replace(/\*/g, ""));
+const shareText = encodeURIComponent(study.title.replace(/\*/g, ""));
 const twitterShareHref = `https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(canonicalUrl)}`;
 const linkedinShareHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonicalUrl)}`;
 
@@ -109,8 +111,8 @@ const ctaActions = createElement(
 ---
 
 <Layout
-  title={`${post.title.replace(/\*/g, "")} — Fahad Ahmed · fhdamd.dev`}
-  description={post.dek}
+  title={`${study.title.replace(/\*/g, "")} — Fahad Ahmed · fhdamd.dev`}
+  description={study.dek}
 >
   <ArticleReadingProgress client:load targetSelector=".post-article" />
 
@@ -118,28 +120,28 @@ const ctaActions = createElement(
     <Stack gap={5} className="post-hero">
       <Breadcrumb items={breadcrumbItems} />
       <Cluster gap={2}>
-        {
-          post.badges.map((tag) => (
-            <Badge variant="neutral">{BLOG_TAG_LABELS[tag] ?? tag}</Badge>
-          ))
-        }
+        {study.badges.map((b) => <Badge variant={b.variant}>{b.label}</Badge>)}
       </Cluster>
       <h1 class="post-hero__title" set:html={heroTitleHtml} />
-      <p class="post-hero__dek">{post.dek}</p>
+      <p class="post-hero__dek">{study.dek}</p>
       <Cluster gap={3} className="post-byline">
         <Cluster gap={2}>
-          <div class="post-byline__avatar">{post.authorInitials}</div>
+          <div class="post-byline__avatar">{study.authorInitials}</div>
           <div>
-            <div class="post-byline__name">{post.authorName}</div>
-            <div class="post-byline__role">{post.authorRole}</div>
+            <div class="post-byline__name">{study.authorName}</div>
+            <div class="post-byline__role">{study.authorRole}</div>
           </div>
         </Cluster>
         <span class="post-byline__sep">·</span>
-        <span class="post-byline__item">{post.publishedDate}</span>
+        <span class="post-byline__item">{study.clientName}</span>
         <span class="post-byline__sep">·</span>
-        <span class="post-byline__item">{post.readTime}</span>
+        <span class="post-byline__item">{study.location}</span>
       </Cluster>
     </Stack>
+  </Container>
+
+  <Container>
+    <FactStrip facts={study.facts} />
   </Container>
 
   <Container>
@@ -148,7 +150,7 @@ const ctaActions = createElement(
 
       <Prose className="post-article">
         {
-          post.body.map((block, i) => {
+          study.body.map((block, i) => {
             if (block.type === "heading") {
               return <h2 id={block.id} set:html={markupToHtml(block.text)} />;
             }
@@ -201,39 +203,30 @@ const ctaActions = createElement(
                 </MermaidDiagramCard>
               );
             }
-            if (block.kind === "youtube") {
+            if (block.type === "screenshot") {
+              return <ScreenshotFigure caption={block.caption} />;
+            }
+            if (block.type === "statRow") {
+              return <StatRow stats={block.stats} />;
+            }
+            if (block.type === "testimonialReserved") {
               return (
-                <EmbedCard
-                  type="youtube"
-                  videoUrl={block.videoUrl}
+                <Testimonial
+                  reserved
                   title={block.title}
+                  description={block.description}
                 />
               );
             }
-            if (block.kind === "tweet") {
-              return (
-                <EmbedCard
-                  type="tweet"
-                  authorName={block.authorName}
-                  handle={block.handle}
-                  text={block.text}
-                  foot={block.foot}
-                />
-              );
-            }
-            return (
-              <EmbedCard
-                type="instagram"
-                accountName={block.accountName}
-                caption={block.caption}
-              />
-            );
+            // No embeds in this mock content, but the shared block union allows
+            // them — nothing to render for that case on this page.
+            return null;
           })
         }
 
         <Cluster gap={4} justify="between" className="post-footer-meta">
           <Cluster gap={2}>
-            {post.postTags.map((tag) => <Tag>{tag}</Tag>)}
+            {study.postTags.map((tag) => <Tag>{tag}</Tag>)}
           </Cluster>
           <Cluster gap={2}>
             <a
@@ -259,32 +252,33 @@ const ctaActions = createElement(
             <CopyLinkButton client:load />
           </Cluster>
         </Cluster>
+
+        <AuthorBox
+          initials={study.authorInitials}
+          name={study.buildCreditName}
+          role={study.buildCreditRole}
+          bio={buildCreditBio}
+        />
       </Prose>
     </div>
   </Container>
 
   {
-    relatedPosts.length > 0 && (
+    study.relatedItems.length > 0 && (
       <section style="border-top:1px solid var(--th-color-border-default)">
         <Container>
           <Section size="md">
             <Stack gap={8}>
-              <SectionHeader title={relatedTitle} meta="More from the blog" />
+              <SectionHeader title={relatedTitle} meta="See the full list" />
               <Grid cols={3} gap={4}>
-                {relatedPosts.map((rp) => (
+                {study.relatedItems.map((item) => (
                   <ContentCard
-                    key={rp.slug}
-                    href={`/blog/${rp.slug}`}
-                    date={rp.date}
-                    description={rp.description}
-                    title={titleToReact(rp.title, {
-                      color: "var(--th-color-accent)",
-                    })}
+                    key={item.href + item.title}
+                    href={item.href}
+                    date={item.dateLabel}
+                    title={item.title}
                     badges={[
-                      {
-                        label: BLOG_TAG_LABELS[rp.tags[0]] ?? rp.tags[0],
-                        variant: BLOG_TAG_BADGE_VARIANT[rp.tags[0]],
-                      },
+                      { label: item.badgeLabel, variant: item.badgeVariant },
                     ]}
                   />
                 ))}
