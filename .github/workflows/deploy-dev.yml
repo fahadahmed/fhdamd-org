@@ -41,14 +41,14 @@ jobs:
         uses: pnpm/action-setup@v4
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Build functions
         working-directory: apps/pdf-craft/functions
         run: pnpm run build
 
       - name: Install Firebase CLI
-        run: pnpm add -g firebase-tools
+        run: pnpm add -g firebase-tools --ignore-scripts
 
       - name: Deploy Firestore rules and indexes
         working-directory: apps/pdf-craft
