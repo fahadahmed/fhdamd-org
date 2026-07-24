@@ -1,0 +1,92 @@
+---
+import { createElement, Fragment as ReactFragment } from "react";
+import Layout from "../../layouts/Layout.astro";
+import {
+  Container,
+  Section,
+  Stack,
+  Hero,
+  FeaturedCard,
+  Button,
+  DarkStrip,
+} from "@fhdamd/threads";
+import { getCaseStudiesPage, getSiteSettings } from "../../lib/cms";
+import { titleToReact } from "../../utils/titleToReact";
+import {
+  CASE_STUDY_TAG_LABELS,
+  CASE_STUDY_TAG_BADGE_VARIANT,
+} from "../../utils/caseStudyTags";
+import { ArrowRightIcon } from "../../components/icons/icons";
+import { CaseStudyGrid } from "../../components/CaseStudyGrid/CaseStudyGrid";
+
+const page = await getCaseStudiesPage();
+const settings = await getSiteSettings();
+
+// Astro's template compiler intercepts bare JSX written as a prop-expression
+// value and hands React an internal object instead of a real element, so
+// every such value must be precomputed here and passed as a plain variable.
+const heroHeading = titleToReact(page.heroHeading, {
+  color: "var(--th-color-accent)",
+});
+const arrowRightIcon = createElement(ArrowRightIcon);
+const featuredTitle = titleToReact(page.featured.title, {
+  color: "var(--th-color-accent)",
+});
+
+const featuredMetaBadges = [
+  {
+    label: CASE_STUDY_TAG_LABELS[page.featured.tag] ?? page.featured.tag,
+    variant: CASE_STUDY_TAG_BADGE_VARIANT[page.featured.tag],
+  },
+  { label: page.featured.techBadge, variant: "neutral" as const },
+];
+
+const ctaHeading = titleToReact(settings.ctaTitle);
+const ctaActions = createElement(
+  ReactFragment,
+  null,
+  createElement(
+    Button,
+    { href: "/services", variant: "solid-ink", icon: arrowRightIcon },
+    "View services",
+  ),
+  createElement(Button, { href: "/contact", variant: "ghost" }, "Get in touch"),
+);
+---
+
+<Layout title={`Case Studies — Fahad Ahmed · fhdamd.dev`}>
+  <Container>
+    <Hero
+      eyebrow={page.heroKicker}
+      heading={heroHeading}
+      body={page.heroSubheading}
+    />
+  </Container>
+
+  <Container>
+    <Section size="md">
+      <Stack gap={8}>
+        <FeaturedCard
+          href={`/case-studies/${page.featured.slug}`}
+          eyebrowMeta={page.featured.eyebrowMeta}
+          title={featuredTitle}
+          description={page.featured.description}
+          metaBadges={featuredMetaBadges}
+        />
+
+        <CaseStudyGrid client:load items={page.items} />
+      </Stack>
+    </Section>
+  </Container>
+
+  <Container>
+    <Section size="md">
+      <DarkStrip
+        heading={ctaHeading}
+        body={settings.ctaSubtitle}
+        align="start"
+        actions={ctaActions}
+      />
+    </Section>
+  </Container>
+</Layout>
