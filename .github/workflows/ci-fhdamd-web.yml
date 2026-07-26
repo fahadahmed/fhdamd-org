@@ -13,9 +13,7 @@ on:
       - apps/fhdamd-web/**
 
 permissions:
-  checks: write
   contents: read
-  pull-requests: write
 
 jobs:
   test:
@@ -52,6 +50,10 @@ jobs:
     needs: test
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      contents: read
+      pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
