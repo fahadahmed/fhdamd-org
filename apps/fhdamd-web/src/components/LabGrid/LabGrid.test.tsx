@@ -65,4 +65,17 @@ describe("LabGrid", () => {
     ).toBeInTheDocument();
     expect(screen.queryByText("Next experiment")).not.toBeInTheDocument();
   });
+
+  it("falls back to the raw tag string when an item's tag has no known label", () => {
+    const untaggedItem: LabItem = {
+      href: "/blog/some-post",
+      title: "Untagged experiment",
+      description: "No known tag.",
+      dateLabel: "View on the blog",
+      tags: ["misc"],
+    };
+    render(<LabGrid items={[untaggedItem]} />);
+
+    expect(screen.getAllByText("misc")).toHaveLength(2); // tag pill + badge
+  });
 });

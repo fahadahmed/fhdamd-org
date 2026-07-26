@@ -24,6 +24,9 @@ export default defineConfig({
         "src/content/**",
         "src/lib/**",
         "src/env.d.ts",
+        // Static SVG markup and constant data — no logic to exercise
+        "src/components/icons/**",
+        "src/data/**",
       ],
     },
   },

@@ -169,6 +169,29 @@ export const FormSuccessPanel = ({ title, message }: any) => (
   </div>
 );
 
+export const SiteFooter = ({ brand, links = [], copyright }: any) => (
+  <footer>
+    <div>{brand}</div>
+    <nav aria-label="Footer navigation">
+      <ul>
+        {links.map((link: any) => (
+          <li key={link.href}>
+            <a href={link.href}>{link.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    {copyright && <p>{copyright}</p>}
+  </footer>
+);
+
+export const ReadingProgressBar = ({ targetRef }: any) => (
+  <div
+    data-testid="reading-progress-bar"
+    data-has-target={targetRef?.current != null}
+  />
+);
+
 export const SiteNav = ({ brand, links = [], ctas = [] }: any) => (
   <nav>
     {brand}

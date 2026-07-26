@@ -87,4 +87,17 @@ describe("PostGrid", () => {
       screen.queryByRole("button", { name: "Architecture" }),
     ).not.toBeInTheDocument();
   });
+
+  it("falls back to the raw tag string when a post's tag has no known label", () => {
+    const untaggedPost: BlogPost = {
+      slug: "d",
+      title: "Post D",
+      description: "Desc D",
+      date: "Apr 2026",
+      tags: ["misc"],
+    };
+    render(<PostGrid posts={[untaggedPost]} />);
+
+    expect(screen.getAllByText("misc")).toHaveLength(2); // tag pill + badge
+  });
 });

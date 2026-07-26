@@ -44,4 +44,17 @@ describe("Header", () => {
     expect(localStorage.getItem("th-theme")).toBe("dark");
     expect(screen.getByRole("button", { name: "Light" })).toBeInTheDocument();
   });
+
+  it("toggles back from dark to light", async () => {
+    document.documentElement.dataset.theme = "dark";
+    const user = userEvent.setup();
+    render(<Header currentPath="/" />);
+
+    const toggle = screen.getByRole("button", { name: "Light" });
+    await user.click(toggle);
+
+    expect(document.documentElement.dataset.theme).toBe("light");
+    expect(localStorage.getItem("th-theme")).toBe("light");
+    expect(screen.getByRole("button", { name: "Dark" })).toBeInTheDocument();
+  });
 });
