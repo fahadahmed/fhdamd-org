@@ -33,10 +33,10 @@ import {
   TwitterIcon,
   LinkedInIcon,
   StarIcon,
-} from "../../components/icons/icons";
-import { MermaidDiagram } from "../../components/MermaidDiagram/MermaidDiagram";
-import { ArticleReadingProgress } from "../../components/ArticleReadingProgress/ArticleReadingProgress";
-import { CopyLinkButton } from "../../components/CopyLinkButton/CopyLinkButton";
+  MermaidDiagram,
+  ArticleReadingProgress,
+  CopyLinkButton,
+} from "../../components";
 import { highlightCode } from "../../utils/highlightCode";
 import type { ArticleContentBlock } from "../../content/types";
 import "../../styles/blogPost.css";
@@ -99,12 +99,17 @@ const ctaHeading = titleToReact(settings.ctaTitle);
 const ctaActions = createElement(
   ReactFragment,
   null,
-  createElement(
-    Button,
-    { href: "/services", variant: "solid-ink", icon: arrowRightIcon },
-    "View services",
-  ),
-  createElement(Button, { href: "/contact", variant: "ghost" }, "Get in touch"),
+  createElement(Button, {
+    href: "/services",
+    variant: "solid-ink",
+    icon: arrowRightIcon,
+    children: "View services",
+  }),
+  createElement(Button, {
+    href: "/contact",
+    variant: "ghost",
+    children: "Get in touch",
+  }),
 );
 ---
 
@@ -174,9 +179,9 @@ const ctaActions = createElement(
               return (
                 <CodeBlock filename={block.filename}>
                   {tokenLines.map((line, li) => (
-                    <Fragment key={li}>
-                      {line.map((token, ti) => (
-                        <span key={ti} style={{ color: token.color }}>
+                    <Fragment>
+                      {line.map((token) => (
+                        <span style={{ color: token.color }}>
                           {token.content}
                         </span>
                       ))}
@@ -201,7 +206,7 @@ const ctaActions = createElement(
                 </MermaidDiagramCard>
               );
             }
-            if (block.kind === "youtube") {
+            if (block.type === "embed" && block.kind === "youtube") {
               return (
                 <EmbedCard
                   type="youtube"
@@ -210,7 +215,7 @@ const ctaActions = createElement(
                 />
               );
             }
-            if (block.kind === "tweet") {
+            if (block.type === "embed" && block.kind === "tweet") {
               return (
                 <EmbedCard
                   type="tweet"
@@ -221,13 +226,19 @@ const ctaActions = createElement(
                 />
               );
             }
-            return (
-              <EmbedCard
-                type="instagram"
-                accountName={block.accountName}
-                caption={block.caption}
-              />
-            );
+            if (block.type === "embed" && block.kind === "instagram") {
+              return (
+                <EmbedCard
+                  type="instagram"
+                  accountName={block.accountName}
+                  caption={block.caption}
+                />
+              );
+            }
+            // No screenshots, stat rows, or reserved testimonials in this
+            // mock content, but the shared block union allows them —
+            // nothing to render for those cases on this page.
+            return null;
           })
         }
 
@@ -273,7 +284,6 @@ const ctaActions = createElement(
               <Grid cols={3} gap={4}>
                 {relatedPosts.map((rp) => (
                   <ContentCard
-                    key={rp.slug}
                     href={`/blog/${rp.slug}`}
                     date={rp.date}
                     description={rp.description}

@@ -43,12 +43,19 @@ const arrowRightIcon = createElement(ArrowRightIcon);
 const heroActions = createElement(
   ReactFragment,
   null,
-  createElement(Button, { href: "/services", variant: "solid-ink", icon: arrowRightIcon }, "View services"),
-  createElement(
-    Button,
-    { href: "/contact", variant: "ghost", icon: createElement(MailIcon), iconPosition: "start" },
-    "Get in touch",
-  ),
+  createElement(Button, {
+    href: "/services",
+    variant: "solid-ink",
+    icon: arrowRightIcon,
+    children: "View services",
+  }),
+  createElement(Button, {
+    href: "/contact",
+    variant: "ghost",
+    icon: createElement(MailIcon),
+    iconPosition: "start",
+    children: "Get in touch",
+  }),
   createElement(AvailabilityPill, { label: settings.availabilityLabel, available: settings.availabilityStatus }),
 );
 
@@ -82,8 +89,17 @@ const caseStudyStatsData = home.caseStudyStats.map((stat) => ({
 const caseStudyActions = createElement(
   ReactFragment,
   null,
-  createElement(Button, { href: "/case-studies/rzest", variant: "solid-ink", icon: arrowRightIcon }, "Read the case study"),
-  createElement(Button, { href: "/case-studies", variant: "ghost" }, "View all case studies"),
+  createElement(Button, {
+    href: "/case-studies/rzest",
+    variant: "solid-ink",
+    icon: arrowRightIcon,
+    children: "Read the case study",
+  }),
+  createElement(Button, {
+    href: "/case-studies",
+    variant: "ghost",
+    children: "View all case studies",
+  }),
 );
 
 const labTeaserTitleHtml = markupToHtml(home.labTeaserTitle);
@@ -94,8 +110,17 @@ const ctaHeading = titleToReact(settings.ctaTitle);
 const ctaActions = createElement(
   ReactFragment,
   null,
-  createElement(Button, { href: "/services", variant: "solid-ink", icon: arrowRightIcon }, "View services"),
-  createElement(Button, { href: "/contact", variant: "ghost" }, "Get in touch"),
+  createElement(Button, {
+    href: "/services",
+    variant: "solid-ink",
+    icon: arrowRightIcon,
+    children: "View services",
+  }),
+  createElement(Button, {
+    href: "/contact",
+    variant: "ghost",
+    children: "Get in touch",
+  }),
 );
 ---
 
@@ -125,9 +150,8 @@ const ctaActions = createElement(
         <Stack gap={8}>
           <SectionHeader title={builtTitle} meta="Building in the gaps" />
           <Grid cols={3} gap={4}>
-            {personalProjectsData.map((project, i) => (
+            {personalProjectsData.map((project) => (
               <ProjectCard
-                key={i}
                 eyebrow={project.eyebrow}
                 name={project.nameNode}
                 description={project.description}
@@ -230,7 +254,6 @@ const ctaActions = createElement(
           <div>
             {home.essays.map((essay, i) => (
               <EssayRow
-                key={i}
                 date={essay.date}
                 title={essay.title}
                 subtitle={essay.subtitle}

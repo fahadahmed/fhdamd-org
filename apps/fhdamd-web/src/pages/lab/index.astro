@@ -13,8 +13,8 @@ import {
 } from "@fhdamd/threads";
 import { getLabPage, getSiteSettings } from "../../lib/cms";
 import { titleToReact, markupToHtml } from "../../utils/titleToReact";
-import { ArrowRightIcon, SettingsIcon } from "../../components/icons/icons";
-import { LabGrid } from "../../components/LabGrid/LabGrid";
+import { ArrowRightIcon, SettingsIcon } from "../../components";
+import { LabGrid } from "../../components";
 import "../../styles/lab.css";
 
 const page = await getLabPage();
@@ -33,12 +33,17 @@ const ctaHeading = titleToReact(settings.ctaTitle);
 const ctaActions = createElement(
   ReactFragment,
   null,
-  createElement(
-    Button,
-    { href: "/services", variant: "solid-ink", icon: arrowRightIcon },
-    "View services",
-  ),
-  createElement(Button, { href: "/contact", variant: "ghost" }, "Get in touch"),
+  createElement(Button, {
+    href: "/services",
+    variant: "solid-ink",
+    icon: arrowRightIcon,
+    children: "View services",
+  }),
+  createElement(Button, {
+    href: "/contact",
+    variant: "ghost",
+    children: "Get in touch",
+  }),
 );
 ---
 

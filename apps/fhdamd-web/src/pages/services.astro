@@ -4,7 +4,7 @@ import Layout from "../layouts/Layout.astro";
 import { Container, Section, Stack, Hero, SectionHeader, Card, Grid, Badge, Tag, Button, DarkStrip } from "@fhdamd/threads";
 import { getServicesPage } from "../lib/cms";
 import { titleToReact, markupToHtml } from "../utils/titleToReact";
-import { DesignIcon, PhoneIcon, FileCheckIcon, DollarIcon, CheckIcon, ArrowRightIcon } from "../components/icons/icons";
+import { DesignIcon, PhoneIcon, FileCheckIcon, DollarIcon, CheckIcon, ArrowRightIcon } from "../components";
 import "../styles/services.css";
 
 const borderStyle = "border-top:1px solid var(--th-color-border-default)";
@@ -42,8 +42,13 @@ const stackMeta = wrapMeta("No WordPress. No page builders. No default choices."
 const ctaActions = createElement(
   "div",
   { style: { display: "flex", gap: "var(--th-space-3)", flexWrap: "wrap" } },
-  createElement(Button, { href: "/contact", variant: "solid-ink", icon: arrowRightIcon }, "Get in touch"),
-  createElement(Button, { href: "/about", variant: "ghost" }, "About me"),
+  createElement(Button, {
+    href: "/contact",
+    variant: "solid-ink",
+    icon: arrowRightIcon,
+    children: "Get in touch",
+  }),
+  createElement(Button, { href: "/about", variant: "ghost", children: "About me" }),
 );
 ---
 
@@ -58,10 +63,10 @@ const ctaActions = createElement(
         <Stack gap={8}>
           <SectionHeader title={offerTitle} meta={offerMeta} />
           <Grid cols={3} gap={4}>
-            {services.offerCards.map((card, i) => {
+            {services.offerCards.map((card) => {
               const Icon = offerIcons[card.iconKey];
               return (
-                <Card key={i}>
+                <Card>
                   <div class="offer-card__icon">
                     <Icon />
                   </div>
@@ -110,8 +115,8 @@ const ctaActions = createElement(
         <Stack gap={8}>
           <SectionHeader title={addonsTitle} meta={addonsMeta} />
           <Grid cols={3} gap={4}>
-            {services.addonCards.map((card, i) => (
-              <Card key={i}>
+            {services.addonCards.map((card) => (
+              <Card>
                 <div class="addon-card__name">{card.name}</div>
                 <Badge variant={card.badge.variant}>{card.badge.label}</Badge>
                 <ul class="addon-card__list">
