@@ -1,6 +1,11 @@
-name: Preview fhdamd-web
+name: CI fhdamd-web
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - apps/fhdamd-web/**
   pull_request:
     branches:
       - main
@@ -13,23 +18,52 @@ permissions:
   pull-requests: write
 
 jobs:
-  preview:
-    name: Build and deploy fhdamd-web (preview)
+  test:
+    name: Unit tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Run tests with coverage
+        run: pnpm --filter fhdamd-web test:coverage
+
+      - name: SonarCloud scan
+        uses: SonarSource/sonarcloud-github-action@383f7e52eae3ab0510c3cb0e7d9d150bbaeab838 # v3
         with:
-          version: 10
+          projectBaseDir: apps/fhdamd-web
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  preview:
+    name: Build and deploy fhdamd-web (preview)
+    needs: test
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
 
       # Pinned below 22.23.0: that Node security release broke node-fetch's
       # handling of keep-alive socket closures, which breaks firebase-tools'
       # Firebase Hosting deploy calls (ERR_STREAM_PREMATURE_CLOSE) — see #201.
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "22.22.0"
           cache: pnpm

@@ -1,6 +1,6 @@
-import * as tsParserPkg from '@typescript-eslint/parser';
-import * as tsPluginPkg from '@typescript-eslint/eslint-plugin';
-import eslintPluginAstro from 'eslint-plugin-astro';
+import * as tsParserPkg from "@typescript-eslint/parser";
+import * as tsPluginPkg from "@typescript-eslint/eslint-plugin";
+import eslintPluginAstro from "eslint-plugin-astro";
 
 const tsParser = tsParserPkg.default ?? tsParserPkg;
 const tsPlugin = tsPluginPkg.default ?? tsPluginPkg;
@@ -11,31 +11,38 @@ export default [
 
   // TypeScript files
   {
-    files: ['**/*.ts', '**/*.tsx', '**/*.d.ts'],
+    files: ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-        project: './tsconfig.json',
+        ecmaVersion: "latest",
+        sourceType: "module",
+        project: "./tsconfig.json",
       },
       globals: {
-        process: 'readonly',
+        process: "readonly",
       },
     },
     plugins: {
-      '@typescript-eslint': tsPlugin,
+      "@typescript-eslint": tsPlugin,
     },
     rules: {
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_' },
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_" },
       ],
     },
   },
 
   // Ignore generated folders
   {
-    ignores: ['dist/**', '.astro/**', 'node_modules/**', 'build/**'],
+    ignores: [
+      "dist/**",
+      ".astro/**",
+      "node_modules/**",
+      "build/**",
+      "coverage/**",
+      "test-results/**",
+    ],
   },
 ];

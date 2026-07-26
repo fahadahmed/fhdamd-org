@@ -12,8 +12,7 @@ import {
 } from "@fhdamd/threads";
 import { getBlogPage, getSiteSettings } from "../../lib/cms";
 import { titleToReact } from "../../utils/titleToReact";
-import { ArrowRightIcon } from "../../components/icons/icons";
-import { PostGrid } from "../../components/PostGrid/PostGrid";
+import { ArrowRightIcon, PostGrid } from "../../components";
 
 const blog = await getBlogPage();
 const settings = await getSiteSettings();
@@ -45,12 +44,17 @@ const ctaHeading = titleToReact(settings.ctaTitle);
 const ctaActions = createElement(
   ReactFragment,
   null,
-  createElement(
-    Button,
-    { href: "/services", variant: "solid-ink", icon: arrowRightIcon },
-    "View services",
-  ),
-  createElement(Button, { href: "/contact", variant: "ghost" }, "Get in touch"),
+  createElement(Button, {
+    href: "/services",
+    variant: "solid-ink",
+    icon: arrowRightIcon,
+    children: "View services",
+  }),
+  createElement(Button, {
+    href: "/contact",
+    variant: "ghost",
+    children: "Get in touch",
+  }),
 );
 ---
 

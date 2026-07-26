@@ -16,8 +16,8 @@ import {
   CASE_STUDY_TAG_LABELS,
   CASE_STUDY_TAG_BADGE_VARIANT,
 } from "../../utils/caseStudyTags";
-import { ArrowRightIcon } from "../../components/icons/icons";
-import { CaseStudyGrid } from "../../components/CaseStudyGrid/CaseStudyGrid";
+import { ArrowRightIcon } from "../../components";
+import { CaseStudyGrid } from "../../components";
 
 const page = await getCaseStudiesPage();
 const settings = await getSiteSettings();
@@ -45,12 +45,17 @@ const ctaHeading = titleToReact(settings.ctaTitle);
 const ctaActions = createElement(
   ReactFragment,
   null,
-  createElement(
-    Button,
-    { href: "/services", variant: "solid-ink", icon: arrowRightIcon },
-    "View services",
-  ),
-  createElement(Button, { href: "/contact", variant: "ghost" }, "Get in touch"),
+  createElement(Button, {
+    href: "/services",
+    variant: "solid-ink",
+    icon: arrowRightIcon,
+    children: "View services",
+  }),
+  createElement(Button, {
+    href: "/contact",
+    variant: "ghost",
+    children: "Get in touch",
+  }),
 );
 ---
 

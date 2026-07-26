@@ -32,10 +32,8 @@ import {
   TwitterIcon,
   LinkedInIcon,
   StarIcon,
-} from "../../components/icons/icons";
-import { MermaidDiagram } from "../../components/MermaidDiagram/MermaidDiagram";
-import { ArticleReadingProgress } from "../../components/ArticleReadingProgress/ArticleReadingProgress";
-import { CopyLinkButton } from "../../components/CopyLinkButton/CopyLinkButton";
+} from "../../components";
+import { MermaidDiagram, ArticleReadingProgress, CopyLinkButton } from "../../components";
 import { highlightCode } from "../../utils/highlightCode";
 import type { ArticleContentBlock } from "../../content/types";
 import "../../styles/blogPost.css";
@@ -101,12 +99,17 @@ const ctaHeading = titleToReact(settings.ctaTitle);
 const ctaActions = createElement(
   ReactFragment,
   null,
-  createElement(
-    Button,
-    { href: "/services", variant: "solid-ink", icon: arrowRightIcon },
-    "View services",
-  ),
-  createElement(Button, { href: "/contact", variant: "ghost" }, "Get in touch"),
+  createElement(Button, {
+    href: "/services",
+    variant: "solid-ink",
+    icon: arrowRightIcon,
+    children: "View services",
+  }),
+  createElement(Button, {
+    href: "/contact",
+    variant: "ghost",
+    children: "Get in touch",
+  }),
 );
 ---
 
@@ -176,9 +179,9 @@ const ctaActions = createElement(
               return (
                 <CodeBlock filename={block.filename}>
                   {tokenLines.map((line, li) => (
-                    <Fragment key={li}>
-                      {line.map((token, ti) => (
-                        <span key={ti} style={{ color: token.color }}>
+                    <Fragment>
+                      {line.map((token) => (
+                        <span style={{ color: token.color }}>
                           {token.content}
                         </span>
                       ))}
@@ -273,7 +276,6 @@ const ctaActions = createElement(
               <Grid cols={3} gap={4}>
                 {study.relatedItems.map((item) => (
                   <ContentCard
-                    key={item.href + item.title}
                     href={item.href}
                     date={item.dateLabel}
                     title={item.title}
