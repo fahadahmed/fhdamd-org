@@ -1,5 +1,5 @@
-import { siteSettings } from "../../content/mock/siteSettings";
-import { aboutPage } from "../../content/mock/aboutPage";
+import { fetchCMSData } from "./datocms";
+import { dastToParagraphHtml, type DastValue } from "./dast";
 import { contactPage } from "../../content/mock/contactPage";
 import { homePage } from "../../content/mock/homePage";
 import { servicesPage } from "../../content/mock/servicesPage";
@@ -8,10 +8,6 @@ import { blogPostDetails } from "../../content/mock/blogPostDetails";
 import { caseStudiesPage } from "../../content/mock/caseStudiesPage";
 import { caseStudyDetails } from "../../content/mock/caseStudyDetails";
 import { labPage } from "../../content/mock/labPage";
-import { employers } from "../../content/mock/employers";
-import { clientWork } from "../../content/mock/clientWork";
-import { experience } from "../../content/mock/experience";
-import { skills } from "../../content/mock/skills";
 import type {
   SiteSettings,
   AboutPage,
@@ -30,18 +26,72 @@ import type {
 } from "../../content/types";
 
 /**
- * Thin data-access layer — one function per content type, each currently
- * returning a typed mock fixture. Swapping to real DatoCMS means replacing
- * a function body with a build-time GraphQL call of the same shape; no page
- * or component that calls these needs to change.
+ * Thin data-access layer — one function per content type. Functions not yet
+ * wired to DatoCMS return a typed mock fixture; swapping the rest over means
+ * replacing a function body with a build-time GraphQL call of the same
+ * shape, same as getSiteSettings/getAboutPage below — no page or component
+ * that calls these needs to change.
  */
 
+const SITE_SETTINGS_QUERY = `
+  query SiteSettingsQuery {
+    sitesetting {
+      email
+      github
+      location
+      currentEmployer
+      currentTitle
+      availabilityTitle
+      availabilityStatus
+      ctaTitle
+      ctaSubtitle
+      footerCopyrightNote
+      authorInitials
+      authorName
+      authorRole
+    }
+  }
+`;
+
 export async function getSiteSettings(): Promise<SiteSettings> {
-  return siteSettings;
+  const data = await fetchCMSData<{ sitesetting: SiteSettings }>(SITE_SETTINGS_QUERY);
+  return data.sitesetting;
+}
+
+const ABOUT_PAGE_QUERY = `
+  query AboutPageQuery {
+    aboutPage {
+      sidebarLabel
+      hero {
+        kicker
+        heading
+        subheading
+      }
+      bio {
+        value
+      }
+    }
+  }
+`;
+
+interface AboutPageResponse {
+  aboutPage: {
+    sidebarLabel: string;
+    hero: { kicker: string; heading: string; subheading: string };
+    bio: { value: DastValue };
+  };
 }
 
 export async function getAboutPage(): Promise<AboutPage> {
-  return aboutPage;
+  const { hero, bio, sidebarLabel } = (await fetchCMSData<AboutPageResponse>(ABOUT_PAGE_QUERY)).aboutPage;
+
+  return {
+    heroKicker: hero.kicker,
+    heroHeading: hero.heading,
+    heroSubheading: hero.subheading,
+    bio: dastToParagraphHtml(bio.value),
+    sidebarLabel,
+  };
 }
 
 export async function getContactPage(): Promise<ContactPage> {
@@ -76,18 +126,75 @@ export async function getLabPage(): Promise<LabPage> {
   return labPage;
 }
 
-export async function getEmployers(): Promise<Employer[]> {
-  return employers;
+const EMPLOYERS_QUERY = `
+  query EmployersQuery {
+    allEmployers(orderBy: _createdAt_ASC) {
+      name
+      label
+      logo {
+        url
+      }
+    }
+  }
+`;
+
+interface EmployersResponse {
+  allEmployers: { name: string; label: string; logo: { url: string } | null }[];
 }
+
+export async function getEmployers(): Promise<Employer[]> {
+  const data = await fetchCMSData<EmployersResponse>(EMPLOYERS_QUERY);
+  return data.allEmployers.map((employer) => ({
+    name: employer.name,
+    label: employer.label,
+    logo: employer.logo?.url,
+  }));
+}
+
+const CLIENT_WORK_QUERY = `
+  query ClientWorkQuery {
+    allClientWorkItems(orderBy: _createdAt_ASC) {
+      client
+      dateRange
+      title
+      description
+      tags
+      value
+    }
+  }
+`;
 
 export async function getClientWork(): Promise<ClientWorkItem[]> {
-  return clientWork;
+  const data = await fetchCMSData<{ allClientWorkItems: ClientWorkItem[] }>(CLIENT_WORK_QUERY);
+  return data.allClientWorkItems;
 }
+
+const EXPERIENCE_QUERY = `
+  query ExperienceQuery {
+    allExperienceItems(orderBy: _createdAt_ASC) {
+      company
+      period
+      role
+      description
+    }
+  }
+`;
 
 export async function getExperience(): Promise<ExperienceItem[]> {
-  return experience;
+  const data = await fetchCMSData<{ allExperienceItems: ExperienceItem[] }>(EXPERIENCE_QUERY);
+  return data.allExperienceItems;
 }
 
+const SKILLS_QUERY = `
+  query SkillsQuery {
+    allSkillCategories(orderBy: _createdAt_ASC) {
+      label
+      tags
+    }
+  }
+`;
+
 export async function getSkills(): Promise<SkillCategory[]> {
-  return skills;
+  const data = await fetchCMSData<{ allSkillCategories: SkillCategory[] }>(SKILLS_QUERY);
+  return data.allSkillCategories;
 }

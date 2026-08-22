@@ -10,12 +10,15 @@ export interface SiteSettings {
   location: string;
   currentEmployer: string;
   currentTitle: string;
-  availabilityLabel: string;
+  availabilityTitle: string;
   availabilityStatus: boolean;
   /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
   ctaTitle: string;
   ctaSubtitle: string;
   footerCopyrightNote: string;
+  authorInitials: string;
+  authorName: string;
+  authorRole: string;
 }
 
 export interface AboutPage {
