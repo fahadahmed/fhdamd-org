@@ -4,9 +4,9 @@ export interface NavLinkDef {
 }
 
 /**
- * Primary nav links. Deliberately code-level config, not DatoCMS content —
- * each entry maps 1:1 to a real Astro route, so a CMS-editable nav item
- * without a matching page (or vice versa) can't happen. See #264.
+ * Primary nav links. Deliberately code-level config, not a content
+ * collection entry — each entry maps 1:1 to a real Astro route, so an
+ * editable nav item without a matching page (or vice versa) can't happen. See #264.
  */
 export const NAV_LINKS: NavLinkDef[] = [
   { href: "/", label: "Work" },

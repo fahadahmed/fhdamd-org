@@ -1,0 +1,11 @@
+---
+import { ScreenshotFigure } from "@fhdamd/threads";
+
+interface Props {
+  caption?: string;
+}
+
+const { caption } = Astro.props;
+---
+
+<ScreenshotFigure caption={caption} />

@@ -1,0 +1,11 @@
+---
+import { StatRow } from "@fhdamd/threads";
+
+interface Props {
+  stats: { number: string; unit?: string; label: string }[];
+}
+
+const { stats } = Astro.props;
+---
+
+<StatRow stats={stats} />

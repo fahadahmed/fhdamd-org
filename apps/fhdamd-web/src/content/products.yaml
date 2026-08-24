@@ -1,0 +1,28 @@
+- id: jamaal
+  eyebrow: "iOS app · SwiftUI"
+  name: "Jamaal"
+  description: "Privacy-first daily planning for iOS. One intelligent list, ordered each evening by a deterministic rules engine. One-time purchase, no subscription."
+  tags: ["SwiftUI", "SwiftData"]
+  badge: { label: "In dev", variant: "terra" }
+  accentColor: "terra"
+  jamaalIcon: true
+- id: riqa
+  eyebrow: "SaaS · Pay-per-use"
+  name: "Ri*qa*"
+  description: "Pay-per-use PDF toolkit — merge, split, compress, encrypt, sign. Credits that don't expire, no subscription. Astro, Firebase, Stripe."
+  tags: ["Astro", "Firebase"]
+  badge: { label: "Live", variant: "sage" }
+  accentColor: "sage"
+  iconKey: "fileText"
+  pricingPills:
+    - { price: "2cr", label: "Merge" }
+    - { price: "3cr", label: "Encrypt" }
+    - { price: "4cr", label: "Sign" }
+- id: threads
+  eyebrow: "Design system · Multi-platform"
+  name: "Threads"
+  description: "The token system powering this site, Jamaal, and Riqa. One set of decisions in coffee and sage that works across iOS, macOS, and web."
+  tags: ["CSS tokens", "iOS", "Web"]
+  badge: { label: "System", variant: "neutral" }
+  accentColor: "ink"
+  iconKey: "settings"

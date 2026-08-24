@@ -1,7 +1,10 @@
 /**
- * Content model types, matching the finalized DatoCMS schema in #264.
- * Mirrors what a build-time GraphQL query would return — when real DatoCMS
- * wiring lands, only src/lib/cms/*.ts changes, not these types or any page.
+ * Content model types for src/lib/content — the return shape each page
+ * expects, whether the underlying source is a plain data module
+ * (src/content/site/*.ts) or an Astro Content Collection
+ * (src/content.config.ts). Blog post and case study detail bodies aren't
+ * modelled here — those render live MDX via astro:content's render(),
+ * typed by the Zod schemas in src/content.config.ts instead.
  */
 
 export interface SiteSettings {
@@ -25,7 +28,7 @@ export interface AboutPage {
   heroKicker: string;
   heroHeading: string;
   heroSubheading: string;
-  /** Structured Text in DatoCMS — plain paragraphs are enough for the mock */
+  /** Plain paragraphs, each rendered via set:html — hand-authored HTML for inline marks. */
   bio: string[];
   sidebarLabel: string;
 }
@@ -217,88 +220,6 @@ export interface LabPage {
   heroHeading: string;
   heroSubheading: string;
   items: LabItem[];
-}
-
-export type BlogEmbed =
-  | { kind: "youtube"; videoUrl: string; title: string }
-  | {
-      kind: "tweet";
-      authorName: string;
-      handle: string;
-      text: string;
-      foot?: string;
-    }
-  | { kind: "instagram"; accountName: string; caption?: string };
-
-export type ArticleContentBlock =
-  /** id must be unique on the page — TableOfContents links to it and scroll-spies it. */
-  | { type: "heading"; id: string; text: string }
-  | { type: "subheading"; id: string; text: string }
-  /** Raw HTML for a paragraph, blockquote, or list — rendered inside <Prose>, whose
-   *  descendant selectors style p/blockquote/ul/li/code/b regardless of wrapper depth. */
-  | { type: "html"; html: string }
-  | { type: "callout"; variant: "tip" | "warn"; title: string; body: string }
-  /** lang is a Shiki grammar name (e.g. "ts") — defaults to "ts" when unset. */
-  | { type: "code"; filename?: string; lang?: string; code: string }
-  /** source is raw Mermaid syntax, rendered client-side — see MermaidDiagram island. */
-  | { type: "diagram"; label: string; caption?: string; source: string }
-  | ({ type: "embed" } & BlogEmbed)
-  /** No src yet — always the placeholder state until real screenshots exist. */
-  | { type: "screenshot"; caption?: string }
-  | {
-      type: "statRow";
-      stats: { number: string; unit?: string; label: string }[];
-    }
-  | { type: "testimonialReserved"; title?: string; description: string };
-
-export interface BlogPostDetail {
-  slug: string;
-  breadcrumbCategory: string;
-  badges: string[];
-  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
-  title: string;
-  dek: string;
-  authorInitials: string;
-  authorName: string;
-  /** Byline title, e.g. "Solution Architect" */
-  authorRole: string;
-  publishedDate: string;
-  readTime: string;
-  body: ArticleContentBlock[];
-  postTags: string[];
-  /** Slugs into BlogPage's posts/featuredPost, for the related-posts grid. */
-  relatedSlugs: string[];
-}
-
-export interface CaseStudyRelatedItem {
-  badgeLabel: string;
-  badgeVariant: "terra" | "sage" | "neutral";
-  title: string;
-  dateLabel: string;
-  href: string;
-}
-
-export interface CaseStudyDetail {
-  slug: string;
-  breadcrumbCategory: string;
-  badges: { label: string; variant: "terra" | "sage" | "neutral" }[];
-  /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
-  title: string;
-  dek: string;
-  authorInitials: string;
-  authorName: string;
-  authorRole: string;
-  clientName: string;
-  location: string;
-  facts: { label: string; value: string }[];
-  body: ArticleContentBlock[];
-  postTags: string[];
-  buildCreditName: string;
-  buildCreditRole: string;
-  /** Plain string; wrap a segment in *asterisks* for an <em> accent, and a trailing
-   *  "[Get a proposal](/contact)"-style link is appended in the page itself. */
-  buildCreditBio: string;
-  relatedItems: CaseStudyRelatedItem[];
 }
 
 export interface Employer {

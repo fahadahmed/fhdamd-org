@@ -1,0 +1,30 @@
+- id: custom-websites
+  iconKey: "design"
+  eyebrow: "Brochure, content & light commerce sites"
+  title: "Custom *websites*"
+  description: "Brand-first sites built in code, not assembled from a theme. You leave with a component library built from your palette, a headless CMS you can update yourself, and a site that passes Core Web Vitals on day one."
+  checklist:
+    - "Component library from your brand palette"
+    - "Astro build on a headless CMS — no calling me to edit content"
+    - "Light e-commerce where the project calls for it"
+    - "SEO foundations, Core Web Vitals, post-launch support window"
+- id: apps-products
+  iconKey: "phone"
+  eyebrow: "Web & iOS · full-stack"
+  title: "Apps & *products*"
+  description: "Full-stack builds for a product, an internal tool, or a customer-facing app — from first prototype to something real people use and pay for. The same rigour I bring to Jamaal and Riqa, applied to your idea."
+  checklist:
+    - "Full-stack web apps — React, Firebase, Stripe"
+    - "Native iOS apps — SwiftUI, SwiftData"
+    - "Prototype-to-production, not just a demo"
+    - "Payments, auth, and data architecture built in, not bolted on"
+- id: architecture-advisory
+  iconKey: "fileCheck"
+  eyebrow: "Solution architecture & technical strategy"
+  title: "Architecture & *advisory*"
+  description: "The same solution architecture and bid work I lead at enterprise scale at EY, sized for a smaller team — technical strategy, platform decisions, and architecture documentation that survives past the workshop it was drawn in."
+  checklist:
+    - "Solution architecture for new or existing platforms"
+    - "Technical input on bids, RFPs, and vendor evaluation"
+    - "Platform and technology strategy"
+    - "Delivered as workshops, documented architecture, or embedded advisory time"

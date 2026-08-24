@@ -1,0 +1,23 @@
+- id: strategic-discovery
+  name: "Strategic discovery"
+  badge: { label: "Credited if you proceed", variant: "neutral" }
+  items:
+    - "For clients unsure what they need yet"
+    - "Competitive & content audit"
+    - "Tech stack & offering recommendation"
+    - "Fee credited toward the project if you proceed"
+- id: transactional-comms
+  name: "Transactional comms"
+  badge: { label: "Websites & products", variant: "neutral" }
+  items:
+    - "Email domain setup + transactional templates"
+    - "Order confirm, shipping, abandoned cart"
+    - "SMS/WhatsApp if needed"
+- id: migration
+  name: "Migration"
+  badge: { label: "Websites", variant: "neutral" }
+  items:
+    - "WordPress or Shopify to a headless CMS"
+    - "URL redirect mapping"
+    - "SEO continuity audit"
+    - "Schema mapping & data integrity"

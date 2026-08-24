@@ -1,0 +1,12 @@
+---
+import { EmbedCard } from "@fhdamd/threads";
+
+interface Props {
+  videoUrl: string;
+  title: string;
+}
+
+const { videoUrl, title } = Astro.props;
+---
+
+<EmbedCard type="youtube" videoUrl={videoUrl} title={title} />

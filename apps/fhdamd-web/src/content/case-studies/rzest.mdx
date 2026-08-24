@@ -1,0 +1,97 @@
+---
+title: "RZest Engineers — a Presence build *in under three weeks*"
+dek: "A New Delhi structural engineering firm needed a site that looked as credible as their client list — with a portfolio their own team could keep current without filing a ticket with a developer every time a project wrapped."
+breadcrumbCategory: "Custom website"
+badges:
+  - { label: "Custom website", variant: "terra" }
+  - { label: "Astro · DatoCMS", variant: "neutral" }
+tags: ["Custom website", "Astro", "DatoCMS", "Presence"]
+tag: "website"
+status: "published"
+client: "RZest Engineers"
+location: "New Delhi"
+industry: "Structural engineering"
+timeline: "Under 3 weeks"
+offering: "Custom website"
+stack: ["Astro", "DatoCMS"]
+eyebrowMeta: "Structural engineering · New Delhi"
+techBadge: "Astro · DatoCMS"
+buildCreditName: "Built by Fahad Ahmed"
+buildCreditRole: "Solution Architect · fhdamd.dev"
+buildCreditBio: "Designed and built end to end — brand, content model, and code."
+relatedItems:
+  - { badgeLabel: "Architecture", badgeVariant: "neutral", title: "Building a sequence diagram you can trust", dateLabel: "From the blog", href: "/blog/sequence-diagram-you-can-trust" }
+  - { badgeLabel: "Apps & products", badgeVariant: "neutral", title: "Next case study — reserved", dateLabel: "Coming soon", href: "/case-studies" }
+  - { badgeLabel: "Architecture & advisory", badgeVariant: "neutral", title: "Next case study — reserved", dateLabel: "Coming soon", href: "/case-studies" }
+---
+
+## *Overview*
+
+RZest Engineers is a structural engineering practice in New Delhi — the kind of firm whose clients decide whether to call based on whether the last ten projects look credible. Their old site was a static one-pager with a project list that hadn't been touched in over a year, because updating it meant emailing a developer and waiting.
+
+They came to me through a referral wanting a **Presence-tier** build: a brochure site with a real, browsable portfolio — and, critically, one they could keep current themselves.
+
+<ScreenshotBlock caption="Homepage screenshot — swap in the live capture" />
+
+## The *challenge*
+
+Three constraints shaped the build: a tight three-week timeline set by an upcoming tender the firm wanted to point prospective clients to, a portfolio that needed to be filterable by project type and sector rather than just listed, and a non-technical team who needed to add new projects without touching code.
+
+<CalloutBlock variant="warn" title="The real constraint wasn't the timeline">
+It was building something that would still look intentional a year later, once the firm — not me — was the one adding content to it.
+</CalloutBlock>
+
+## The *approach*
+
+The build started the same way every Presence engagement does: a component library drawn from the firm's existing brand marks before a single page was laid out, so the site would read as considered rather than assembled. The content model went into DatoCMS — projects, sectors, and case study pages as structured content, not hard-coded markup.
+
+<MdxCode filename="src/content/config.ts" lang="ts" code={`import { defineCollection, z } from 'astro:content';
+import { datocmsLoader } from './loaders/datocms';
+
+// Projects are structured content in DatoCMS, not hard-coded pages —
+// the client adds a project, the portfolio and filters update themselves.
+const projects = defineCollection({
+  loader: datocmsLoader('project'),
+  schema: z.object({
+    title: z.string(),
+    sector: z.enum(['residential', 'commercial', 'infrastructure']),
+    completedYear: z.number(),
+    heroImage: z.string(),
+  }),
+});
+
+export const collections = { projects };`} />
+
+With the content model settled, the portfolio's filter-by-sector interaction and the case-study page template were the two pieces of actual custom engineering — everything else was composition of the component library against DatoCMS data.
+
+<MermaidDiagramBlock label="Architecture · Mermaid" caption="Content lives in DatoCMS; the site rebuilds and redeploys on publish — no server to manage" source={`flowchart LR
+    accTitle: RZest Engineers site architecture
+    accDescr: The client edits projects in DatoCMS, which Astro builds at deploy time into a static site served from Firebase Hosting, with a client-side filter over the pre-built portfolio data.
+    A[RZest team] -->|Adds a project| B[DatoCMS]
+    B -->|Build-time fetch| C[Astro SSG]
+    C -->|Static output| D[Firebase Hosting]
+    C -->|Portfolio JSON| E[Client-side sector filter]
+    D --> F[Visitor]
+    E --> F`} />
+
+## What was *built*
+
+- A component library drawn from RZest's existing brand marks — colour, type, cards, and layout, consistent before the first real page was built.
+- A filterable project portfolio, sortable by sector, backed by structured content in DatoCMS rather than hard-coded HTML.
+- A reusable case-study page template so each completed project gets its own page without a one-off build.
+- Full Open Graph and meta implementation, so project pages preview properly when shared.
+- A CMS the RZest team could use directly — no developer in the loop to publish a new project.
+
+<ScreenshotBlock caption="Portfolio & case study page screenshots — swap in the live captures" />
+
+## *Results*
+
+<StatRowBlock stats={[
+  { number: "<3", unit: "wks", label: "Discovery to launch" },
+  { number: "0", label: "Dev tickets needed to publish a new project since launch" },
+  { number: "100", unit: "%", label: "Pages with OG/meta coverage" },
+]} />
+
+> The brief was simple to state and easy to get wrong: a site the RZest team could grow themselves, that still looked like it had a firm hand behind it on day one and a year later.
+
+<TestimonialBlock title="Client testimonial — reserved" description="A quote from Rabi Akhtar at RZest Engineers goes here once confirmed — not written on their behalf." />

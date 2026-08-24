@@ -1,0 +1,24 @@
+- id: ey
+  name: EY
+  label: Ernst & Young
+  logo: /assets/logo/ey.svg
+- id: anz
+  name: ANZ
+  label: ANZ Bank
+  logo: /assets/logo/anz.svg
+- id: ato
+  name: ATO
+  label: Australian Tax Office
+  logo: /assets/logo/ato.svg
+- id: spark
+  name: Spark
+  label: Spark NZ
+  logo: /assets/logo/spark.svg
+- id: dept-education-vic
+  name: Dept. of Education VIC
+  label: Dept. Education VIC
+  logo: /assets/logo/dept-education-vic.svg
+- id: latitude
+  name: Latitude
+  label: Latitude Financial
+  logo: /assets/logo/latitude.svg

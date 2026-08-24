@@ -1,0 +1,14 @@
+---
+import { EmbedCard } from "@fhdamd/threads";
+
+interface Props {
+  authorName: string;
+  handle: string;
+  text: string;
+  foot?: string;
+}
+
+const { authorName, handle, text, foot } = Astro.props;
+---
+
+<EmbedCard type="tweet" authorName={authorName} handle={handle} text={text} foot={foot} />
