@@ -1,6 +1,7 @@
 .root {
   display: flex;
   flex-direction: column;
+  margin-block-end: var(--th-space-8);
 }
 
 /* Header row — title block on the start side, optional meta trailing on the same baseline */
