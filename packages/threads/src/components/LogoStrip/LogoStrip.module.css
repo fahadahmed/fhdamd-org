@@ -12,19 +12,33 @@
   gap: var(--th-space-2);
 }
 
+/*
+ * Fixed bounding box, not just a fixed height — scaling purely by height
+ * (the old behaviour) lets a wide wordmark and a near-square icon mark
+ * read at wildly different visual weights for the "same size" logo.
+ * object-fit: contain keeps every mark's own aspect ratio inside a
+ * consistent box instead.
+ */
 .mark {
   height: 28px;
+  width: 84px;
   display: flex;
   align-items: center;
+  justify-content: center;
   opacity: 0.55;
   transition: opacity var(--th-duration-base);
   color: var(--th-color-text-2);
 }
 
-.mark img,
+.mark img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
 .mark svg {
-  height: 28px;
-  width: auto;
+  max-height: 100%;
+  max-width: 100%;
 }
 
 .item:hover .mark {
