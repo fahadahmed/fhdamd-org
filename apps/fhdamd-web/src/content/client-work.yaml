@@ -1,4 +1,5 @@
 - id: dept-education-vic-arrival-funding
+  order: 1
   client: "Dept. of Education VIC"
   dateRange: "Jan 2024 – Present"
   title: "Kindergarten *Arrival Funding*"
@@ -6,12 +7,14 @@
   tags: ["React Vite", "Turborepo", "Azure Functions", "Cosmos DB", "GraphQL", "IBM ODM"]
   value: "$1.3M bid"
 - id: ato-mtas
+  order: 2
   client: "ATO"
   dateRange: "Jul 2025 – Present"
   title: "Modern Tax Administration *System*"
   description: "Lead backend developer on MTAS for AY2026. Implementing Trust and Beneficiary tax return capabilities including prefill operations on AWS Cloud with Node.js, Express, and TypeScript."
   tags: ["Node.js", "TypeScript", "Express", "AWS"]
 - id: energy-australia-cloud-migration
+  order: 3
   client: "Energy Australia"
   dateRange: "Jan – Apr 2025"
   title: "Cloud Migration *Advisory*"
@@ -19,6 +22,7 @@
   tags: ["AWS", "Cloud strategy", "Cybersecurity"]
   value: "~$300k OoM"
 - id: sa-police-firearms-registry
+  order: 4
   client: "SA Police"
   dateRange: "Sep – Oct 2023"
   title: "Firearms *Registry*"
@@ -26,12 +30,14 @@
   tags: ["Remix", "Azure", "Dynamics 365"]
   value: "$1.8M bid"
 - id: australian-space-agency
+  order: 5
   client: "Australian Space Agency"
   dateRange: "Sep 2022 – Sep 2023"
   title: "Space for *Earth*"
   description: "Full-stack Remix / GraphQL / .NET platform with geospatial visualisation via Leaflet and Google Maps, role-based access control, dynamic report generation, and CI/CD via GitHub Actions."
   tags: ["Remix", "GraphQL", ".NET", "Leaflet", "GitHub Actions"]
 - id: anz-analytics-platform
+  order: 6
   client: "ANZ Bank"
   dateRange: "Aug 2018 – May 2021"
   title: "Institutional *Analytics Platform*"

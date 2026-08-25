@@ -1,4 +1,5 @@
 - id: custom-websites
+  order: 1
   iconKey: "design"
   eyebrow: "Brochure, content & light commerce sites"
   title: "Custom *websites*"
@@ -9,6 +10,7 @@
     - "Light e-commerce where the project calls for it"
     - "SEO foundations, Core Web Vitals, post-launch support window"
 - id: apps-products
+  order: 2
   iconKey: "phone"
   eyebrow: "Web & iOS · full-stack"
   title: "Apps & *products*"
@@ -19,6 +21,7 @@
     - "Prototype-to-production, not just a demo"
     - "Payments, auth, and data architecture built in, not bolted on"
 - id: architecture-advisory
+  order: 3
   iconKey: "fileCheck"
   eyebrow: "Solution architecture & technical strategy"
   title: "Architecture & *advisory*"

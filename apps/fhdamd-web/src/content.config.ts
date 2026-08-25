@@ -26,6 +26,8 @@ const caseStudies = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./src/content/case-studies" }),
   schema: z.object({
     title: z.string(),
+    /** getCollection() doesn't preserve file order — sort by this explicitly. */
+    order: z.number(),
     dek: z.string(),
     breadcrumbCategory: z.string(),
     badges: z.array(badge).default([]),
@@ -61,6 +63,8 @@ const employers = defineCollection({
   loader: file("./src/content/employers.yaml"),
   schema: z.object({
     id: z.string(),
+    /** getCollection() doesn't preserve YAML array order (returns entries sorted by id) — sort by this explicitly. */
+    order: z.number(),
     name: z.string(),
     label: z.string(),
     logo: z.string().optional(),
@@ -71,6 +75,7 @@ const clientWork = defineCollection({
   loader: file("./src/content/client-work.yaml"),
   schema: z.object({
     id: z.string(),
+    order: z.number(),
     client: z.string(),
     dateRange: z.string(),
     title: z.string(),
@@ -84,6 +89,7 @@ const experience = defineCollection({
   loader: file("./src/content/experience.yaml"),
   schema: z.object({
     id: z.string(),
+    order: z.number(),
     company: z.string(),
     period: z.string(),
     role: z.string(),
@@ -95,6 +101,7 @@ const skills = defineCollection({
   loader: file("./src/content/skills.yaml"),
   schema: z.object({
     id: z.string(),
+    order: z.number(),
     label: z.string(),
     tags: z.array(z.string()),
   }),
@@ -104,6 +111,7 @@ const products = defineCollection({
   loader: file("./src/content/products.yaml"),
   schema: z.object({
     id: z.string(),
+    order: z.number(),
     eyebrow: z.string(),
     name: z.string(),
     description: z.string(),
@@ -120,6 +128,7 @@ const serviceOfferings = defineCollection({
   loader: file("./src/content/service-offerings.yaml"),
   schema: z.object({
     id: z.string(),
+    order: z.number(),
     iconKey: z.enum(["design", "phone", "fileCheck"]),
     eyebrow: z.string(),
     title: z.string(),
@@ -132,6 +141,7 @@ const serviceAddons = defineCollection({
   loader: file("./src/content/service-addons.yaml"),
   schema: z.object({
     id: z.string(),
+    order: z.number(),
     name: z.string(),
     badge: z.object({ label: z.string(), variant: z.enum(["sage", "neutral"]) }),
     items: z.array(z.string()),

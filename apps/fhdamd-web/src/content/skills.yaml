@@ -1,18 +1,24 @@
 - id: cloud-infra
+  order: 1
   label: "Cloud & infra"
   tags: ["Azure", "AWS", "GCP", "Firebase"]
 - id: frontend
+  order: 2
   label: "Frontend"
   tags: ["React", "Next.js", "Remix", "Astro", "Vite"]
 - id: backend
+  order: 3
   label: "Backend"
   tags: ["Node.js", "TypeScript", ".NET Core", "Express"]
 - id: data-api
+  order: 4
   label: "Data & API"
   tags: ["GraphQL", "Cosmos DB", "Firestore", "REST"]
 - id: cms-commerce
+  order: 5
   label: "CMS & commerce"
   tags: ["Markdown/MDX", "Stripe", "Resend"]
 - id: mobile
+  order: 6
   label: "Mobile"
   tags: ["Swift", "SwiftUI", "SwiftData", "iOS"]

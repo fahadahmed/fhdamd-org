@@ -1,4 +1,5 @@
 - id: jamaal
+  order: 1
   eyebrow: "iOS app · SwiftUI"
   name: "Jamaal"
   description: "Privacy-first daily planning for iOS. One intelligent list, ordered each evening by a deterministic rules engine. One-time purchase, no subscription."
@@ -7,6 +8,7 @@
   accentColor: "terra"
   jamaalIcon: true
 - id: riqa
+  order: 2
   eyebrow: "SaaS · Pay-per-use"
   name: "Ri*qa*"
   description: "Pay-per-use PDF toolkit — merge, split, compress, encrypt, sign. Credits that don't expire, no subscription. Astro, Firebase, Stripe."
@@ -19,6 +21,7 @@
     - { price: "3cr", label: "Encrypt" }
     - { price: "4cr", label: "Sign" }
 - id: threads
+  order: 3
   eyebrow: "Design system · Multi-platform"
   name: "Threads"
   description: "The token system powering this site, Jamaal, and Riqa. One set of decisions in coffee and sage that works across iOS, macOS, and web."

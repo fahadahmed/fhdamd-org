@@ -1,4 +1,5 @@
 - id: strategic-discovery
+  order: 1
   name: "Strategic discovery"
   badge: { label: "Credited if you proceed", variant: "neutral" }
   items:
@@ -7,6 +8,7 @@
     - "Tech stack & offering recommendation"
     - "Fee credited toward the project if you proceed"
 - id: transactional-comms
+  order: 2
   name: "Transactional comms"
   badge: { label: "Websites & products", variant: "neutral" }
   items:
@@ -14,6 +16,7 @@
     - "Order confirm, shipping, abandoned cart"
     - "SMS/WhatsApp if needed"
 - id: migration
+  order: 3
   name: "Migration"
   badge: { label: "Websites", variant: "neutral" }
   items:

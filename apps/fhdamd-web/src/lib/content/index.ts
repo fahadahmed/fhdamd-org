@@ -31,6 +31,15 @@ import type {
  * page markup nor components below this layer need to know the difference.
  */
 
+/**
+ * getCollection() doesn't preserve a YAML/glob file's array or directory
+ * order — it returns entries sorted by id. Every collection with a curated
+ * (non-derivable) order carries an explicit `order` field for this reason.
+ */
+function byOrder<T extends { data: { order: number } }>(a: T, b: T): number {
+  return a.data.order - b.data.order;
+}
+
 export async function getSiteSettings(): Promise<SiteSettings> {
   return siteSettings;
 }
@@ -44,7 +53,7 @@ export async function getContactPage(): Promise<ContactPage> {
 }
 
 export async function getHomePage(): Promise<HomePage> {
-  const products = await getCollection("products");
+  const products = (await getCollection("products")).sort(byOrder);
   return {
     ...homePage,
     personalProjects: products.map((entry) => entry.data),
@@ -60,16 +69,21 @@ export async function getServicesPage(): Promise<ServicesPage> {
 
   return {
     ...servicesPage,
-    offerCards: offerCards.map((entry) => entry.data),
-    addonCards: addonCards.map((entry) => entry.data),
-    deliveryPhases: deliveryPhases.map((entry) => entry.data),
+    offerCards: offerCards.sort(byOrder).map((entry) => entry.data),
+    addonCards: addonCards.sort(byOrder).map((entry) => entry.data),
+    // DeliveryPhase already carries a natural sort key (its display number) — no separate order field needed.
+    deliveryPhases: deliveryPhases
+      .sort((a, b) => Number(a.data.number) - Number(b.data.number))
+      .map((entry) => entry.data),
   };
 }
 
 export async function getBlogPage(): Promise<BlogPage> {
   const posts = await getCollection("blog");
   const featuredEntry = posts.find((p) => p.data.featured) ?? posts[0];
-  const restEntries = posts.filter((p) => p.id !== featuredEntry.id);
+  const restEntries = posts
+    .filter((p) => p.id !== featuredEntry.id)
+    .sort((a, b) => Date.parse(b.data.date) - Date.parse(a.data.date));
 
   return {
     ...blogPage,
@@ -92,7 +106,7 @@ export async function getBlogPage(): Promise<BlogPage> {
 }
 
 export async function getCaseStudiesPage(): Promise<CaseStudiesPage> {
-  const items = await getCollection("caseStudies");
+  const items = (await getCollection("caseStudies")).sort(byOrder);
   const featuredEntry = items.find((i) => i.id === "rzest") ?? items[0];
   const dateLabel = (status: string) => (status === "comingSoon" ? "Coming soon" : "Delivered");
 
@@ -123,21 +137,21 @@ export async function getLabPage(): Promise<LabPage> {
 }
 
 export async function getEmployers(): Promise<Employer[]> {
-  const employers = await getCollection("employers");
+  const employers = (await getCollection("employers")).sort(byOrder);
   return employers.map((entry) => entry.data);
 }
 
 export async function getClientWork(): Promise<ClientWorkItem[]> {
-  const items = await getCollection("clientWork");
+  const items = (await getCollection("clientWork")).sort(byOrder);
   return items.map((entry) => entry.data);
 }
 
 export async function getExperience(): Promise<ExperienceItem[]> {
-  const items = await getCollection("experience");
+  const items = (await getCollection("experience")).sort(byOrder);
   return items.map((entry) => entry.data);
 }
 
 export async function getSkills(): Promise<SkillCategory[]> {
-  const items = await getCollection("skills");
+  const items = (await getCollection("skills")).sort(byOrder);
   return items.map((entry) => entry.data);
 }
