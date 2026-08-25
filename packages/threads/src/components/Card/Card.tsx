@@ -9,6 +9,15 @@ export interface CardProps extends HTMLAttributes<HTMLElement> {
   variant?: CardVariant;
   accentBar?: CardAccentBar;
   accentColor?: CardAccentColor;
+  /**
+   * Card's own layout is `display: flex; flex-direction: column; gap: var(--th-space-3)`,
+   * applied unconditionally to every direct child — designed around `CardTitle`/`CardBody`
+   * children, which have no margins of their own and rely on that gap for spacing.
+   *
+   * Hand-built internals that bring their own margins will get doubled-up spacing (the
+   * gap and the margins both apply). Opt out with `style={{ display: "block" }}` to cancel
+   * Card's flex layout and let your own margins do the work.
+   */
   children: ReactNode;
   as?: "div" | "article" | "section";
 }
