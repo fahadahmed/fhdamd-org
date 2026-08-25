@@ -48,27 +48,12 @@ const clientWorkItems = clientWorkList.map((item) => ({
   titleNode: titleToReact(item.title),
 }));
 
-// Fixed bounding box + object-fit so wildly different logo aspect ratios
-// (a square ATO mark vs. a wide Latitude wordmark) all read at the same
-// visual weight instead of scaling purely by height. ANZ's wordmark is
-// already dense/wide at the default size, so it keeps the smaller box
-// while everything else is scaled up to match its visual weight.
-const logoBoxStyle = {
-  height: "40px",
-  width: "120px",
-  objectFit: "contain" as const,
-  objectPosition: "left center",
-};
-const anzLogoBoxStyle = { ...logoBoxStyle, height: "28px", width: "84px" };
-
 const employerItems = employerList.map((employer) => ({
   ...employer,
+  // LogoItem's own .mark box (fixed size + object-fit: contain, since
+  // @fhdamd/threads 0.5.2 / #292) handles sizing now — no per-logo style needed.
   logoNode: employer.logo
-    ? createElement("img", {
-        src: employer.logo,
-        alt: "",
-        style: employer.name === "ANZ" ? anzLogoBoxStyle : logoBoxStyle,
-      })
+    ? createElement("img", { src: employer.logo, alt: "" })
     : createElement(LogoPlaceholder, { name: employer.name }),
 }));
 ---
@@ -115,14 +100,12 @@ const employerItems = employerList.map((employer) => ({
   <section style={borderStyle}>
     <Container>
       <Section size="md">
-        <Stack gap={8}>
-          <SectionHeader title={employersTitle} meta="Employers & clients" />
-          <LogoStrip style={{ gap: "var(--th-space-10) var(--th-space-12)" }}>
-            {employerItems.map((employer) => (
-              <LogoItem style={{ alignItems: "flex-start" }} logo={employer.logoNode} label={employer.label} />
-            ))}
-          </LogoStrip>
-        </Stack>
+        <SectionHeader title={employersTitle} meta="Employers & clients" />
+        <LogoStrip style={{ gap: "var(--th-space-10) var(--th-space-12)" }}>
+          {employerItems.map((employer) => (
+            <LogoItem align="start" logo={employer.logoNode} label={employer.label} />
+          ))}
+        </LogoStrip>
       </Section>
     </Container>
   </section>
@@ -130,21 +113,19 @@ const employerItems = employerList.map((employer) => ({
   <section style={borderStyle}>
     <Container>
       <Section size="md">
-        <Stack gap={8}>
-          <SectionHeader title={clientWorkTitle} meta="EY · 2022–present" />
-          <div class="client-list">
-            {clientWorkItems.map((item) => (
-              <ClientWorkRow
-                client={item.client}
-                dateRange={item.dateRange}
-                title={item.titleNode}
-                description={item.description}
-                tags={item.tags}
-                value={item.value}
-              />
-            ))}
-          </div>
-        </Stack>
+        <SectionHeader title={clientWorkTitle} meta="EY · 2022–present" />
+        <div class="client-list">
+          {clientWorkItems.map((item) => (
+            <ClientWorkRow
+              client={item.client}
+              dateRange={item.dateRange}
+              title={item.titleNode}
+              description={item.description}
+              tags={item.tags}
+              value={item.value}
+            />
+          ))}
+        </div>
       </Section>
     </Container>
   </section>
@@ -152,19 +133,17 @@ const employerItems = employerList.map((employer) => ({
   <section style={borderStyle}>
     <Container>
       <Section size="md">
-        <Stack gap={8}>
-          <SectionHeader title="Experience" meta="14 years" />
-          <div class="client-list">
-            {experienceList.map((item) => (
-              <ClientWorkRow
-                client={item.company}
-                dateRange={item.period}
-                title={item.role}
-                description={item.description}
-              />
-            ))}
-          </div>
-        </Stack>
+        <SectionHeader title="Experience" meta="14 years" />
+        <div class="client-list">
+          {experienceList.map((item) => (
+            <ClientWorkRow
+              client={item.company}
+              dateRange={item.period}
+              title={item.role}
+              description={item.description}
+            />
+          ))}
+        </div>
       </Section>
     </Container>
   </section>
@@ -172,10 +151,8 @@ const employerItems = employerList.map((employer) => ({
   <section style={borderStyle}>
     <Container>
       <Section size="md">
-        <Stack gap={8}>
-          <SectionHeader title={stackTitle} meta="Tools of the trade" />
-          <SkillGrid categories={skillList} />
-        </Stack>
+        <SectionHeader title={stackTitle} meta="Tools of the trade" />
+        <SkillGrid categories={skillList} />
       </Section>
     </Container>
   </section>

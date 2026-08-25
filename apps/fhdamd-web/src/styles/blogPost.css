@@ -99,15 +99,6 @@
   }
 }
 
-/* TableOfContents' mobile bar is sticky at top:0 with no way to offset it via
-   a className prop (only the desktop <aside> forwards one) — it collides
-   with the site header, which is also sticky at top:0 with a higher z-index
-   and wins the stack, covering the bar. Override via its stable data-testid
-   instead, matching the header's real rendered height. */
-[data-testid="toc-mobile"] {
-  top: 59px;
-}
-
 /* Mermaid's rendered SVG is scaled up to fill the card (see MermaidDiagram),
    so trim the card's own horizontal padding to give it more room to grow. */
 .mermaid-diagram-card {

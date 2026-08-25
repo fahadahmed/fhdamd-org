@@ -83,7 +83,7 @@ const ctaActions = createElement(
   }),
   createElement(Button, {
     href: "/contact",
-    variant: "ghost",
+    variant: "ghost-inverse",
     children: "Get in touch",
   }),
 );
@@ -125,7 +125,7 @@ const ctaActions = createElement(
 
   <Container>
     <div class="post-layout">
-      <TableOfContents client:load items={tocItems} />
+      <TableOfContents client:load items={tocItems} stickyOffset={59} />
 
       <Prose className="post-article">
         <Content components={mdxComponents} />
