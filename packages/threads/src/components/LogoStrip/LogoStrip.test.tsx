@@ -26,4 +26,14 @@ describe("LogoStrip", () => {
     render(<LogoItem logo={<svg />} label="X" className="custom" data-testid="item" />);
     expect(screen.getByTestId("item")).toHaveClass("custom");
   });
+
+  it("applies a different class when align is set to start", () => {
+    render(<LogoItem logo={<svg />} label="X" data-testid="item" />);
+    const centerClassName = screen.getByTestId("item").className;
+
+    render(<LogoItem logo={<svg />} label="X" align="start" data-testid="item-start" />);
+    const startClassName = screen.getByTestId("item-start").className;
+
+    expect(startClassName).not.toBe(centerClassName);
+  });
 });
