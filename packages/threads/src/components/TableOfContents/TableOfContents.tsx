@@ -11,6 +11,13 @@ export interface TableOfContentsItem {
 export interface TableOfContentsProps extends HTMLAttributes<HTMLElement> {
   items: TableOfContentsItem[];
   label?: string;
+  /**
+   * `top` offset for the mobile sticky bar (below 900px), as a number of
+   * pixels or any CSS length. Defaults to `0`, which collides with a
+   * consuming app's own sticky site header if it has one — set this to
+   * that header's rendered height instead of overriding `top` from outside.
+   */
+  stickyOffset?: number | string;
 }
 
 const ChevronIcon = ({ open }: { open: boolean }) => (
@@ -30,7 +37,18 @@ const ChevronIcon = ({ open }: { open: boolean }) => (
   </svg>
 );
 
-export function TableOfContents({ items, label = "On this page", className, ...rest }: TableOfContentsProps) {
+export function TableOfContents({
+  items,
+  label = "On this page",
+  stickyOffset,
+  className,
+  ...rest
+}: TableOfContentsProps) {
+  const mobileBarStyle =
+    stickyOffset !== undefined
+      ? { top: typeof stickyOffset === "number" ? `${stickyOffset}px` : stickyOffset }
+      : undefined;
+
   const [activeId, setActiveId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLElement>(null);
@@ -91,7 +109,13 @@ export function TableOfContents({ items, label = "On this page", className, ...r
       </aside>
 
       {/* Mobile — sticky collapsed bar that expands into a dropdown, shown below 900px */}
-      <nav className={styles.mobileBar} ref={rootRef} aria-label={label} data-testid="toc-mobile">
+      <nav
+        className={[styles.mobileBar, className].filter(Boolean).join(" ")}
+        style={mobileBarStyle}
+        ref={rootRef}
+        aria-label={label}
+        data-testid="toc-mobile"
+      >
         <button
           type="button"
           className={styles.mobileTrigger}
