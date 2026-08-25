@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.2](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.5.1...threads-v0.5.2) (2026-08-25)
+
+
+### Bug Fixes
+
+* **threads:** add align prop to LogoItem ([#293](https://github.com/fahadahmed/fhdamd-org/issues/293)) ([#325](https://github.com/fahadahmed/fhdamd-org/issues/325)) ([1bbdcbe](https://github.com/fahadahmed/fhdamd-org/commit/1bbdcbe6513d1218d60bc41e9f4534d0ec3c39eb))
+* **threads:** add default bottom margin to SectionHeader ([#290](https://github.com/fahadahmed/fhdamd-org/issues/290)) ([#321](https://github.com/fahadahmed/fhdamd-org/issues/321)) ([dda337f](https://github.com/fahadahmed/fhdamd-org/commit/dda337f6f91308250f433b79122160b384323b01))
+* **threads:** add ghost-inverse Button variant for dark surfaces ([#300](https://github.com/fahadahmed/fhdamd-org/issues/300)) ([#326](https://github.com/fahadahmed/fhdamd-org/issues/326)) ([024696c](https://github.com/fahadahmed/fhdamd-org/commit/024696c1ff1b8a34a6a51d15b1747e760fe3e559))
+* **threads:** add stickyOffset prop to TableOfContents, forward className to mobile bar ([#305](https://github.com/fahadahmed/fhdamd-org/issues/305)) ([#327](https://github.com/fahadahmed/fhdamd-org/issues/327)) ([f2b230a](https://github.com/fahadahmed/fhdamd-org/commit/f2b230a09f7c1a5a539ca48769dc7e2eef022deb))
+* **threads:** document Card's gap-vs-margin conflict and its escape hatch ([#291](https://github.com/fahadahmed/fhdamd-org/issues/291)) ([#323](https://github.com/fahadahmed/fhdamd-org/issues/323)) ([85abeaf](https://github.com/fahadahmed/fhdamd-org/commit/85abeaf543a72b58e5da22d36c3b5519119af396))
+* **threads:** give LogoItem's mark a fixed bounding box ([#292](https://github.com/fahadahmed/fhdamd-org/issues/292)) ([#324](https://github.com/fahadahmed/fhdamd-org/issues/324)) ([9c72d51](https://github.com/fahadahmed/fhdamd-org/commit/9c72d518f7bb45fe3067f530805df149c72c4650))
+
 ## [0.5.1](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.5.0...threads-v0.5.1) (2026-07-22)
 
 
