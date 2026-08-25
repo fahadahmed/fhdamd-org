@@ -76,6 +76,19 @@
   color: var(--th-color-text-1);
 }
 
+/* For ghost buttons on a dark/inverse surface (e.g. inside DarkStrip) —
+   .ghost's text-2/border-strong tokens are tuned for light backgrounds
+   and read as near-invisible here. */
+.ghostInverse {
+  background: transparent;
+  color: var(--th-color-text-inverse-2);
+  border-color: color-mix(in srgb, var(--th-color-text-inverse) 25%, transparent);
+}
+.ghostInverse:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--th-color-text-inverse) 8%, transparent);
+  color: var(--th-color-text-inverse);
+}
+
 .outline {
   background: transparent;
   color: var(--th-color-accent);
