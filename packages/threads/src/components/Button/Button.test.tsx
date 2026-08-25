@@ -39,6 +39,7 @@ describe("Button", () => {
     "solid-terra",
     "solid-sage",
     "ghost",
+    "ghost-inverse",
     "outline",
     "subtle-terra",
     "subtle-sage",

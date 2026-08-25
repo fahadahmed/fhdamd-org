@@ -28,6 +28,7 @@ const meta = {
         "solid-terra",
         "solid-sage",
         "ghost",
+        "ghost-inverse",
         "outline",
         "subtle-terra",
         "subtle-sage",
@@ -73,6 +74,18 @@ export const SolidSage: Story = {
 
 export const Ghost: Story = {
   args: { variant: "ghost", children: "Secondary action" },
+};
+
+export const GhostInverse: Story = {
+  name: "Ghost (inverse)",
+  args: { variant: "ghost-inverse", children: "Secondary action" },
+  decorators: [
+    (Story) => (
+      <div style={{ background: "var(--th-color-surface-inverse)", padding: "24px", borderRadius: "12px" }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export const Outline: Story = {

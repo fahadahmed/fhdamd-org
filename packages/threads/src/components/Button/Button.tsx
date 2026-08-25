@@ -10,6 +10,8 @@ export type ButtonVariant =
   | "solid-terra"
   | "solid-sage"
   | "ghost"
+  /** Same as "ghost", but legible on a dark/inverse surface (e.g. inside DarkStrip). */
+  | "ghost-inverse"
   | "outline"
   | "subtle-terra"
   | "subtle-sage";
@@ -44,6 +46,7 @@ const variantStyles: Record<ButtonVariant, string> = {
   "solid-terra": styles.solidTerra,
   "solid-sage":  styles.solidSage,
   ghost:         styles.ghost,
+  "ghost-inverse": styles.ghostInverse,
   outline:       styles.outline,
   "subtle-terra": styles.subtleTerra,
   "subtle-sage":  styles.subtleSage,
