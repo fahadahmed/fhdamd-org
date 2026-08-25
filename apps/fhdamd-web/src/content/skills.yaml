@@ -17,7 +17,7 @@
 - id: cms-commerce
   order: 5
   label: "CMS & commerce"
-  tags: ["Markdown/MDX", "Stripe", "Resend"]
+  tags: ["Markdown/MDX", "DatoCMS", "Strapi", "Stripe", "Resend"]
 - id: mobile
   order: 6
   label: "Mobile"
