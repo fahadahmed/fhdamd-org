@@ -1,0 +1,17 @@
+---
+import { createElement } from "react";
+import { Callout } from "@fhdamd/threads";
+import { StarIcon } from "../icons/icons";
+
+interface Props {
+  variant: "tip" | "warn";
+  title?: string;
+}
+
+const { variant, title } = Astro.props;
+const icon = variant === "tip" ? createElement(StarIcon) : undefined;
+---
+
+<Callout variant={variant === "tip" ? "success" : "warning"} title={title} icon={icon}>
+  <slot />
+</Callout>

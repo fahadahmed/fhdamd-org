@@ -1,0 +1,24 @@
+---
+import { CodeBlock } from "@fhdamd/threads";
+import { highlightCode } from "../../utils/highlightCode";
+
+interface Props {
+  filename?: string;
+  lang?: string;
+  code: string;
+}
+
+const { filename, lang = "ts", code } = Astro.props;
+const tokenLines = await highlightCode(code, lang);
+---
+
+<CodeBlock filename={filename}>
+  {tokenLines.map((line, li) => (
+    <Fragment>
+      {line.map((token) => (
+        <span style={{ color: token.color }}>{token.content}</span>
+      ))}
+      {li < tokenLines.length - 1 ? "\n" : null}
+    </Fragment>
+  ))}
+</CodeBlock>

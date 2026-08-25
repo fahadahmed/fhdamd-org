@@ -1,0 +1,17 @@
+---
+import { MermaidDiagramCard } from "@fhdamd/threads";
+import { MermaidDiagram } from "../MermaidDiagram";
+
+interface Props {
+  label: string;
+  caption?: string;
+  source: string;
+}
+
+const { label, caption, source } = Astro.props;
+const id = `diagram-${crypto.randomUUID()}`;
+---
+
+<MermaidDiagramCard label={label} caption={caption} className="mermaid-diagram-card">
+  <MermaidDiagram client:load id={id} source={source} />
+</MermaidDiagramCard>

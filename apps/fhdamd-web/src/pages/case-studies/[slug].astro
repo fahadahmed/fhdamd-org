@@ -1,5 +1,6 @@
 ---
 import { createElement, Fragment as ReactFragment } from "react";
+import { getCollection, getEntry, render } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import {
   Container,
@@ -13,77 +14,52 @@ import {
   DarkStrip,
   Breadcrumb,
   Prose,
-  CodeBlock,
-  MermaidDiagramCard,
   TableOfContents,
-  Callout,
   ContentCard,
   SectionHeader,
   FactStrip,
-  ScreenshotFigure,
-  StatRow,
-  Testimonial,
   AuthorBox,
 } from "@fhdamd/threads";
-import { getCaseStudyDetails, getSiteSettings } from "../../lib/cms";
+import { getSiteSettings } from "../../lib/content";
+import { mdxComponents } from "../../components/mdx";
 import { titleToReact, markupToHtml } from "../../utils/titleToReact";
-import {
-  ArrowRightIcon,
-  TwitterIcon,
-  LinkedInIcon,
-  StarIcon,
-} from "../../components";
-import { MermaidDiagram, ArticleReadingProgress, CopyLinkButton } from "../../components";
-import { highlightCode } from "../../utils/highlightCode";
-import type { ArticleContentBlock } from "../../content/types";
+import { ArrowRightIcon, TwitterIcon, LinkedInIcon, ArticleReadingProgress, CopyLinkButton } from "../../components";
 import "../../styles/blogPost.css";
 
 export async function getStaticPaths() {
-  const items = await getCaseStudyDetails();
-  return items.map((item) => ({ params: { slug: item.slug } }));
+  const items = await getCollection("caseStudies", ({ data }) => data.status === "published");
+  return items.map((item) => ({ params: { slug: item.id } }));
 }
 
 const { slug } = Astro.params;
-const items = await getCaseStudyDetails();
-// getStaticPaths only generates a route per mock item above, so this is always found.
-const study = items.find((i) => i.slug === slug)!;
+// getStaticPaths only generates a route per published entry above, so this is always found.
+const study = (await getEntry("caseStudies", slug))!;
+const { Content, headings } = await render(study);
 
 const settings = await getSiteSettings();
 
-const heroTitleHtml = markupToHtml(study.title);
+const heroTitleHtml = markupToHtml(study.data.title);
 const arrowRightIcon = createElement(ArrowRightIcon);
-const starIcon = createElement(StarIcon);
 
 const breadcrumbItems = [
   { label: "Case Studies", href: "/case-studies" },
-  { label: study.breadcrumbCategory },
+  { label: study.data.breadcrumbCategory },
 ];
 
-const isHeading = (
-  block: ArticleContentBlock,
-): block is Extract<ArticleContentBlock, { type: "heading" }> =>
-  block.type === "heading";
-const tocItems = study.body
-  .filter(isHeading)
-  .map((block) => ({ id: block.id, label: block.text.replace(/\*/g, "") }));
+const tocItems = headings.filter((h) => h.depth === 2).map((h) => ({ id: h.slug, label: h.text }));
 
-// Astro templates can't await inline, so every code block's syntax
-// highlighting is resolved up front here, keyed by its index in study.body.
-const highlightedCode = new Map<
-  number,
-  Awaited<ReturnType<typeof highlightCode>>
->();
-for (let i = 0; i < study.body.length; i++) {
-  const block = study.body[i];
-  if (block.type === "code") {
-    highlightedCode.set(i, await highlightCode(block.code, block.lang ?? "ts"));
-  }
-}
+const facts = [
+  { label: "Client", value: study.data.client },
+  { label: "Industry", value: study.data.industry },
+  { label: "Timeline", value: study.data.timeline },
+  { label: "Offering", value: study.data.offering },
+  { label: "Stack", value: study.data.stack.join(" · ") },
+].filter((fact): fact is { label: string; value: string } => Boolean(fact.value));
 
 const buildCreditBio = createElement(
   ReactFragment,
   null,
-  `${study.buildCreditBio} Considering something similar? `,
+  `${study.data.buildCreditBio ?? ""} Considering something similar? `,
   createElement("a", { href: "/contact" }, "Get a proposal"),
   ".",
 );
@@ -91,7 +67,7 @@ const buildCreditBio = createElement(
 const relatedTitle = titleToReact("More *case studies*");
 
 const canonicalUrl = new URL(Astro.url.pathname, "https://fhdamd.dev").href;
-const shareText = encodeURIComponent(study.title.replace(/\*/g, ""));
+const shareText = encodeURIComponent(study.data.title.replace(/\*/g, ""));
 const twitterShareHref = `https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(canonicalUrl)}`;
 const linkedinShareHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonicalUrl)}`;
 
@@ -114,8 +90,8 @@ const ctaActions = createElement(
 ---
 
 <Layout
-  title={`${study.title.replace(/\*/g, "")} — Fahad Ahmed · fhdamd.dev`}
-  description={study.dek}
+  title={`${study.data.title.replace(/\*/g, "")} — Fahad Ahmed · fhdamd.dev`}
+  description={study.data.dek}
 >
   <ArticleReadingProgress client:load targetSelector=".post-article" />
 
@@ -123,28 +99,28 @@ const ctaActions = createElement(
     <Stack gap={5} className="post-hero">
       <Breadcrumb items={breadcrumbItems} />
       <Cluster gap={2}>
-        {study.badges.map((b) => <Badge variant={b.variant}>{b.label}</Badge>)}
+        {study.data.badges.map((b) => <Badge variant={b.variant}>{b.label}</Badge>)}
       </Cluster>
       <h1 class="post-hero__title" set:html={heroTitleHtml} />
-      <p class="post-hero__dek">{study.dek}</p>
+      <p class="post-hero__dek">{study.data.dek}</p>
       <Cluster gap={3} className="post-byline">
         <Cluster gap={2}>
-          <div class="post-byline__avatar">{study.authorInitials}</div>
+          <div class="post-byline__avatar">{settings.authorInitials}</div>
           <div>
-            <div class="post-byline__name">{study.authorName}</div>
-            <div class="post-byline__role">{study.authorRole}</div>
+            <div class="post-byline__name">{settings.authorName}</div>
+            <div class="post-byline__role">{settings.authorRole}</div>
           </div>
         </Cluster>
         <span class="post-byline__sep">·</span>
-        <span class="post-byline__item">{study.clientName}</span>
+        <span class="post-byline__item">{study.data.client}</span>
         <span class="post-byline__sep">·</span>
-        <span class="post-byline__item">{study.location}</span>
+        <span class="post-byline__item">{study.data.location}</span>
       </Cluster>
     </Stack>
   </Container>
 
   <Container>
-    <FactStrip facts={study.facts} />
+    <FactStrip facts={facts} />
   </Container>
 
   <Container>
@@ -152,84 +128,11 @@ const ctaActions = createElement(
       <TableOfContents client:load items={tocItems} />
 
       <Prose className="post-article">
-        {
-          study.body.map((block, i) => {
-            if (block.type === "heading") {
-              return <h2 id={block.id} set:html={markupToHtml(block.text)} />;
-            }
-            if (block.type === "subheading") {
-              return <h3 id={block.id} set:html={markupToHtml(block.text)} />;
-            }
-            if (block.type === "html") {
-              return <Fragment set:html={block.html} />;
-            }
-            if (block.type === "callout") {
-              return (
-                <Callout
-                  variant={block.variant === "tip" ? "success" : "warning"}
-                  title={block.title}
-                  icon={block.variant === "tip" ? starIcon : undefined}
-                >
-                  {block.body}
-                </Callout>
-              );
-            }
-            if (block.type === "code") {
-              const tokenLines = highlightedCode.get(i) ?? [];
-              return (
-                <CodeBlock filename={block.filename}>
-                  {tokenLines.map((line, li) => (
-                    <Fragment>
-                      {line.map((token) => (
-                        <span style={{ color: token.color }}>
-                          {token.content}
-                        </span>
-                      ))}
-                      {li < tokenLines.length - 1 ? "\n" : null}
-                    </Fragment>
-                  ))}
-                </CodeBlock>
-              );
-            }
-            if (block.type === "diagram") {
-              return (
-                <MermaidDiagramCard
-                  label={block.label}
-                  caption={block.caption}
-                  className="mermaid-diagram-card"
-                >
-                  <MermaidDiagram
-                    client:load
-                    id={`diagram-${i}`}
-                    source={block.source}
-                  />
-                </MermaidDiagramCard>
-              );
-            }
-            if (block.type === "screenshot") {
-              return <ScreenshotFigure caption={block.caption} />;
-            }
-            if (block.type === "statRow") {
-              return <StatRow stats={block.stats} />;
-            }
-            if (block.type === "testimonialReserved") {
-              return (
-                <Testimonial
-                  reserved
-                  title={block.title}
-                  description={block.description}
-                />
-              );
-            }
-            // No embeds in this mock content, but the shared block union allows
-            // them — nothing to render for that case on this page.
-            return null;
-          })
-        }
+        <Content components={mdxComponents} />
 
         <Cluster gap={4} justify="between" className="post-footer-meta">
           <Cluster gap={2}>
-            {study.postTags.map((tag) => <Tag>{tag}</Tag>)}
+            {study.data.tags.map((tag) => <Tag>{tag}</Tag>)}
           </Cluster>
           <Cluster gap={2}>
             <a
@@ -257,9 +160,9 @@ const ctaActions = createElement(
         </Cluster>
 
         <AuthorBox
-          initials={study.authorInitials}
-          name={study.buildCreditName}
-          role={study.buildCreditRole}
+          initials={settings.authorInitials}
+          name={study.data.buildCreditName ?? settings.authorName}
+          role={study.data.buildCreditRole ?? settings.authorRole}
           bio={buildCreditBio}
         />
       </Prose>
@@ -267,14 +170,14 @@ const ctaActions = createElement(
   </Container>
 
   {
-    study.relatedItems.length > 0 && (
+    study.data.relatedItems.length > 0 && (
       <section style="border-top:1px solid var(--th-color-border-default)">
         <Container>
           <Section size="md">
             <Stack gap={8}>
               <SectionHeader title={relatedTitle} meta="See the full list" />
               <Grid cols={3} gap={4}>
-                {study.relatedItems.map((item) => (
+                {study.data.relatedItems.map((item) => (
                   <ContentCard
                     href={item.href}
                     date={item.dateLabel}

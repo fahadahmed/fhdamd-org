@@ -4,8 +4,8 @@ export interface SelectOption {
 }
 
 /**
- * Contact form select options. Deliberately code-level config, not DatoCMS
- * content — these are structural form choices, not editorial copy. See #264.
+ * Contact form select options. Deliberately code-level config, not a content
+ * collection entry — these are structural form choices, not editorial copy. See #264.
  */
 export const INTEREST_OPTIONS: SelectOption[] = [
   { value: "website", label: "Custom website — brochure, content, or commerce" },

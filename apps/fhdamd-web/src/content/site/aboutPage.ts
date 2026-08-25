@@ -5,8 +5,9 @@ export const aboutPage: AboutPage = {
   heroHeading: "Architect. Builder. *Founder.*",
   heroSubheading:
     "14 years solving hard problems at scale. Now building the things I've always wanted to exist — and helping others do the same.",
-  // Rendered via set:html on the page — a simplified stand-in for DatoCMS
-  // Structured Text, which carries inline marks (bold) like this for real.
+  // Rendered via set:html on the page — inline <b> marks are hand-authored
+  // HTML here rather than real Structured Text, since this is a short,
+  // rarely-edited bio rather than repeating content.
   bio: [
     "I'm Fahad — a <b>Solution Architect and Technology Consulting Manager</b> at EY in Melbourne. Over 14 years I've worked across government, financial services, utilities, and retail, designing cloud-native platforms and leading cross-functional teams through complex digital transformation programmes.",
     "The day job is enterprise: defining target-state architectures, running bid processes, managing senior stakeholder relationships, and leading teams of consultants and engineers through delivery. I've helped win engagements worth $1.3M, $1.8M, and more — not as a passenger, but as the person building the solution and the case for it.",

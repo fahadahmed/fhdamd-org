@@ -1,5 +1,6 @@
 ---
 import { createElement, Fragment as ReactFragment } from "react";
+import { getCollection, getEntry, render } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import {
   Container,
@@ -13,85 +14,48 @@ import {
   DarkStrip,
   Breadcrumb,
   Prose,
-  CodeBlock,
-  MermaidDiagramCard,
-  EmbedCard,
   TableOfContents,
-  Callout,
   ContentCard,
   SectionHeader,
 } from "@fhdamd/threads";
-import {
-  getBlogPostDetails,
-  getBlogPage,
-  getSiteSettings,
-} from "../../lib/cms";
+import { getSiteSettings } from "../../lib/content";
+import { mdxComponents } from "../../components/mdx";
 import { titleToReact, markupToHtml } from "../../utils/titleToReact";
 import { BLOG_TAG_LABELS, BLOG_TAG_BADGE_VARIANT } from "../../utils/blogTags";
-import {
-  ArrowRightIcon,
-  TwitterIcon,
-  LinkedInIcon,
-  StarIcon,
-  MermaidDiagram,
-  ArticleReadingProgress,
-  CopyLinkButton,
-} from "../../components";
-import { highlightCode } from "../../utils/highlightCode";
-import type { ArticleContentBlock } from "../../content/types";
+import { computeReadTime } from "../../utils/computeReadTime";
+import { ArrowRightIcon, TwitterIcon, LinkedInIcon, ArticleReadingProgress, CopyLinkButton } from "../../components";
 import "../../styles/blogPost.css";
 
 export async function getStaticPaths() {
-  const posts = await getBlogPostDetails();
-  return posts.map((post) => ({ params: { slug: post.slug } }));
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({ params: { slug: post.id } }));
 }
 
 const { slug } = Astro.params;
-const posts = await getBlogPostDetails();
-// getStaticPaths only generates a route per mock post above, so this is always found.
-const post = posts.find((p) => p.slug === slug)!;
+// getStaticPaths only generates a route per collection entry above, so this is always found.
+const post = (await getEntry("blog", slug))!;
+const { Content, headings } = await render(post);
 
-const blog = await getBlogPage();
+const allPosts = await getCollection("blog");
 const settings = await getSiteSettings();
 
-const heroTitleHtml = markupToHtml(post.title);
+const heroTitleHtml = markupToHtml(post.data.title);
 const arrowRightIcon = createElement(ArrowRightIcon);
-const starIcon = createElement(StarIcon);
 
 const breadcrumbItems = [
   { label: "Blog", href: "/blog" },
-  { label: post.breadcrumbCategory },
+  { label: post.data.breadcrumbCategory },
 ];
 
-const isHeading = (
-  block: ArticleContentBlock,
-): block is Extract<ArticleContentBlock, { type: "heading" }> =>
-  block.type === "heading";
-const tocItems = post.body
-  .filter(isHeading)
-  .map((block) => ({ id: block.id, label: block.text.replace(/\*/g, "") }));
+const tocItems = headings.filter((h) => h.depth === 2).map((h) => ({ id: h.slug, label: h.text }));
 
-// Astro templates can't await inline, so every code block's syntax
-// highlighting is resolved up front here, keyed by its index in post.body.
-const highlightedCode = new Map<
-  number,
-  Awaited<ReturnType<typeof highlightCode>>
->();
-for (let i = 0; i < post.body.length; i++) {
-  const block = post.body[i];
-  if (block.type === "code") {
-    highlightedCode.set(i, await highlightCode(block.code, block.lang ?? "ts"));
-  }
-}
-
-const allPosts = [blog.featuredPost, ...blog.posts];
-const relatedPosts = post.relatedSlugs
-  .map((relSlug) => allPosts.find((p) => p.slug === relSlug))
+const relatedPosts = post.data.relatedSlugs
+  .map((relSlug) => allPosts.find((p) => p.id === relSlug))
   .filter((p): p is (typeof allPosts)[number] => Boolean(p));
 const relatedTitle = titleToReact("Related *posts*");
 
 const canonicalUrl = new URL(Astro.url.pathname, "https://fhdamd.dev").href;
-const shareText = encodeURIComponent(post.title.replace(/\*/g, ""));
+const shareText = encodeURIComponent(post.data.title.replace(/\*/g, ""));
 const twitterShareHref = `https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(canonicalUrl)}`;
 const linkedinShareHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonicalUrl)}`;
 
@@ -114,8 +78,8 @@ const ctaActions = createElement(
 ---
 
 <Layout
-  title={`${post.title.replace(/\*/g, "")} — Fahad Ahmed · fhdamd.dev`}
-  description={post.dek}
+  title={`${post.data.title.replace(/\*/g, "")} — Fahad Ahmed · fhdamd.dev`}
+  description={post.data.dek}
 >
   <ArticleReadingProgress client:load targetSelector=".post-article" />
 
@@ -124,25 +88,25 @@ const ctaActions = createElement(
       <Breadcrumb items={breadcrumbItems} />
       <Cluster gap={2}>
         {
-          post.badges.map((tag) => (
+          post.data.tags.map((tag) => (
             <Badge variant="neutral">{BLOG_TAG_LABELS[tag] ?? tag}</Badge>
           ))
         }
       </Cluster>
       <h1 class="post-hero__title" set:html={heroTitleHtml} />
-      <p class="post-hero__dek">{post.dek}</p>
+      <p class="post-hero__dek">{post.data.dek}</p>
       <Cluster gap={3} className="post-byline">
         <Cluster gap={2}>
-          <div class="post-byline__avatar">{post.authorInitials}</div>
+          <div class="post-byline__avatar">{settings.authorInitials}</div>
           <div>
-            <div class="post-byline__name">{post.authorName}</div>
-            <div class="post-byline__role">{post.authorRole}</div>
+            <div class="post-byline__name">{settings.authorName}</div>
+            <div class="post-byline__role">{settings.authorRole}</div>
           </div>
         </Cluster>
         <span class="post-byline__sep">·</span>
-        <span class="post-byline__item">{post.publishedDate}</span>
+        <span class="post-byline__item">{post.data.date}</span>
         <span class="post-byline__sep">·</span>
-        <span class="post-byline__item">{post.readTime}</span>
+        <span class="post-byline__item">{computeReadTime(post.body ?? "")}</span>
       </Cluster>
     </Stack>
   </Container>
@@ -152,99 +116,11 @@ const ctaActions = createElement(
       <TableOfContents client:load items={tocItems} />
 
       <Prose className="post-article">
-        {
-          post.body.map((block, i) => {
-            if (block.type === "heading") {
-              return <h2 id={block.id} set:html={markupToHtml(block.text)} />;
-            }
-            if (block.type === "subheading") {
-              return <h3 id={block.id} set:html={markupToHtml(block.text)} />;
-            }
-            if (block.type === "html") {
-              return <Fragment set:html={block.html} />;
-            }
-            if (block.type === "callout") {
-              return (
-                <Callout
-                  variant={block.variant === "tip" ? "success" : "warning"}
-                  title={block.title}
-                  icon={block.variant === "tip" ? starIcon : undefined}
-                >
-                  {block.body}
-                </Callout>
-              );
-            }
-            if (block.type === "code") {
-              const tokenLines = highlightedCode.get(i) ?? [];
-              return (
-                <CodeBlock filename={block.filename}>
-                  {tokenLines.map((line, li) => (
-                    <Fragment>
-                      {line.map((token) => (
-                        <span style={{ color: token.color }}>
-                          {token.content}
-                        </span>
-                      ))}
-                      {li < tokenLines.length - 1 ? "\n" : null}
-                    </Fragment>
-                  ))}
-                </CodeBlock>
-              );
-            }
-            if (block.type === "diagram") {
-              return (
-                <MermaidDiagramCard
-                  label={block.label}
-                  caption={block.caption}
-                  className="mermaid-diagram-card"
-                >
-                  <MermaidDiagram
-                    client:load
-                    id={`diagram-${i}`}
-                    source={block.source}
-                  />
-                </MermaidDiagramCard>
-              );
-            }
-            if (block.type === "embed" && block.kind === "youtube") {
-              return (
-                <EmbedCard
-                  type="youtube"
-                  videoUrl={block.videoUrl}
-                  title={block.title}
-                />
-              );
-            }
-            if (block.type === "embed" && block.kind === "tweet") {
-              return (
-                <EmbedCard
-                  type="tweet"
-                  authorName={block.authorName}
-                  handle={block.handle}
-                  text={block.text}
-                  foot={block.foot}
-                />
-              );
-            }
-            if (block.type === "embed" && block.kind === "instagram") {
-              return (
-                <EmbedCard
-                  type="instagram"
-                  accountName={block.accountName}
-                  caption={block.caption}
-                />
-              );
-            }
-            // No screenshots, stat rows, or reserved testimonials in this
-            // mock content, but the shared block union allows them —
-            // nothing to render for those cases on this page.
-            return null;
-          })
-        }
+        <Content components={mdxComponents} />
 
         <Cluster gap={4} justify="between" className="post-footer-meta">
           <Cluster gap={2}>
-            {post.postTags.map((tag) => <Tag>{tag}</Tag>)}
+            {post.data.postTags.map((tag) => <Tag>{tag}</Tag>)}
           </Cluster>
           <Cluster gap={2}>
             <a
@@ -284,16 +160,16 @@ const ctaActions = createElement(
               <Grid cols={3} gap={4}>
                 {relatedPosts.map((rp) => (
                   <ContentCard
-                    href={`/blog/${rp.slug}`}
-                    date={rp.date}
-                    description={rp.description}
-                    title={titleToReact(rp.title, {
+                    href={`/blog/${rp.id}`}
+                    date={rp.data.date}
+                    description={rp.data.dek}
+                    title={titleToReact(rp.data.title, {
                       color: "var(--th-color-accent)",
                     })}
                     badges={[
                       {
-                        label: BLOG_TAG_LABELS[rp.tags[0]] ?? rp.tags[0],
-                        variant: BLOG_TAG_BADGE_VARIANT[rp.tags[0]],
+                        label: BLOG_TAG_LABELS[rp.data.tags[0]] ?? rp.data.tags[0],
+                        variant: BLOG_TAG_BADGE_VARIANT[rp.data.tags[0]],
                       },
                     ]}
                   />

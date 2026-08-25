@@ -1,0 +1,12 @@
+---
+import { Testimonial } from "@fhdamd/threads";
+
+interface Props {
+  title?: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<Testimonial reserved title={title} description={description} />

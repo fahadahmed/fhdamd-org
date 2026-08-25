@@ -1,0 +1,12 @@
+---
+import { EmbedCard } from "@fhdamd/threads";
+
+interface Props {
+  accountName: string;
+  caption?: string;
+}
+
+const { accountName, caption } = Astro.props;
+---
+
+<EmbedCard type="instagram" accountName={accountName} caption={caption} />
