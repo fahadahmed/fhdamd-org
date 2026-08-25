@@ -8,8 +8,17 @@
 .item {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: var(--th-space-2);
+}
+
+.alignCenter { align-items: center; }
+.alignStart  { align-items: flex-start; }
+
+/* Left-aligned items also left-align the mark's own content within its
+   fixed box — otherwise a narrower logo reads centered inside the box
+   instead of flush with the label's left edge. */
+.alignStart .mark {
+  justify-content: flex-start;
 }
 
 /*
