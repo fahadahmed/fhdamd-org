@@ -94,6 +94,26 @@ describe("TableOfContents", () => {
     expect(screen.getByTestId("toc")).toHaveClass("custom");
   });
 
+  it("merges custom className onto the mobile bar too", () => {
+    render(<TableOfContents items={items} className="custom" />);
+    expect(screen.getByTestId("toc-mobile")).toHaveClass("custom");
+  });
+
+  it("applies stickyOffset as the mobile bar's sticky top, as a bare number in px", () => {
+    render(<TableOfContents items={items} stickyOffset={59} />);
+    expect(screen.getByTestId("toc-mobile").style.top).toBe("59px");
+  });
+
+  it("applies stickyOffset as the mobile bar's sticky top, as a CSS length string", () => {
+    render(<TableOfContents items={items} stickyOffset="4rem" />);
+    expect(screen.getByTestId("toc-mobile").style.top).toBe("4rem");
+  });
+
+  it("leaves the mobile bar's top unset (falls back to the CSS default) when stickyOffset isn't passed", () => {
+    render(<TableOfContents items={items} />);
+    expect(screen.getByTestId("toc-mobile").style.top).toBe("");
+  });
+
   describe("mobile dropdown", () => {
     it("starts closed and shows the default label as the active section", () => {
       render(<TableOfContents items={items} />);
