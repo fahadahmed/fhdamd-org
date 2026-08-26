@@ -12,6 +12,6 @@ const { label, caption, source } = Astro.props;
 const id = `diagram-${crypto.randomUUID()}`;
 ---
 
-<MermaidDiagramCard label={label} caption={caption} className="mermaid-diagram-card">
+<MermaidDiagramCard client:load label={label} caption={caption} className="mermaid-diagram-card">
   <MermaidDiagram client:load id={id} source={source} />
 </MermaidDiagramCard>
