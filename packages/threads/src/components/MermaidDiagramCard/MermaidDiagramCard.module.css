@@ -7,6 +7,11 @@
 }
 
 .label {
+  /* Stays above .diagramExpanded (z-index: 1001) — the label row holds the
+     expand/collapse toggle, which would otherwise render underneath the
+     fullscreen overlay it controls once expanded. */
+  position: relative;
+  z-index: 1002;
   font-family: var(--th-font-mono);
   font-size: 0.625rem;
   letter-spacing: 0.14em;
@@ -18,9 +23,105 @@
   gap: 8px;
 }
 
+.expandBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline-start: auto;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--th-color-border-strong);
+  border-radius: var(--th-radius-sm);
+  background: transparent;
+  color: var(--th-color-text-3);
+  cursor: pointer;
+  transition:
+    background var(--th-duration-base) var(--th-ease-out),
+    color var(--th-duration-base) var(--th-ease-out);
+}
+
+.expandBtn:hover {
+  background: var(--th-color-surface-2);
+  color: var(--th-color-text-1);
+}
+
+.expandBtn:focus-visible {
+  outline: 2px solid var(--th-color-focus-ring);
+  outline-offset: 2px;
+}
+
 .diagram {
   display: flex;
   justify-content: center;
+}
+
+/* Full-viewport overlay — a class toggle on the same node the diagram
+   already lives in, not a portal, so the mermaid instance inside never
+   unmounts/remounts on expand/collapse. pointer-events: none (with no
+   override on its children either) so every click within it — empty
+   padding or directly on the diagram — falls through to the backdrop
+   underneath and closes it. */
+.diagramExpanded {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  align-items: center;
+  padding: var(--th-space-10);
+  overflow: auto;
+  pointer-events: none;
+}
+
+.diagramExpanded > * {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Dim scrim, not an opaque wall — this sits below .diagramExpanded's
+   content but above everything else on the page, regardless of the page's
+   current scroll position, and is the actual click target that closes on
+   click (including clicks on the diagram itself, which pass through). */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.7);
+  cursor: zoom-out;
+  border: none;
+  padding: 0;
+}
+
+/* Pinned to the viewport corner, not the card's in-flow position — stays
+   reachable regardless of where the card is scrolled to when expanded. */
+.closeBtn {
+  position: fixed;
+  top: var(--th-space-6);
+  right: var(--th-space-6);
+  z-index: 1002;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--th-color-border-strong);
+  border-radius: var(--th-radius-pill);
+  background: var(--th-color-surface-1);
+  color: var(--th-color-text-2);
+  cursor: pointer;
+  transition:
+    background var(--th-duration-base) var(--th-ease-out),
+    color var(--th-duration-base) var(--th-ease-out);
+}
+
+.closeBtn:hover {
+  background: var(--th-color-surface-2);
+  color: var(--th-color-text-1);
+}
+
+.closeBtn:focus-visible {
+  outline: 2px solid var(--th-color-focus-ring);
+  outline-offset: 2px;
 }
 
 .caption {
