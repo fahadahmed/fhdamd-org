@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.5.2...threads-v0.6.0) (2026-08-26)
+
+
+### Features
+
+* **threads:** add expand-to-fullscreen control to MermaidDiagramCard ([#304](https://github.com/fahadahmed/fhdamd-org/issues/304)) ([#330](https://github.com/fahadahmed/fhdamd-org/issues/330)) ([303a19b](https://github.com/fahadahmed/fhdamd-org/commit/303a19bf24c83b55d8f4d55815b179e240555a10))
+
 ## [0.5.2](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.5.1...threads-v0.5.2) (2026-08-25)
 
 
