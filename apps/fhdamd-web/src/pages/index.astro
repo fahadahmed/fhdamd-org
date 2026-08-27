@@ -102,8 +102,6 @@ const caseStudyActions = createElement(
   }),
 );
 
-const labTeaserTitleHtml = markupToHtml(home.labTeaserTitle);
-
 const blogTitle = titleToReact("From the *blog*");
 
 const ctaHeading = titleToReact(settings.ctaTitle);
@@ -213,35 +211,6 @@ const ctaActions = createElement(
             actions={caseStudyActions}
           />
         </Stack>
-      </Section>
-    </Container>
-  </section>
-
-  <section style={borderStyle}>
-    <Container>
-      <Section size="md">
-        <Card
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "var(--th-space-8)",
-            flexWrap: "wrap",
-            padding: "var(--th-space-7) var(--th-space-8)",
-            borderRadius: "var(--th-radius-xl)",
-            borderStyle: "dashed",
-            borderColor: "var(--th-color-border-strong)",
-          }}
-        >
-          <div>
-            <div class="lab-teaser__eyebrow">{home.labTeaserEyebrow}</div>
-            <h3 class="lab-teaser__title" set:html={labTeaserTitleHtml} />
-            <p class="lab-teaser__desc">{home.labTeaserDesc}</p>
-          </div>
-          <Button href="/lab" variant="ghost" icon={arrowRightIcon}>
-            Visit the lab
-          </Button>
-        </Card>
       </Section>
     </Container>
   </section>

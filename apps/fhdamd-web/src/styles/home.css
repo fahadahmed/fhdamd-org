@@ -133,35 +133,3 @@
     grid-template-columns: 1fr;
   }
 }
-
-/* ─── LAB TEASER ─────────────────────────────────────────────────────────── */
-.lab-teaser__eyebrow {
-  font-family: var(--th-font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--th-color-text-4);
-  margin-bottom: 8px;
-}
-
-.lab-teaser__title {
-  font-family: var(--th-font-serif);
-  font-weight: 300;
-  font-size: clamp(1.25rem, 2.2vw, 1.625rem);
-  letter-spacing: -0.015em;
-  color: var(--th-color-text-1);
-  margin-bottom: 8px;
-}
-
-.lab-teaser__title em {
-  font-style: italic;
-  color: var(--th-color-accent);
-}
-
-.lab-teaser__desc {
-  font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 370;
-  font-size: 0.875rem;
-  color: var(--th-color-text-3);
-  max-width: 480px;
-}
