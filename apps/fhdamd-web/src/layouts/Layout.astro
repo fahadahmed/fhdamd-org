@@ -20,6 +20,11 @@ const {
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, "https://fhdamd.dev").href;
+
+// Unset in local dev / PR preview builds by design — only the production
+// deploy's CI env carries a real value, so those builds don't pollute
+// production analytics data. See #335.
+const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
 ---
 
 <!doctype html>
@@ -58,6 +63,18 @@ const canonicalUrl = new URL(Astro.url.pathname, "https://fhdamd.dev").href;
     />
 
     <slot name="head" />
+
+    {gaMeasurementId && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}></script>
+        <script is:inline define:vars={{ gaMeasurementId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag() { dataLayer.push(arguments); }
+          gtag("js", new Date());
+          gtag("config", gaMeasurementId);
+        </script>
+      </>
+    )}
 
     <!-- Initialise theme from localStorage before first paint to avoid flash -->
     <script is:inline>
