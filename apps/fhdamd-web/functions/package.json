@@ -16,7 +16,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "firebase-functions": "^7.2.2",
-    "nodemailer": "^7.0.3"
+    "nodemailer": "^7.0.3",
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

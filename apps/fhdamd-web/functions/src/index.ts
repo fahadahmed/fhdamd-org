@@ -1,23 +1,18 @@
 import { onRequest } from "firebase-functions/v2/https";
-import { defineSecret, defineString } from "firebase-functions/params";
+import { defineSecret } from "firebase-functions/params";
 import * as logger from "firebase-functions/logger";
 import cors from "cors";
 import nodemailer from "nodemailer";
+import { z } from "zod";
 
 const RESEND_API_KEY = defineSecret("RESEND_API_KEY");
-
-const TO_ADDRESS = defineString("CONTACT_TO_ADDRESS", {
-  default: "contact@fhdamd.dev",
-});
-// Defaults to Resend's shared sandbox sender — no domain verification
-// required. Safe to rely on indefinitely here because this function only
-// ever sends to TO_ADDRESS, which is the Resend account's own registered
-// email; Resend's unverified-domain restriction (senders may only email
-// their own account address) is exactly this function's one and only
-// recipient. Override either param per-environment via a functions/.env.<project-id> file.
-const FROM_ADDRESS = defineString("CONTACT_FROM_ADDRESS", {
-  default: "Fahad Ahmed <onboarding@resend.dev>",
-});
+const CONTACT_TO_ADDRESS = defineSecret("CONTACT_TO_ADDRESS");
+// Set to Resend's shared sandbox sender — no domain verification required.
+// Safe to rely on indefinitely here because this function only ever sends to
+// CONTACT_TO_ADDRESS, which is the Resend account's own registered email;
+// Resend's unverified-domain restriction (senders may only email their own
+// account address) is exactly this function's one and only recipient.
+const CONTACT_FROM_ADDRESS = defineSecret("CONTACT_FROM_ADDRESS");
 
 const MAX_LENGTHS = {
   name: 200,
@@ -28,17 +23,19 @@ const MAX_LENGTHS = {
   message: 2000,
 } as const;
 
-interface ContactPayload {
-  name: string;
-  email: string;
-  business?: string;
-  interest?: string;
-  timeline?: string;
-  message: string;
-  honeypot?: string;
-}
+const trimmed = (max: number) => z.string().trim().max(max);
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const ContactSchema = z.object({
+  name: trimmed(MAX_LENGTHS.name).min(1, "Invalid name."),
+  email: trimmed(MAX_LENGTHS.email).email("Invalid email address."),
+  message: trimmed(MAX_LENGTHS.message).min(10, "Invalid message."),
+  business: trimmed(MAX_LENGTHS.business).optional(),
+  interest: trimmed(MAX_LENGTHS.interest).optional(),
+  timeline: trimmed(MAX_LENGTHS.timeline).optional(),
+  honeypot: z.string().optional(),
+});
+
+type ContactPayload = z.infer<typeof ContactSchema>;
 
 function isPreviewOrigin(origin: string): boolean {
   return /^https:\/\/[a-z0-9-]+\.(web\.app|firebaseapp\.com)$/.test(origin);
@@ -56,31 +53,11 @@ const corsHandler = cors({
 });
 
 function validate(body: unknown): { payload: ContactPayload } | { error: string } {
-  if (typeof body !== "object" || body === null) {
-    return { error: "Invalid request body." };
+  const result = ContactSchema.safeParse(body);
+  if (!result.success) {
+    return { error: result.error.issues[0]?.message ?? "Invalid request body." };
   }
-
-  const data = body as Record<string, unknown>;
-  const name = typeof data.name === "string" ? data.name.trim() : "";
-  const email = typeof data.email === "string" ? data.email.trim() : "";
-  const message = typeof data.message === "string" ? data.message.trim() : "";
-  const business = typeof data.business === "string" ? data.business.trim() : undefined;
-  const interest = typeof data.interest === "string" ? data.interest.trim() : undefined;
-  const timeline = typeof data.timeline === "string" ? data.timeline.trim() : undefined;
-  const honeypot = typeof data.honeypot === "string" ? data.honeypot : "";
-
-  if (!name || name.length > MAX_LENGTHS.name) return { error: "Invalid name." };
-  if (!email || email.length > MAX_LENGTHS.email || !EMAIL_PATTERN.test(email)) {
-    return { error: "Invalid email address." };
-  }
-  if (!message || message.length < 10 || message.length > MAX_LENGTHS.message) {
-    return { error: "Invalid message." };
-  }
-  if (business && business.length > MAX_LENGTHS.business) return { error: "Invalid business name." };
-  if (interest && interest.length > MAX_LENGTHS.interest) return { error: "Invalid interest." };
-  if (timeline && timeline.length > MAX_LENGTHS.timeline) return { error: "Invalid timeline." };
-
-  return { payload: { name, email, business, interest, timeline, message, honeypot } };
+  return { payload: result.data };
 }
 
 async function sendViaResend(payload: ContactPayload): Promise<void> {
@@ -105,8 +82,8 @@ async function sendViaResend(payload: ContactPayload): Promise<void> {
   ].filter((line): line is string => line !== undefined);
 
   await transporter.sendMail({
-    from: FROM_ADDRESS.value(),
-    to: TO_ADDRESS.value(),
+    from: CONTACT_FROM_ADDRESS.value(),
+    to: CONTACT_TO_ADDRESS.value(),
     replyTo: payload.email,
     subject: `[Contact] New message from ${payload.name}`,
     text: lines.join("\n"),
@@ -114,7 +91,7 @@ async function sendViaResend(payload: ContactPayload): Promise<void> {
 }
 
 export const sendContactMessage = onRequest(
-  { secrets: [RESEND_API_KEY] },
+  { secrets: [RESEND_API_KEY, CONTACT_TO_ADDRESS, CONTACT_FROM_ADDRESS] },
   (request, response) => {
     corsHandler(request, response, async () => {
       if (request.method !== "POST") {
