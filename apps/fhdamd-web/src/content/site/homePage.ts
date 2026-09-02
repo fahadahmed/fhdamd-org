@@ -1,6 +1,6 @@
 import type { HomePage } from "../types";
 
-export const homePage: Omit<HomePage, "personalProjects"> = {
+export const homePage: Omit<HomePage, "personalProjects" | "essays"> = {
   heroKicker: "Software engineer & solution architect · Melbourne",
   heroHeading: "I build custom websites *and apps.*",
   heroBody:
@@ -50,25 +50,4 @@ export const homePage: Omit<HomePage, "personalProjects"> = {
   labTeaserEyebrow: "Lab",
   labTeaserTitle: "Curious how the interactions *are built?*",
   labTeaserDesc: "UI experiments and interaction patterns, played with in the open — the demo-first counterpart to the blog.",
-
-  essays: [
-    {
-      date: "May 2026",
-      title: "Why Jamaal has no subscription",
-      subtitle: "On pricing honestly and respecting the people who pay you",
-      category: "product",
-    },
-    {
-      date: "Apr 2026",
-      title: "Pay-per-use is underrated for small SaaS",
-      subtitle: "What building Riqa taught me about pricing models",
-      category: "product",
-    },
-    {
-      date: "Mar 2026",
-      title: "One design system for four platforms",
-      subtitle: "How Threads tokens survive iOS, macOS, web, and watchOS",
-      category: "design",
-    },
-  ],
 };

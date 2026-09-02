@@ -228,7 +228,7 @@ const ctaActions = createElement(
                 subtitle={essay.subtitle}
                 category={essay.category}
                 first={i === 0}
-                href="/blog/post"
+                href={`/blog/${essay.slug}`}
               />
             ))}
           </div>
