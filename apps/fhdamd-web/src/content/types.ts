@@ -74,10 +74,11 @@ export interface CaseStudyStatItem {
 }
 
 export interface EssayTeaser {
+  slug: string;
   date: string;
   title: string;
   subtitle: string;
-  category: "design" | "product" | "dev";
+  category?: "design" | "product" | "dev";
 }
 
 export interface HomePage {

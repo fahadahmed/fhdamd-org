@@ -40,6 +40,16 @@ function byOrder<T extends { data: { order: number } }>(a: T, b: T): number {
   return a.data.order - b.data.order;
 }
 
+const ESSAY_CATEGORIES = ["design", "product", "dev"] as const;
+type EssayCategory = (typeof ESSAY_CATEGORIES)[number];
+
+/** EssayRow only has chip styling for this closed set — other tags (e.g. "architecture") get no chip. */
+function toEssayCategory(tag: string | undefined): EssayCategory | undefined {
+  return ESSAY_CATEGORIES.find((category) => category === tag);
+}
+
+const HOME_ESSAY_COUNT = 3;
+
 export async function getSiteSettings(): Promise<SiteSettings> {
   return siteSettings;
 }
@@ -53,10 +63,28 @@ export async function getContactPage(): Promise<ContactPage> {
 }
 
 export async function getHomePage(): Promise<HomePage> {
-  const products = (await getCollection("products")).sort(byOrder);
+  const [products, posts] = await Promise.all([
+    getCollection("products"),
+    getCollection("blog"),
+  ]);
+
+  const essays = posts
+    .sort((a, b) => Date.parse(b.data.date) - Date.parse(a.data.date))
+    .slice(0, HOME_ESSAY_COUNT)
+    .map((entry) => ({
+      slug: entry.id,
+      date: entry.data.date,
+      // EssayRow's title is plain text, unlike titleToReact()'s *emphasis*
+      // consumers elsewhere — strip the markup rather than show it literally.
+      title: entry.data.title.replace(/\*/g, ""),
+      subtitle: entry.data.dek,
+      category: toEssayCategory(entry.data.tags[0]),
+    }));
+
   return {
     ...homePage,
-    personalProjects: products.map((entry) => entry.data),
+    personalProjects: products.sort(byOrder).map((entry) => entry.data),
+    essays,
   };
 }
 
