@@ -7,7 +7,7 @@ import nodemailer from "nodemailer";
 const RESEND_API_KEY = defineSecret("RESEND_API_KEY");
 
 const TO_ADDRESS = defineString("CONTACT_TO_ADDRESS", {
-  default: "fahad.ahmed@me.com",
+  default: "contact@fhdamd.dev",
 });
 // Defaults to Resend's shared sandbox sender — no domain verification
 // required. Safe to rely on indefinitely here because this function only
