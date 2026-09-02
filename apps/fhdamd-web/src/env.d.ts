@@ -8,4 +8,6 @@ interface ImportMetaEnv {
   /** Unset locally — Sentry.init() no-ops cleanly with no dsn. See sentry.client.config.ts. */
   readonly PUBLIC_SENTRY_DSN?: string;
   readonly PUBLIC_APP_ENV?: string;
+  /** HTTPS trigger URL for the sendContactMessage Cloud Function. */
+  readonly PUBLIC_CONTACT_FUNCTION_URL?: string;
 }

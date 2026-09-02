@@ -75,6 +75,8 @@ jobs:
 
       - name: Build fhdamd-web
         run: pnpm --filter fhdamd-web build
+        env:
+          PUBLIC_CONTACT_FUNCTION_URL: https://us-central1-fahad-web.cloudfunctions.net/sendContactMessage
 
       - name: Deploy to Firebase Hosting (preview channel)
         uses: FirebaseExtended/action-hosting-deploy@500ac625ca2dd40cbd15f7659af953801858032a # v0
@@ -117,6 +119,7 @@ jobs:
           PUBLIC_GA_MEASUREMENT_ID: ${{ secrets.PUBLIC_GA_MEASUREMENT_ID }}
           PUBLIC_SENTRY_DSN: ${{ secrets.PUBLIC_SENTRY_DSN }}
           PUBLIC_APP_ENV: production
+          PUBLIC_CONTACT_FUNCTION_URL: https://us-central1-fahad-web.cloudfunctions.net/sendContactMessage
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       - name: Deploy to Firebase Hosting (live)
