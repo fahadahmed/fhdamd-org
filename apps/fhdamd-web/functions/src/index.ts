@@ -1,13 +1,23 @@
 import { onRequest } from "firebase-functions/v2/https";
-import { defineSecret } from "firebase-functions/params";
+import { defineSecret, defineString } from "firebase-functions/params";
 import * as logger from "firebase-functions/logger";
 import cors from "cors";
 import nodemailer from "nodemailer";
 
 const RESEND_API_KEY = defineSecret("RESEND_API_KEY");
 
-const TO_ADDRESS = "fahad.ahmed@me.com";
-const FROM_ADDRESS = "Fahad Ahmed <no-reply@fhdamd.dev>";
+const TO_ADDRESS = defineString("CONTACT_TO_ADDRESS", {
+  default: "fahad.ahmed@me.com",
+});
+// Defaults to Resend's shared sandbox sender — no domain verification
+// required. Safe to rely on indefinitely here because this function only
+// ever sends to TO_ADDRESS, which is the Resend account's own registered
+// email; Resend's unverified-domain restriction (senders may only email
+// their own account address) is exactly this function's one and only
+// recipient. Override either param per-environment via a functions/.env.<project-id> file.
+const FROM_ADDRESS = defineString("CONTACT_FROM_ADDRESS", {
+  default: "Fahad Ahmed <onboarding@resend.dev>",
+});
 
 const MAX_LENGTHS = {
   name: 200,
@@ -95,8 +105,8 @@ async function sendViaResend(payload: ContactPayload): Promise<void> {
   ].filter((line): line is string => line !== undefined);
 
   await transporter.sendMail({
-    from: FROM_ADDRESS,
-    to: TO_ADDRESS,
+    from: FROM_ADDRESS.value(),
+    to: TO_ADDRESS.value(),
     replyTo: payload.email,
     subject: `[Contact] New message from ${payload.name}`,
     text: lines.join("\n"),
