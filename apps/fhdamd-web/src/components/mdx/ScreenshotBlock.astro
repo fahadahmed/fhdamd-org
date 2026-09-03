@@ -2,10 +2,12 @@
 import { ScreenshotFigure } from "@fhdamd/threads";
 
 interface Props {
+  url?: string;
+  alt?: string;
   caption?: string;
 }
 
-const { caption } = Astro.props;
+const { url, alt, caption } = Astro.props;
 ---
 
-<ScreenshotFigure caption={caption} />
+<ScreenshotFigure src={url} alt={alt} caption={caption} />
