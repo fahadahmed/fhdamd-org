@@ -67,7 +67,7 @@ export function MermaidDiagramCard({
 
   return (
     <div className={[styles.card, className].filter(Boolean).join(" ")} {...rest}>
-      <div className={styles.label}>
+      <div className={[styles.label, expanded ? styles.labelExpanded : ""].filter(Boolean).join(" ")}>
         {icon ?? <DefaultIcon />}
         {label}
         {/* Hidden while expanded rather than left showing a redundant
