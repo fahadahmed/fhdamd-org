@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.6.0...threads-v0.6.1) (2026-09-05)
+
+
+### Bug Fixes
+
+* **threads:** opaque fullscreen backdrop, center the expanded diagram ([#352](https://github.com/fahadahmed/fhdamd-org/issues/352)) ([d434979](https://github.com/fahadahmed/fhdamd-org/commit/d4349799ad43ef999aacbff61184eb29609b9471))
+
 ## [0.6.0](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.5.2...threads-v0.6.0) (2026-08-26)
 
 
