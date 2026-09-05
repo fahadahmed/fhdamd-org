@@ -54,7 +54,7 @@ const relatedPosts = post.data.relatedSlugs
   .filter((p): p is (typeof allPosts)[number] => Boolean(p));
 const relatedTitle = titleToReact("Related *posts*");
 
-const canonicalUrl = new URL(Astro.url.pathname, "https://fhdamd.dev").href;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const shareText = encodeURIComponent(post.data.title.replace(/\*/g, ""));
 const twitterShareHref = `https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(canonicalUrl)}`;
 const linkedinShareHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonicalUrl)}`;
@@ -80,6 +80,7 @@ const ctaActions = createElement(
 <Layout
   title={`${post.data.title.replace(/\*/g, "")} — Fahad Ahmed · fhdamd.dev`}
   description={post.data.dek}
+  ogType="article"
 >
   <ArticleReadingProgress client:load targetSelector=".post-article" />
 

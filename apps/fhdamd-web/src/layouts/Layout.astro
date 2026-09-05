@@ -9,17 +9,19 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  ogType?: "website" | "article";
   noindex?: boolean;
 }
 
 const {
   title = "Fahad Ahmed — Software engineer for hire, Melbourne",
   description = "I build custom websites and apps. 14 years shipping production software across government, finance, and utilities.",
-  ogImage = "https://fhdamd.dev/og-default.png",
+  ogImage = new URL("/og-image.png", Astro.site).href,
+  ogType = "website",
   noindex = false,
 } = Astro.props;
 
-const canonicalUrl = new URL(Astro.url.pathname, "https://fhdamd.dev").href;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 
 // Unset in local dev / PR preview builds by design — only the production
 // deploy's CI env carries a real value, so those builds don't pollute
@@ -32,7 +34,10 @@ const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="generator" content={Astro.generator} />
 
     <title>{title}</title>
@@ -44,8 +49,10 @@ const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="fhdamd.dev" />
 
     <!-- Twitter Card -->

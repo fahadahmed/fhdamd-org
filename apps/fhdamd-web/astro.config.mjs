@@ -3,10 +3,12 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import sentry from '@sentry/astro';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
+  site: 'https://fhdamd.dev',
 
   integrations: [
     react(),
@@ -16,5 +18,6 @@ export default defineConfig({
       project: 'fhdamd-web',
       authToken: process.env.SENTRY_AUTH_TOKEN,
     }),
+    sitemap(),
   ],
 });
