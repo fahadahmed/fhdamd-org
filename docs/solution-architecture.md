@@ -4,7 +4,7 @@
 **Repository:** fhdamd-org (Monorepo) \
 **Author:** Fahad Ahmed \
 **Status:** Draft \
-**Last Updated:** 19 Jun 2026
+**Last Updated:** 05 Sep 2026
 
 ## 1. Purpose & Scope
 
@@ -44,7 +44,7 @@ tooling/
 | Component | Type | Stack | Hosting | Status |
 |---|---|---|---|---|
 | **pdf-craft** | Product (web app) | Astro + React, Firebase | Firebase App Hosting (Cloud Run) | Active — see [sad-pdfcraft.md](sad-pdfcraft.md) |
-| **fhdamd-web** | Product (personal site) | Astro + React | Firebase App Hosting (Cloud Run) | Active |
+| **fhdamd-web** | Product (personal site) | Astro (static) + React, one Firebase Function | Firebase Hosting (static) + Cloud Functions | Active — see [sad-fhdamd-web.md](sad-fhdamd-web.md) |
 | **pdf-processor** | Internal service | Express + qpdf (Cloud Run) | Cloud Run | Active — supports pdf-craft |
 | **threads** | Shared package | React + CSS Modules | npm registry / Storybook on Firebase Hosting | Active — published, versioned independently |
 
@@ -87,7 +87,9 @@ C4Context
   Rel(pdfcraft, datocms, "Fetches pricing / FAQ / operation content", "GraphQL")
   Rel(pdfcraft, sentry, "Reports errors & traces", "HTTPS")
   Rel(pdfcraft, recaptcha, "Verifies human interaction on auth flows", "HTTPS")
-  Rel(fhdamdweb, firebase, "Hosting", "Firebase App Hosting")
+  Rel(fhdamdweb, firebase, "Static hosting; one Cloud Function for the contact form", "Firebase Hosting + Cloud Functions")
+  Rel(fhdamdweb, resend, "Sends the contact form notification email", "SMTP")
+  Rel(fhdamdweb, sentry, "Reports client-side errors", "HTTPS")
   Rel(processor, firebase, "Runs on", "Cloud Run")
   Rel(threads, npm, "Published to")
   Rel(github, firebase, "Deploys to", "Firebase CLI / service account")
@@ -134,7 +136,7 @@ Documenting these honestly here so the record stays accurate as they're addresse
 
 - **Storage rules deny all access by design**, relying entirely on signed download tokens for file access rather than expiring, time-boxed URLs — flagged in detail in the [PDF-Craft SAD §9.5](sad-pdfcraft.md#95-known-gaps-flagged-honestly-for-future-hardening). (Firestore rules, previously flagged here as overly permissive, are now scoped per-user and resolved.)
 - **E2E coverage is narrow** — the Playwright suite gating PRD promotion covers auth redirects, dashboard load, and one operation (encrypt); payment flows, sign-up, and the other PDF operations aren't yet covered. See [PDF-Craft SAD §9.5](sad-pdfcraft.md#95-known-gaps-flagged-honestly-for-future-hardening).
-- **Per-product SADs** — `fhdamd-web`, `pdf-processor`, and `@fhdamd/threads` do not yet have their own architecture documents. As they grow in complexity, they should follow the template established by [sad-pdfcraft.md](sad-pdfcraft.md).
+- **Per-product SADs** — `fhdamd-web` now has its own ([sad-fhdamd-web.md](sad-fhdamd-web.md)). `pdf-processor` and `@fhdamd/threads` still don't; as they grow in complexity, they should follow the same template.
 - **The RC/E2E/promotion pipeline is PDF-Craft–specific today** — if/when another product needs a STG/PRD split, the Terraform module and workflow shape generalise directly, but the workflows themselves (`deploy-staging.yml`, `deploy-prod.yml`, etc.) would need to be duplicated/parameterised rather than reused as-is.
 
 ## Appendix
