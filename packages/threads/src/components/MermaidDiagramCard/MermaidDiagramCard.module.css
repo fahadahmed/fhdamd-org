@@ -51,6 +51,22 @@
   outline-offset: 2px;
 }
 
+/* Pinned to the viewport corner once expanded, like .closeBtn — its normal
+   in-flow position depends on wherever the card happened to be scrolled to
+   when expanded, which could be off-screen or awkwardly placed. Left-aligned
+   to stay clear of .closeBtn (top-right) and given a solid background since
+   it now sits over the fullscreen surface rather than the card's own top. */
+.labelExpanded {
+  position: fixed;
+  top: var(--th-space-6);
+  left: var(--th-space-6);
+  z-index: 1002;
+  margin-block-end: 0;
+  padding: 8px 12px;
+  border-radius: var(--th-radius-sm);
+  background: var(--th-color-surface-2);
+}
+
 .diagram {
   display: flex;
   justify-content: center;
@@ -67,25 +83,40 @@
   inset: 0;
   z-index: 1001;
   align-items: center;
-  padding: var(--th-space-10);
+  /* Extra top clearance for .labelExpanded, fixed at the same top-left
+     corner — without it, a tall centered diagram can sit directly behind
+     the label instead of visibly below it. */
+  padding: calc(var(--th-space-10) + 56px) var(--th-space-10) var(--th-space-10);
   overflow: auto;
   pointer-events: none;
 }
 
+/* Caps width well below the viewport rather than fighting the consuming
+   app's own inline sizing (typically width: 100%, set so the diagram fills
+   its card in the normal, non-expanded layout — see apps/fhdamd-web's
+   MermaidDiagram.tsx) with `!important`+`auto`: an SVG whose only intrinsic
+   sizing information is a viewBox (no width/height attributes) has nothing
+   to resolve `width: auto` against and collapses to zero — verified by
+   screenshotting the regression this caused. max-width legitimately clamps
+   a percentage width's *used* value regardless of where the percentage
+   came from, so "100%" here correctly resolves against this smaller cap
+   instead of the full viewport — no !important needed, and a nested SVG
+   sized at 100% of this now-capped wrapper is capped in turn automatically. */
 .diagramExpanded > * {
-  max-width: 100%;
+  max-width: min(1100px, calc(100vw - 2 * var(--th-space-10)));
   max-height: 100%;
 }
 
-/* Dim scrim, not an opaque wall — this sits below .diagramExpanded's
-   content but above everything else on the page, regardless of the page's
-   current scroll position, and is the actual click target that closes on
-   click (including clicks on the diagram itself, which pass through). */
+/* Opaque, not a dim scrim — a fullscreen reading surface for the diagram,
+   not a photo lightbox over the page. Sits below .diagramExpanded's content
+   but above everything else on the page, regardless of the page's current
+   scroll position, and is the actual click target that closes on click
+   (including clicks on the diagram itself, which pass through). */
 .backdrop {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--th-color-surface-1);
   cursor: zoom-out;
   border: none;
   padding: 0;
