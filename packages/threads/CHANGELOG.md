@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.2](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.6.1...threads-v0.6.2) (2026-09-05)
+
+
+### Bug Fixes
+
+* **threads:** actually center the expanded Mermaid diagram ([#354](https://github.com/fahadahmed/fhdamd-org/issues/354)) ([6fa578b](https://github.com/fahadahmed/fhdamd-org/commit/6fa578b94f773aa50536a4d36402172edd503ace))
+
 ## [0.6.1](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.6.0...threads-v0.6.1) (2026-09-05)
 
 
