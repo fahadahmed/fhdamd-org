@@ -1,0 +1,82 @@
+---
+title: "Why Astro, Firebase, and DatoCMS *for small business builds*"
+dek: "None of these are the trendiest choice. All three earn their place by minimising what a small business has to maintain once I'm not in the room."
+breadcrumbCategory: "Architecture"
+date: "05 Sep 2026"
+tags: ["dev", "architecture"]
+postTags: ["Architecture", "Astro", "Firebase", "DatoCMS"]
+relatedSlugs: ["20-minute-website-audit", "config-driven-multi-step-forms-with-zod"]
+---
+
+## The real constraint isn't *scale*
+
+Small business builds almost never fail on scale. RZest Engineers isn't going to see a Black Friday traffic spike; Riqa's PDF processing doesn't need to survive a Super Bowl ad. What they actually need to survive is the eighteen months after launch, when the person who built the site has moved on to the next thing and whoever's left has to keep it running, keep it updated, and keep the hosting bill predictable.
+
+That's the lens I pick a stack through: not "what can handle the most load," but "what breaks the least, and who has to fix it when it does."
+
+<CalloutBlock variant="tip" title="The question that actually matters">
+Not "can this scale to a million users" — almost nothing I build needs to. It's "who updates this content in six months, and do they need to file a ticket with me to do it."
+</CalloutBlock>
+
+## Astro: *ship less, ship faster*
+
+Most small business sites are mostly static — a homepage, a services page, a portfolio, a handful of blog posts. They don't need a client-side router re-rendering the whole page on every navigation. Astro's default is zero JavaScript shipped to the browser unless a component explicitly asks for it, which for a brochure site means the actual interactive surface area — a filter, a contact form, a copy-link button — is the only JS that ships at all.
+
+This site is the example: the homepage, about, services, and every blog post are fully static HTML. The handful of places that need real interactivity — the contact form, the blog's tag filter, the table of contents — are individually hydrated islands, not a whole app framework loaded to render a paragraph of text.
+
+RZest's portfolio site used the same pattern: a filterable project grid was the one genuinely dynamic piece, sitting inside an otherwise static, DatoCMS-backed brochure site. Nobody had to reach for a full SPA to get one filter working.
+
+## DatoCMS: *right for the client, wrong for me*
+
+Here's the part that doesn't fit neatly into a "always use X" recommendation: I used DatoCMS for RZest, and I moved this site *off* DatoCMS and onto Astro Content Collections not long after building it that way.
+
+Both were correct calls, for different reasons. RZest's team needed to add a new completed project to their portfolio without emailing a developer every time — that's exactly the constraint a headless CMS with a real editor UI solves. A non-technical team member logs in, fills in a form, publishes, and the site rebuilds. No git, no MDX, no deploy pipeline they need to understand.
+
+I'm the only person who edits this site's content, and I'm comfortable in a text editor. For me, an external CMS added a network dependency, an extra account to manage, and a layer of indirection between "I wrote a paragraph" and "it's in git" — with none of the upside, because there was no non-technical collaborator the CMS was protecting me from.
+
+<MdxCode filename="src/content.config.ts" lang="ts" code={`import { defineCollection, z } from "astro:content";
+import { glob } from "astro/loaders";
+
+// Blog posts are plain MDX files in the repo — no CMS round-trip,
+// no webhook to keep in sync, just files that build-time content
+// collections read directly.
+const blog = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/blog" }),
+  schema: z.object({
+    title: z.string(),
+    dek: z.string(),
+    date: z.string(),
+    tags: z.array(z.string()),
+  }),
+});`} />
+
+Same underlying question as the scale one: who's actually editing this content, and what do they need to be productive. For a client with a team, that's a CMS. For a solo maintainer, that's often just files in the repo.
+
+## Firebase: *a backend you don't have to run*
+
+The common thread across pdf-craft (Riqa) and this site's own contact form is the same: neither needed a server sitting somewhere waiting for requests. Riqa's PDF processing runs as Cloud Functions triggered by Pub/Sub events, with Firestore holding job state and Storage holding the files — no VM to patch, no process manager to babysit, and a bill that scales down to near-zero between customers rather than idling at a fixed monthly cost.
+
+This site's contact form is the smallest possible version of the same idea: one HTTP-triggered Cloud Function, `sendContactMessage`, that validates the payload and sends an email. It didn't need its own server, its own deploy pipeline, or its own uptime monitoring — it's a few dozen lines of TypeScript that Firebase runs on demand and bills for by the invocation.
+
+<StatRowBlock stats={[
+  { number: "0", label: "Servers provisioned for the contact form" },
+  { number: "1", label: "Cloud Function handling the whole flow" },
+  { number: "3", label: "Firebase products reused across Riqa and this site — Functions, Firestore, Storage" },
+]} />
+
+For a small business, that pay-for-what-you-use model matters more than it sounds like it should. A brochure site or a low-traffic product doesn't justify a fixed server cost; Firebase's free tier and per-invocation pricing mean the infrastructure cost tracks actual usage instead of sitting there as a fixed line item regardless of whether anyone visited that month.
+
+## Where this doesn't *fit*
+
+None of this is a universal recommendation. Astro's island architecture starts fighting you once most of the page genuinely needs to be interactive — a real web app with heavy client state is better served by a framework built around that from the start, not one retrofitted onto a mostly-static page. DatoCMS (or any headless CMS) is worth its cost the moment more than one non-technical person needs to publish content — the calculus flips entirely from what's right for this site. And Firebase's serverless model has a real ceiling: long-running jobs, workloads that need consistent low latency, or anything that outgrows Firestore's query model eventually wants a different kind of backend.
+
+<CalloutBlock variant="warn" title="The stack follows the constraint, not the other way around">
+I've had this conversation with prospective clients who read a "why we use X" post and assumed X was the answer to their brief too. The actual first question is always who maintains this and what changes about it in a year — the stack falls out of that, not the reverse.
+</CalloutBlock>
+
+## Takeaways
+
+- Pick for who maintains the site after launch, not for how much traffic it might one day get.
+- Astro's zero-JS-by-default model fits content-heavy small business sites well; hydrate only the pieces that are genuinely interactive.
+- A headless CMS earns its cost when a non-technical person needs to publish — not by default.
+- Serverless (Firebase Functions + Firestore + Storage) fits workloads that are bursty or low-volume, where a fixed server cost would sit idle most of the time.

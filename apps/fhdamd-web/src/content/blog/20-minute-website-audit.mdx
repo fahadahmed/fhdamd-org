@@ -1,0 +1,74 @@
+---
+title: "How to run your own *20-minute website audit*"
+dek: "The same checklist I run before I ever quote a rebuild — five minutes each on performance, mobile, findability, and conversion paths."
+breadcrumbCategory: "Product"
+date: "10 Sep 2026"
+tags: ["product"]
+postTags: ["Product", "Audits", "SEO"]
+relatedSlugs: ["astro-firebase-datocms-for-small-business"]
+---
+
+## Most problems are *findable in minutes*
+
+Every discovery call starts the same way for me: before I say anything about a rebuild, I run the same 20-minute pass over the existing site. Not a full technical audit — that comes later, if it's warranted — just enough to know whether the problems are cosmetic or structural, and whether "a rebuild" is even the right conversation to be having yet.
+
+This is that checklist, in full, so you can run it yourself before you talk to anyone about fixing it — including me.
+
+<CalloutBlock variant="tip" title="Why this is worth doing yourself first">
+Half the small business sites I look at have a five-minute fix hiding among the reasons someone thinks they need a full rebuild. Knowing which category you're in changes the conversation entirely.
+</CalloutBlock>
+
+## Minute 0–5: *performance*
+
+Open the homepage in an incognito window on a throttled connection — Chrome DevTools' Network tab has a "Slow 4G" preset built in. Most visitors on a phone, outside, on real mobile data, are closer to this than to your office wifi.
+
+- Does the page show *something* meaningful within 2–3 seconds, or is it a blank white screen?
+- Open DevTools' Lighthouse tab and run a mobile report. A Performance score under 50 usually means something specific and fixable — an unoptimised hero image, an unnecessary carousel library, a font loading strategy that blocks rendering.
+- Check the Network tab's total transferred size. A brochure site pushing more than 3–4MB before interaction is almost always an images problem, not an architecture problem.
+
+## Minute 5–10: *mobile*
+
+More than half of a small business's traffic is on a phone, and it's usually the least-tested viewport.
+
+- Resize the browser to 375px wide (or use DevTools' device toolbar) and scroll the entire homepage.
+- Look specifically for: text that overflows its container, tap targets smaller than about 44px, a navigation menu that doesn't actually open, and horizontal scroll that shouldn't be there.
+- Try the primary call to action — book a call, request a quote, whatever it is — with your thumb, not your mouse. If it takes more than two taps to get to a contact method, that's the finding.
+
+## Minute 10–15: *findability*
+
+This isn't a full SEO audit — it's checking whether the basics are even in place.
+
+- View source (or DevTools' Elements panel) and check for a `<title>` tag and a `<meta name="description">` that actually describe the page, not a generic template default repeated on every page.
+- Paste the homepage URL into a social media composer (or a tool like opengraph.xyz) and see whether a real preview image and description show up, or nothing at all.
+- Search Google for `site:yourdomain.com` and skim how many pages are actually indexed — a number wildly lower than the page count you'd expect is worth investigating.
+
+<CalloutBlock variant="warn" title="A broken OG image is more common than you'd think">
+I found exactly this on my own site while writing this checklist — the default social preview image had never actually been added, so every shared link failed silently. It's an easy thing to never notice because you don't see your own site's link previews; other people do.
+</CalloutBlock>
+
+## Minute 15–20: *conversion paths*
+
+The last five minutes are about the one thing the site is actually supposed to do — get someone to make contact.
+
+- Find the contact form (or booking flow, or checkout) and actually submit it as a test. Does a real email arrive? Does anything visibly break?
+- Count the number of clicks from the homepage to that form. More than two is worth questioning.
+- Check whether the form works with JavaScript-heavy browser extensions or ad blockers active — a surprising number of contact forms silently fail for a slice of visitors because of exactly this.
+
+<StatRowBlock stats={[
+  { number: "20", unit: "min", label: "Total time to run the full checklist" },
+  { number: "4", label: "Areas covered — performance, mobile, findability, conversion" },
+  { number: "0", label: "Tools needed beyond what's already in your browser" },
+]} />
+
+## What to do with what you *find*
+
+Not every finding means the same thing. A slow hero image is an afternoon's fix. A contact form that silently fails is urgent — it's actively costing leads right now, quietly. A site that's fundamentally hard to navigate on mobile is a real project, but not necessarily a full rebuild — sometimes it's one template.
+
+If you run this and most of what you find is small and specific, that's good news — those are the fixes that don't need a new site, just attention. If what you find is closer to "the whole thing needs to be rethought," that's a different, bigger conversation — and worth having with real findings in hand rather than a vague sense that "it feels dated."
+
+## Takeaways
+
+- Run this before any conversation about a rebuild — it tells you whether the problem is small and specific or structural.
+- Performance and mobile issues are usually visible within minutes using nothing but browser DevTools.
+- A broken OG image or silently-failing contact form is common, easy to miss from the inside, and actively costing you leads.
+- Specific findings lead to a much more useful conversation than "the site feels old."

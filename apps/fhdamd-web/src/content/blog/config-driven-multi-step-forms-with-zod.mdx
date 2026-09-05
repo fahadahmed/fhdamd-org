@@ -1,0 +1,156 @@
+---
+title: "Config-driven multi-step forms *with Zod validation*"
+dek: "One config object drives both the rendered fields and the validation rules — so the two can't quietly drift apart the way hand-written schemas do."
+breadcrumbCategory: "Dev"
+date: "17 Sep 2026"
+tags: ["dev", "architecture"]
+postTags: ["Dev", "Forms", "Zod", "TypeScript"]
+relatedSlugs: ["astro-firebase-datocms-for-small-business"]
+---
+
+## The problem with *two sources of truth*
+
+A multi-step form usually ends up with its fields defined in one place — JSX, or a form-builder config — and its validation defined in another, by hand, as a parallel Zod schema. The two start in sync. Six months and a dozen small changes later, they don't: a field gets renamed in the UI but not the schema, or a "required" toggle changes in one place and not the other, and the bug that surfaces is a silent one — a field that renders but can never actually fail validation, or a submission that validates but doesn't match what the form displayed.
+
+<CalloutBlock variant="tip" title="A note on the example below">
+I've built several config-driven, multi-step forms this way for client work — the real implementations are under NDA, so what follows is a worked example built specifically for this post: an airport transfer booking wizard. The architecture is the same pattern; the scenario is illustrative.
+</CalloutBlock>
+
+The fix is the same idea that shows up everywhere else I default to config over hand-coding: define the form once, and derive everything else — rendering *and* validation — from that single definition.
+
+## The *scenario*
+
+An airport transfer company wants a booking wizard with a handful of steps, some of which depend on earlier answers:
+
+1. **Trip type & route** — one-way or return, pickup and drop-off locations, date and time.
+2. **Return details** — only shown at all if trip type is "return."
+3. **Passengers & luggage** — passenger count, luggage count, whether a child seat is needed.
+4. **Vehicle & extras** — vehicle class, optional meet-and-greet, optional flight tracking.
+5. **Contact details** — name, email, phone, special instructions.
+
+The step count and the exact fields on each step are the kind of thing that changes seasonally — a flight-number field added during a peak period, an extra vehicle class added, a step removed — and none of that should need an engineer to touch code and redeploy.
+
+## One config, *two outputs*
+
+The config is a plain array of steps, each with typed field definitions. Nothing here is Zod-specific yet — this is just data:
+
+<MdxCode filename="src/lib/forms/transferConfig.ts" lang="ts" code={`export type FieldConfig =
+  | { type: 'text'; name: string; label: string; required?: boolean; maxLength?: number }
+  | { type: 'select'; name: string; label: string; options: string[]; required?: boolean }
+  | { type: 'number'; name: string; label: string; min?: number; max?: number; required?: boolean }
+  | { type: 'boolean'; name: string; label: string };
+
+export interface StepConfig {
+  id: string;
+  title: string;
+  fields: FieldConfig[];
+  /** Evaluated against answers collected so far — skips the whole step if true. */
+  skipIf?: (values: Record<string, unknown>) => boolean;
+}
+
+export const transferFormSteps: StepConfig[] = [
+  {
+    id: 'trip',
+    title: 'Trip type & route',
+    fields: [
+      { type: 'select', name: 'tripType', label: 'Trip type', options: ['one-way', 'return'], required: true },
+      { type: 'text', name: 'pickup', label: 'Pickup location', required: true, maxLength: 200 },
+      { type: 'text', name: 'dropoff', label: 'Drop-off location', required: true, maxLength: 200 },
+    ],
+  },
+  {
+    id: 'return',
+    title: 'Return details',
+    skipIf: (values) => values.tripType !== 'return',
+    fields: [
+      { type: 'text', name: 'returnDate', label: 'Return date', required: true },
+    ],
+  },
+  {
+    id: 'passengers',
+    title: 'Passengers & luggage',
+    fields: [
+      { type: 'number', name: 'passengers', label: 'Passengers', min: 1, max: 8, required: true },
+      { type: 'boolean', name: 'needsChildSeat', label: 'Travelling with a child under 4?' },
+    ],
+  },
+];`} />
+
+## Deriving the *Zod schema*
+
+A field-type-to-Zod mapping turns each `FieldConfig` into a validator, and a step-level function folds a step's fields into one `z.object`:
+
+<MdxCode filename="src/lib/forms/configToZod.ts" lang="ts" code={`import { z } from 'zod';
+import type { FieldConfig, StepConfig } from './transferConfig';
+
+function fieldToZod(field: FieldConfig): z.ZodTypeAny {
+  let schema: z.ZodTypeAny;
+
+  switch (field.type) {
+    case 'text':
+      schema = z.string().trim().max(field.maxLength ?? 500);
+      break;
+    case 'select':
+      schema = z.enum(field.options as [string, ...string[]]);
+      break;
+    case 'number':
+      schema = z.number().min(field.min ?? 0).max(field.max ?? Infinity);
+      break;
+    case 'boolean':
+      schema = z.boolean();
+      break;
+  }
+
+  const isRequired = 'required' in field && field.required;
+  return isRequired || field.type === 'boolean' ? schema : schema.optional();
+}
+
+export function stepToZodSchema(step: StepConfig) {
+  const shape = Object.fromEntries(
+    step.fields.map((field) => [field.name, fieldToZod(field)]),
+  );
+  return z.object(shape);
+}`} />
+
+Change a field's `maxLength` in the config, and the validation changes with it — automatically, because it's reading the same object the form renders from. There's no second place to remember to update.
+
+## Wiring it into the *step-by-step flow*
+
+The wizard component only needs to know three things at any point: which step it's on, what's been answered so far, and whether the current step's answers pass its derived schema before allowing "Next":
+
+<MdxCode filename="src/components/TransferWizard.tsx" lang="tsx" code={`function useTransferWizard(steps: StepConfig[]) {
+  const [stepIndex, setStepIndex] = useState(0);
+  const [values, setValues] = useState<Record<string, unknown>>({});
+
+  const activeSteps = steps.filter((step) => !step.skipIf?.(values));
+  const currentStep = activeSteps[stepIndex];
+  const currentSchema = stepToZodSchema(currentStep);
+
+  function goNext(stepValues: Record<string, unknown>) {
+    const result = currentSchema.safeParse(stepValues);
+    if (!result.success) return result.error;
+
+    setValues((prev) => ({ ...prev, ...result.data }));
+    setStepIndex((i) => Math.min(i + 1, activeSteps.length - 1));
+    return null;
+  }
+
+  return { currentStep, goNext, values };
+}`} />
+
+The `skipIf` re-evaluation on every render is what makes the "return details" step disappear the moment trip type flips back to one-way — the active step list is recomputed from current answers, not fixed at form start.
+
+## Where this *breaks down*
+
+Per-field validation covers most cases, but not cross-field rules — "drop-off can't equal pickup," or "return date must be after the outbound date," need a `.refine()` or `.superRefine()` on the whole step schema, which the simple field-to-Zod mapping doesn't generate on its own. In practice I add a small `crossFieldRules` array to the step config, applied as `.superRefine()` after the per-field shape is built — still config-driven, just one layer up.
+
+<CalloutBlock variant="warn" title="Config-driven isn't zero-code">
+The config removes *duplication*, not the need for judgement calls — someone still has to decide what "required" means for a given field, and cross-field rules still need to be written somewhere. What it removes is the two-schemas-quietly-drifting-apart failure mode.
+</CalloutBlock>
+
+## Takeaways
+
+- Define form fields once, as data — derive both the rendered UI and the Zod validation from that same definition.
+- A field-type-to-Zod mapping function keeps the two from drifting apart as the config changes.
+- `skipIf` predicates evaluated against current answers handle conditional steps without a second, separate branching system.
+- Cross-field rules still need explicit `.refine()`/`.superRefine()` — config-driven reduces duplication, it doesn't eliminate the need to think about validation.
