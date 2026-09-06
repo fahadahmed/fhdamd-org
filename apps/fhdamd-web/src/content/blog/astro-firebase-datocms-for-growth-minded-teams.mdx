@@ -31,8 +31,8 @@ And Astro isn't confined to the marketing site. [Riqa](https://riqa.app) is a fu
 
 <MermaidDiagramBlock label="Astro output modes · Mermaid" caption="One framework, two output modes — the choice is per-project, not a ceiling on the framework" source={`flowchart TD
     accTitle: Astro's output mode is a per-project choice
-    accDescr: This site renders with output static as a fast marketing site with no server. Riqa renders with output server as a fully authenticated SaaS product with a dashboard, billing, and file processing.
-    A[Astro] -->|output: static| B["fhdamd.dev<br/>static marketing site, zero server"]
+    accDescr: This site renders with output static — HTML is pre-rendered at build time, so there is no server running at request time. Riqa renders with output server as a fully authenticated SaaS product with a dashboard, billing, and file processing.
+    A[Astro] -->|output: static| B["fhdamd.dev<br/>pre-rendered at build time<br/>no server at request time"]
     A -->|output: server| C["Riqa<br/>authenticated SaaS app: dashboard, Stripe billing, file processing"]`} />
 
 ## DatoCMS: built for the content team you *actually have*
