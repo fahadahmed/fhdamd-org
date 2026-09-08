@@ -1,4 +1,15 @@
 /* ─── BASE ───────────────────────────────────────────────────────────────── */
+:root,
+[data-theme="light"] {
+  --th-color-text-3: #706d66;
+  --th-color-text-4: #5a5750;
+}
+
+[data-theme="dark"] {
+  --th-color-text-3: #a8a49c;
+  --th-color-text-4: #c4bdb2;
+}
+
 *,
 *::before,
 *::after {
