@@ -46,8 +46,8 @@
   /* ── Semantic — text ────────────────────────────────────────────────────── */
   --th-color-text-1:           #2E2C28;  /* 14.5:1 — primary */
   --th-color-text-2:           #5A5750;  /* 7.1:1  — secondary */
-  --th-color-text-3:           #8C8880;  /* 4.6:1  — min WCAG AA */
-  --th-color-text-4:           #C4C0B8;  /* disabled only — never for content */
+  --th-color-text-3:           #706D66;  /* 5.4:1 — WCAG AA for normal text */
+  --th-color-text-4:           #5A5750;  /* 7.1:1 — secondary content */
   --th-color-text-inverse:     #F7F4EE;
   --th-color-text-inverse-2:   #E0D8CC;
 
@@ -146,8 +146,8 @@
 
   --th-color-text-1:           #F0EDE6;
   --th-color-text-2:           #C4BDB2;
-  --th-color-text-3:           #8C8680;
-  --th-color-text-4:           #5C5A54;
+  --th-color-text-3:           #A8A49C;
+  --th-color-text-4:           #C4BDB2;
   --th-color-text-inverse:     #2E2C28;
   --th-color-text-inverse-2:   #5A5750;
 
