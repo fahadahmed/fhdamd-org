@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.3](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.6.2...threads-v0.6.3) (2026-09-08)
+
+
+### Performance Improvements
+
+* **fhdamd-web:** defer non-critical first-paint work ([#359](https://github.com/fahadahmed/fhdamd-org/issues/359)) ([b7343f0](https://github.com/fahadahmed/fhdamd-org/commit/b7343f0976f58b889bf35a68609229655d56753e))
+
 ## [0.6.2](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.6.1...threads-v0.6.2) (2026-09-05)
 
 
