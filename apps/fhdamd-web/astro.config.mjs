@@ -9,6 +9,9 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   output: 'static',
   site: 'https://fhdamd.dev',
+  build: {
+    inlineStylesheets: 'always',
+  },
 
   integrations: [
     react(),
