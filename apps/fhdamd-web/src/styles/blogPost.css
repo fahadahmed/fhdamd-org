@@ -85,6 +85,7 @@
   grid-template-columns: 200px 1fr;
   gap: var(--th-space-10);
   padding-bottom: var(--th-space-16);
+  min-width: 0;
 }
 
 /* Grid items default to min-width:auto, so a wide code block's <pre> (which
@@ -96,6 +97,7 @@
 @media (max-width: 900px) {
   .post-layout {
     grid-template-columns: 1fr;
+    overflow-x: clip;
   }
 }
 
