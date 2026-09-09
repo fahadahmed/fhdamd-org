@@ -66,8 +66,10 @@
   .mobileBar {
     display: block;
     position: sticky;
-    top: 0;
-    z-index: 50;
+    top: 58px;
+    z-index: 190;
+    width: 100%;
+    min-width: 0;
     background: color-mix(in srgb, var(--th-color-bg) 92%, transparent);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -81,6 +83,7 @@
   align-items: center;
   gap: 8px;
   width: 100%;
+  min-width: 0;
   padding: 12px 16px;
   background: none;
   border: none;

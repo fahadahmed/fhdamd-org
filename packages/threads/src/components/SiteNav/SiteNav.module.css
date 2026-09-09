@@ -3,13 +3,12 @@
   position: sticky;
   inset-block-start: 0;
   z-index: 200;
+  width: 100%;
   background: color-mix(in srgb, var(--th-color-bg) 90%, transparent);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-block-end: 1px solid var(--th-color-border-default);
-  /* Prevent any child from blowing past the viewport width */
-  max-inline-size: 100vw;
-  overflow: hidden;
+  overflow-x: clip;
 }
 
 /* ─── INNER ──────────────────────────────────────────────────────────────── */
