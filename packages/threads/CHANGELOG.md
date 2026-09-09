@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.4](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.6.3...threads-v0.6.4) (2026-09-09)
+
+
+### Bug Fixes
+
+* **threads:** stabilize mobile sticky navigation ([#370](https://github.com/fahadahmed/fhdamd-org/issues/370)) ([479c436](https://github.com/fahadahmed/fhdamd-org/commit/479c4367a59d13978045efdd5645d536a0561432))
+
 ## [0.6.3](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.6.2...threads-v0.6.3) (2026-09-08)
 
 
