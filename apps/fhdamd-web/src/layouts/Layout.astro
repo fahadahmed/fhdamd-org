@@ -61,21 +61,33 @@ const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <!-- Load fonts without delaying the first paint. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap"
-      onload="this.onload=null;this.rel='stylesheet'"
-    />
+    <!-- Load branded fonts after the initial render path. -->
     <noscript>
       <link
-        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=optional"
         rel="stylesheet"
       />
     </noscript>
+    <script is:inline>
+      (() => {
+        const fontHref = "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=optional";
+        let loaded = false;
+
+        const loadFonts = () => {
+          if (loaded) return;
+          loaded = true;
+          const link = document.createElement("link");
+          link.rel = "stylesheet";
+          link.href = fontHref;
+          document.head.appendChild(link);
+        };
+
+        window.addEventListener("load", loadFonts, { once: true });
+        ["pointerdown", "keydown", "touchstart"].forEach((eventName) => {
+          window.addEventListener(eventName, loadFonts, { once: true, passive: true });
+        });
+      })();
+    </script>
 
     <slot name="head" />
 
