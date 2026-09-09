@@ -88,17 +88,26 @@ const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
           gtag("config", gaMeasurementId);
 
           const loadAnalytics = () => {
+            if (document.querySelector('script[data-fhdamd-analytics]')) return;
             const script = document.createElement("script");
+            script.dataset.fhdamdAnalytics = "true";
             script.async = true;
             script.src = `https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`;
             document.head.appendChild(script);
           };
 
-          if ("requestIdleCallback" in window) {
-            window.requestIdleCallback(loadAnalytics);
-          } else {
-            window.setTimeout(loadAnalytics, 2000);
-          }
+          const scheduleAnalytics = () => {
+            const timer = window.setTimeout(loadAnalytics, 10000);
+            const loadAfterInteraction = () => {
+              window.clearTimeout(timer);
+              loadAnalytics();
+            };
+            ["pointerdown", "keydown", "touchstart"].forEach((eventName) => {
+              window.addEventListener(eventName, loadAfterInteraction, { once: true, passive: true });
+            });
+          };
+
+          window.addEventListener("load", scheduleAnalytics, { once: true });
         </script>
       </>
     )}
