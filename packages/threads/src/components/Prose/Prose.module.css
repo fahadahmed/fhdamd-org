@@ -94,3 +94,67 @@
   color: var(--th-color-text-1);
   line-height: 1.6;
 }
+
+.prose table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: var(--th-space-6) 0 var(--th-space-8);
+  overflow: hidden;
+  border: 1px solid var(--th-color-border-default);
+  border-radius: var(--th-radius-sm);
+  background: var(--th-color-surface-1);
+  font-family: var(--th-font-display);
+  font-size: var(--th-text-sm);
+  line-height: 1.45;
+}
+
+.prose thead {
+  background: var(--th-color-surface-2);
+}
+
+.prose th,
+.prose td {
+  padding: var(--th-space-3) var(--th-space-4);
+  border-block-end: 1px solid var(--th-color-border-subtle);
+  border-inline-end: 1px solid var(--th-color-border-subtle);
+  vertical-align: top;
+  text-align: start;
+}
+
+.prose th {
+  color: var(--th-color-text-1);
+  font-variation-settings: "wdth" 92, "wght" 650;
+}
+
+.prose td {
+  color: var(--th-color-text-2);
+  font-variation-settings: "wdth" 90, "wght" 420;
+}
+
+.prose tbody tr:last-child td {
+  border-block-end: none;
+}
+
+.prose th:last-child,
+.prose td:last-child {
+  border-inline-end: none;
+}
+
+.prose tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--th-color-surface-2) 48%, transparent);
+}
+
+.prose td strong {
+  color: var(--th-color-text-1);
+  font-variation-settings: "wdth" 92, "wght" 700;
+}
+
+@media (max-width: 640px) {
+  .prose table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    font-size: 0.8125rem;
+  }
+}
