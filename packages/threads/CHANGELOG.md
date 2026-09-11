@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.5](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.6.4...threads-v0.6.5) (2026-09-10)
+
+
+### Bug Fixes
+
+* **threads:** style prose tables ([#375](https://github.com/fahadahmed/fhdamd-org/issues/375)) ([80d7120](https://github.com/fahadahmed/fhdamd-org/commit/80d7120e3298ac58889bb140c599a0b17875443f))
+
 ## [0.6.4](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.6.3...threads-v0.6.4) (2026-09-09)
 
 
