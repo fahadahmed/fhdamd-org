@@ -8,67 +8,196 @@ postTags: ["Product", "Audits", "SEO"]
 relatedSlugs: ["astro-firebase-datocms-for-growth-minded-teams"]
 ---
 
-## Most problems are *findable in minutes*
+# How to Run Your Own 20-Minute Website Audit
 
-Every discovery call starts the same way for me: before I say anything about a rebuild, I run the same 20-minute pass over the existing site. Not a full technical audit — that comes later, if it's warranted — just enough to know whether the problems are cosmetic or structural, and whether "a rebuild" is even the right conversation to be having yet.
+Before I quote anyone a rebuild, I run their current site through the same checks, in the same order, every time — grouped into four pillars: performance, mobile, findability, and conversion paths. None of it needs a developer, and none of it needs a paid tool. Twenty minutes, a phone, and a laptop is enough to know whether your site is actually working for you — or just sitting there.
 
-This is that checklist, in full, so you can run it yourself before you talk to anyone about fixing it — including me.
+Here's the exact checklist. Grab a coffee and run it on your own site as you read.
 
-<CalloutBlock variant="tip" title="Why this is worth doing yourself first">
-Half the small business sites I look at have a five-minute fix hiding among the reasons someone thinks they need a full rebuild. Knowing which category you're in changes the conversation entirely.
-</CalloutBlock>
+> **How to use this**
+> Each pillar takes 3-5 minutes. Do them in order — conversion paths comes last deliberately, since it's the sum of everything a visitor experiences before they act, not a separate concern from it.
 
-## Minute 0–5: *performance*
+---
 
-Open the homepage in an incognito window on a throttled connection — Chrome DevTools' Network tab has a "Slow 4G" preset built in. Most visitors on a phone, outside, on real mobile data, are closer to this than to your office wifi.
+## Pillar 1: Performance (3 minutes)
 
-- Does the page show *something* meaningful within 2–3 seconds, or is it a blank white screen?
-- Open DevTools' Lighthouse tab and run a mobile report. A Performance score under 50 usually means something specific and fixable — an unoptimised hero image, an unnecessary carousel library, a font loading strategy that blocks rendering.
-- Check the Network tab's total transferred size. A brochure site pushing more than 3–4MB before interaction is almost always an images problem, not an architecture problem.
+Run your homepage through [PageSpeed Insights](https://pagespeed.web.dev) — free, no signup, just paste your URL.
 
-## Minute 5–10: *mobile*
+**Ask yourself:**
+- Is the mobile score above 70? Below 50 is a real problem.
+- What's flagged as the biggest issue — usually images or unused JavaScript?
 
-More than half of a small business's traffic is on a phone, and it's usually the least-tested viewport.
+**Why it matters:** every second of load time past 3 seconds measurably increases the chance a visitor leaves before the page even finishes loading — and Google factors load speed into search ranking directly.
 
-- Resize the browser to 375px wide (or use DevTools' device toolbar) and scroll the entire homepage.
-- Look specifically for: text that overflows its container, tap targets smaller than about 44px, a navigation menu that doesn't actually open, and horizontal scroll that shouldn't be there.
-- Try the primary call to action — book a call, request a quote, whatever it is — with your thumb, not your mouse. If it takes more than two taps to get to a contact method, that's the finding.
+**A real example — this site, mid-audit**
 
-## Minute 10–15: *findability*
+I ran this exact check on this site while writing this post, and got a 69 on mobile. Not a disaster, but not the pass I'd want to show a client either.
 
-This isn't a full SEO audit — it's checking whether the basics are even in place.
+<ScreenshotBlock
+  url="/blog/20-minute-website-audit/pagespeed-before.png"
+  alt="PageSpeed before and after metrics"
+  caption="Mobile PageSpeed metrics before the performance fixes"
+/>
 
-- View source (or DevTools' Elements panel) and check for a `<title>` tag and a `<meta name="description">` that actually describe the page, not a generic template default repeated on every page.
-- Paste the homepage URL into a social media composer (or a tool like opengraph.xyz) and see whether a real preview image and description show up, or nothing at all.
-- Search Google for `site:yourdomain.com` and skim how many pages are actually indexed — a number wildly lower than the page count you'd expect is worth investigating.
+Fixed it, then re-ran the same test:
 
-<CalloutBlock variant="warn" title="A broken OG image is more common than you'd think">
-I found exactly this on my own site while writing this checklist — the default social preview image had never actually been added, so every shared link failed silently. It's an easy thing to never notice because you don't see your own site's link previews; other people do.
-</CalloutBlock>
+<ScreenshotBlock
+  url="/blog/20-minute-website-audit/pagespeed-after.png"
+  alt="PageSpeed after metrics"
+  caption="Mobile PageSpeed metrics after the performance fixes"
+/>
 
-## Minute 15–20: *conversion paths*
+| | Before | After |
+|---|---|---|
+| Performance score | 69 | **100** |
+| First Contentful Paint | 4.6s | **0.9s** |
+| Largest Contentful Paint | 5.1s | **0.9s** |
+| Speed Index | 4.6s | **0.9s** |
+| Cumulative Layout Shift | 0.067 | **0** |
 
-The last five minutes are about the one thing the site is actually supposed to do — get someone to make contact.
+**What actually changed**, in plain terms:
+- The site's shared stylesheet was being requested as a separate, render-blocking file — switched Astro's build config to inline it directly into the page HTML instead, so the first paint doesn't wait on a separate download.
+- Analytics tracking (Google Tag Manager) was downloading and running during the initial load window — deferred it to load only after the page has loaded and the visitor interacts, since a visitor doesn't need analytics to see your homepage.
+- The site's interactive header component was hydrating immediately on load — changed it to hydrate only once the browser is idle, so it's no longer competing for attention during the critical first second.
+- Custom fonts were being aggressively pre-loaded ahead of everything else — now they load in after the page has loaded (or on first interaction), with the visitor's system font shown immediately so text is never invisible while waiting.
+- Fonts are now set to `display=optional`, meaning if the custom font hasn't loaded in time, the page just keeps the fallback rather than swapping fonts later and causing a visible jump — that's the layout shift going from 0.067 to a clean 0.
 
-- Find the contact form (or booking flow, or checkout) and actually submit it as a test. Does a real email arrive? Does anything visibly break?
-- Count the number of clicks from the homepage to that form. More than two is worth questioning.
-- Check whether the form works with JavaScript-heavy browser extensions or ad blockers active — a surprising number of contact forms silently fail for a slice of visitors because of exactly this.
+None of this touched a single word of visible content or design — it's entirely about *when* things load, not *what* loads. That's usually where the easiest, highest-impact speed wins are hiding on any site.
 
-<StatRowBlock stats={[
-  { number: "20", unit: "min", label: "Total time to run the full checklist" },
-  { number: "4", label: "Areas covered — performance, mobile, findability, conversion" },
-  { number: "0", label: "Tools needed beyond what's already in your browser" },
-]} />
+**Worth noting**: even after the fix, PageSpeed still flags around 11KB of unused CSS and 49KB of unused JavaScript, plus a couple of accessibility contrast warnings (hence 95, not 100, on Accessibility). None of that is blocking anything — it's the next round of polish, not an urgent fix. Speed work is rarely "done," just progressively better.
 
-## What to do with what you *find*
+---
 
-Not every finding means the same thing. A slow hero image is an afternoon's fix. A contact form that silently fails is urgent — it's actively costing leads right now, quietly. A site that's fundamentally hard to navigate on mobile is a real project, but not necessarily a full rebuild — sometimes it's one template.
+## Pillar 2: Mobile (3 minutes)
 
-If you run this and most of what you find is small and specific, that's good news — those are the fixes that don't need a new site, just attention. If what you find is closer to "the whole thing needs to be rethought," that's a different, bigger conversation — and worth having with real findings in hand rather than a vague sense that "it feels dated."
+Load the site on your actual phone — not a resized browser window. More than half your visitors are almost certainly on mobile.
+
+**Ask yourself:**
+- Does this feel like it was designed for mobile, or just shrunk down from desktop?
+- Can I tap every button comfortably with a thumb, or do I keep mis-tapping?
+- Does the main call-to-action stay easy to find as I scroll?
+
+**What good looks like:**
+
+<ScreenshotBlock
+  url="/blog/20-minute-website-audit/riqa-mobile-view.png"
+  alt="Riqa mobile view showing thumb-sized tap targets and sticky CTA"
+  caption="Riqa mobile view showing thumb-sized tap targets and sticky CTA"
+/>
+
+If your own mobile view has tiny nav links, overflowing text, or fields that are fiddly to tap — that's the gap worth fixing before anything else on this list.
+
+---
+
+## Pillar 3: Findability (5 minutes)
+
+Can someone who doesn't already know you actually find you — and does what they find look current?
+
+### Basic SEO
+
+**Ask yourself:**
+- Google your business name plus your suburb. Do you show up on page one?
+- Google your main service plus your suburb (e.g. "electrician Officer"). Do you show up at all?
+- Right-click your homepage → View Page Source → search for `<title>`. Is it your business name and nothing else, or does it actually describe what you do?
+
+**What good looks like:**
+
+<ScreenshotBlock
+  url="/blog/20-minute-website-audit/fhdamd-seo-meta-preview.png"
+  alt="Fhdamd SEO meta preview showing descriptive title and meta description"
+  caption="Fhdamd SEO meta preview showing descriptive title and meta description"
+/>
+
+If you don't show up searching your own business name plus suburb, that's a gap worth fixing before anything fancier.
+
+### Content freshness
+
+**Ask yourself:**
+- When was this site last meaningfully updated? Check the blog, news, or projects section.
+- Does it show your current services, pricing, and current work — or projects from three years ago?
+- Is the copyright year in the footer current?
+
+An outdated footer year is a small thing that quietly tells every visitor "nobody's minded this in a while" — and Google's own ranking signals favor sites that show real signs of life.
+
+---
+
+## Pillar 4: Conversion paths (5-6 minutes)
+
+This is the sum of everything above, seen through one question: once someone lands here, does the site actually help them become a customer?
+
+### First impressions
+
+Open your homepage on a fresh tab, set a 5-second timer, and actually look at it like a stranger would.
+
+**Ask yourself:**
+- Can I tell what this business does within 5 seconds — no scrolling?
+- Is there one clear next step visible without scrolling (call, quote, book, buy)?
+- Would I know I'm in the right place if I searched for this exact service?
+
+**What good looks like:**
+
+<ScreenshotBlock
+  url="/blog/20-minute-website-audit/fhdamd-above-fold-cta.png"
+  alt="Fhdamd homepage above the fold with clear CTA"
+  caption="Fhdamd homepage above the fold with clear one-line value proposition and visible call-to-action"
+/>
+
+If you had to scroll on your own site, or you're not sure a first-time visitor would know what to do next, that's gap #1.
+
+### Lead capture
+
+This is the step people skip, and it's usually where the real money is lost.
+
+**Ask yourself:**
+- How many clicks does it take to get from the homepage to "contact us" or "get a quote"?
+- Actually fill out the contact form yourself. Does it work? Do you get a confirmation?
+- Is your phone number/email clickable on mobile, or just plain text someone has to copy manually?
+
+**What good looks like:**
+
+<ScreenshotBlock
+  url="/blog/20-minute-website-audit/riqa-contact-form.png"
+  alt="Riqa contact form with clear fields and confirmation"
+  caption="Riqa contact form with clear fields and visible confirmation state"
+/>
+
+<ScreenshotBlock
+  url="/blog/20-minute-website-audit/riqa-contact-form-submitted.png"
+  alt="Riqa contact form submitted confirmation"
+  caption="Riqa contact form submitted confirmation state visible"
+/>
+
+If your own form fails silently, or your phone number isn't a tappable link on mobile, that's usually the single costliest gap on this whole list. I've tested contact forms during real audits that simply didn't send anywhere — the business had no idea.
+
+### Security & trust signals
+
+**Ask yourself:**
+- Does the address bar show a padlock (https, not http)?
+- Click every link in your footer and main nav — any dead ends or 404s?
+- Does the site look like *your* business, or like a template nobody customized?
+
+A visitor who's decided to trust you enough to fill in a form will hesitate at the first sign that nobody's minding the site — a broken link or a missing padlock is enough to lose them right at the point of action.
+
+---
+
+## What your results actually mean
+
+If you found **0-2 gaps** across all four pillars: solid foundation — worth fixing the specific items, not rebuilding.
+
+If you found **3-5 gaps**: the site is actively costing you enquiries. Worth a proper look before it costs more.
+
+If you found **6-7 gaps**: this is very likely the single highest-leverage thing you could fix in the business right now.
+
+---
 
 ## Takeaways
 
-- Run this before any conversation about a rebuild — it tells you whether the problem is small and specific or structural.
-- Performance and mobile issues are usually visible within minutes using nothing but browser DevTools.
-- A broken OG image or silently-failing contact form is common, easy to miss from the inside, and actively costing you leads.
-- Specific findings lead to a much more useful conversation than "the site feels old."
+- Run these four pillars in order — they mirror how a real visitor actually experiences your site, ending with conversion because that's where everything else either pays off or doesn't.
+- Most of this needs no tools beyond your own phone and a free PageSpeed check.
+- A dead contact form or an unclickable phone number is the most common — and most costly — gap I find.
+- Speed problems are often about *when* things load, not what — this site went from 69 to 100 without changing a single word of content.
+- More than 2-3 real gaps is usually the signal it's worth a second pair of eyes.
+
+Want a second pair of eyes on what you find? This is usually where my discovery sessions start: a practical pass over performance, mobile, findability, and conversion before we talk about whether anything bigger is worth doing.
+
+[View services](https://fhdamd.dev/services) · [Get in touch](https://fhdamd.dev/contact)
