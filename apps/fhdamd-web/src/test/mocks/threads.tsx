@@ -162,6 +162,27 @@ export const Textarea = ({
   );
 };
 
+export const Checkbox = ({ label, id: providedId, ...rest }: FieldProps) => {
+  const autoId = useId();
+  const id = providedId ?? autoId;
+  return (
+    <label htmlFor={id}>
+      <input type="checkbox" id={id} {...rest} />
+      {label}
+    </label>
+  );
+};
+
+export const Stepper = ({ steps = [], currentStep }: any) => (
+  <ol aria-label="Progress">
+    {steps.map((step: any, i: number) => (
+      <li key={step.label} aria-current={i === currentStep ? "step" : undefined}>
+        {step.label}
+      </li>
+    ))}
+  </ol>
+);
+
 export const FormSuccessPanel = ({ title, message }: any) => (
   <div role="status">
     <div>{title}</div>

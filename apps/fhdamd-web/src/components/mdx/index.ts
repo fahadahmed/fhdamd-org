@@ -7,6 +7,7 @@ import EmbedInstagram from "./EmbedInstagram.astro";
 import ScreenshotBlock from "./ScreenshotBlock.astro";
 import StatRowBlock from "./StatRowBlock.astro";
 import TestimonialBlock from "./TestimonialBlock.astro";
+import TransferWizardBlock from "./TransferWizardBlock.astro";
 
 /**
  * Passed to <Content components={mdxComponents} /> so every post/case-study
@@ -26,4 +27,5 @@ export const mdxComponents = {
   ScreenshotBlock,
   StatRowBlock,
   TestimonialBlock,
+  TransferWizardBlock,
 };

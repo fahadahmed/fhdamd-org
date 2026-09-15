@@ -109,6 +109,13 @@ const ctaActions = createElement(
         <span class="post-byline__sep">·</span>
         <span class="post-byline__item">{computeReadTime(post.body ?? "")}</span>
       </Cluster>
+      {
+        post.data.labSlug && (
+          <Button href={`/lab/${post.data.labSlug}`} variant="ghost" icon={arrowRightIcon}>
+            Try the live demo
+          </Button>
+        )
+      }
     </Stack>
   </Container>
 

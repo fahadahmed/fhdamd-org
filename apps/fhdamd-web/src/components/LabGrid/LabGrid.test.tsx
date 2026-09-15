@@ -6,7 +6,7 @@ import type { LabItem } from "../../content/types";
 
 const items: LabItem[] = [
   {
-    href: "/blog/sequence-diagram-you-can-trust",
+    slug: "sequence-diagrams",
     title: "Mermaid diagrams as living docs",
     description: "Live diagrams.",
     dateLabel: "View on the blog",
@@ -30,14 +30,14 @@ describe("LabGrid", () => {
     expect(screen.getByText("Next experiment")).toBeInTheDocument();
   });
 
-  it("links a real item to its external href", () => {
+  it("links a real item to its Lab detail page", () => {
     render(<LabGrid items={items} />);
     expect(
       screen.getByText("Mermaid diagrams as living docs").closest("a"),
-    ).toHaveAttribute("href", "/blog/sequence-diagram-you-can-trust");
+    ).toHaveAttribute("href", "/lab/sequence-diagrams");
   });
 
-  it("renders a comingSoon item without a link even though it has no href", () => {
+  it("renders a comingSoon item without a link even though it has no slug", () => {
     render(<LabGrid items={items} />);
     expect(screen.getByText("Next experiment").closest("a")).toBeNull();
   });
@@ -68,7 +68,7 @@ describe("LabGrid", () => {
 
   it("falls back to the raw tag string when an item's tag has no known label", () => {
     const untaggedItem: LabItem = {
-      href: "/blog/some-post",
+      slug: "some-post",
       title: "Untagged experiment",
       description: "No known tag.",
       dateLabel: "View on the blog",

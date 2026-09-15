@@ -17,18 +17,6 @@
   "hosting": {
     "public": "dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-    "redirects": [
-      {
-        "source": "/lab",
-        "destination": "/",
-        "type": 302
-      },
-      {
-        "source": "/lab/**",
-        "destination": "/",
-        "type": 302
-      }
-    ],
     "headers": [
       {
         "source": "**/*.@(js|css|woff2)",
