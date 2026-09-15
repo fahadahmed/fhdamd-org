@@ -1,0 +1,87 @@
+---
+import { createElement, Fragment as ReactFragment } from "react";
+import { getCollection, getEntry, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { Container, Section, Stack, Cluster, Badge, Button, DarkStrip, Breadcrumb, Prose } from "@fhdamd/threads";
+import { getSiteSettings } from "../../lib/content";
+import { mdxComponents } from "../../components/mdx";
+import { markupToHtml, titleToReact } from "../../utils/titleToReact";
+import { LAB_TAG_LABELS } from "../../utils/labTags";
+import { ArrowRightIcon } from "../../components";
+import "../../styles/blogPost.css";
+
+export async function getStaticPaths() {
+  const items = await getCollection("lab", ({ data }) => data.status === "published");
+  return items.map((item) => ({ params: { slug: item.id } }));
+}
+
+const { slug } = Astro.params;
+// getStaticPaths only generates a route per published entry above, so this is always found.
+const item = (await getEntry("lab", slug))!;
+const { Content } = await render(item);
+
+const settings = await getSiteSettings();
+const blogPost = item.data.blogSlug ? await getEntry("blog", item.data.blogSlug) : undefined;
+
+const heroTitleHtml = markupToHtml(item.data.title);
+const arrowRightIcon = createElement(ArrowRightIcon);
+
+const breadcrumbItems = [{ label: "Lab", href: "/lab" }, { label: item.data.title }];
+
+const ctaHeading = titleToReact(settings.ctaTitle);
+const ctaActions = createElement(
+  ReactFragment,
+  null,
+  createElement(Button, {
+    href: "/services",
+    variant: "solid-ink",
+    icon: arrowRightIcon,
+    children: "View services",
+  }),
+  createElement(Button, {
+    href: "/contact",
+    variant: "ghost-inverse",
+    children: "Get in touch",
+  }),
+);
+---
+
+<Layout title={`${item.data.title} — Fahad Ahmed · fhdamd.dev`} description={item.data.dek} ogType="article">
+  <Container>
+    <Stack gap={5} className="post-hero">
+      <Breadcrumb items={breadcrumbItems} />
+      <Cluster gap={2}>
+        {item.data.tags.map((tag) => <Badge variant="neutral">{LAB_TAG_LABELS[tag] ?? tag}</Badge>)}
+      </Cluster>
+      <h1 class="post-hero__title" set:html={heroTitleHtml} />
+      <p class="post-hero__dek">{item.data.dek}</p>
+      {
+        blogPost && (
+          <Button href={`/blog/${blogPost.id}`} variant="ghost" icon={arrowRightIcon}>
+            Read the writeup
+          </Button>
+        )
+      }
+    </Stack>
+  </Container>
+
+  <Container>
+    <Prose className="lab-article">
+      <Content components={mdxComponents} />
+    </Prose>
+  </Container>
+
+  <Container>
+    <Section size="md">
+      <DarkStrip heading={ctaHeading} body={settings.ctaSubtitle} align="start" actions={ctaActions} />
+    </Section>
+  </Container>
+</Layout>
+
+<style>
+  /* Prose caps its own width but doesn't center itself — .post-hero above
+     does (max-width + margin-inline:auto), so match that here too. */
+  .lab-article {
+    margin-inline: auto;
+  }
+</style>

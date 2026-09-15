@@ -39,8 +39,8 @@ export function LabGrid({ items }: LabGridProps) {
       <Grid cols={3} gap={4}>
         {visible.map((item, i) => (
           <ContentCard
-            key={item.href ?? `${item.title}-${i}`}
-            href={item.comingSoon ? undefined : item.href}
+            key={item.slug ?? `${item.title}-${i}`}
+            href={item.slug ? `/lab/${item.slug}` : undefined}
             date={item.dateLabel}
             description={item.description}
             title={titleToReact(item.title, {

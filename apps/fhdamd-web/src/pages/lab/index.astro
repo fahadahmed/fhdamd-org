@@ -1,21 +1,11 @@
 ---
 import { createElement, Fragment as ReactFragment } from "react";
 import Layout from "../../layouts/Layout.astro";
-import {
-  Container,
-  Section,
-  Stack,
-  Hero,
-  Card,
-  Badge,
-  Button,
-  DarkStrip,
-} from "@fhdamd/threads";
+import { Container, Section, Stack, Hero, Button, DarkStrip } from "@fhdamd/threads";
 import { getLabPage, getSiteSettings } from "../../lib/content";
-import { titleToReact, markupToHtml } from "../../utils/titleToReact";
-import { ArrowRightIcon, SettingsIcon } from "../../components";
+import { titleToReact } from "../../utils/titleToReact";
+import { ArrowRightIcon } from "../../components";
 import { LabGrid } from "../../components";
-import "../../styles/lab.css";
 
 const page = await getLabPage();
 const settings = await getSiteSettings();
@@ -27,7 +17,6 @@ const heroHeading = titleToReact(page.heroHeading, {
   color: "var(--th-color-accent)",
 });
 const arrowRightIcon = createElement(ArrowRightIcon);
-const demoTitleHtml = markupToHtml("Micro-interactions, *collected*");
 
 const ctaHeading = titleToReact(settings.ctaTitle);
 const ctaActions = createElement(
@@ -59,38 +48,6 @@ const ctaActions = createElement(
   <Container>
     <Section size="md">
       <Stack gap={8}>
-        <!-- Live demo tile: hand-authored, no content model — see #267 -->
-        <Card accentBar="top" accentColor="terra">
-          <div class="demo-eyebrow">
-            <Badge variant="neutral">Live demo</Badge>
-            Interaction
-          </div>
-          <h3 class="demo-title" set:html={demoTitleHtml} />
-          <p class="demo-desc">
-            The small hover and press states used across this site, isolated
-            here so they're easy to poke at on their own. Hover or focus each
-            one.
-          </p>
-          <div class="demo-row">
-            <Button variant="solid-ink" icon={arrowRightIcon}>
-              Magnetic lift
-            </Button>
-            <div class="demo-item demo-item--card">
-              <div class="demo-item__icon">
-                <SettingsIcon />
-              </div>
-              <span>Icon rotate on hover</span>
-            </div>
-            <a class="demo-item demo-item--link" href="/lab"
-              >Underline draw on hover</a
-            >
-            <div class="demo-item">
-              <span class="demo-pulse-dot"><span></span></span>
-              Ambient pulse
-            </div>
-          </div>
-        </Card>
-
         <LabGrid client:load items={page.items} />
       </Stack>
     </Section>

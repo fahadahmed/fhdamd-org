@@ -161,7 +161,19 @@ export async function getCaseStudiesPage(): Promise<CaseStudiesPage> {
 }
 
 export async function getLabPage(): Promise<LabPage> {
-  return labPage;
+  const items = await getCollection("lab");
+
+  return {
+    ...labPage,
+    items: items.map((entry) => ({
+      slug: entry.data.status === "comingSoon" ? undefined : entry.id,
+      title: entry.data.title,
+      description: entry.data.dek,
+      dateLabel: entry.data.dateLabel,
+      tags: entry.data.tags,
+      comingSoon: entry.data.status === "comingSoon" ? true : undefined,
+    })),
+  };
 }
 
 export async function getEmployers(): Promise<Employer[]> {

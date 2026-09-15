@@ -19,6 +19,22 @@ const blog = defineCollection({
     postTags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
     relatedSlugs: z.array(z.string()).default([]),
+    /** Slug of a `lab` entry that demonstrates this post's pattern live — renders a "Try the live demo" callout. */
+    labSlug: z.string().optional(),
+  }),
+});
+
+const lab = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/lab" }),
+  schema: z.object({
+    title: z.string(),
+    dek: z.string(),
+    dateLabel: z.string(),
+    /** First tag is the displayed badge; the full set drives tag-filter matching. */
+    tags: z.array(z.string()),
+    status: z.enum(["published", "comingSoon"]).default("published"),
+    /** Slug of the blog post this demo accompanies — renders a "Read the writeup" link. */
+    blogSlug: z.string().optional(),
   }),
 });
 
@@ -162,6 +178,7 @@ const deliveryPhases = defineCollection({
 
 export const collections = {
   blog,
+  lab,
   caseStudies,
   employers,
   clientWork,

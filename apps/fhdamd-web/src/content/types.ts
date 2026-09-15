@@ -203,9 +203,8 @@ export interface CaseStudiesPage {
 }
 
 export interface LabItem {
-  /** Omitted for comingSoon placeholders — Lab items have no detail pages of
-   *  their own, so a real item links out (e.g. to a blog post). */
-  href?: string;
+  /** Omitted for comingSoon placeholders, which have no detail page. */
+  slug?: string;
   /** Plain string; wrap a segment in *asterisks* for an <em> accent. */
   title: string;
   description: string;

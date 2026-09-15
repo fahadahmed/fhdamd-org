@@ -13,7 +13,7 @@ export const NAV_LINKS: NavLinkDef[] = [
   { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
   { href: "/case-studies", label: "Case Studies" },
-  // Lab temporarily pulled from nav — content model still being refined. See #334.
+  { href: "/lab", label: "Lab" },
   { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact" },
 ];
