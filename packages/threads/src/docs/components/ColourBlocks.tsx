@@ -5,7 +5,7 @@ export function ColorSwatch({ token, name, hex, desc }: { token: string; name: s
       <div style={{ background: 'var(--th-color-surface-1)', padding: '10px 12px' }}>
         <div style={{ fontVariationSettings: '"wdth" 92, "wght" 550', fontSize: '1.0625rem', color: 'var(--th-color-text-1)', marginBottom: '2px' }}>{name}</div>
         <span style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.625rem', letterSpacing: '0.1em', color: 'var(--th-color-text-3)', display: 'block' }}>{token}</span>
-        <span style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.625rem', color: 'var(--th-color-text-4)', display: 'block', marginTop: '2px' }}>
+        <span style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.625rem', color: 'var(--th-color-text-3)', display: 'block', marginTop: '2px' }}>
           {hex}{desc ? ` · ${desc}` : ''}
         </span>
       </div>
@@ -49,7 +49,7 @@ export function BorderTokens() {
           <div style={{ width: '40px', height: '40px', borderRadius: '8px', border: `3px solid var(${token})`, flexShrink: 0 }} />
           <div>
             <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.625rem', letterSpacing: '0.1em', color: 'var(--th-color-text-3)' }}>{token}</div>
-            <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.625rem', color: 'var(--th-color-text-4)', marginTop: '2px' }}>{val}</div>
+            <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.625rem', color: 'var(--th-color-text-3)', marginTop: '2px' }}>{val}</div>
           </div>
         </div>
       ))}

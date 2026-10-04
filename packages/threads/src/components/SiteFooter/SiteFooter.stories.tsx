@@ -96,7 +96,7 @@ export const BothLayouts: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
       <div>
-        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", padding: "8px 24px", background: "var(--th-color-bg)" }}>Column layout</div>
+        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-3)", padding: "8px 24px", background: "var(--th-color-bg)" }}>Column layout</div>
         <SiteFooter
           brand={<ExampleWordmark />}
           tagline="Simple tools. Honest pricing."
@@ -105,7 +105,7 @@ export const BothLayouts: Story = {
         />
       </div>
       <div>
-        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", padding: "8px 24px", background: "var(--th-color-bg)" }}>Simple layout</div>
+        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-3)", padding: "8px 24px", background: "var(--th-color-bg)" }}>Simple layout</div>
         <SiteFooter brand={<ExampleWordmark />} links={simpleLinks} />
       </div>
     </div>

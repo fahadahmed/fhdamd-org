@@ -64,7 +64,7 @@
 }
 
 .input::placeholder {
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
 }
 
 .input:hover:not(:disabled) {

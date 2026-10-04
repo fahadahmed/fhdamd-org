@@ -1,0 +1,51 @@
+/* ─── THREADS BASE · v2 (opt-in: import '@fhdamd/threads/base') ──────────── */
+/* Global reset, body, link styles and .th-* role utilities. Not included in   */
+/* '@fhdamd/threads/tokens' so consuming sites are not restyled unasked.       */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--th-app);
+  color: var(--th-ink);
+  font-family: var(--th-font-sans);
+  font-weight: 400;
+  font-size: var(--th-body-size);
+  line-height: var(--th-body-leading);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { color: var(--th-terra); }
+::placeholder { color: var(--th-ink-3); opacity: 1; }
+
+/* ── Role utilities (match the six Swift roles) ───────────────────────────── */
+.th-label   { font: 500 var(--th-label-size)/var(--th-label-leading) var(--th-font-mono); letter-spacing: var(--th-label-tracking); text-transform: uppercase; color: var(--th-ink-3); }
+.th-meta    { font: 400 var(--th-meta-size)/var(--th-meta-leading) var(--th-font-sans); color: var(--th-ink-3); }
+.th-body    { font: 400 var(--th-body-size)/var(--th-body-leading) var(--th-font-sans); color: var(--th-ink-2); }
+.th-row     { font: 600 var(--th-row-size)/var(--th-row-leading) var(--th-font-sans); color: var(--th-ink); }
+.th-lede    { font: 400 var(--th-lede-size)/var(--th-lede-leading) var(--th-font-sans); color: var(--th-ink-2); }
+.th-display { font: 500 var(--th-display-md)/var(--th-display-leading) var(--th-font-serif); font-variation-settings: var(--th-serif-axes); color: var(--th-ink); }
+.th-hero    { font: 300 var(--th-hero-size)/var(--th-hero-leading) var(--th-font-serif); font-variation-settings: var(--th-serif-axes); letter-spacing: -0.02em; color: var(--th-ink); }
+.th-accent-word { font-style: italic; color: var(--th-terra); }
+
+/* Eyebrow: label + 24px terra rule — the only decorative mark */
+.th-eyebrow { display: flex; align-items: center; gap: var(--th-space-tight); }
+.th-eyebrow::before { content: ""; inline-size: 24px; block-size: 1px; background: var(--th-terra); flex: none; }
+
+.th-glass {
+  background: var(--th-glass);
+  backdrop-filter: var(--th-glass-blur);
+  -webkit-backdrop-filter: var(--th-glass-blur);
+}
+
+/* ── 1.x texture utilities (deprecated; v2 surfaces are flat) ──────────── */
+.th-grain { position: relative; }
+.th-grain::after {
+  content: ""; position: absolute; inset: 0;
+  background-image: var(--th-texture-noise); background-repeat: repeat; background-size: 256px 256px;
+  opacity: var(--th-texture-opacity); pointer-events: none; border-radius: inherit; mix-blend-mode: multiply;
+}
+[data-theme="dark"] .th-grain::after { mix-blend-mode: soft-light; }
+.th-dots { background-image: var(--th-texture-dots); background-size: var(--th-texture-dots-size); }

@@ -52,7 +52,7 @@
   box-shadow: 0 0 0 3px rgba(181,98,58,0.2);
 }
 
-.search::placeholder { color: var(--th-color-text-4); }
+.search::placeholder { color: var(--th-color-text-3); }
 
 .actions {
   display: flex;
@@ -76,7 +76,7 @@
   font-size: 0.6875rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
   padding: var(--th-space-3) var(--th-space-5);
   text-align: start;
 }
@@ -131,7 +131,7 @@
 
 .empty {
   padding: var(--th-space-10) var(--th-space-5);
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
   text-align: center;
   font-size: var(--th-text-base);
 }
@@ -152,7 +152,7 @@
   font-size: 0.6875rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
 }
 
 .pagination {

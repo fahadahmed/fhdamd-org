@@ -1,0 +1,48 @@
+/* ─── THREADS TYPOGRAPHY TOKENS · v2 ─────────────────────────────────────── */
+/* Hanken Grotesk (UI, body) · Fraunces (display; SOFT 60, WONK 1) ·          */
+/* JetBrains Mono (labels). Bricolage Grotesque is removed.                   */
+/* Fonts are NOT loaded here (a CSS @import is render-blocking). Consumers add */
+/* the Google Fonts <link>; see the package README.                            */
+
+:root {
+  /* ── Families ───────────────────────────────────────────────────────────── */
+  --th-font-sans:    "Hanken Grotesk", system-ui, sans-serif;
+  --th-font-serif:   "Fraunces", Georgia, serif;
+  --th-font-mono:    "JetBrains Mono", Menlo, monospace;
+  --th-font-display: var(--th-font-sans);   /* 1.x alias — was Bricolage */
+  --th-serif-axes:   "SOFT" 60, "WONK" 1;   /* always pair with --th-font-serif */
+
+  /* ── Six roles (match ThreadsType.swift) ────────────────────────────────── */
+  --th-label-size:     0.75rem;    /* 12 · mono 500, uppercase */
+  --th-label-tracking: 0.16em;
+  --th-label-leading:  1.35;
+  --th-meta-size:      0.9375rem;  /* 15 · sans 400 */
+  --th-meta-leading:   1.35;
+  --th-body-size:      1.0625rem;  /* 17 · sans 400 */
+  --th-body-leading:   1.6;
+  --th-row-size:       1.125rem;   /* 18 · sans 600 */
+  --th-row-leading:    1.35;
+  --th-lede-size:      1.1875rem;  /* 19 · sans 400 */
+  --th-lede-leading:   1.6;
+  --th-display-sm:     1.75rem;    /* 28 · serif 500 */
+  --th-display-md:     2.125rem;   /* 34 */
+  --th-display-lg:     2.375rem;   /* 38 */
+  --th-display-leading: 1.08;
+
+  /* ── Web-only display sizes (from the Jamaal landing) ──────────────────── */
+  --th-hero-size:      clamp(3rem, 6.4vw, 5rem);     /* serif 300, leading 1.02, -0.02em */
+  --th-hero-leading:   1.02;
+  --th-section-size:   clamp(2.125rem, 4vw, 2.75rem); /* serif 500, leading 1.08 */
+
+  /* ── 1.x scale (kept; prefer the roles above) ──────────────────────────── */
+  --th-text-xs:   0.75rem;
+  --th-text-sm:   0.9375rem;   /* was 0.875 — now = meta, 15px floor */
+  --th-text-base: 1.0625rem;
+  --th-text-md:   1.1875rem;
+  --th-text-lg:   1.375rem;
+  --th-text-xl:   1.6875rem;
+  --th-text-2xl:  2.125rem;
+  --th-text-3xl:  2.75rem;
+  --th-text-4xl:  3.5rem;
+  --th-text-5xl:  var(--th-hero-size);
+}

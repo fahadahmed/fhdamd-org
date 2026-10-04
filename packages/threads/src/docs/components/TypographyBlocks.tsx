@@ -5,7 +5,7 @@ export function TypeRow({ token, px, children, sampleStyle }: { token: string; p
     <div style={{ display: 'flex', alignItems: 'baseline', gap: '24px', paddingBlock: '14px', borderBottom: '1px solid var(--th-color-border-subtle)' }}>
       <div style={{ minWidth: '180px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
         <span style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.625rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--th-color-text-3)' }}>{token}</span>
-        <span style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.625rem', color: 'var(--th-color-text-4)' }}>{px}</span>
+        <span style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.625rem', color: 'var(--th-color-text-3)' }}>{px}</span>
       </div>
       <div style={Object.assign({ flex: 1, lineHeight: 1.2 }, sampleStyle)}>{children}</div>
     </div>

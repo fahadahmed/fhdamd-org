@@ -18,7 +18,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const placeholderDiagram = (
-  <div style={{ padding: "40px 80px", border: "1px dashed var(--th-color-border-default)", color: "var(--th-color-text-4)", fontFamily: "var(--th-font-mono)", fontSize: "0.75rem" }}>
+  <div style={{ padding: "40px 80px", border: "1px dashed var(--th-color-border-default)", color: "var(--th-color-text-3)", fontFamily: "var(--th-font-mono)", fontSize: "0.75rem" }}>
     [rendered mermaid SVG goes here]
   </div>
 );

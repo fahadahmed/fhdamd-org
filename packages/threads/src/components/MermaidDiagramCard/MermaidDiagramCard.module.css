@@ -16,7 +16,7 @@
   font-size: 0.625rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
   margin-block-end: 16px;
   display: flex;
   align-items: center;
@@ -182,7 +182,7 @@
 .caption {
   font-family: var(--th-font-mono);
   font-size: 0.75rem;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
   text-align: center;
   margin-block-start: 14px;
 }

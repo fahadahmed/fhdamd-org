@@ -30,11 +30,12 @@
       "require": "./dist/index.js"
     },
     "./styles": "./dist/index.css",
-    "./tokens": "./src/tokens/tokens.css"
+    "./tokens": "./src/tokens/tokens.css",
+    "./base": "./src/tokens/base.css"
   },
   "files": [
     "dist",
-    "src/tokens/tokens.css",
+    "src/tokens",
     "LICENSE",
     "README.md"
   ],

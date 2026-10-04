@@ -1,5 +1,6 @@
 import type { Decorator, Preview } from "@storybook/react-vite";
 import "../src/tokens/tokens.css";
+import "../src/tokens/base.css";
 
 const withThemeAndDir: Decorator = (Story, context) => {
   const theme = (context.globals.theme as string) ?? "light";
@@ -12,7 +13,7 @@ const withThemeAndDir: Decorator = (Story, context) => {
       style={{
         background: "var(--th-color-bg)",
         color: "var(--th-color-text-1)",
-        fontFamily: "var(--th-font-display)",
+        fontFamily: "var(--th-font-sans)",
         fontSize: "var(--th-text-base)",
         lineHeight: "1.5",
         WebkitFontSmoothing: "antialiased",

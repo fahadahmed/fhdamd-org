@@ -77,7 +77,7 @@ export const UseCases: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--th-space-5)", fontFamily: "var(--th-font-display)", fontSize: "var(--th-text-base)" }}>
       <div>
-        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", marginBottom: "8px" }}>
+        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-3)", marginBottom: "8px" }}>
           PDF-Craft operations
         </div>
         <div style={{ display: "flex", gap: "8px" }}>
@@ -86,7 +86,7 @@ export const UseCases: Story = {
         </div>
       </div>
       <div>
-        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", marginBottom: "8px" }}>
+        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-3)", marginBottom: "8px" }}>
           Jamaal habit streaks
         </div>
         <div style={{ display: "flex", gap: "8px" }}>
@@ -96,7 +96,7 @@ export const UseCases: Story = {
         </div>
       </div>
       <div>
-        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", marginBottom: "8px" }}>
+        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-3)", marginBottom: "8px" }}>
           System status
         </div>
         <div style={{ display: "flex", gap: "8px" }}>
@@ -115,7 +115,7 @@ export const TagDefault: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--th-space-4)" }}>
       <div>
-        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", marginBottom: "8px" }}>
+        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-3)", marginBottom: "8px" }}>
           Technology tags
         </div>
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
@@ -127,7 +127,7 @@ export const TagDefault: Story = {
         </div>
       </div>
       <div>
-        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", marginBottom: "8px" }}>
+        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-3)", marginBottom: "8px" }}>
           Operation category tags
         </div>
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
@@ -149,7 +149,7 @@ export const BadgeVsTag: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "var(--th-space-8)", flexWrap: "wrap" }}>
       <div>
-        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", marginBottom: "8px" }}>
+        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-3)", marginBottom: "8px" }}>
           Badge — status &amp; priority
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
@@ -159,7 +159,7 @@ export const BadgeVsTag: Story = {
         </div>
       </div>
       <div>
-        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-4)", marginBottom: "8px" }}>
+        <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--th-color-text-3)", marginBottom: "8px" }}>
           Tag — metadata &amp; categories
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
