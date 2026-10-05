@@ -38,14 +38,15 @@
   position: absolute;
   inset: 0;
   border-radius: var(--th-radius-pill);
-  background: var(--th-color-surface-3);
-  border: 1px solid var(--th-color-border-strong);
+  background: var(--th-d1);
+  border: 1px solid var(--th-line-2);
   transition:
-    background var(--th-duration-base) var(--th-ease-out),
-    border-color var(--th-duration-base) var(--th-ease-out);
+    background var(--th-duration-state) var(--th-ease-out),
+    border-color var(--th-duration-state) var(--th-ease-out);
 }
 
-/* Thumb */
+/* Thumb: always a solid colour. --th-card is translucent in dark mode, which
+   let the checked track show through and made the thumb vanish. */
 .thumb {
   position: absolute;
   inset-block-start: 3px;
@@ -53,33 +54,37 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--th-color-surface-1);
-  box-shadow: 0 1px 3px rgba(46, 44, 40, 0.18);
-  transition: transform var(--th-duration-base) var(--th-ease-out);
+  background: var(--th-ink-3);
+  box-shadow: var(--th-shadow-hair);
+  transition:
+    transform var(--th-duration-state) var(--th-ease-out),
+    background var(--th-duration-state) var(--th-ease-out);
   pointer-events: none;
   z-index: 0;
 }
 
-/* Checked — move thumb right */
+/* Checked — move thumb across (mirrors in RTL) */
 .input:checked ~ .thumb {
   transform: translateX(16px);
+  background: var(--th-on-accent);
+}
+[dir="rtl"] .input:checked ~ .thumb {
+  transform: translateX(-16px);
 }
 
-/* Checked track colours */
-.ink:checked  ~ * { /* target ::before via sibling not possible — use JS-free workaround below */ }
-
-/* Track colour on checked — using the input's own checked state */
-.input.ink:checked  + * { display: none; } /* trick not needed — handled via parent */
-
-/* Simpler: target the ::before of .track via adjacent sibling of checked input */
-.input.ink:checked ~ .thumb  { background: var(--th-color-surface-1); }
-.input.sage:checked ~ .thumb { background: var(--th-color-surface-1); }
-.input.terra:checked ~ .thumb { background: var(--th-color-surface-1); }
-
-/* Track background when checked — use :has() */
-.track:has(.ink:checked)::before   { background: var(--th-color-text-1); border-color: var(--th-color-text-1); }
-.track:has(.sage:checked)::before  { background: var(--th-color-sage);   border-color: var(--th-color-sage); }
-.track:has(.terra:checked)::before { background: var(--th-color-accent);  border-color: var(--th-color-accent); }
+/* Checked track. `on-accent` flips dark in dark mode, so the thumb always
+   contrasts with the teal / terra track. `ink` and `sage` are deprecated
+   aliases of `accent` in 2.0. */
+.track:has(.accent:checked)::before,
+.track:has(.ink:checked)::before,
+.track:has(.sage:checked)::before {
+  background: var(--th-accent);
+  border-color: var(--th-accent);
+}
+.track:has(.terra:checked)::before {
+  background: var(--th-terra);
+  border-color: var(--th-terra);
+}
 
 /* Focus ring on track */
 .input:focus-visible ~ .thumb {

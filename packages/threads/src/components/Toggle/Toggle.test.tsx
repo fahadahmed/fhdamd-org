@@ -28,7 +28,7 @@ describe("Toggle — rendering", () => {
     expect(screen.getByRole("switch")).toBeDisabled();
   });
 
-  it.each(["ink", "sage", "terra"] as const)(
+  it.each(["accent", "ink", "sage", "terra"] as const)(
     "renders variant=%s without throwing",
     (variant) => {
       expect(() => render(<Toggle variant={variant} />)).not.toThrow();
