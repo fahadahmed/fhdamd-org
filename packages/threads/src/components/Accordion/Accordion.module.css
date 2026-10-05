@@ -1,9 +1,9 @@
 .accordion {
-  border-block-start: 1px solid var(--th-color-border-default);
+  border-block-start: 1px solid var(--th-line);
 }
 
 .item {
-  border-block-end: 1px solid var(--th-color-border-default);
+  border-block-end: 1px solid var(--th-line);
 }
 
 .trigger {
@@ -14,42 +14,42 @@
   gap: var(--th-space-4);
   padding-block: var(--th-space-5);
   padding-inline: 0;
-  font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 92, "wght" 550;
+  font-family: var(--th-font-sans);
+  font-weight: 600;
   font-size: var(--th-text-md);
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
   background: transparent;
   border: none;
   cursor: pointer;
   text-align: start;
-  transition: color var(--th-duration-base) var(--th-ease-out);
+  transition: color var(--th-duration-state) var(--th-ease-out);
 }
 
 .trigger:hover {
-  color: var(--th-color-accent);
+  color: var(--th-terra);
 }
 
 .trigger:focus-visible {
   outline: 2px solid var(--th-color-focus-ring);
   outline-offset: 2px;
-  border-radius: var(--th-radius-xs);
+  border-radius: var(--th-radius-cell);
 }
 
 .open .trigger {
-  color: var(--th-color-accent);
+  color: var(--th-terra);
 }
 
 .icon {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
-  color: var(--th-color-text-3);
-  transition: transform 260ms var(--th-ease-out), color var(--th-duration-base);
+  color: var(--th-ink-3);
+  transition: transform 260ms var(--th-ease-out), color var(--th-duration-state);
 }
 
 .open .icon {
   transform: rotate(45deg);
-  color: var(--th-color-accent);
+  color: var(--th-terra);
 }
 
 .body {
@@ -67,6 +67,6 @@
 
 .answer {
   font-size: var(--th-text-base);
-  color: var(--th-color-text-2);
+  color: var(--th-ink-2);
   line-height: 1.65;
 }

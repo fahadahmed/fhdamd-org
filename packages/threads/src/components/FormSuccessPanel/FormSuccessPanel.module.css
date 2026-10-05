@@ -1,7 +1,7 @@
 .panel {
-  background: var(--th-color-sage-subtle);
-  border: 1px solid var(--th-color-sage);
-  border-radius: var(--th-radius-lg);
+  background: var(--th-d1);
+  border: 1px solid var(--th-accent);
+  border-radius: var(--th-radius-card);
   padding: var(--th-space-6);
   text-align: center;
 }
@@ -10,7 +10,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: var(--th-color-sage);
+  background: var(--th-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,17 +19,18 @@
 
 .title {
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-weight: 400;
   font-size: 1.25rem;
   letter-spacing: -0.01em;
-  color: var(--th-color-sage-text);
+  color: var(--th-accent);
   margin-block-end: var(--th-space-2);
 }
 
 .message {
-  font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 370;
-  font-size: 0.875rem;
-  color: var(--th-color-sage-text);
+  font-family: var(--th-font-sans);
+  font-weight: 400;
+  font-size: var(--th-meta-size);
+  color: var(--th-accent);
   opacity: 0.8;
 }
