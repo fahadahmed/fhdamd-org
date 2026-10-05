@@ -75,6 +75,11 @@ const migratedToV2 = new Set([
   'PriceCard', 'StepCard', 'Accordion', 'Callout', 'Banner', 'Toast',
 ])
 
+function v2Status(row: { name: string; stories: StatusKey }): StatusKey {
+  if (row.stories === 'pending') return 'pending'
+  return migratedToV2.has(row.name) ? 'done' : 'pending'
+}
+
 export function StatusTable() {
   const done = 'done' as StatusKey
   const pending = 'pending' as StatusKey
@@ -166,7 +171,7 @@ export function StatusTable() {
             <td style={{ ...td, fontFamily: 'var(--th-font-mono)', fontSize: 'var(--th-label-size)', color: 'var(--th-ink-3)' }}>{row.used}</td>
             <td style={td}><StatusBadge status={row.stories} /></td>
             <td style={td}><StatusBadge status={row.tests} /></td>
-            <td style={td}><StatusBadge status={row.stories === pending ? pending : migratedToV2.has(row.name) ? done : pending} /></td>
+            <td style={td}><StatusBadge status={v2Status(row)} /></td>
           </tr>
         ))}
       </tbody>

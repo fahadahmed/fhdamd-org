@@ -42,7 +42,6 @@
 .prose p strong {
   font-weight: 600;
   color: var(--th-ink);
-  font-weight: normal;
 }
 
 .prose p code,
