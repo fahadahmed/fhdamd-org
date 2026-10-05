@@ -6,17 +6,17 @@ import { shared } from './components/docStyles'
 
 <div style={shared.page}>
 
-<div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--th-color-text-3)', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-  <span style={{ width: '24px', height: '1px', background: 'var(--th-color-accent)', display: 'inline-block' }} />
+<div style={{ fontFamily: 'var(--th-font-mono)', fontWeight: 500, fontSize: 'var(--th-label-size)', letterSpacing: 'var(--th-label-tracking)', textTransform: 'uppercase', color: 'var(--th-ink-3)', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+  <span style={{ width: '24px', height: '1px', background: 'var(--th-terra)', display: 'inline-block' }} />
   @fhdamd/threads · v<PackageVersion />
 </div>
 
-<div style={{ fontFamily: 'var(--th-font-serif)', fontWeight: 300, fontSize: 'clamp(2.125rem, 4vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 0.97, marginBottom: '4px' }}>Threads design system.</div>
-<div style={{ fontFamily: 'var(--th-font-serif)', fontWeight: 300, fontSize: 'clamp(2.125rem, 4vw, 3.5rem)', letterSpacing: '-0.03em', lineHeight: 0.97, color: 'var(--th-color-text-3)', fontStyle: 'italic', marginBottom: '24px' }}>Calm. Accessible. Consistent.</div>
+<div style={{ fontFamily: 'var(--th-font-serif)', fontVariationSettings: 'var(--th-serif-axes)', fontWeight: 300, fontSize: 'var(--th-section-size)', letterSpacing: '-0.02em', lineHeight: 1.08, marginBottom: '4px' }}>Threads design system.</div>
+<div style={{ fontFamily: 'var(--th-font-serif)', fontVariationSettings: 'var(--th-serif-axes)', fontWeight: 300, fontSize: 'var(--th-section-size)', letterSpacing: '-0.02em', lineHeight: 1.08, color: 'var(--th-accent)', fontStyle: 'italic', marginBottom: '24px' }}>Calm. Accessible. Consistent.</div>
 
 <div style={shared.lead}>
-  Earthy ceramic tokens for fhdamd.dev, Riqa, Jamaal, and every surface in between.
-  One token contract — web, iOS, macOS.
+  Threads 2.0 tokens for fhdamd.dev, Riqa, Jamaal, and every surface in between.
+  One token contract, matching ThreadsKit 2.0: web, iOS, macOS.
 </div>
 
 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '56px' }}>
@@ -31,12 +31,12 @@ import { shared } from './components/docStyles'
 <div style={shared.eyebrow}>Design principles</div>
 
 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px', marginBottom: '48px' }}>
-  <Principle title="Ceramic palette"    body="Bone, ink, terracotta, sage. Warm neutrals that feel considered, not sterile." />
-  <Principle title="WCAG AA minimum"   body="Every text token meets 4.5:1 contrast. Tertiary text is the floor, never below." />
-  <Principle title="RTL-first"         body="All layout uses CSS logical properties. dir=rtl on html flips everything — no JS needed." />
-  <Principle title="One token contract" body="Semantic aliases mean dark theme and iOS tokens are a mapping, not a rewrite." />
+  <Principle title="21 colour names"     body="One palette shared with ThreadsKit: teal for done and settled, terracotta for the one action. No amber, no blue." />
+  <Principle title="WCAG AA minimum"     body="Text tokens meet 4.5:1. Ink 3 is the floor. The Colours page checks the pairs live in both themes." />
+  <Principle title="RTL-first"           body="All layout uses CSS logical properties. dir=rtl on html flips everything, with no JS." />
+  <Principle title="One token contract"  body="Semantic names mean dark theme and the native apps are a mapping, not a rewrite." />
   <Principle title="No hardcoded values" body="Components never use raw hex, px, or magic numbers. Tokens only." />
-  <Principle title="17px body minimum" body="Never below 17px regular or 14px bold for content. Mono labels use 11-12px only." />
+  <Principle title="Nothing below 12px"  body="Body is 17px, meta is 15px, and mono labels are 12px. Hanken for the interface, Fraunces for display." />
 </div>
 
 <hr style={shared.rule} />
@@ -49,24 +49,30 @@ import { shared } from './components/docStyles'
 
 <div style={shared.eyebrow}>Token contract</div>
 
-<div style={{ fontVariationSettings: '"wdth" 90, "wght" 380', fontSize: '1.0625rem', lineHeight: 1.65, color: 'var(--th-color-text-2)', marginBottom: '20px', maxWidth: '600px' }}>
-  Components use <strong style={{ fontVariationSettings: '"wdth" 92, "wght" 600', color: 'var(--th-color-text-1)' }}>semantic aliases</strong> only — never raw primitive values or hardcoded hex.
-  Dark theme overrides the same aliases, so components adapt with zero code changes.
+<div style={{ fontSize: 'var(--th-body-size)', lineHeight: 'var(--th-body-leading)', color: 'var(--th-ink-2)', marginBottom: '20px', maxWidth: '600px' }}>
+  Write new code against the <strong style={{ fontWeight: 600, color: 'var(--th-ink)' }}>v2 names</strong>.
+  The 1.x <code>--th-color-*</code> names are deprecated aliases and are removed in 3.0.
+  Dark theme overrides the same names, so components adapt with zero code changes.
 </div>
 
-<CodeBlock>{`/* Correct - semantic alias */
+<CodeBlock>{`/* Correct: v2 name */
+.card { background: var(--th-card); border: 1px solid var(--th-line); }
+
+/* Deprecated: 1.x alias (still works until 3.0) */
 .card { background: var(--th-color-surface-1); }
 
-/* Wrong - raw primitive */
-.card { background: var(--th-prim-bone-100); }
-
-/* Wrong - hardcoded hex */
-.card { background: #F0EDE6; }`}</CodeBlock>
+/* Wrong: hardcoded hex */
+.card { background: #FFFFFF; }`}</CodeBlock>
 
 <div style={{ marginTop: '32px' }}>
   <div style={shared.eyebrow}>Quick start</div>
-  <CodeBlock>{`import { Button, Card, OpCard } from '@fhdamd/threads'
-import '@fhdamd/threads/tokens'
+  <CodeBlock>{`import { Button, Card, CardTitle, CardBody } from '@fhdamd/threads'
+import '@fhdamd/threads/tokens'  // variables
+import '@fhdamd/threads/styles'  // component CSS
+import '@fhdamd/threads/base'    // optional: reset, body, .th-* role classes
+
+// Fonts are not bundled. Add the Hanken Grotesk, Fraunces and JetBrains Mono
+// <link> to your layout (see the README).
 
 export function MyPage() {
   return (
