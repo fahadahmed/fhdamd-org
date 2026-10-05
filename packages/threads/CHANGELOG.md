@@ -1,5 +1,32 @@
 # Changelog
 
+## [2.0.0-next.0](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.6.5...threads-v2.0.0-next.0) (2026-10-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* **threads:** palette, body font, radii, shadows and motion change visually.
+
+### Features
+
+* **threads:** migrate Button and Badge to Threads 2.0 ([#393](https://github.com/fahadahmed/fhdamd-org/issues/393)) ([fcebadd](https://github.com/fahadahmed/fhdamd-org/commit/fcebadd9cfcb999f20a309b1b5acc3cc589898e8))
+* **threads:** migrate Button and Badge to Threads 2.0 ([#393](https://github.com/fahadahmed/fhdamd-org/issues/393)) ([9508c35](https://github.com/fahadahmed/fhdamd-org/commit/9508c35acb3e16b0f33212364aca223f3cc56c71))
+* **threads:** migrate Card, form fields and Checkbox to Threads 2.0 ([#393](https://github.com/fahadahmed/fhdamd-org/issues/393)) ([df91e53](https://github.com/fahadahmed/fhdamd-org/commit/df91e530f8da2cfa56b51b828e6a299ea91b2cfd))
+* **threads:** migrate Card, form fields and Checkbox to Threads 2.0 ([#393](https://github.com/fahadahmed/fhdamd-org/issues/393)) ([c8db608](https://github.com/fahadahmed/fhdamd-org/commit/c8db60864ed116bac38398404e80a4544523af5c))
+* **threads:** migrate design tokens to Threads 2.0 ([#394](https://github.com/fahadahmed/fhdamd-org/issues/394)) ([1aba581](https://github.com/fahadahmed/fhdamd-org/commit/1aba581844c4f41e97d9d173cf6b0316d4c6c676))
+* **threads:** migrate Hero, SectionHeader, DarkStrip, SiteNav and SiteFooter to Threads 2.0 ([#393](https://github.com/fahadahmed/fhdamd-org/issues/393)) ([e61a1dd](https://github.com/fahadahmed/fhdamd-org/commit/e61a1dd324ddd6267c8b2a3d77fe46be00654365))
+* **threads:** migrate Hero, SectionHeader, DarkStrip, SiteNav and SiteFooter to Threads 2.0 ([#393](https://github.com/fahadahmed/fhdamd-org/issues/393)) ([ae2e9b1](https://github.com/fahadahmed/fhdamd-org/commit/ae2e9b18d10af85b019d066353465fcff5d8e36a))
+* **threads:** migrate PriceCard, FormSuccessPanel, StepCard, Prose, Accordion, Callout, Banner and Toast ([#393](https://github.com/fahadahmed/fhdamd-org/issues/393)) ([4346562](https://github.com/fahadahmed/fhdamd-org/commit/43465629ec31c38691856ae98c9ce57d753528d8))
+* **threads:** migrate PriceCard, FormSuccessPanel, StepCard, Prose, Accordion, Callout, Banner and Toast to Threads 2.0 ([#393](https://github.com/fahadahmed/fhdamd-org/issues/393)) ([7ade655](https://github.com/fahadahmed/fhdamd-org/commit/7ade655e7e8b21f5ae3d5ecdb321baf94ca49b30))
+* **threads:** migrate Toggle to Threads 2.0 and fix invisible thumb ([#393](https://github.com/fahadahmed/fhdamd-org/issues/393)) ([62fafba](https://github.com/fahadahmed/fhdamd-org/commit/62fafbaf767cf80d98cb106e4908859cc24116b2))
+* **threads:** migrate Toggle to Threads 2.0 and fix invisible thumb ([#393](https://github.com/fahadahmed/fhdamd-org/issues/393)) ([e0cc973](https://github.com/fahadahmed/fhdamd-org/commit/e0cc9737856c62634c14863a1ddc2f5c91b930a0))
+
+
+### Bug Fixes
+
+* **threads:** restore bold weight in Prose strong text and clear Sonar findings ([#393](https://github.com/fahadahmed/fhdamd-org/issues/393)) ([e0cab28](https://github.com/fahadahmed/fhdamd-org/commit/e0cab28b1d8c245765c06dc13d6a5383ecbb34b4))
+* **threads:** restore bold weight in Prose strong text and clear Sonar findings ([#393](https://github.com/fahadahmed/fhdamd-org/issues/393)) ([c1a46be](https://github.com/fahadahmed/fhdamd-org/commit/c1a46be0b3bd28f130423aece2ffdc5b8e9a5bbb))
+
 ## [0.6.5](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.6.4...threads-v0.6.5) (2026-09-10)
 
 
