@@ -39,6 +39,13 @@
   --th-scrim:        rgba(4, 26, 38, 0.32);
   --th-sidebar:      #E4ECE7;               /* iPad sidebar ground; web: nested surface */
 
+  /* On the `deep` ground (DarkStrip, SiteFooter, dark sections). Constant in
+     both themes because `deep` is dark in both: --th-accent / --th-terra flip
+     with the theme and are too dark on deep in light mode. */
+  --th-on-deep-2:       #BCD3DA;
+  --th-accent-on-deep:  #8FCBB8;
+  --th-terra-on-deep:   #DDA080;
+
   /* ── Status roles ───────────────────────────────────────────────────────── */
   --th-success: var(--th-accent);
   --th-warning: var(--th-terra);
