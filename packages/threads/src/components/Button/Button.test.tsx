@@ -43,9 +43,32 @@ describe("Button", () => {
     "outline",
     "subtle-terra",
     "subtle-sage",
+    "destructive",
   ] as const)("renders variant=%s without throwing", (variant) => {
     expect(() => render(<Button variant={variant}>Label</Button>)).not.toThrow();
   });
+
+  it("defaults to the solid-terra variant", () => {
+    const { container } = render(<Button>Label</Button>);
+    const terra = render(<Button variant="solid-terra">Label</Button>).container;
+    expect(container.firstElementChild?.className).toBe(terra.firstElementChild?.className);
+  });
+
+  it.each(["solid-ink", "solid-sage"] as const)(
+    "renders deprecated variant=%s as ghost and warns once",
+    async (variant) => {
+      vi.resetModules();
+      const { Button: FreshButton } = await import("./Button");
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const ghost = render(<FreshButton variant="ghost">Label</FreshButton>).container;
+      const { container, rerender } = render(<FreshButton variant={variant}>Label</FreshButton>);
+      expect(container.firstElementChild?.className).toBe(ghost.firstElementChild?.className);
+      rerender(<FreshButton variant={variant}>Again</FreshButton>);
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(warn.mock.calls[0][0]).toContain(variant);
+      warn.mockRestore();
+    }
+  );
 
   it.each(["sm", "md", "lg"] as const)(
     "renders size=%s without throwing",

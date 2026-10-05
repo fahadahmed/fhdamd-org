@@ -7,8 +7,8 @@
   padding-inline: var(--th-space-3);
   padding-block: var(--th-space-1);
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
   font-weight: 500;
   white-space: nowrap;
@@ -25,38 +25,36 @@
 }
 
 /* ─── VARIANTS ───────────────────────────────────────────────────────────── */
-.terra {
+/* v2 has no amber or blue: `warning` and `info` stay in the API as aliases of
+   `terra` and an ink tint, and `error` is alert text on the soft alert fill. */
+.terra,
+.warning {
   background: var(--th-color-accent-subtle);
-  color: var(--th-color-accent-text);
+  color: var(--th-terra);
 }
 
 .sage {
-  background: var(--th-color-sage-subtle);
-  color: var(--th-color-sage-text);
-}
-
-.warning {
-  background: var(--th-color-warning-subtle);
-  color: var(--th-color-warning-text);
+  background: var(--th-d1);
+  color: var(--th-accent);
 }
 
 .error {
-  background: var(--th-color-error-subtle);
-  color: var(--th-color-error-text);
+  background: var(--th-alert-soft);
+  color: var(--th-alert);
 }
 
 .info {
   background: var(--th-color-info-subtle);
-  color: var(--th-color-info-text);
+  color: var(--th-ink-2);
 }
 
 .neutral {
-  background: var(--th-color-surface-3);
-  color: var(--th-color-text-2);
-  border: 1px solid var(--th-color-border-strong);
+  background: var(--th-d1);
+  color: var(--th-ink-2);
+  border: 1px solid var(--th-line-2);
 }
 
 .inverse {
-  background: var(--th-color-surface-inverse);
-  color: var(--th-color-text-inverse);
+  background: var(--th-deep);
+  color: var(--th-on-deep);
 }
