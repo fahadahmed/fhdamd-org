@@ -3,6 +3,7 @@ import styles from "./Card.module.css";
 
 export type CardVariant = "default" | "elevated" | "interactive" | "inverse";
 export type CardAccentBar = "none" | "top" | "start";
+/** `sage` is a deprecated alias of `terra` in Threads 2.0 (the accent bar is terra only). */
 export type CardAccentColor = "terra" | "sage";
 
 export interface CardProps extends HTMLAttributes<HTMLElement> {
@@ -44,8 +45,8 @@ const accentBarStyles: Record<CardAccentBar, string> = {
 };
 
 const accentColorValues: Record<CardAccentColor, string> = {
-  terra: "var(--th-color-accent)",
-  sage:  "var(--th-color-sage)",
+  terra: "var(--th-terra)",
+  sage:  "var(--th-terra)",
 };
 
 export function Card({

@@ -1,33 +1,31 @@
 /* ─── BASE ──────────────────────────────────────────────────────────────── */
 .card {
-  background: var(--th-color-surface-1);
-  border: 1px solid var(--th-color-border-default);
-  border-radius: var(--th-radius-lg);
+  background: var(--th-card);
+  border: 1px solid var(--th-line);
+  border-radius: var(--th-radius-card);
   padding: var(--th-space-6);
   display: flex;
   flex-direction: column;
   gap: var(--th-space-3);
-  box-shadow: var(--th-shadow-xs);
+  box-shadow: var(--th-shadow-hair);
   position: relative;
   overflow: hidden;
 }
 
 /* ─── VARIANTS ───────────────────────────────────────────────────────────── */
 .elevated {
-  box-shadow: var(--th-shadow-md);
+  box-shadow: var(--th-shadow-lift);
 }
 
 .interactive {
   cursor: pointer;
-  transition:
-    transform var(--th-duration-base) var(--th-ease-out),
-    box-shadow var(--th-duration-base) var(--th-ease-out);
+  transition: box-shadow var(--th-duration-state) var(--th-ease-out);
 }
 
+/* v2: interactive cards gain a float shadow; nothing moves. */
 .interactive:hover,
 .interactive:focus-visible {
-  transform: translateY(-3px);
-  box-shadow: var(--th-shadow-lg);
+  box-shadow: var(--th-shadow-float);
 }
 
 .interactive:focus-visible {
@@ -36,9 +34,9 @@
 }
 
 .inverse {
-  background: var(--th-color-surface-inverse);
+  background: var(--th-deep);
   border-color: transparent;
-  color: var(--th-color-text-inverse);
+  color: var(--th-on-deep);
 }
 
 /* ─── ACCENT BARS ────────────────────────────────────────────────────────── */
@@ -48,7 +46,7 @@
   inset-block-start: 0;
   inset-inline: 0;
   block-size: 3px;
-  background: var(--card-accent, var(--th-color-accent));
+  background: var(--card-accent, var(--th-terra));
 }
 
 .accentStart::before {
@@ -57,30 +55,30 @@
   inset-block: 0;
   inset-inline-start: 0;
   inline-size: 3px;
-  background: var(--card-accent, var(--th-color-accent));
+  background: var(--card-accent, var(--th-terra));
 }
 
 /* ─── SUB-COMPONENTS ─────────────────────────────────────────────────────── */
 .title {
-  font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 92, "wght" 650;
+  font-family: var(--th-font-sans);
+  font-weight: 600;
   font-size: var(--th-text-md);
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
   line-height: 1.15;
 }
 
 .inverse .title {
-  color: var(--th-color-text-inverse);
+  color: var(--th-on-deep);
 }
 
 .body {
-  font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 380;
+  font-family: var(--th-font-sans);
+  font-weight: 400;
   font-size: var(--th-text-base);
-  color: var(--th-color-text-2);
+  color: var(--th-ink-2);
   line-height: 1.6;
 }
 
 .inverse .body {
-  color: var(--th-color-text-inverse-2);
+  color: var(--th-on-deep);
 }
