@@ -4,8 +4,10 @@ import styles from "./Badge.module.css";
 export type BadgeVariant =
   | "terra"
   | "sage"
+  /** Alias of "terra" in Threads 2.0 (no amber in the palette). */
   | "warning"
   | "error"
+  /** Ink tint in Threads 2.0 (no blue in the palette). */
   | "info"
   | "neutral"
   | "inverse";

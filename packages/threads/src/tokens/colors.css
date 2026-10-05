@@ -1,0 +1,145 @@
+/* ─── THREADS COLOR TOKENS · v2 ──────────────────────────────────────────── */
+/* Mirrors ThreadsKit 2.0 (Swift): 21 names + 4 status roles + Jamaal         */
+/* categories. Layer 1 = the 21 names. Layer 2 = the 1.x semantic aliases,    */
+/* remapped onto layer 1 so existing components keep compiling.               */
+/* NAME CLASH: v2 `--th-accent` is TEAL (done/settled). The 1.x alias          */
+/* `--th-color-accent` is still TERRACOTTA (primary action). Prefer the v2     */
+/* names in new code; the aliases are deprecated and go in 3.0.                */
+
+:root,
+[data-theme="light"] {
+  /* ── Layer 1 · the 21 names ─────────────────────────────────────────────── */
+  --th-app:          #EFF4F0;
+  --th-card:         #FFFFFF;
+  --th-deep:         #0C4767;
+  --th-on-deep:      #EAF3F6;
+  --th-ink:          #0A3A53;
+  --th-ink-2:        #14506E;
+  --th-ink-3:        #3F6E80;               /* 4.5:1 floor */
+  --th-terra:        #9A4F2E;               /* the only filled button colour */
+  --th-terra-press:  #7E3F24;
+  --th-accent:       #1F6A58;
+  --th-accent-press: #175245;
+  --th-on-accent:    #EAF3F6;               /* flips dark in dark — never hardcode white */
+  --th-d1:           #D3E3DB;
+  --th-d2:           #71A393;
+  --th-d3:           #0C4767;
+  --th-missed:       #E3BEAB;               /* a missed day, not an error */
+  --th-line:         rgba(10, 58, 83, 0.14);
+  --th-glass:        rgba(255, 255, 255, 0.62);
+  --th-selected:     #FFFFFF;
+  --th-alert:        #A32E22;               /* destructive TEXT only */
+  --th-alert-soft:   #F2D4CE;               /* destructive soft fill */
+
+  /* ── Derived (not named in Swift; values from the handoff) ─────────────── */
+  --th-line-2:       rgba(10, 58, 83, 0.24);
+  --th-line-subtle:  rgba(10, 58, 83, 0.08);
+  --th-glass-edge:   var(--th-line);
+  --th-scrim:        rgba(4, 26, 38, 0.32);
+  --th-sidebar:      #E4ECE7;               /* iPad sidebar ground; web: nested surface */
+
+  /* On the `deep` ground (DarkStrip, SiteFooter, dark sections). Constant in
+     both themes because `deep` is dark in both: --th-accent / --th-terra flip
+     with the theme and are too dark on deep in light mode. */
+  --th-on-deep-2:       #BCD3DA;
+  --th-accent-on-deep:  #8FCBB8;
+  --th-terra-on-deep:   #DDA080;
+
+  /* ── Status roles ───────────────────────────────────────────────────────── */
+  --th-success: var(--th-accent);
+  --th-warning: var(--th-terra);
+  --th-lapsed:  var(--th-missed);
+  --th-info:    var(--th-ink-2);
+
+  /* ── Categories (Jamaal only, user-assigned) ───────────────────────────── */
+  --th-cat-teal:  var(--th-accent);
+  --th-cat-blue:  #2F5E9E;
+  --th-cat-ochre: #836312;
+  --th-cat-plum:  #7B4474;
+  --th-cat-slate: #52636E;
+
+  /* ── Layer 2 · 1.x semantic aliases (deprecated, kept for compatibility) ─ */
+  --th-color-bg:              var(--th-app);
+  --th-color-surface-1:       var(--th-card);
+  --th-color-surface-2:       var(--th-sidebar);
+  --th-color-surface-3:       var(--th-d1);
+  --th-color-surface-inverse: var(--th-deep);
+
+  --th-color-text-1:          var(--th-ink);
+  --th-color-text-2:          var(--th-ink-2);
+  --th-color-text-3:          var(--th-ink-3);
+  --th-color-text-4:          rgba(10, 58, 83, 0.32);   /* disabled only — not for content */
+  --th-color-text-inverse:    var(--th-on-deep);
+  --th-color-text-inverse-2:  #BCD3DA;
+
+  --th-color-border-subtle:   var(--th-line-subtle);
+  --th-color-border-default:  var(--th-line);
+  --th-color-border-strong:   var(--th-line-2);
+
+  --th-color-accent:          var(--th-terra);           /* ≠ --th-accent */
+  --th-color-accent-hover:    var(--th-terra-press);
+  --th-color-accent-subtle:   rgba(154, 79, 46, 0.10);
+  --th-color-accent-text:     var(--th-terra);
+
+  --th-color-sage:            var(--th-accent);           /* sage → teal accent */
+  --th-color-sage-hover:      var(--th-accent-press);
+  --th-color-sage-subtle:     var(--th-d1);
+  --th-color-sage-text:       var(--th-accent);
+
+  --th-color-success:         var(--th-accent);
+  --th-color-success-subtle:  var(--th-d1);
+  --th-color-success-text:    var(--th-accent);
+  --th-color-warning:         var(--th-terra);
+  --th-color-warning-subtle:  rgba(154, 79, 46, 0.10);
+  --th-color-warning-text:    var(--th-terra);
+  --th-color-error:           var(--th-alert);
+  --th-color-error-subtle:    var(--th-alert-soft);
+  --th-color-error-text:      var(--th-alert);
+  --th-color-info:            var(--th-ink-2);
+  --th-color-info-subtle:     rgba(10, 58, 83, 0.06);
+  --th-color-info-text:       var(--th-ink-2);
+
+  --th-color-focus-ring:      var(--th-terra);
+}
+
+[data-theme="dark"] {
+  --th-app:          #12303F;
+  --th-card:         rgba(255, 255, 255, 0.05);
+  --th-deep:         #071B27;
+  --th-on-deep:      #EAF3F6;
+  --th-ink:          #E7F1F4;
+  --th-ink-2:        #BCD3DA;
+  --th-ink-3:        #8FAAB4;
+  --th-terra:        #DDA080;
+  --th-terra-press:  #C08868;
+  --th-accent:       #8FCBB8;
+  --th-accent-press: #74B3A0;
+  --th-on-accent:    #16242E;
+  --th-d1:           #2B4A46;
+  --th-d2:           #4E7D72;
+  --th-d3:           #8FCBB8;
+  --th-missed:       #6B4A38;
+  --th-line:         rgba(231, 241, 244, 0.14);
+  --th-glass:        rgba(255, 255, 255, 0.09);
+  --th-selected:     #1D4052;
+  --th-alert:        #F09A90;
+  --th-alert-soft:   #5A2A22;
+
+  --th-line-2:       rgba(231, 241, 244, 0.24);
+  --th-line-subtle:  rgba(231, 241, 244, 0.08);
+  --th-glass-edge:   rgba(255, 255, 255, 0.16);
+  --th-scrim:        rgba(0, 0, 0, 0.45);
+  --th-sidebar:      rgba(255, 255, 255, 0.08);
+
+  --th-cat-blue:  #9DB9E8;
+  --th-cat-ochre: #D8BA6A;
+  --th-cat-plum:  #D5A6CC;
+  --th-cat-slate: #AEBCC6;
+
+  --th-color-surface-3:       rgba(255, 255, 255, 0.12);
+  --th-color-text-4:          rgba(231, 241, 244, 0.32);
+  --th-color-text-inverse-2:  #BCD3DA;
+  --th-color-accent-subtle:   rgba(221, 160, 128, 0.15);
+  --th-color-warning-subtle:  rgba(221, 160, 128, 0.15);
+  --th-color-info-subtle:     rgba(231, 241, 244, 0.06);
+}

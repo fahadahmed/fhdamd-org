@@ -1,0 +1,24 @@
+/* ─── THREADS ELEVATION TOKENS · v2 ──────────────────────────────────────── */
+/* Three levels: hair · float · lift. Deep-ink tinted, negative spread.       */
+
+:root,
+[data-theme="light"] {
+  --th-shadow-hair:  0 1px 0 var(--th-line);
+  --th-shadow-float: 0 10px 26px -14px rgba(6, 32, 46, 0.50);
+  --th-shadow-lift:  0 18px 40px -26px rgba(6, 32, 46, 0.42);
+
+  /* Glass: action surfaces only (nav bar, sticky CTA, chips). Content is opaque. */
+  --th-glass-blur:        blur(20px) saturate(140%);
+  --th-glass-blur-strong: blur(28px) saturate(160%);
+
+  /* 1.x aliases */
+  --th-shadow-xs: var(--th-shadow-hair);
+  --th-shadow-sm: var(--th-shadow-hair);
+  --th-shadow-md: var(--th-shadow-float);
+  --th-shadow-lg: var(--th-shadow-lift);
+}
+
+[data-theme="dark"] {
+  --th-shadow-float: 0 22px 50px -28px rgba(0, 0, 0, 0.70);
+  --th-shadow-lift:  0 22px 50px -28px rgba(0, 0, 0, 0.70);
+}

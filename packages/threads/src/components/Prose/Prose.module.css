@@ -4,58 +4,59 @@
 
 .prose h2 {
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-weight: 400;
   font-size: 1.75rem;
   letter-spacing: -0.02em;
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
   margin: var(--th-space-12) 0 var(--th-space-4);
   scroll-margin-top: 90px;
 }
 
 .prose h2 em {
   font-style: italic;
-  color: var(--th-color-accent);
+  color: var(--th-terra);
 }
 
 .prose h3 {
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-weight: 400;
   font-size: 1.3125rem;
   letter-spacing: -0.01em;
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
   margin: var(--th-space-8) 0 var(--th-space-3);
   scroll-margin-top: 90px;
 }
 
 .prose p {
-  font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 380;
+  font-family: var(--th-font-sans);
+  font-weight: 400;
   font-size: var(--th-text-base);
   line-height: 1.8;
-  color: var(--th-color-text-2);
+  color: var(--th-ink-2);
   margin-block-end: var(--th-space-5);
 }
 
 .prose p b,
 .prose p strong {
-  font-variation-settings: "wdth" 90, "wght" 600;
-  color: var(--th-color-text-1);
-  font-weight: normal;
+  font-weight: 600;
+  color: var(--th-ink);
 }
 
 .prose p code,
 .prose li code {
   font-family: var(--th-font-mono);
   font-size: 0.875em;
-  background: var(--th-color-surface-2);
-  border: 1px solid var(--th-color-border-default);
+  background: var(--th-sidebar);
+  border: 1px solid var(--th-line);
   border-radius: 4px;
   padding: 1px 6px;
-  color: var(--th-color-accent-text);
+  color: var(--th-terra);
 }
 
 .prose a:not([class]) {
-  color: var(--th-color-accent);
+  color: var(--th-terra);
   text-decoration: none;
   background-image: linear-gradient(currentColor, currentColor);
   background-size: 0% 1px;
@@ -72,9 +73,9 @@
 .prose ol {
   margin: 0 0 var(--th-space-5);
   padding-inline-start: 1.3em;
-  color: var(--th-color-text-2);
-  font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 380;
+  color: var(--th-ink-2);
+  font-family: var(--th-font-sans);
+  font-weight: 400;
   font-size: var(--th-text-base);
   line-height: 1.75;
 }
@@ -84,14 +85,15 @@
 }
 
 .prose blockquote {
-  border-inline-start: 3px solid var(--th-color-accent);
+  border-inline-start: 3px solid var(--th-terra);
   padding-block: 4px;
   padding-inline-start: 20px;
   margin: var(--th-space-6) 0;
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-style: italic;
   font-size: 1.1875rem;
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
   line-height: 1.6;
 }
 
@@ -101,35 +103,35 @@
   border-spacing: 0;
   margin: var(--th-space-6) 0 var(--th-space-8);
   overflow: hidden;
-  border: 1px solid var(--th-color-border-default);
-  border-radius: var(--th-radius-sm);
-  background: var(--th-color-surface-1);
-  font-family: var(--th-font-display);
+  border: 1px solid var(--th-line);
+  border-radius: var(--th-radius-field);
+  background: var(--th-card);
+  font-family: var(--th-font-sans);
   font-size: var(--th-text-sm);
   line-height: 1.45;
 }
 
 .prose thead {
-  background: var(--th-color-surface-2);
+  background: var(--th-sidebar);
 }
 
 .prose th,
 .prose td {
   padding: var(--th-space-3) var(--th-space-4);
-  border-block-end: 1px solid var(--th-color-border-subtle);
-  border-inline-end: 1px solid var(--th-color-border-subtle);
+  border-block-end: 1px solid var(--th-line-subtle);
+  border-inline-end: 1px solid var(--th-line-subtle);
   vertical-align: top;
   text-align: start;
 }
 
 .prose th {
-  color: var(--th-color-text-1);
-  font-variation-settings: "wdth" 92, "wght" 650;
+  color: var(--th-ink);
+  font-weight: 600;
 }
 
 .prose td {
-  color: var(--th-color-text-2);
-  font-variation-settings: "wdth" 90, "wght" 420;
+  color: var(--th-ink-2);
+  font-weight: 400;
 }
 
 .prose tbody tr:last-child td {
@@ -142,12 +144,12 @@
 }
 
 .prose tbody tr:nth-child(even) {
-  background: color-mix(in srgb, var(--th-color-surface-2) 48%, transparent);
+  background: color-mix(in srgb, var(--th-sidebar) 48%, transparent);
 }
 
 .prose td strong {
-  color: var(--th-color-text-1);
-  font-variation-settings: "wdth" 92, "wght" 700;
+  color: var(--th-ink);
+  font-weight: 700;
 }
 
 @media (max-width: 640px) {
@@ -155,6 +157,6 @@
     display: block;
     max-width: 100%;
     overflow-x: auto;
-    font-size: 0.8125rem;
+    font-size: var(--th-text-sm);
   }
 }

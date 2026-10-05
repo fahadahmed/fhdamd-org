@@ -4,10 +4,10 @@
   inset-block-start: 0;
   z-index: 200;
   width: 100%;
-  background: color-mix(in srgb, var(--th-color-bg) 90%, transparent);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-block-end: 1px solid var(--th-color-border-default);
+  background: var(--th-glass);
+  backdrop-filter: var(--th-glass-blur);
+  -webkit-backdrop-filter: var(--th-glass-blur);
+  border-block-end: 1px solid var(--th-line);
   overflow-x: clip;
 }
 
@@ -35,7 +35,7 @@
 .brand:focus-visible {
   outline: 2px solid var(--th-color-focus-ring);
   outline-offset: 3px;
-  border-radius: var(--th-radius-xs);
+  border-radius: var(--th-radius-cell);
 }
 
 /* ─── DESKTOP NAV LINKS ──────────────────────────────────────────────────── */
@@ -59,20 +59,21 @@
 
 .link {
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.12em;
+  font-weight: 500;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   padding: var(--th-space-2) var(--th-space-3);
   border-radius: var(--th-radius-pill);
   text-decoration: none;
   white-space: nowrap;
   transition:
-    background var(--th-duration-base) var(--th-ease-out),
-    color var(--th-duration-base) var(--th-ease-out);
+    background var(--th-duration-state) var(--th-ease-out),
+    color var(--th-duration-state) var(--th-ease-out);
 }
 
-.link:hover { background: var(--th-color-surface-2); color: var(--th-color-text-1); }
+.link:hover { background: var(--th-sidebar); color: var(--th-ink); }
 
 .link:focus-visible {
   outline: 2px solid var(--th-color-focus-ring);
@@ -80,8 +81,8 @@
 }
 
 .linkActive {
-  color: var(--th-color-text-1);
-  background: var(--th-color-surface-2);
+  color: var(--th-ink);
+  background: var(--th-sidebar);
 }
 
 /* ─── ACTIONS (CTA GROUP + BURGER) ──────────────────────────────────────── */
@@ -118,17 +119,17 @@
   width: 36px;
   height: 36px;
   flex-shrink: 0;
-  border-radius: var(--th-radius-sm);
-  border: 1px solid var(--th-color-border-strong);
+  border-radius: var(--th-radius-field);
+  border: 1px solid var(--th-line-2);
   background: transparent;
-  color: var(--th-color-text-2);
+  color: var(--th-ink-2);
   cursor: pointer;
   transition:
-    background var(--th-duration-base) var(--th-ease-out),
-    color var(--th-duration-base) var(--th-ease-out);
+    background var(--th-duration-state) var(--th-ease-out),
+    color var(--th-duration-state) var(--th-ease-out);
 }
 
-.burger:hover { background: var(--th-color-surface-2); color: var(--th-color-text-1); }
+.burger:hover { background: var(--th-sidebar); color: var(--th-ink); }
 
 .burger:focus-visible {
   outline: 2px solid var(--th-color-focus-ring);
@@ -138,8 +139,8 @@
 /* ─── MOBILE NAV DRAWER ──────────────────────────────────────────────────── */
 .mobileNav {
   display: none;
-  border-block-end: 1px solid var(--th-color-border-default);
-  background: var(--th-color-bg);
+  border-block-end: 1px solid var(--th-line);
+  background: var(--th-app);
 }
 
 .mobileNavOpen {
@@ -160,42 +161,43 @@
   width: 100%;
   text-align: start;
   font-family: var(--th-font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
+  font-weight: 500;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-2);
+  color: var(--th-ink-2);
   padding: var(--th-space-4) var(--th-space-2);
-  border-radius: var(--th-radius-sm);
+  border-radius: var(--th-radius-field);
   text-decoration: none;
   background: transparent;
   border: none;
   cursor: pointer;
   transition:
-    background var(--th-duration-base) var(--th-ease-out),
-    color var(--th-duration-base) var(--th-ease-out);
+    background var(--th-duration-state) var(--th-ease-out),
+    color var(--th-duration-state) var(--th-ease-out);
 }
 
-.mobileLink:hover { background: var(--th-color-surface-2); color: var(--th-color-text-1); }
+.mobileLink:hover { background: var(--th-sidebar); color: var(--th-ink); }
 
 .mobileLinkActive {
-  color: var(--th-color-text-1);
-  background: var(--th-color-surface-2);
+  color: var(--th-ink);
+  background: var(--th-sidebar);
 }
 
 /* Primary CTA in mobile drawer gets accent colour */
 .mobilePrimary {
-  color: var(--th-color-accent);
+  color: var(--th-terra);
 }
 
 .mobilePrimary:hover {
   background: var(--th-color-accent-subtle);
-  color: var(--th-color-accent-text);
+  color: var(--th-terra-press);
 }
 
 /* Thin divider between nav links and CTAs */
 .mobileDivider {
   block-size: 1px;
-  background: var(--th-color-border-default);
+  background: var(--th-line);
   margin-block: var(--th-space-2);
 }
 

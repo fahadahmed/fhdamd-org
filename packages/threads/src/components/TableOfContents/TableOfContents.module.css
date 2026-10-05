@@ -18,7 +18,7 @@
   font-size: 0.625rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
   margin-block-end: 14px;
 }
 
@@ -97,7 +97,7 @@
   font-size: 0.625rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
   flex-shrink: 0;
 }
 

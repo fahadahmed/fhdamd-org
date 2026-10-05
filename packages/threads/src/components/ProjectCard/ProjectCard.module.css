@@ -43,7 +43,7 @@
   font-size: 0.625rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
   margin-block-end: var(--th-space-4);
 }
 
@@ -160,7 +160,7 @@
   font-size: 0.5625rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
 }
 
 /* ─── FOOTER ──────────────────────────────────────────────────────────────── */

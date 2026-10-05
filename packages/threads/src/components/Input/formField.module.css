@@ -8,10 +8,10 @@
 }
 
 .label {
-  font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 92, "wght" 550;
+  font-family: var(--th-font-sans);
+  font-weight: 600;
   font-size: var(--th-text-base);
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
 }
 
 .label--disabled {
@@ -19,7 +19,7 @@
 }
 
 .required {
-  color: var(--th-color-accent);
+  color: var(--th-terra);
   margin-inline-start: 2px;
 }
 
@@ -31,7 +31,7 @@
 
 .error {
   font-size: var(--th-text-sm);
-  color: var(--th-color-error-text);
+  color: var(--th-alert);
   display: flex;
   align-items: center;
   gap: var(--th-space-1);
@@ -40,7 +40,7 @@
 
 .success {
   font-size: var(--th-text-sm);
-  color: var(--th-color-success-text);
+  color: var(--th-accent);
   line-height: 1.4;
 }
 
@@ -49,48 +49,48 @@
   width: 100%;
   padding-inline: var(--th-space-4);
   padding-block: var(--th-space-3);
-  background: var(--th-color-surface-1);
-  border: 1px solid var(--th-color-border-strong);
-  border-radius: var(--th-radius-md);
-  font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 400;
+  background: var(--th-card);
+  border: 1px solid var(--th-line-2);
+  border-radius: var(--th-radius-field);
+  font-family: var(--th-font-sans);
+  font-weight: 400;
   font-size: var(--th-text-base);
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
   min-block-size: 48px;
   transition:
-    border-color var(--th-duration-base) var(--th-ease-out),
-    box-shadow var(--th-duration-base) var(--th-ease-out);
+    border-color var(--th-duration-state) var(--th-ease-out),
+    box-shadow var(--th-duration-state) var(--th-ease-out);
   appearance: none;
 }
 
 .input::placeholder {
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
 }
 
 .input:hover:not(:disabled) {
-  border-color: var(--th-color-text-3);
+  border-color: var(--th-ink-3);
 }
 
 .input:focus-visible {
   outline: none;
-  border-color: var(--th-color-accent);
-  box-shadow: 0 0 0 3px rgba(181, 98, 58, 0.2);
+  border-color: var(--th-terra);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--th-terra) 20%, transparent);
 }
 
 .input:disabled {
-  background: var(--th-color-surface-3);
+  background: var(--th-d1);
   color: var(--th-color-text-4);
   cursor: not-allowed;
 }
 
 .input--error {
-  border-color: var(--th-color-error);
+  border-color: var(--th-alert);
 }
 
 .input--error:focus-visible {
-  box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--th-alert) 20%, transparent);
 }
 
 .input--success {
-  border-color: var(--th-color-success);
+  border-color: var(--th-accent);
 }

@@ -23,7 +23,7 @@
   font-size: 0.6875rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
 }
 
 @media (max-width: 480px) {
@@ -69,5 +69,5 @@
   font-variation-settings: "wdth" 90, "wght" 370;
   font-size: 0.8125rem;
   line-height: 1.55;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
 }

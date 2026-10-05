@@ -9,10 +9,10 @@ export function PackageVersion() {
 export function Chip({ children }: { children: string }) {
   return (
     <span style={{
-      fontFamily: 'var(--th-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.1em',
-      textTransform: 'uppercase', padding: '5px 12px', borderRadius: '9999px',
-      border: '1px solid var(--th-color-border-strong)', color: 'var(--th-color-text-3)',
-      background: 'var(--th-color-surface-2)',
+      fontFamily: 'var(--th-font-mono)', fontWeight: 500, fontSize: 'var(--th-label-size)', letterSpacing: 'var(--th-label-tracking)',
+      textTransform: 'uppercase', padding: '5px 12px', borderRadius: 'var(--th-radius-pill)',
+      border: '1px solid var(--th-line-2)', color: 'var(--th-ink-3)',
+      background: 'var(--th-sidebar)',
     }}>
       {children}
     </span>
@@ -22,13 +22,13 @@ export function Chip({ children }: { children: string }) {
 export function Principle({ title, body }: { title: string; body: string }) {
   return (
     <div style={{
-      background: 'var(--th-color-surface-1)', border: '1px solid var(--th-color-border-default)',
-      borderRadius: '14px', padding: '20px',
+      background: 'var(--th-card)', border: '1px solid var(--th-line)',
+      borderRadius: 'var(--th-radius-card)', padding: '20px',
     }}>
-      <div style={{ fontVariationSettings: '"wdth" 92, "wght" 650', fontSize: '1.0625rem', marginBottom: '6px' }}>
+      <div style={{ fontWeight: 600, fontSize: 'var(--th-body-size)', marginBottom: '6px' }}>
         {title}
       </div>
-      <div style={{ fontVariationSettings: '"wdth" 90, "wght" 380', fontSize: '1.0625rem', lineHeight: 1.55, color: 'var(--th-color-text-2)' }}>
+      <div style={{ fontSize: 'var(--th-body-size)', lineHeight: 1.55, color: 'var(--th-ink-2)' }}>
         {body}
       </div>
     </div>
@@ -38,18 +38,18 @@ export function Principle({ title, body }: { title: string; body: string }) {
 type StatusKey = 'done' | 'stories' | 'pending'
 
 const badgeMap: Record<StatusKey, { bg: string; color: string; label: string }> = {
-  done:    { bg: 'var(--th-color-sage-subtle)',   color: 'var(--th-color-sage-text)',   label: 'Done' },
-  stories: { bg: 'var(--th-color-accent-subtle)', color: 'var(--th-color-accent-text)', label: 'No tests' },
-  pending: { bg: 'var(--th-color-surface-3)',     color: 'var(--th-color-text-3)',       label: 'Pending' },
+  done:    { bg: 'var(--th-d1)',                  color: 'var(--th-accent)', label: 'Done' },
+  stories: { bg: 'var(--th-color-accent-subtle)', color: 'var(--th-terra)',  label: 'No tests' },
+  pending: { bg: 'var(--th-d1)',                  color: 'var(--th-ink-2)',  label: 'Pending' },
 }
 
 export function StatusBadge({ status }: { status: StatusKey }) {
   const { bg, color, label } = badgeMap[status] ?? badgeMap.pending
   return (
     <span style={{
-      fontFamily: 'var(--th-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.1em',
+      fontFamily: 'var(--th-font-mono)', fontWeight: 500, fontSize: 'var(--th-label-size)', letterSpacing: 'var(--th-label-tracking)',
       textTransform: 'uppercase', background: bg, color,
-      padding: '3px 10px', borderRadius: '9999px', whiteSpace: 'nowrap',
+      padding: '3px 10px', borderRadius: 'var(--th-radius-pill)', whiteSpace: 'nowrap',
     }}>
       {label}
     </span>
@@ -59,13 +59,25 @@ export function StatusBadge({ status }: { status: StatusKey }) {
 export function CodeBlock({ children }: { children: string }) {
   return (
     <pre style={{
-      fontFamily: 'var(--th-font-mono)', fontSize: '0.875rem', lineHeight: 1.65,
-      background: 'var(--th-color-surface-inverse)', color: '#e8e4dc',
-      borderRadius: '14px', padding: '24px', overflowX: 'auto', whiteSpace: 'pre',
+      fontFamily: 'var(--th-font-mono)', fontSize: 'var(--th-text-sm)', lineHeight: 1.65,
+      background: 'var(--th-deep)', color: 'var(--th-on-deep)',
+      borderRadius: 'var(--th-radius-card)', padding: '24px', overflowX: 'auto', whiteSpace: 'pre',
     }}>
       {children}
     </pre>
   )
+}
+
+/** Components migrated to Threads 2.0 (component CSS on v2 names). Update as the migration lands. */
+const migratedToV2 = new Set([
+  'Button', 'Badge + Tag', 'Toggle', 'Card', 'Input', 'Textarea', 'Select', 'Checkbox',
+  'Hero', 'SectionHeader', 'DarkStrip', 'SiteNav', 'SiteFooter',
+  'PriceCard', 'StepCard', 'Accordion', 'Callout', 'Banner', 'Toast',
+])
+
+function v2Status(row: { name: string; stories: StatusKey }): StatusKey {
+  if (row.stories === 'pending') return 'pending'
+  return migratedToV2.has(row.name) ? 'done' : 'pending'
 }
 
 export function StatusTable() {
@@ -132,32 +144,34 @@ export function StatusTable() {
   ]
 
   const th: CSSProperties = {
-    fontFamily: 'var(--th-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.1em',
-    textTransform: 'uppercase', color: 'var(--th-color-text-3)', padding: '10px 16px',
-    textAlign: 'left', borderBottom: '1px solid var(--th-color-border-default)', fontWeight: 400,
+    fontFamily: 'var(--th-font-mono)', fontSize: 'var(--th-label-size)', letterSpacing: 'var(--th-label-tracking)',
+    textTransform: 'uppercase', color: 'var(--th-ink-3)', padding: '10px 16px',
+    textAlign: 'start', borderBottom: '1px solid var(--th-line)', fontWeight: 500,
   }
   const td: CSSProperties = {
-    padding: '10px 16px', color: 'var(--th-color-text-2)',
-    borderBottom: '1px solid var(--th-color-border-subtle)', fontSize: '1.0625rem',
+    padding: '10px 16px', color: 'var(--th-ink-2)',
+    borderBottom: '1px solid var(--th-line-subtle)', fontSize: 'var(--th-body-size)',
   }
 
   return (
-    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '1.0625rem', marginBottom: '48px' }}>
+    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'var(--th-body-size)', marginBottom: '48px' }}>
       <thead>
         <tr>
           <th style={th}>Component</th>
           <th style={th}>Used by</th>
           <th style={th}>Stories</th>
           <th style={th}>Tests</th>
+          <th style={th}>Threads 2.0</th>
         </tr>
       </thead>
       <tbody>
         {rows.map(row => (
           <tr key={row.name}>
-            <td style={{ ...td, fontVariationSettings: '"wdth" 92, "wght" 550', color: 'var(--th-color-text-1)' }}>{row.name}</td>
-            <td style={{ ...td, fontFamily: 'var(--th-font-mono)', fontSize: '0.75rem', color: 'var(--th-color-text-3)' }}>{row.used}</td>
+            <td style={{ ...td, fontWeight: 600, color: 'var(--th-ink)' }}>{row.name}</td>
+            <td style={{ ...td, fontFamily: 'var(--th-font-mono)', fontSize: 'var(--th-label-size)', color: 'var(--th-ink-3)' }}>{row.used}</td>
             <td style={td}><StatusBadge status={row.stories} /></td>
             <td style={td}><StatusBadge status={row.tests} /></td>
+            <td style={td}><StatusBadge status={v2Status(row)} /></td>
           </tr>
         ))}
       </tbody>

@@ -7,85 +7,71 @@ import { shared } from './components/docStyles'
 <div style={shared.page}>
 
 <div style={shared.eyebrow}>Primitives / Typography</div>
-<div style={shared.h1}>Typography <em style={{ fontStyle: 'italic', color: 'var(--th-color-accent)' }}>scale</em></div>
+<div style={shared.h1}>Typography <em style={{ fontStyle: 'italic', color: 'var(--th-accent)' }}>roles</em></div>
 <div style={shared.lead}>
-  Three families. Ten sizes. A base of 17px that never goes lower for regular body text.
-  Variable-font axes on Bricolage Grotesque let a single file cover every weight and width.
+  Three families and six roles, matching ThreadsType in ThreadsKit. Hanken Grotesk carries the interface
+  and body, Fraunces carries display type, JetBrains Mono carries labels. Nothing in v2 is below 12px.
 </div>
 
 <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap', marginBottom: '32px' }}>
-  <RuleCard title="17px body minimum"      body="Never below 17px regular or 14px bold for content. Mono captions sit at 11-12px." />
-  <RuleCard title="font-variation-settings" body='Use "wdth" and "wght" axes together. Never font-weight alone on Bricolage Grotesque.' />
-  <RuleCard title="Semantic sizing"        body="Always reference token variables. Never hardcode rem or px values in component files." />
+  <RuleCard title="Use the roles"       body="Reach for --th-label, meta, body, row, lede and display before the 1.x --th-text-* scale." />
+  <RuleCard title="Hanken has no width axis" body='No font-variation-settings "wdth". Set font-weight: 400, 600 or 700.' />
+  <RuleCard title="Always pair Fraunces with its axes" body="font-family: var(--th-font-serif) goes with font-variation-settings: var(--th-serif-axes)." />
 </div>
 
 <hr style={shared.rule} />
 
-<div style={shared.eyebrow}>Display - Bricolage Grotesque (variable: wdth + wght axes)</div>
+<div style={shared.eyebrow}>The six roles</div>
 
-<TypeRow token="--th-text-5xl" px="clamp(48-88px)" sampleStyle={{ fontFamily: 'var(--th-font-display)', fontVariationSettings: '"wdth" 92, "wght" 300', fontSize: 'var(--th-text-5xl)', letterSpacing: '-0.03em', lineHeight: 0.97 }}>Building things.</TypeRow>
-<TypeRow token="--th-text-4xl" px="56px" sampleStyle={{ fontFamily: 'var(--th-font-display)', fontVariationSettings: '"wdth" 92, "wght" 400', fontSize: 'var(--th-text-4xl)', letterSpacing: '-0.03em', lineHeight: 0.97 }}>Hero heading</TypeRow>
-<TypeRow token="--th-text-3xl" px="44px" sampleStyle={{ fontFamily: 'var(--th-font-display)', fontVariationSettings: '"wdth" 92, "wght" 500', fontSize: 'var(--th-text-3xl)', letterSpacing: '-0.025em', lineHeight: 1.05 }}>Large heading</TypeRow>
-<TypeRow token="--th-text-2xl" px="34px" sampleStyle={{ fontFamily: 'var(--th-font-display)', fontVariationSettings: '"wdth" 92, "wght" 600', fontSize: 'var(--th-text-2xl)', letterSpacing: '-0.02em', lineHeight: 1.1 }}>Section heading</TypeRow>
-<TypeRow token="--th-text-xl"  px="27px" sampleStyle={{ fontFamily: 'var(--th-font-display)', fontVariationSettings: '"wdth" 92, "wght" 600', fontSize: 'var(--th-text-xl)', lineHeight: 1.15 }}>Sub heading</TypeRow>
-<TypeRow token="--th-text-lg"  px="22px" sampleStyle={{ fontFamily: 'var(--th-font-display)', fontVariationSettings: '"wdth" 90, "wght" 600', fontSize: 'var(--th-text-lg)' }}>Section label</TypeRow>
-<TypeRow token="--th-text-md"  px="19px" sampleStyle={{ fontFamily: 'var(--th-font-display)', fontVariationSettings: '"wdth" 90, "wght" 500', fontSize: 'var(--th-text-md)' }}>Card title / emphasized body</TypeRow>
-<TypeRow token="--th-text-base" px="17px - body minimum" sampleStyle={{ fontFamily: 'var(--th-font-display)', fontVariationSettings: '"wdth" 90, "wght" 400', fontSize: 'var(--th-text-base)', lineHeight: 1.6 }}>Body text - the default reading size across all apps. Never go below this for regular-weight content.</TypeRow>
-<TypeRow token="--th-text-sm"  px="14px - bold only" sampleStyle={{ fontFamily: 'var(--th-font-display)', fontVariationSettings: '"wdth" 92, "wght" 600', fontSize: 'var(--th-text-sm)', color: 'var(--th-color-text-2)' }}>Secondary label - only at weight 600+ (meets WCAG large text threshold)</TypeRow>
-<TypeRow token="--th-text-xs"  px="12px - captions only" sampleStyle={{ fontFamily: 'var(--th-font-mono)', fontSize: 'var(--th-text-xs)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--th-color-text-3)' }}>METADATA CAPTION - MONO ONLY</TypeRow>
+<TypeRow token="label"   px="12px · mono 500 · uppercase · 0.16em" sampleStyle={{ fontFamily: 'var(--th-font-mono)', fontWeight: 500, fontSize: 'var(--th-label-size)', letterSpacing: 'var(--th-label-tracking)', textTransform: 'uppercase', color: 'var(--th-ink-3)' }}>Night planning · 5 steps</TypeRow>
+<TypeRow token="meta"    px="15px · sans 400" sampleStyle={{ fontSize: 'var(--th-meta-size)', lineHeight: 'var(--th-meta-leading)', color: 'var(--th-ink-3)' }}>Mon–Fri · 08:15 and 15:00</TypeRow>
+<TypeRow token="body"    px="17px · sans 400" sampleStyle={{ fontSize: 'var(--th-body-size)', lineHeight: 'var(--th-body-leading)', color: 'var(--th-ink-2)' }}>Body text. The default reading size across every app.</TypeRow>
+<TypeRow token="row"     px="18px · sans 600" sampleStyle={{ fontWeight: 600, fontSize: 'var(--th-row-size)', lineHeight: 'var(--th-row-leading)' }}>Call the clinic</TypeRow>
+<TypeRow token="lede"    px="19px · sans 400" sampleStyle={{ fontSize: 'var(--th-lede-size)', lineHeight: 'var(--th-lede-leading)', color: 'var(--th-ink-2)' }}>An intro paragraph under a heading.</TypeRow>
+<TypeRow token="display" px="28 / 34 / 38px · serif 500" sampleStyle={{ fontFamily: 'var(--th-font-serif)', fontVariationSettings: 'var(--th-serif-axes)', fontWeight: 500, fontSize: 'var(--th-display-md)', lineHeight: 'var(--th-display-leading)' }}>Your day already has a shape.</TypeRow>
 
 <hr style={shared.rule} />
 
-<div style={shared.eyebrow}>Serif - Fraunces (weight 300, italic accent)</div>
+<div style={shared.eyebrow}>Web display sizes</div>
 
-<div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '32px' }}>
-  <div style={{ fontFamily: 'var(--th-font-serif)', fontWeight: 300, fontSize: 'var(--th-text-5xl)', lineHeight: 0.97, letterSpacing: '-0.03em' }}>
-    I architect enterprise systems by day.
-  </div>
-  <div style={{ fontFamily: 'var(--th-font-serif)', fontWeight: 300, fontSize: 'var(--th-text-5xl)', lineHeight: 0.97, letterSpacing: '-0.03em', color: 'var(--th-color-text-3)' }}>
-    I make considered apps <em style={{ fontStyle: 'italic' }}>by night.</em>
-  </div>
-  <div style={{ fontFamily: 'var(--th-font-serif)', fontWeight: 300, fontSize: 'var(--th-text-2xl)', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
-    Heading with <em style={{ fontStyle: 'italic', color: 'var(--th-color-accent)' }}>terracotta</em> italic accent
-  </div>
-  <div style={{ fontFamily: 'var(--th-font-serif)', fontWeight: 300, fontSize: 'var(--th-text-xl)' }}>
-    Summarise any PDF <em style={{ fontStyle: 'italic', color: 'var(--th-color-sage)' }}>in seconds.</em>
-  </div>
-  <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-    <span style={{ fontFamily: 'var(--th-font-serif)', fontWeight: 300, fontSize: 'var(--th-text-4xl)', letterSpacing: '-0.04em' }}>$4.99</span>
-    <span style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.75rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--th-color-text-3)' }}>20 credits</span>
-  </div>
-</div>
+<TypeRow token="--th-hero-size" px="clamp(48–80px) · serif 300 · 1.02" sampleStyle={{ fontFamily: 'var(--th-font-serif)', fontVariationSettings: 'var(--th-serif-axes)', fontWeight: 300, fontSize: 'var(--th-hero-size)', lineHeight: 'var(--th-hero-leading)', letterSpacing: '-0.02em' }}>One list. <em style={{ fontStyle: 'italic', color: 'var(--th-accent)' }}>Just today.</em></TypeRow>
+<TypeRow token="--th-section-size" px="clamp(34–44px) · serif 500 · 1.08" sampleStyle={{ fontFamily: 'var(--th-font-serif)', fontVariationSettings: 'var(--th-serif-axes)', fontWeight: 500, fontSize: 'var(--th-section-size)', lineHeight: 1.08, letterSpacing: '-0.01em' }}>A read on your fortnight</TypeRow>
 
 <div style={shared.note}>
-  <strong style={{ fontVariationSettings: '"wdth" 92, "wght" 600', color: 'var(--th-color-text-1)' }}>Fraunces rules:</strong>{' '}
-  Headings only. Weight 300 always. Italic for accent words or the second hero line.
-  Never for body copy. Pricing uses the serif numeral only.
+  <strong>Fraunces rules.</strong> Headings and numerals only. Weight 300 for the hero, 500 for sections and
+  display. Italic for the accent word. Never for body copy.
 </div>
 
 <hr style={shared.rule} />
 
-<div style={shared.eyebrow}>Mono - JetBrains Mono (labels, metadata, pricing units, code)</div>
+<div style={shared.eyebrow}>Mono, JetBrains Mono (labels, metadata, units, code)</div>
 
 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '32px' }}>
-  <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: 'var(--th-text-sm)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--th-color-text-2)' }}>
-    SOLUTION ARCHITECT AT EY · MELBOURNE
+  <div className="th-label" style={{ fontFamily: 'var(--th-font-mono)', fontWeight: 500, fontSize: 'var(--th-label-size)', letterSpacing: 'var(--th-label-tracking)', textTransform: 'uppercase', color: 'var(--th-ink-3)' }}>
+    iPhone · iPad · Mac
   </div>
-  <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: 'var(--th-text-xs)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--th-color-text-4)' }}>
-    4 live · 5 coming soon · credits per use
-  </div>
-  <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--th-color-text-2)' }}>
-    MERGE · IMAGE TO PDF · PROTECT · UNLOCK
-  </div>
-  <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.875rem', color: 'var(--th-color-accent-text)', background: 'var(--th-color-surface-2)', padding: '8px 14px', borderRadius: '8px', display: 'inline-block' }}>
-    --th-color-accent: #B5623A
+  <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: 'var(--th-text-sm)', color: 'var(--th-terra)', background: 'var(--th-sidebar)', padding: '8px 14px', borderRadius: 'var(--th-radius-field)', display: 'inline-block' }}>
+    --th-terra: #9A4F2E
   </div>
 </div>
 
 <div style={shared.note}>
-  <strong style={{ fontVariationSettings: '"wdth" 92, "wght" 600', color: 'var(--th-color-text-1)' }}>Mono rules:</strong>{' '}
-  Navigation labels, badge text, metadata captions, token names, pricing units, code.
-  Minimum 11px. Never for body copy. Weight 400 default, 500 for emphasis.
+  <strong>Mono rules.</strong> Navigation labels, badge text, metadata, token names, pricing units, code.
+  Minimum 12px. Never for body copy. Weight 400, or 500 for labels.
 </div>
+
+<hr style={shared.rule} />
+
+<div style={shared.eyebrow}>1.x scale (kept, prefer the roles)</div>
+
+<TypeRow token="--th-text-5xl" px="= hero size" sampleStyle={{ fontFamily: 'var(--th-font-serif)', fontVariationSettings: 'var(--th-serif-axes)', fontWeight: 300, fontSize: 'var(--th-text-5xl)', lineHeight: 1.02, letterSpacing: '-0.02em' }}>Building things.</TypeRow>
+<TypeRow token="--th-text-3xl" px="44px" sampleStyle={{ fontWeight: 600, fontSize: 'var(--th-text-3xl)', letterSpacing: '-0.02em', lineHeight: 1.05 }}>Large heading</TypeRow>
+<TypeRow token="--th-text-2xl" px="34px" sampleStyle={{ fontWeight: 600, fontSize: 'var(--th-text-2xl)', letterSpacing: '-0.02em', lineHeight: 1.1 }}>Section heading</TypeRow>
+<TypeRow token="--th-text-xl"  px="27px" sampleStyle={{ fontWeight: 600, fontSize: 'var(--th-text-xl)', lineHeight: 1.15 }}>Sub heading</TypeRow>
+<TypeRow token="--th-text-lg"  px="22px" sampleStyle={{ fontWeight: 600, fontSize: 'var(--th-text-lg)' }}>Section label</TypeRow>
+<TypeRow token="--th-text-md"  px="19px (= lede)" sampleStyle={{ fontSize: 'var(--th-text-md)' }}>Emphasised body</TypeRow>
+<TypeRow token="--th-text-base" px="17px (= body)" sampleStyle={{ fontSize: 'var(--th-text-base)', lineHeight: 1.6 }}>Body text at the default size.</TypeRow>
+<TypeRow token="--th-text-sm"  px="15px (= meta)" sampleStyle={{ fontSize: 'var(--th-text-sm)', color: 'var(--th-ink-2)' }}>Secondary text. The 15px floor for non-label text.</TypeRow>
+<TypeRow token="--th-text-xs"  px="12px (= label)" sampleStyle={{ fontFamily: 'var(--th-font-mono)', fontSize: 'var(--th-text-xs)', letterSpacing: 'var(--th-label-tracking)', textTransform: 'uppercase', color: 'var(--th-ink-3)' }}>Metadata caption · mono only</TypeRow>
 
 </div>

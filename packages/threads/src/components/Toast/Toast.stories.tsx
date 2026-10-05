@@ -35,7 +35,7 @@ function ToastDemo() {
           Warning
         </button>
       </div>
-      <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", color: "var(--th-color-text-4)", marginTop: "var(--th-space-2)" }}>
+      <div style={{ fontFamily: "var(--th-font-mono)", fontSize: "0.625rem", color: "var(--th-color-text-3)", marginTop: "var(--th-space-2)" }}>
         Toasts auto-dismiss after 5s. Persistent toasts require manual dismiss.
       </div>
       <ToastStack toasts={toasts} onDismiss={dismiss} />

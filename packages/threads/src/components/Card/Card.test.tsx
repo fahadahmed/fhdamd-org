@@ -64,17 +64,17 @@ describe("Card", () => {
       </Card>
     );
     const el = container.firstChild as HTMLElement;
-    expect(el.style.getPropertyValue("--card-accent")).toBe("var(--th-color-accent)");
+    expect(el.style.getPropertyValue("--card-accent")).toBe("var(--th-terra)");
   });
 
-  it("applies sage accent CSS variable when accentBar=top and accentColor=sage", () => {
+  it("treats the deprecated sage accentColor as terra (v2 accent bar is terra only)", () => {
     const { container } = render(
       <Card accentBar="top" accentColor="sage">
         Content
       </Card>
     );
     const el = container.firstChild as HTMLElement;
-    expect(el.style.getPropertyValue("--card-accent")).toBe("var(--th-color-sage)");
+    expect(el.style.getPropertyValue("--card-accent")).toBe("var(--th-terra)");
   });
 
   it("does not apply accent CSS variable when accentBar=none", () => {

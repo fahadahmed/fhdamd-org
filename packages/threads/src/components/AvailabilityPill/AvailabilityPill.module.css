@@ -37,7 +37,7 @@
 }
 
 .dotBusy {
-  background: var(--th-color-text-4);
+  background: var(--th-color-text-3);
 }
 
 @keyframes pulse {

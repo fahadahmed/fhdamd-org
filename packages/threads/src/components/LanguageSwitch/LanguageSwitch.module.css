@@ -75,7 +75,7 @@
 .item small {
   font-family: var(--th-font-mono);
   font-size: 0.625rem;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
   text-transform: uppercase;
 }
 

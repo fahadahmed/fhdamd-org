@@ -35,7 +35,7 @@
 .role {
   font-family: var(--th-font-mono);
   font-size: 0.75rem;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
   margin-block-end: 10px;
 }
 

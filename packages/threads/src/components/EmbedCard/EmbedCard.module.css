@@ -7,7 +7,7 @@
   font-size: 0.625rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
   margin-block-end: 10px;
   display: flex;
   align-items: center;
@@ -69,7 +69,7 @@
 .tweetHandle {
   font-family: var(--th-font-mono);
   font-size: 0.75rem;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
 }
 
 .tweetText {
@@ -83,7 +83,7 @@
 .tweetFoot {
   font-family: var(--th-font-mono);
   font-size: 0.75rem;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
 }
 
 /* ─── INSTAGRAM ───────────────────────────────────────────────────────────── */
@@ -121,7 +121,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
 }
 
 .instaFoot {

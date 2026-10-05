@@ -1,6 +1,7 @@
 .strip {
-  background: var(--th-color-surface-inverse);
-  border-radius: var(--th-radius-xl);
+  background: var(--th-deep);
+  color: var(--th-on-deep);
+  border-radius: var(--th-radius-card);
   padding: var(--th-space-10) var(--th-space-8);
 }
 
@@ -10,34 +11,36 @@
 
 .eyebrow {
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.18em;
+  font-weight: 500;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-inverse-2);
+  color: var(--th-on-deep-2);
   margin-block-end: var(--th-space-5);
 }
 
 .heading {
   font-family: var(--th-font-serif);
   font-weight: 300;
+  font-variation-settings: var(--th-serif-axes);
   font-size: var(--th-text-3xl);
-  letter-spacing: -0.025em;
-  line-height: 1.05;
-  color: var(--th-color-text-inverse);
+  letter-spacing: -0.015em;
+  line-height: 1.06;
+  color: var(--th-on-deep);
   margin: 0 0 var(--th-space-4);
 }
 
 .heading em {
   font-style: italic;
-  color: var(--th-color-accent-text);
+  color: var(--th-accent-on-deep);
 }
 
 .body {
-  font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 380;
+  font-family: var(--th-font-sans);
+  font-weight: 400;
   font-size: var(--th-text-base);
-  line-height: 1.65;
-  color: var(--th-color-text-inverse-2);
+  line-height: var(--th-body-leading);
+  color: var(--th-on-deep-2);
   max-inline-size: 440px;
   margin: 0 0 var(--th-space-8);
 }
@@ -71,6 +74,6 @@
 @media (max-width: 480px) {
   .strip {
     padding: var(--th-space-6) var(--th-space-5);
-    border-radius: var(--th-radius-lg);
+    border-radius: var(--th-radius-card);
   }
 }

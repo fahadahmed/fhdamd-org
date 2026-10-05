@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/addon-docs/blocks'
-import { ColorSwatch, ColorGrid, PrimRamp, BorderTokens } from './components/ColourBlocks'
+import { ColorSwatch, ColorGrid, AliasTable, ContrastTable } from './components/ColourBlocks'
 import { shared } from './components/docStyles'
 
 <Meta title="Threads/Primitives/Colours" />
@@ -7,99 +7,147 @@ import { shared } from './components/docStyles'
 <div style={shared.page}>
 
 <div style={shared.eyebrow}>Primitives / Colours</div>
-<div style={shared.h1}>Colour <em style={{ fontStyle: 'italic', color: 'var(--th-color-accent)' }}>tokens</em></div>
+<div style={shared.h1}>Colour <em style={{ fontStyle: 'italic', color: 'var(--th-accent)' }}>tokens</em></div>
 <div style={shared.lead}>
-  Two layers: primitive ramps that name every raw value, and semantic aliases that
-  components actually use. Never reference primitives directly in component code.
+  Threads 2.0 mirrors ThreadsKit (Swift) one-for-one: 21 colour names, four status
+  roles, and the Jamaal category colours. Write new code against the v2 names. The
+  1.x <code>--th-color-*</code> names still resolve but are deprecated and go in 3.0.
 </div>
 
 <div style={shared.note}>
-  <strong style={{ fontVariationSettings: '"wdth" 92, "wght" 600' }}>Rule:</strong> components use semantic aliases only.
-  Dark theme overrides the same aliases — zero component changes needed.
+  <strong>Name clash.</strong> v2 <code>--th-accent</code> is <em>teal</em> (done, settled).
+  The deprecated 1.x <code>--th-color-accent</code> is still <em>terracotta</em> (the primary action).
+  They are not the same token. Values below are read live, so flip the Theme toolbar to see dark.
 </div>
 
-<div style={shared.eyebrow}>Primitive ramps — reference only</div>
-
-<PrimRamp label="Bone" swatches={[
-  ['#F7F4EE','bone-50'], ['#F0EDE6','bone-100'], ['#E8E4DC','bone-200'],
-  ['#E0D8CC','bone-300'], ['#D4C9B8','bone-400'], ['#C8BAA2','bone-500'],
-]} />
-<PrimRamp label="Ink" swatches={[
-  ['#DDD9D2','ink-100'], ['#C4C0B8','ink-200'], ['#A8A49C','ink-300'],
-  ['#8C8880','ink-400'], ['#706D66','ink-500'], ['#5A5750','ink-600'],
-  ['#4D4A44','ink-700'], ['#3D3A35','ink-800'], ['#2E2C28','ink-900'],
-]} />
-<PrimRamp label="Terracotta" swatches={[
-  ['#F5E4D8','terra-100'], ['#EDCAB8','terra-200'], ['#DDA080','terra-300'],
-  ['#C97A55','terra-400'], ['#B5623A','terra-500'], ['#A04E2A','terra-600'],
-  ['#8C3D1E','terra-700'],
-]} />
-<PrimRamp label="Sage" swatches={[
-  ['#DFF0E1','sage-100'], ['#C4D8C6','sage-200'], ['#9DBD9E','sage-300'],
-  ['#7FA386','sage-400'], ['#6B8C72','sage-500'], ['#5C8063','sage-600'],
-  ['#4E7055','sage-700'], ['#3D5C42','sage-800'],
-]} />
-
-<hr style={shared.rule} />
-
-<div style={shared.eyebrow}>Semantic tokens - surface</div>
+<div style={shared.eyebrow}>Surfaces</div>
 <ColorGrid>
-  <ColorSwatch token="--th-color-bg"              name="Background"      hex="#F7F4EE" desc="Page ground" />
-  <ColorSwatch token="--th-color-surface-1"       name="Surface 1"       hex="#F0EDE6" desc="Cards, sheets" />
-  <ColorSwatch token="--th-color-surface-2"       name="Surface 2"       hex="#E8E4DC" desc="Nested cards" />
-  <ColorSwatch token="--th-color-surface-3"       name="Surface 3"       hex="#E0D8CC" desc="Inset / well" />
-  <ColorSwatch token="--th-color-surface-inverse" name="Surface Inverse" hex="#2E2C28" desc="Dark card" />
+  <ColorSwatch token="--th-app"      name="App"      desc="Page ground" />
+  <ColorSwatch token="--th-card"     name="Card"     desc="Cards, sheets (translucent in dark)" />
+  <ColorSwatch token="--th-sidebar"  name="Sidebar"  desc="Nested surface" />
+  <ColorSwatch token="--th-d1"       name="D1"       desc="Wells, tracks, soft teal fill" />
+  <ColorSwatch token="--th-selected" name="Selected" desc="Selected row" />
+  <ColorSwatch token="--th-deep"     name="Deep"     desc="Dark band, footer" />
+  <ColorSwatch token="--th-glass"    name="Glass"    desc="Nav and sticky bars only" />
+  <ColorSwatch token="--th-scrim"    name="Scrim"    desc="Behind dialogs" />
 </ColorGrid>
 
-<div style={shared.eyebrow}>Semantic tokens - text</div>
+<div style={shared.eyebrow}>Text</div>
 <ColorGrid>
-  <ColorSwatch token="--th-color-text-1"         name="Text 1"         hex="#2E2C28" desc="14.5:1 primary" />
-  <ColorSwatch token="--th-color-text-2"         name="Text 2"         hex="#5A5750" desc="7.1:1 secondary" />
-  <ColorSwatch token="--th-color-text-3"         name="Text 3"         hex="#8C8880" desc="4.6:1 min AA" />
-  <ColorSwatch token="--th-color-text-4"         name="Text 4"         hex="#C4C0B8" desc="Disabled only" />
-  <ColorSwatch token="--th-color-text-inverse"   name="Text Inverse"   hex="#F7F4EE" desc="On inverse" />
-  <ColorSwatch token="--th-color-text-inverse-2" name="Text Inverse 2" hex="#E0D8CC" desc="Secondary on inverse" />
+  <ColorSwatch token="--th-ink"       name="Ink"       desc="Primary" />
+  <ColorSwatch token="--th-ink-2"     name="Ink 2"     desc="Secondary" />
+  <ColorSwatch token="--th-ink-3"     name="Ink 3"     desc="Tertiary, 4.5:1 floor" />
+  <ColorSwatch token="--th-on-accent" name="On accent" desc="Flips dark in dark mode" />
+  <ColorSwatch token="--th-on-deep"   name="On deep"   desc="Text on deep" />
 </ColorGrid>
 
-<div style={shared.eyebrow}>Semantic tokens - accent (terracotta)</div>
+<div style={shared.eyebrow}>Accents</div>
 <ColorGrid>
-  <ColorSwatch token="--th-color-accent"        name="Accent"        hex="#B5623A" desc="CTA, priority" />
-  <ColorSwatch token="--th-color-accent-hover"  name="Accent hover"  hex="#A04E2A" desc="Button hover" />
-  <ColorSwatch token="--th-color-accent-subtle" name="Accent subtle" hex="#F5E4D8" desc="Badge bg" />
-  <ColorSwatch token="--th-color-accent-text"   name="Accent text"   hex="#8C3D1E" desc="On subtle bg" />
+  <ColorSwatch token="--th-terra"        name="Terra"        desc="The only filled button colour" />
+  <ColorSwatch token="--th-terra-press"  name="Terra press"  desc="Hover and press" />
+  <ColorSwatch token="--th-accent"       name="Accent"       desc="Teal: done, settled" />
+  <ColorSwatch token="--th-accent-press" name="Accent press" desc="Hover and press" />
+  <ColorSwatch token="--th-d2"           name="D2"           desc="Mid teal (heatmap)" />
+  <ColorSwatch token="--th-d3"           name="D3"           desc="Strong teal (heatmap)" />
+  <ColorSwatch token="--th-missed"       name="Missed"       desc="A missed day, not an error" />
 </ColorGrid>
 
-<div style={shared.eyebrow}>Semantic tokens - accent (sage)</div>
+<div style={shared.eyebrow}>On deep (constant in both themes)</div>
+<div style={shared.note}>
+  <code>deep</code> is dark in light <em>and</em> dark mode, but <code>--th-accent</code> and
+  <code> --th-terra</code> flip with the theme and are too dark on it in light mode. Use these on
+  the deep ground (DarkStrip, SiteFooter, dark sections).
+</div>
 <ColorGrid>
-  <ColorSwatch token="--th-color-sage"        name="Sage"        hex="#6B8C72" desc="Done, success" />
-  <ColorSwatch token="--th-color-sage-hover"  name="Sage hover"  hex="#5C8063" desc="Button hover" />
-  <ColorSwatch token="--th-color-sage-subtle" name="Sage subtle" hex="#DFF0E1" desc="Badge bg" />
-  <ColorSwatch token="--th-color-sage-text"   name="Sage text"   hex="#3D5C42" desc="On subtle bg" />
+  <ColorSwatch token="--th-on-deep-2"      name="On deep 2"      desc="Secondary text on deep" />
+  <ColorSwatch token="--th-accent-on-deep" name="Accent on deep" desc="Emphasis on deep" />
+  <ColorSwatch token="--th-terra-on-deep"  name="Terra on deep"  desc="Eyebrow rule on deep" />
 </ColorGrid>
 
-<div style={shared.eyebrow}>Semantic tokens - status</div>
+<div style={shared.eyebrow}>Status</div>
 <ColorGrid>
-  <ColorSwatch token="--th-color-success"        name="Success"        hex="#6B8C72" />
-  <ColorSwatch token="--th-color-success-subtle" name="Success subtle" hex="#DFF0E1" />
-  <ColorSwatch token="--th-color-success-text"   name="Success text"   hex="#3D5C42" />
-  <ColorSwatch token="--th-color-warning"        name="Warning"        hex="#C4870A" />
-  <ColorSwatch token="--th-color-warning-subtle" name="Warning subtle" hex="#FFF3D4" />
-  <ColorSwatch token="--th-color-warning-text"   name="Warning text"   hex="#7A5200" />
-  <ColorSwatch token="--th-color-error"          name="Error"          hex="#C0392B" />
-  <ColorSwatch token="--th-color-error-subtle"   name="Error subtle"   hex="#FDECEA" />
-  <ColorSwatch token="--th-color-error-text"     name="Error text"     hex="#7B1A12" />
-  <ColorSwatch token="--th-color-info"           name="Info"           hex="#2471A3" />
-  <ColorSwatch token="--th-color-info-subtle"    name="Info subtle"    hex="#D6EAF8" />
-  <ColorSwatch token="--th-color-info-text"      name="Info text"      hex="#154360" />
+  <ColorSwatch token="--th-alert"      name="Alert"      desc="Destructive text only" />
+  <ColorSwatch token="--th-alert-soft" name="Alert soft" desc="Destructive fill. Never a filled red" />
+  <ColorSwatch token="--th-success"    name="Success"    desc="= accent" />
+  <ColorSwatch token="--th-warning"    name="Warning"    desc="= terra (no amber in v2)" />
+  <ColorSwatch token="--th-lapsed"     name="Lapsed"     desc="= missed" />
+  <ColorSwatch token="--th-info"       name="Info"       desc="= ink-2 (no blue in v2)" />
+</ColorGrid>
+
+<div style={shared.eyebrow}>Lines</div>
+<ColorGrid>
+  <ColorSwatch token="--th-line-subtle" name="Line subtle" desc="Row dividers" />
+  <ColorSwatch token="--th-line"        name="Line"        desc="Card borders" />
+  <ColorSwatch token="--th-line-2"      name="Line 2"      desc="Interactive borders" />
+  <ColorSwatch token="--th-glass-edge"  name="Glass edge"  desc="Edge of glass surfaces" />
+</ColorGrid>
+
+<div style={shared.eyebrow}>Categories (Jamaal, user-assigned)</div>
+<ColorGrid>
+  <ColorSwatch token="--th-cat-teal"  name="Teal" />
+  <ColorSwatch token="--th-cat-blue"  name="Blue" />
+  <ColorSwatch token="--th-cat-ochre" name="Ochre" />
+  <ColorSwatch token="--th-cat-plum"  name="Plum" />
+  <ColorSwatch token="--th-cat-slate" name="Slate" />
 </ColorGrid>
 
 <hr style={shared.rule} />
 
-<div style={shared.eyebrow}>Border tokens</div>
-<BorderTokens />
+<div style={shared.eyebrow}>Contrast</div>
+<div style={shared.lead}>
+  Ratios are computed live for the current theme, so flip the Theme toolbar to check dark.
+  Body text needs 4.5:1. Translucent surfaces (card, selected in dark) are composited over the app ground.
+</div>
 
-<div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--th-color-text-4)' }}>
-  Toggle the Theme toolbar above to see all dark overrides live
+<ContrastTable pairs={[
+  ['--th-ink',            '--th-app'],
+  ['--th-ink-2',          '--th-app'],
+  ['--th-ink-3',          '--th-app'],
+  ['--th-ink-3',          '--th-card'],
+  ['--th-ink-3',          '--th-sidebar'],
+  ['--th-ink-3',          '--th-selected', 'dark: known gap (4.4965:1), tracked in ThreadsKit'],
+  ['--th-terra',          '--th-app'],
+  ['--th-terra',          '--th-card'],
+  ['--th-accent',         '--th-app'],
+  ['--th-accent',         '--th-d1'],
+  ['--th-on-accent',      '--th-terra'],
+  ['--th-on-accent',      '--th-accent'],
+  ['--th-alert',          '--th-alert-soft'],
+  ['--th-on-deep',        '--th-deep'],
+  ['--th-on-deep-2',      '--th-deep'],
+  ['--th-accent-on-deep', '--th-deep'],
+]} />
+
+<hr style={shared.rule} />
+
+<div style={shared.eyebrow}>Migrating from 1.x</div>
+<div style={shared.lead}>
+  Every 1.x name below still works and points at the v2 token. The <code>--th-prim-*</code> primitives
+  are removed. <code>--th-color-text-4</code> is now disabled-only (ink at 32%), so never use it for content.
+</div>
+
+<AliasTable rows={[
+  ['--th-color-bg',               '--th-app'],
+  ['--th-color-surface-1',        '--th-card',     'translucent in dark'],
+  ['--th-color-surface-2',        '--th-sidebar'],
+  ['--th-color-surface-3',        '--th-d1',       'wells, tracks'],
+  ['--th-color-surface-inverse',  '--th-deep'],
+  ['--th-color-text-1 / 2 / 3',   '--th-ink / ink-2 / ink-3'],
+  ['--th-color-text-4',           '(none)',        'disabled only'],
+  ['--th-color-text-inverse',     '--th-on-deep'],
+  ['--th-color-border-*',         '--th-line-subtle / line / line-2'],
+  ['--th-color-accent (+ hover)', '--th-terra (+ terra-press)', 'terracotta, not the v2 accent'],
+  ['--th-color-sage*',            '--th-accent, accent-press, d1', 'sage is now teal'],
+  ['--th-color-success*',         '--th-accent, d1'],
+  ['--th-color-warning*',         '--th-terra',    'no amber'],
+  ['--th-color-error*',           '--th-alert, alert-soft'],
+  ['--th-color-info*',            '--th-ink-2',    'no blue'],
+]} />
+
+<div style={shared.note}>
+  <strong>Product rules the tokens can't enforce.</strong> One filled button per surface, and it's terra.
+  No red except <code>alert</code> text on <code>alert-soft</code>. Glass only on action surfaces (nav,
+  sticky bars, chips); content stays opaque. No emoji. Icons are 24px stroke-2 SVG.
 </div>
 
 </div>

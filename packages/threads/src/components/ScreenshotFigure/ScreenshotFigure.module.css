@@ -9,7 +9,7 @@
   border: 1px dashed var(--th-color-border-strong);
   border-radius: var(--th-radius-lg);
   margin: var(--th-space-7) 0;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
 }
 
 .placeholder span {
@@ -32,7 +32,7 @@
 .caption {
   font-family: var(--th-font-mono);
   font-size: 0.75rem;
-  color: var(--th-color-text-4);
+  color: var(--th-color-text-3);
   text-align: center;
   margin-block-start: 10px;
 }

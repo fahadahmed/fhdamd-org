@@ -1,0 +1,15 @@
+/* ─── THREADS MOTION TOKENS · v2 ─────────────────────────────────────────── */
+
+:root {
+  --th-duration-state:   140ms;  /* press, check, chip, hover */
+  --th-duration-surface: 260ms;  /* dialog, sheet, page section arriving */
+  --th-ease-out:         cubic-bezier(0, 0, 0.2, 1);
+  --th-duration-base:    var(--th-duration-state); /* 1.x alias — was 160ms */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --th-duration-state:   0ms;
+    --th-duration-surface: 0ms;
+  }
+}
