@@ -5,10 +5,11 @@
 /* Eyebrow */
 .eyebrow {
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.18em;
+  font-weight: 500;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   margin-block-end: var(--th-space-5);
   display: flex;
   align-items: center;
@@ -19,7 +20,7 @@
   content: "";
   width: 24px;
   height: 1px;
-  background: var(--th-color-accent);
+  background: var(--th-terra);
   flex-shrink: 0;
 }
 
@@ -27,10 +28,11 @@
 .heading {
   font-family: var(--th-font-serif);
   font-weight: 300;
-  font-size: var(--th-text-5xl);
-  line-height: 0.97;
-  letter-spacing: -0.03em;
-  color: var(--th-color-text-1);
+  font-variation-settings: var(--th-serif-axes);
+  font-size: var(--th-hero-size);
+  line-height: var(--th-hero-leading);
+  letter-spacing: -0.02em;
+  color: var(--th-ink);
   margin: 0 0 4px;
 }
 
@@ -38,24 +40,26 @@
 .subheading {
   font-family: var(--th-font-serif);
   font-weight: 300;
-  font-size: var(--th-text-5xl);
-  line-height: 0.97;
-  letter-spacing: -0.03em;
-  color: var(--th-color-text-3);
+  font-variation-settings: var(--th-serif-axes);
+  font-size: var(--th-hero-size);
+  line-height: var(--th-hero-leading);
+  letter-spacing: -0.02em;
+  color: var(--th-ink-3);
   margin: 0 0 var(--th-space-5);
 }
 
 .subheading em {
   font-style: italic;
+  color: var(--th-accent);
 }
 
 /* Body paragraph */
 .body {
-  font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 380;
-  font-size: var(--th-text-md);
-  line-height: 1.65;
-  color: var(--th-color-text-2);
+  font-family: var(--th-font-sans);
+  font-weight: 400;
+  font-size: var(--th-lede-size);
+  line-height: var(--th-lede-leading);
+  color: var(--th-ink-2);
   max-inline-size: 580px;
   margin: 0 0 var(--th-space-7);
 }
@@ -72,14 +76,15 @@
 
 .chip {
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
+  font-weight: 500;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
   padding: 5px 12px;
   border-radius: var(--th-radius-pill);
-  border: 1px solid var(--th-color-border-strong);
-  color: var(--th-color-text-3);
-  background: var(--th-color-surface-2);
+  border: 1px solid var(--th-line-2);
+  color: var(--th-ink-3);
+  background: var(--th-sidebar);
 }
 
 /* Actions row */

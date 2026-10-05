@@ -13,6 +13,7 @@ export interface NavLink {
 export interface NavCta {
   href?: string;
   label: string;
+  /** `solid-ink` is deprecated in Threads 2.0: Button renders it as "ghost". */
   variant?: "ghost" | "solid-terra" | "solid-ink" | "outline";
   onClick?: () => void;
 }
