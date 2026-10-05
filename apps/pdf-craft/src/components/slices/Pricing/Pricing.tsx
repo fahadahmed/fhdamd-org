@@ -38,7 +38,7 @@ export default function Pricing() {
       }
     }
 
-    loadPricingOptions()
+    void loadPricingOptions()
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsLoggedIn(!!user)
@@ -123,7 +123,7 @@ export default function Pricing() {
               }
               onCtaClick={
                 isLoggedIn
-                  ? (e) => { e.preventDefault(); handleBuyCredits(option); }
+                  ? (e) => { e.preventDefault(); void handleBuyCredits(option); }
                   : undefined
               }
               ctaVariant={isFeatured ? 'solid-terra' : 'ghost'}
