@@ -5,24 +5,23 @@
   justify-content: center;
   gap: var(--th-space-2);
   border-radius: var(--th-radius-pill);
-  font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 92, "wght" 560;
+  font-family: var(--th-font-sans);
+  font-weight: 600;
   font-size: var(--th-text-base);
   padding-inline: var(--th-space-5);
   padding-block: var(--th-space-3);
   border: 1.5px solid transparent;
   cursor: pointer;
   text-decoration: none;
-  min-block-size: 44px;
+  min-block-size: var(--th-hit);
   white-space: nowrap;
   line-height: 1;
   vertical-align: middle;
   transition:
-    background var(--th-duration-base) var(--th-ease-out),
-    color var(--th-duration-base) var(--th-ease-out),
-    border-color var(--th-duration-base) var(--th-ease-out),
-    transform var(--th-duration-base) var(--th-ease-out),
-    opacity var(--th-duration-base) var(--th-ease-out);
+    background var(--th-duration-state) var(--th-ease-out),
+    color var(--th-duration-state) var(--th-ease-out),
+    border-color var(--th-duration-state) var(--th-ease-out),
+    opacity var(--th-duration-state) var(--th-ease-out);
 }
 
 .button:focus-visible {
@@ -30,90 +29,83 @@
   outline-offset: 3px;
 }
 
-.button:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
-
 .button:disabled {
   opacity: 0.42;
   cursor: not-allowed;
-  transform: none;
 }
 
 /* ─── VARIANTS ───────────────────────────────────────────────────────────── */
-.solidInk {
-  background: var(--th-color-text-1);
-  color: var(--th-color-text-inverse);
-}
-.solidInk:hover:not(:disabled) {
-  background: var(--th-prim-ink-800, #3d3a35);
-}
-
+/* v2: terra is the only filled colour. Press changes the fill, nothing moves. */
 .solidTerra {
-  background: var(--th-color-accent);
-  color: var(--th-color-text-inverse);
+  background: var(--th-terra);
+  color: var(--th-on-accent);
 }
-.solidTerra:hover:not(:disabled) {
-  background: var(--th-color-accent-hover);
-}
-
-.solidSage {
-  background: var(--th-color-sage);
-  color: var(--th-color-text-1);
-}
-.solidSage:hover:not(:disabled) {
-  background: var(--th-color-sage-hover);
+.solidTerra:hover:not(:disabled),
+.solidTerra:active:not(:disabled) {
+  background: var(--th-terra-press);
 }
 
 .ghost {
   background: transparent;
-  color: var(--th-color-text-2);
-  border-color: var(--th-color-border-strong);
+  color: var(--th-ink-2);
+  border-color: var(--th-line-2);
 }
 .ghost:hover:not(:disabled) {
-  background: var(--th-color-surface-2);
-  border-color: var(--th-color-text-1);
-  color: var(--th-color-text-1);
+  background: var(--th-sidebar);
+  border-color: var(--th-ink);
+  color: var(--th-ink);
 }
 
 /* For ghost buttons on a dark/inverse surface (e.g. inside DarkStrip) —
-   .ghost's text-2/border-strong tokens are tuned for light backgrounds
-   and read as near-invisible here. */
+   .ghost's ink-2/line-2 tokens are tuned for light backgrounds and read as
+   near-invisible here. */
 .ghostInverse {
   background: transparent;
-  color: var(--th-color-text-inverse-2);
-  border-color: color-mix(in srgb, var(--th-color-text-inverse) 25%, transparent);
+  color: var(--th-on-deep);
+  border-color: color-mix(in srgb, var(--th-on-deep) 25%, transparent);
 }
 .ghostInverse:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--th-color-text-inverse) 8%, transparent);
-  color: var(--th-color-text-inverse);
+  background: color-mix(in srgb, var(--th-on-deep) 8%, transparent);
 }
 
 .outline {
   background: transparent;
-  color: var(--th-color-accent);
-  border-color: var(--th-color-accent);
+  color: var(--th-terra);
+  border-color: var(--th-terra);
 }
 .outline:hover:not(:disabled) {
   background: var(--th-color-accent-subtle);
+  color: var(--th-terra-press);
+  border-color: var(--th-terra-press);
 }
 
 .subtleTerra {
   background: var(--th-color-accent-subtle);
-  color: var(--th-color-accent-text);
+  color: var(--th-terra);
   border: none;
 }
 .subtleTerra:hover:not(:disabled) {
-  filter: brightness(0.96);
+  background: var(--th-missed);
+  color: var(--th-terra-press);
 }
 
 .subtleSage {
-  background: var(--th-color-sage-subtle);
-  color: var(--th-color-sage-text);
+  background: var(--th-d1);
+  color: var(--th-accent);
   border: none;
 }
 .subtleSage:hover:not(:disabled) {
-  filter: brightness(0.96);
+  color: var(--th-accent-press);
+  background: color-mix(in srgb, var(--th-d2) 40%, var(--th-d1));
+}
+
+.destructive {
+  background: var(--th-alert-soft);
+  color: var(--th-alert);
+  border: none;
+}
+.destructive:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--th-alert) 14%, var(--th-alert-soft));
 }
 
 /* ─── SIZES — compound selectors so they always win over .button base ─────── */

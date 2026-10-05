@@ -4,7 +4,7 @@
   padding-inline: var(--th-space-2);
   padding-block: 2px;
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
+  font-size: var(--th-label-size);
   letter-spacing: 0.09em;
   text-transform: uppercase;
   background: var(--th-color-surface-2);

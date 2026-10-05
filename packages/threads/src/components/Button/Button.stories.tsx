@@ -24,14 +24,13 @@ const meta = {
     variant: {
       control: "select",
       options: [
-        "solid-ink",
         "solid-terra",
-        "solid-sage",
         "ghost",
         "ghost-inverse",
         "outline",
         "subtle-terra",
         "subtle-sage",
+        "destructive",
       ],
       description: "Visual style of the button",
     },
@@ -50,7 +49,7 @@ const meta = {
   args: {
     onClick: fn(),
     children: "Button",
-    variant: "solid-ink",
+    variant: "solid-terra",
     size: "md",
   },
 } satisfies Meta<typeof Button>;
@@ -60,16 +59,12 @@ type Story = StoryObj<typeof meta>;
 
 /* ── Individual variants ─────────────────────────────────────────────────── */
 
-export const SolidInk: Story = {
-  args: { variant: "solid-ink", children: "Solid ink" },
-};
-
 export const SolidTerra: Story = {
   args: { variant: "solid-terra", children: "Get started" },
 };
 
-export const SolidSage: Story = {
-  args: { variant: "solid-sage", children: "All done" },
+export const Destructive: Story = {
+  args: { variant: "destructive", children: "Delete account" },
 };
 
 export const Ghost: Story = {
@@ -103,11 +98,11 @@ export const SubtleSage: Story = {
 /* ── Sizes ───────────────────────────────────────────────────────────────── */
 
 export const Small: Story = {
-  args: { variant: "solid-ink", size: "sm", children: "Small" },
+  args: { variant: "solid-terra", size: "sm", children: "Small" },
 };
 
 export const Medium: Story = {
-  args: { variant: "solid-ink", size: "md", children: "Medium" },
+  args: { variant: "solid-terra", size: "md", children: "Medium" },
 };
 
 export const Large: Story = {
@@ -117,7 +112,7 @@ export const Large: Story = {
 /* ── States ──────────────────────────────────────────────────────────────── */
 
 export const Disabled: Story = {
-  args: { variant: "solid-ink", disabled: true, children: "Disabled" },
+  args: { variant: "solid-terra", disabled: true, children: "Disabled" },
 };
 
 export const GhostDisabled: Story = {
@@ -129,7 +124,7 @@ export const GhostDisabled: Story = {
 export const WithIconEnd: Story = {
   name: "With icon (end)",
   args: {
-    variant: "solid-ink",
+    variant: "solid-terra",
     children: "See the work",
     icon: <ArrowRight />,
     iconPosition: "end",
@@ -164,13 +159,12 @@ export const AllVariants: Story = {
   name: "All variants",
   render: () => (
     <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
-      <Button variant="solid-ink">Solid ink</Button>
       <Button variant="solid-terra">Solid terra</Button>
-      <Button variant="solid-sage">Solid sage</Button>
       <Button variant="ghost">Ghost</Button>
       <Button variant="outline">Outline</Button>
       <Button variant="subtle-terra">Subtle terra</Button>
       <Button variant="subtle-sage">Subtle sage</Button>
+      <Button variant="destructive">Destructive</Button>
     </div>
   ),
 };
@@ -179,9 +173,9 @@ export const AllSizes: Story = {
   name: "All sizes",
   render: () => (
     <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-      <Button variant="solid-ink" size="sm">Small</Button>
-      <Button variant="solid-ink" size="md">Medium</Button>
-      <Button variant="solid-ink" size="lg">Large</Button>
+      <Button variant="solid-terra" size="sm">Small</Button>
+      <Button variant="solid-terra" size="md">Medium</Button>
+      <Button variant="solid-terra" size="lg">Large</Button>
     </div>
   ),
 };
@@ -190,7 +184,7 @@ export const RTL: Story = {
   name: "RTL — Arabic",
   render: () => (
     <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }} dir="rtl">
-      <Button variant="solid-ink">ابدأ الآن</Button>
+      <Button variant="solid-terra">ابدأ الآن</Button>
       <Button variant="ghost">تسجيل الدخول</Button>
       <Button variant="solid-terra" icon={<ArrowRight />} iconPosition="start">
         دمج الملفات
