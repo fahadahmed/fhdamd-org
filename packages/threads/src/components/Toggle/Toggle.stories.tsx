@@ -7,9 +7,9 @@ const meta = {
   parameters: { layout: "padded" },
   tags: ["autodocs"],
   argTypes: {
-    variant: { control: "radio", options: ["ink", "sage", "terra"] },
+    variant: { control: "radio", options: ["accent", "terra"] },
   },
-  args: { label: "Evening planning", variant: "ink" },
+  args: { label: "Evening planning", variant: "accent" },
 } satisfies Meta<typeof Toggle>;
 
 export default meta;
@@ -17,7 +17,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Off:          Story = { args: { label: "Evening planning" } };
 export const On:           Story = { args: { label: "Evening planning", defaultChecked: true } };
-export const Sage:         Story = { args: { label: "Habit enabled", variant: "sage", defaultChecked: true } };
+export const Accent:       Story = { args: { label: "Habit enabled", variant: "accent", defaultChecked: true } };
 export const Terra:        Story = { args: { label: "Priority mode", variant: "terra", defaultChecked: true } };
 export const Disabled:     Story = { args: { label: "During-day nudges", disabled: true } };
 export const DisabledOn:   Story = { args: { label: "Locked setting", disabled: true, defaultChecked: true } };
@@ -28,9 +28,9 @@ export const SettingsGroup: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--th-space-1)", maxWidth: "420px" }}>
       {[
-        { label: "Evening planning", sub: "Jamaal nudges you to plan tomorrow", variant: "ink" as const, on: true },
-        { label: "Morning nudge",    sub: "See what's on for today",             variant: "sage" as const, on: true },
-        { label: "During-day nudges",sub: "Next task suggestions",               variant: "ink" as const, on: false },
+        { label: "Evening planning", sub: "Jamaal nudges you to plan tomorrow", variant: "accent" as const, on: true },
+        { label: "Morning nudge",    sub: "See what's on for today",             variant: "accent" as const, on: true },
+        { label: "During-day nudges",sub: "Next task suggestions",               variant: "accent" as const, on: false },
       ].map(({ label, sub, variant, on }) => (
         <div key={label} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "var(--th-space-4) var(--th-space-5)", background: "var(--th-color-surface-1)", borderRadius: "var(--th-radius-md)", border: "1px solid var(--th-color-border-subtle)" }}>
           <div>

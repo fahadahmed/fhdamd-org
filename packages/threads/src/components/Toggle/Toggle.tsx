@@ -2,7 +2,8 @@ import { useId } from "react";
 import type { InputHTMLAttributes, ReactNode } from "react";
 import styles from "./Toggle.module.css";
 
-export type ToggleVariant = "ink" | "sage" | "terra";
+/** `ink` and `sage` are deprecated aliases of `accent` in Threads 2.0. */
+export type ToggleVariant = "accent" | "ink" | "sage" | "terra";
 
 export interface ToggleProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "type"> {
@@ -12,7 +13,7 @@ export interface ToggleProps
 
 export function Toggle({
   label,
-  variant = "ink",
+  variant = "accent",
   disabled,
   id: providedId,
   className,
