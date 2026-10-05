@@ -28,7 +28,7 @@ const meta = {
     featured:    { control: "boolean" },
     ctaVariant: {
       control: "select",
-      options: ["ghost", "solid-terra", "solid-ink", "outline"],
+      options: ["ghost", "solid-terra", "outline"],
     },
   },
   args: {
