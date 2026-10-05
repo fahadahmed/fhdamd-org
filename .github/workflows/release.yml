@@ -59,6 +59,13 @@ jobs:
         run: pnpm --filter @fhdamd/threads build
 
       - name: Publish to npm
-        run: pnpm --filter @fhdamd/threads publish --no-git-checks
+        run: |
+          # Prerelease versions (e.g. 2.0.0-next.0) must not take the `latest` tag,
+          # or `npm install @fhdamd/threads` would resolve to them.
+          VERSION=$(node -p "require('./packages/threads/package.json').version")
+          TAG=latest
+          if [[ "$VERSION" == *-* ]]; then TAG=next; fi
+          echo "Publishing $VERSION with tag $TAG"
+          pnpm --filter @fhdamd/threads publish --no-git-checks --tag "$TAG"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
