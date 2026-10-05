@@ -6,22 +6,35 @@ export interface HeaderProps {
   ctaLabel?: string;
 }
 
+export interface WordmarkProps {
+  /** Set when the wordmark sits on the dark `deep` ground (the footer). The
+   *  default ink colours are dark and would disappear there. */
+  onDeep?: boolean;
+}
+
 /** Jamaal wordmark with the Arabic name, used in the header and footer. */
-export function Wordmark() {
+export function Wordmark({ onDeep = false }: Readonly<WordmarkProps>) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "baseline", gap: "0.5rem" }}>
+    <span
+      data-tone={onDeep ? "on-deep" : "default"}
+      style={{ display: "inline-flex", alignItems: "baseline", gap: "0.5rem" }}
+    >
       <span
         style={{
           fontFamily: "var(--th-font-serif)",
           fontVariationSettings: "var(--th-serif-axes)",
           fontWeight: 500,
           fontSize: "var(--th-text-xl)",
-          color: "var(--th-ink)",
+          color: onDeep ? "var(--th-on-deep)" : "var(--th-ink)",
         }}
       >
         Jamaal
       </span>
-      <span lang="ar" dir="rtl" style={{ color: "var(--th-ink-3)" }}>
+      <span
+        lang="ar"
+        dir="rtl"
+        style={{ color: onDeep ? "var(--th-on-deep-2)" : "var(--th-ink-3)" }}
+      >
         جمال
       </span>
     </span>

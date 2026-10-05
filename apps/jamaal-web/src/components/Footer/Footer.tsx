@@ -10,7 +10,7 @@ export default function Footer({
 }: Readonly<FooterProps>) {
   return (
     <SiteFooter
-      brand={<Wordmark />}
+      brand={<Wordmark onDeep />}
       tagline="A considered app by fhdamd"
       links={[
         { href: "/privacy", label: "Privacy" },

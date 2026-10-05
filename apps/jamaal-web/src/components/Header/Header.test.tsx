@@ -9,6 +9,12 @@ describe("Header", () => {
     expect(screen.getByText("جمال")).toHaveAttribute("lang", "ar");
   });
 
+  it("uses the default ink colours in the header", () => {
+    render(<Header />);
+    expect(screen.getByText("Jamaal").parentElement).toHaveAttribute("data-tone", "default");
+    expect(screen.getByText("Jamaal")).toHaveStyle({ color: "var(--th-ink)" });
+  });
+
   it("links the home label to the root", () => {
     render(<Header />);
     expect(screen.getByRole("link", { name: "Jamaal home" })).toHaveAttribute("href", "/");
