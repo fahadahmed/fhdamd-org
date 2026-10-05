@@ -7,19 +7,33 @@ import { shared } from './components/docStyles'
 <div style={shared.page}>
 
 <div style={shared.eyebrow}>Primitives / Spacing</div>
-<div style={shared.h1}>Spacing, radius <em style={{ fontStyle: 'italic', color: 'var(--th-color-accent)' }}>&amp; shadows</em></div>
+<div style={shared.h1}>Spacing, radius <em style={{ fontStyle: 'italic', color: 'var(--th-accent)' }}>&amp; elevation</em></div>
 <div style={shared.lead}>
-  4px base unit. Every spacing value is a multiple of 4. Use logical properties throughout —
-  padding-inline not padding-left, margin-block not margin-top. RTL is a zero-code flip.
+  Named steps from ThreadsSpace plus the 1.x 4px scale. Four radii. Three shadows. Use logical
+  properties throughout: padding-inline not padding-left, margin-block not margin-top. RTL is a zero-code flip.
 </div>
 
 <div style={shared.note}>
-  <strong style={{ fontVariationSettings: '"wdth" 92, "wght" 600' }}>Logical properties only.</strong>{' '}
-  All layout in components must use inline and block axes.
-  No left, right, top, or bottom in component CSS.
+  <strong>Logical properties only.</strong>{' '}
+  All layout in components must use inline and block axes. No left, right, top, or bottom in component CSS.
 </div>
 
-<div style={shared.eyebrow}>Spacing scale - 4px base unit</div>
+<div style={shared.eyebrow}>Named steps (prefer these)</div>
+
+<div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '40px' }}>
+  <SpaceRow token="--th-space-gutter"  px="26px" note="a minimum" />
+  <SpaceRow token="--th-space-section" px="22px" />
+  <SpaceRow token="--th-space-row"     px="14px" note="the workhorse gap" />
+  <SpaceRow token="--th-space-tight"   px="10px" />
+  <SpaceRow token="--th-space-hair"    px="4px" />
+</div>
+
+<div style={shared.lead}>
+  <code>--th-hit</code> is 44px, the minimum touch target. <code>--th-container</code> is 1120px.
+  <code> --th-pad-row</code>, <code>--th-pad-chip</code> and <code>--th-pad-pill</code> are the shared paddings.
+</div>
+
+<div style={shared.eyebrow}>1.x scale (4px base unit, kept)</div>
 
 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '40px' }}>
   <SpaceRow token="--th-space-1"  px="4px" />
@@ -39,37 +53,34 @@ import { shared } from './components/docStyles'
 
 <hr style={shared.rule} />
 
-<div style={shared.eyebrow}>Border radius</div>
+<div style={shared.eyebrow}>Border radius, four in v2</div>
 
-<div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'flex-end', marginBottom: '40px' }}>
-  <RadiusSwatch token="--th-radius-xs"   label="xs · 4px" />
-  <RadiusSwatch token="--th-radius-sm"   label="sm · 8px" />
-  <RadiusSwatch token="--th-radius-md"   label="md · 14px" />
-  <RadiusSwatch token="--th-radius-lg"   label="lg · 20px · cards" />
-  <RadiusSwatch token="--th-radius-xl"   label="xl · 24px · modals" />
-  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-    <div style={{ width: '120px', height: '44px', background: 'var(--th-color-surface-2)', border: '1px solid var(--th-color-border-default)', borderRadius: '9999px' }} />
-    <div style={{ textAlign: 'center' }}>
-      <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.5rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--th-color-text-3)' }}>pill · 9999px · buttons</div>
-      <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.5rem', color: 'var(--th-color-text-3)', marginTop: '2px' }}>--th-radius-pill</div>
-    </div>
-  </div>
+<div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'flex-end', marginBottom: '24px' }}>
+  <RadiusSwatch token="--th-radius-cell"  label="cell · 3px · density cell" />
+  <RadiusSwatch token="--th-radius-field" label="field · 8px · inputs" />
+  <RadiusSwatch token="--th-radius-card"  label="card · 14px · cards, dialogs" />
+  <RadiusSwatch token="--th-radius-pill"  label="pill · every button, chip, checkbox" />
+</div>
+
+<div style={shared.note}>
+  The 1.x names remain as aliases: <code>radius-xs</code> is cell; <code>sm</code> and <code>md</code> are field;
+  <code> lg</code> and <code>xl</code> are card.
 </div>
 
 <hr style={shared.rule} />
 
-<div style={shared.eyebrow}>Shadows - warm-tinted, never cool grey</div>
+<div style={shared.eyebrow}>Elevation, three levels</div>
 
-<div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap', alignItems: 'flex-end', marginBottom: '40px' }}>
-  <ShadowSwatch token="--th-shadow-xs" label="shadow-xs · default card" />
-  <ShadowSwatch token="--th-shadow-sm" label="shadow-sm · subtle lift" />
-  <ShadowSwatch token="--th-shadow-md" label="shadow-md · elevated" />
-  <ShadowSwatch token="--th-shadow-lg" label="shadow-lg · hover / modal" />
+<div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap', alignItems: 'flex-end', marginBottom: '24px' }}>
+  <ShadowSwatch token="--th-shadow-hair"  label="hair · default card" />
+  <ShadowSwatch token="--th-shadow-float" label="float · hover" />
+  <ShadowSwatch token="--th-shadow-lift"  label="lift · elevated, modal" />
 </div>
 
 <div style={shared.note}>
-  Shadow alpha values are higher in dark theme to compensate for reduced surface contrast.
-  Toggle the Theme toolbar above to see the difference.
+  Shadows are deep-ink tinted with a negative spread. Glass (<code>--th-glass</code> with{' '}
+  <code>--th-glass-blur</code>) is for action surfaces only: nav, sticky bars, chips. Content stays opaque.
+  The 1.x <code>shadow-xs … lg</code> names are aliases of these three.
 </div>
 
 <hr style={shared.rule} />
@@ -77,34 +88,33 @@ import { shared } from './components/docStyles'
 <div style={shared.eyebrow}>Focus ring</div>
 
 <div style={{ display: 'flex', gap: '24px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '32px' }}>
-  <div style={{ padding: '10px 20px', background: 'var(--th-color-surface-1)', border: '1px solid var(--th-color-border-default)', borderRadius: '9999px', fontVariationSettings: '"wdth" 92, "wght" 550', fontSize: 'var(--th-text-base)', outline: '2px solid var(--th-color-focus-ring)', outlineOffset: '3px' }}>
+  <div style={{ padding: '10px 20px', background: 'var(--th-card)', border: '1px solid var(--th-line)', borderRadius: 'var(--th-radius-pill)', fontWeight: 600, fontSize: 'var(--th-text-base)', outline: '2px solid var(--th-color-focus-ring)', outlineOffset: '3px' }}>
     :focus-visible state
   </div>
-  <div style={{ fontVariationSettings: '"wdth" 90, "wght" 380', fontSize: '1.0625rem', lineHeight: 1.65, color: 'var(--th-color-text-2)', maxWidth: '400px' }}>
-    Applied with outline only on :focus-visible — never on :focus.
-    Terracotta in light theme, lighter in dark.
+  <div style={{ fontSize: 'var(--th-body-size)', lineHeight: 'var(--th-body-leading)', color: 'var(--th-ink-2)', maxWidth: '400px' }}>
+    Applied with outline only on :focus-visible, never on :focus. Terracotta in both themes.
   </div>
 </div>
 
-<div style={shared.eyebrow}>Animation</div>
+<div style={shared.eyebrow}>Motion</div>
 
 <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '32px' }}>
-  <div style={{ background: 'var(--th-color-surface-1)', border: '1px solid var(--th-color-border-default)', borderRadius: '12px', padding: '16px 20px', flex: 1, minWidth: '260px' }}>
-    <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.1em', color: 'var(--th-color-text-3)', marginBottom: '4px' }}>--th-duration-base</div>
-    <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.875rem', color: 'var(--th-color-text-1)', marginBottom: '4px' }}>160ms</div>
-    <div style={{ fontVariationSettings: '"wdth" 90, "wght" 380', fontSize: 'var(--th-text-sm)', color: 'var(--th-color-text-3)' }}>All interactive transitions</div>
-  </div>
-  <div style={{ background: 'var(--th-color-surface-1)', border: '1px solid var(--th-color-border-default)', borderRadius: '12px', padding: '16px 20px', flex: 1, minWidth: '260px' }}>
-    <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.1em', color: 'var(--th-color-text-3)', marginBottom: '4px' }}>--th-ease-out</div>
-    <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: '0.875rem', color: 'var(--th-color-text-1)', marginBottom: '4px' }}>cubic-bezier(0,0,0.2,1)</div>
-    <div style={{ fontVariationSettings: '"wdth" 90, "wght" 380', fontSize: 'var(--th-text-sm)', color: 'var(--th-color-text-3)' }}>Standard easing</div>
-  </div>
+  {[
+    ['--th-duration-state', '140ms', 'Press, check, chip, hover'],
+    ['--th-duration-surface', '260ms', 'Dialog, sheet, a section arriving'],
+    ['--th-ease-out', 'cubic-bezier(0, 0, 0.2, 1)', 'Standard easing'],
+  ].map(([token, value, use]) => (
+    <div key={token} style={{ background: 'var(--th-card)', border: '1px solid var(--th-line)', borderRadius: 'var(--th-radius-card)', padding: '16px 20px', flex: 1, minWidth: '240px' }}>
+      <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: 'var(--th-label-size)', color: 'var(--th-ink-3)', marginBottom: '4px' }}>{token}</div>
+      <div style={{ fontFamily: 'var(--th-font-mono)', fontSize: 'var(--th-text-sm)', color: 'var(--th-ink)', marginBottom: '4px' }}>{value}</div>
+      <div style={{ fontSize: 'var(--th-text-sm)', color: 'var(--th-ink-3)' }}>{use}</div>
+    </div>
+  ))}
 </div>
 
 <div style={shared.note}>
-  <strong style={{ fontVariationSettings: '"wdth" 92, "wght" 600', color: 'var(--th-color-text-1)' }}>Reduced motion:</strong>{' '}
-  When prefers-reduced-motion: reduce is active, --th-duration-base is automatically set to 0ms.
-  No component-level overrides needed.
+  <strong>Reduced motion.</strong> When prefers-reduced-motion: reduce is active, both durations are set to 0ms.
+  No component-level overrides needed. <code>--th-duration-base</code> is a deprecated alias of the state duration.
 </div>
 
 </div>
