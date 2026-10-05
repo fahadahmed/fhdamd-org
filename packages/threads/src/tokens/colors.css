@@ -2,7 +2,6 @@
 /* Mirrors ThreadsKit 2.0 (Swift): 21 names + 4 status roles + Jamaal         */
 /* categories. Layer 1 = the 21 names. Layer 2 = the 1.x semantic aliases,    */
 /* remapped onto layer 1 so existing components keep compiling.               */
-/*                                                                             */
 /* NAME CLASH: v2 `--th-accent` is TEAL (done/settled). The 1.x alias          */
 /* `--th-color-accent` is still TERRACOTTA (primary action). Prefer the v2     */
 /* names in new code; the aliases are deprecated and go in 3.0.                */

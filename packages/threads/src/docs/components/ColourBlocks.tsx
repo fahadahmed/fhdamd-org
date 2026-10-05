@@ -20,7 +20,7 @@ function useTokenValue(token: string) {
   return value
 }
 
-export function ColorSwatch({ token, name, desc }: { token: string; name: string; desc?: string }) {
+export function ColorSwatch({ token, name, desc }: Readonly<{ token: string; name: string; desc?: string }>) {
   const value = useTokenValue(token)
   return (
     <div style={{ borderRadius: 'var(--th-radius-card)', overflow: 'hidden', border: '1px solid var(--th-line)' }}>
@@ -38,7 +38,7 @@ export function ColorSwatch({ token, name, desc }: { token: string; name: string
   )
 }
 
-export function ColorGrid({ children }: { children: ReactNode }) {
+export function ColorGrid({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(192px, 1fr))', gap: '10px', marginBottom: '32px' }}>
       {children}
@@ -47,7 +47,7 @@ export function ColorGrid({ children }: { children: ReactNode }) {
 }
 
 /** Deprecated 1.x token -> v2 token, for the migration table. */
-export function AliasTable({ rows }: { rows: [string, string, string?][] }) {
+export function AliasTable({ rows }: Readonly<{ rows: [string, string, string?][] }>) {
   const cell = { padding: '8px 12px', borderBottom: '1px solid var(--th-line-subtle)', fontSize: 'var(--th-meta-size)', color: 'var(--th-ink-2)' } as const
   const mono = { ...cell, fontFamily: 'var(--th-font-mono)', fontSize: 'var(--th-label-size)' } as const
   return (
@@ -80,7 +80,7 @@ function resolveColour(token: string): RGBA {
   document.body.appendChild(el)
   const c = getComputedStyle(el).color
   el.remove()
-  const m = c.match(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,/\s]+([\d.]+))?/)
+  const m = /rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,/\s]+([\d.]+))?/.exec(c)
   return m ? [Number(m[1]), Number(m[2]), Number(m[3]), m[4] === undefined ? 1 : Number(m[4])] : [0, 0, 0, 1]
 }
 
@@ -105,8 +105,14 @@ function ratio(fgToken: string, bgToken: string) {
   return (hi + 0.05) / (lo + 0.05)
 }
 
+function verdict(r: number | undefined) {
+  if (r === undefined) return ''
+  if (r >= 4.5) return 'AA'
+  return r >= 3 ? 'Below AA text (large text / UI only)' : 'Fails'
+}
+
 /** Live contrast ratios for the current theme. Flip the Theme toolbar to check dark. */
-export function ContrastTable({ pairs }: { pairs: [string, string, string?][] }) {
+export function ContrastTable({ pairs }: Readonly<{ pairs: [string, string, string?][] }>) {
   const [rows, setRows] = useState<number[]>([])
   useThemeTick(() => setRows(pairs.map(([fg, bg]) => ratio(fg, bg))))
 
@@ -132,7 +138,7 @@ export function ContrastTable({ pairs }: { pairs: [string, string, string?][] })
               <td style={{ ...cell, fontFamily: 'var(--th-font-mono)', fontSize: 'var(--th-label-size)' }}>{bg}</td>
               <td style={cell}>{r === undefined ? '' : `${r.toFixed(2)}:1`}</td>
               <td style={{ ...cell, color: pass === false ? 'var(--th-alert)' : 'var(--th-ink-2)', fontWeight: pass === false ? 600 : 400 }}>
-                {pass === undefined ? '' : pass ? 'AA' : r >= 3 ? 'Below AA text (large text / UI only)' : 'Fails'}
+                {verdict(r)}
                 {note ? ` · ${note}` : ''}
               </td>
             </tr>
