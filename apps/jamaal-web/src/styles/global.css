@@ -1,0 +1,25 @@
+/* Jamaal site globals. Colours, type and spacing come from @fhdamd/threads
+   tokens; @fhdamd/threads/base supplies the reset, body and link styles. */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+main {
+  min-block-size: 60vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

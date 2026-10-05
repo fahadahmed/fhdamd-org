@@ -1,0 +1,88 @@
+---
+import "@fhdamd/threads/tokens";
+import "@fhdamd/threads/styles";
+import "@fhdamd/threads/base";
+import "../styles/global.css";
+import Header from "../components/Header/Header";
+import Footer from "../components/Footer/Footer";
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = "Jamaal — one list, just today, beautifully ordered",
+  description = "Jamaal is a calm daily planner for iPhone, iPad and Mac. One list for today, a short plan each evening, and nothing that nags.",
+  ogImage = new URL("/og-image.png", Astro.site).href,
+  noindex = false,
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+
+// Hanken Grotesk (interface), Fraunces with its SOFT/WONK axes (display) and
+// JetBrains Mono (labels). Fonts are not bundled in @fhdamd/threads.
+const fontHref =
+  "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,SOFT,WONK,wght@0,9..144,0..100,0..1,300..900;1,9..144,0..100,0..1,300..900&family=Hanken+Grotesk:ital,wght@0,300..700;1,300..700&family=JetBrains+Mono:wght@400;500&display=swap";
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="Jamaal" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Fonts load without blocking first paint: the print-media swap keeps the
+         stylesheet off the critical path, and display=swap shows the fallback
+         until the faces arrive. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={fontHref} media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href={fontHref} /></noscript>
+
+    <slot name="head" />
+
+    <!-- Apply the saved or system theme before first paint to avoid a flash -->
+    <script is:inline>
+      (function () {
+        try {
+          var saved = localStorage.getItem("th-theme");
+          var preferred = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          document.documentElement.setAttribute("data-theme", saved || preferred);
+        } catch (e) {
+          /* storage blocked: keep the light default */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <Header client:idle />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer client:visible />
+  </body>
+</html>
