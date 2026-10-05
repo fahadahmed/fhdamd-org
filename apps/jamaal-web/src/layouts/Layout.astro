@@ -69,10 +69,10 @@ const fontHref =
     <script is:inline>
       (function () {
         try {
-          var saved = localStorage.getItem("th-theme");
-          var preferred = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          const saved = localStorage.getItem("th-theme");
+          const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
           document.documentElement.setAttribute("data-theme", saved || preferred);
-        } catch (e) {
+        } catch {
           /* storage blocked: keep the light default */
         }
       })();

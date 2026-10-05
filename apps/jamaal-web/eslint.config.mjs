@@ -1,48 +1,11 @@
-import * as tsParserPkg from "@typescript-eslint/parser";
-import * as tsPluginPkg from "@typescript-eslint/eslint-plugin";
 import eslintPluginAstro from "eslint-plugin-astro";
-
-const tsParser = tsParserPkg.default ?? tsParserPkg;
-const tsPlugin = tsPluginPkg.default ?? tsPluginPkg;
+import tseslint from "typescript-eslint";
 
 export default [
-  // Astro recommended rules
+  ...tseslint.configs.recommended,
   ...eslintPluginAstro.configs.recommended,
-
-  // TypeScript files
   {
-    files: ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
-    languageOptions: {
-      parser: tsParser,
-      parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
-        project: "./tsconfig.json",
-      },
-      globals: {
-        process: "readonly",
-      },
-    },
-    plugins: {
-      "@typescript-eslint": tsPlugin,
-    },
-    rules: {
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        { argsIgnorePattern: "^_" },
-      ],
-    },
-  },
-
-  // Ignore generated folders
-  {
-    ignores: [
-      "dist/**",
-      ".astro/**",
-      "node_modules/**",
-      "build/**",
-      "coverage/**",
-      "test-results/**",
-    ],
+    // env.d.ts is the Astro-generated triple-slash type reference.
+    ignores: ["dist/**", ".astro/**", "coverage/**", "test-results/**", "src/env.d.ts"],
   },
 ];
