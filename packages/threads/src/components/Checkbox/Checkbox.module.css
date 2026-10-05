@@ -25,39 +25,41 @@
   border: 0;
 }
 
-/* Custom checkbox visual */
+/* Custom checkbox visual — v2: every checkbox is a capsule. */
 .box {
-  width: 20px;
+  width: 32px;
   height: 20px;
   flex-shrink: 0;
-  border-radius: var(--th-radius-xs);
-  border: 1.5px solid var(--th-color-border-strong);
-  background: var(--th-color-surface-1);
+  border-radius: var(--th-radius-pill);
+  border: 1.5px solid var(--th-line-2);
+  background: var(--th-card);
   display: flex;
   align-items: center;
   justify-content: center;
   transition:
-    background var(--th-duration-base) var(--th-ease-out),
-    border-color var(--th-duration-base) var(--th-ease-out);
+    background var(--th-duration-state) var(--th-ease-out),
+    border-color var(--th-duration-state) var(--th-ease-out);
   position: relative;
 }
 
 /* Checked state */
 .input:checked + .box {
-  background: var(--th-color-accent);
-  border-color: var(--th-color-accent);
+  background: var(--th-accent);
+  border-color: var(--th-accent);
 }
 
-/* Checkmark: right + bottom borders rotated 45° clockwise = ✓ */
+/* Checkmark: right + bottom borders rotated 45° clockwise = ✓.
+   Centred with auto inline margins so it is correct in LTR and RTL. */
 .input:checked + .box::after {
   content: "";
   position: absolute;
-  inset-block-start: 3px;
-  inset-inline-start: 6px;
+  inset-block-start: 2px;
+  inset-inline: 0;
+  margin-inline: auto;
   width: 4px;
   height: 8px;
-  border-inline-end: 2px solid var(--th-color-text-inverse);
-  border-block-end: 2px solid var(--th-color-text-inverse);
+  border-inline-end: 2px solid var(--th-on-accent);
+  border-block-end: 2px solid var(--th-on-accent);
   transform: rotate(45deg);
 }
 
@@ -69,7 +71,7 @@
 
 .label {
   font-size: var(--th-text-base);
-  color: var(--th-color-text-2);
+  color: var(--th-ink-2);
   line-height: 1.5;
   user-select: none;
 }
