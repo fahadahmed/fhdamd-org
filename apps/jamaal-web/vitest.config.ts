@@ -21,8 +21,9 @@ export default defineConfig({
     coverage: {
       provider: "istanbul",
       reporter: ["text", "lcov"],
-      // Pages and layouts are Astro pipeline code and are not unit-testable.
-      include: ["src/components/**/*.{ts,tsx}"],
+      // Pages, layouts and the copy in src/data are Astro pipeline code or
+      // constants with nothing to unit-test.
+      include: ["src/components/**/*.{ts,tsx}", "src/utils/**/*.ts"],
       exclude: ["src/**/*.test.{ts,tsx}"],
     },
   },

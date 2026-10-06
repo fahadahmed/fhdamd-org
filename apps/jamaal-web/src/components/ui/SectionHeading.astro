@@ -1,0 +1,17 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  accent: string;
+  /** `light` is the larger, lighter display weight used on the closing section. */
+  tone?: "default" | "light";
+  id?: string;
+}
+
+const { eyebrow, title, accent, tone = "default", id } = Astro.props;
+---
+
+<div class="th-label th-eyebrow eyebrow">{eyebrow}</div>
+<h2 id={id} class:list={["section-title", { "section-title--light": tone === "light" }]}>
+  {title} <em>{accent}</em>
+</h2>

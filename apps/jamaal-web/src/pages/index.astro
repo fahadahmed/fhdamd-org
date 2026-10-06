@@ -1,8 +1,25 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import HomeHero from "../components/HomeHero/HomeHero";
+import Hero from "../components/sections/Hero.astro";
+import Kinds from "../components/sections/Kinds.astro";
+import Anchors from "../components/sections/Anchors.astro";
+import Priority from "../components/sections/Priority.astro";
+import NightPlanningSection from "../components/sections/NightPlanningSection.astro";
+import Wellbeing from "../components/sections/Wellbeing.astro";
+import Nots from "../components/sections/Nots.astro";
+import Pricing from "../components/sections/Pricing.astro";
+import Closing from "../components/sections/Closing.astro";
+import { LAUNCHED } from "../data/site";
 ---
 
 <Layout>
-  <HomeHero />
+  <Hero />
+  <Kinds />
+  <Anchors />
+  <Priority />
+  <NightPlanningSection />
+  <Wellbeing />
+  <Nots />
+  {LAUNCHED && <Pricing />}
+  <Closing />
 </Layout>

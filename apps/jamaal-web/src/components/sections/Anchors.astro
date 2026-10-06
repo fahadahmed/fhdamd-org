@@ -1,0 +1,28 @@
+---
+import PhoneFrame from "../ui/PhoneFrame.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import { anchors } from "../../data/content";
+import anchorsScreen from "../../assets/screens/anchors.png";
+---
+
+<section id="anchors" class="section">
+  <div class="section-inner split">
+    <div class="stack">
+      <SectionHeading eyebrow={anchors.eyebrow} title={anchors.title} accent={anchors.accent} />
+      <p class="copy">{anchors.body}</p>
+      <ul class="rows rows--ruled">
+        {
+          anchors.items.map((item) => (
+            <li class="row">
+              <span class="row-name">{item.name}</span>
+              <span class="row-detail">{item.detail}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div class="phone-col">
+      <PhoneFrame image={anchorsScreen} alt={anchors.imageAlt} standalone />
+    </div>
+  </div>
+</section>

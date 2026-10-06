@@ -19,6 +19,16 @@ pnpm --filter jamaal-web build
 - Tests alias `@fhdamd/threads` to a light mock in `src/test/mocks/threads.tsx`; extend it as you test more components.
 - Hosting (Firebase), the waitlist backend and the page sections are tracked in #387, #388 and #390.
 
+## The page and the launch flag
+
+`src/pages/index.astro` composes the sections in `src/components/sections/` (Hero, Kinds, Anchors, Priority, NightPlanningSection, Wellbeing, Nots, Pricing, Closing). Copy and data live in `src/data/content.ts`; site-wide switches live in `src/data/site.ts`.
+
+- **`LAUNCHED`** (in `src/data/site.ts`) flips the whole site between the pre-launch page (early-access signup, "Join the list" header) and the launched page (App Store button, pricing section, Pricing / Support / Journal navigation, full footer). Launch day is a one-line change. Also set `APP_STORE_URL` to the real listing.
+- **Static by default.** Sections are Astro components with no client JavaScript. The only islands are the header and footer (Threads `SiteNav` / `SiteFooter`), the waitlist form and the Night Planning carousel.
+- **Screens** are cropped to what the design shows and kept in `src/assets/screens/`; Astro builds AVIF and WebP at 1x and 2x.
+- **Waitlist form:** `src/utils/signup.ts` posts to `PUBLIC_WAITLIST_URL` (the backend is #388). Without it, a production build refuses to say "you're on the list"; only local development pretends. Append `?joined` to the URL to review the confirmation state.
+- **Links that need pages:** `/privacy` and the Contact mailto exist in the footer now; after launch it also links `/support`, `/journal`, `/press` and `/terms`. Those pages are #389; the legal ones must exist before any email is collected.
+
 ## Hosting and deploys
 
 Hosted on Firebase Hosting, project `jamaal-web` (default site `jamaal-web`, https://jamaal-web.web.app). Config is in `firebase.json` and `.firebaserc`.

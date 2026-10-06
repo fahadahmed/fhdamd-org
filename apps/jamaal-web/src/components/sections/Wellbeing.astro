@@ -1,0 +1,18 @@
+---
+import PhoneFrame from "../ui/PhoneFrame.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import { wellbeing } from "../../data/content";
+import screen from "../../assets/screens/wellbeing.png";
+---
+
+<section id="wellbeing" class="section">
+  <div class="section-inner split">
+    <div class="phone-col">
+      <PhoneFrame image={screen} alt={wellbeing.imageAlt} standalone />
+    </div>
+    <div class="stack">
+      <SectionHeading eyebrow={wellbeing.eyebrow} title={wellbeing.title} accent={wellbeing.accent} />
+      <p class="copy">{wellbeing.body}</p>
+    </div>
+  </div>
+</section>

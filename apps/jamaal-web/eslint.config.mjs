@@ -6,6 +6,6 @@ export default [
   ...eslintPluginAstro.configs.recommended,
   {
     // env.d.ts is the Astro-generated triple-slash type reference.
-    ignores: ["dist/**", ".astro/**", "coverage/**", "test-results/**", "src/env.d.ts"],
+    ignores: ["dist/**", ".astro/**", "coverage/**", "test-results/**", "src/env.d.ts", "functions/lib/**"],
   },
 ];

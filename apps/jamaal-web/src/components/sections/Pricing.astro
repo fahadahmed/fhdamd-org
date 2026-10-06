@@ -1,0 +1,27 @@
+---
+import SectionHeading from "../ui/SectionHeading.astro";
+import { pricing } from "../../data/content";
+---
+
+<section id="pricing" class="section">
+  <div class="section-inner split split--top">
+    <div class="stack stack--tight">
+      <SectionHeading eyebrow={pricing.eyebrow} title={pricing.title} accent={pricing.accent} />
+      <p class="copy" style="max-inline-size: 44ch">{pricing.body}</p>
+    </div>
+    <div class="stack stack--tight">
+      {
+        pricing.plans.map((plan) => (
+          <div class:list={["plan", { "plan--featured": plan.featured }]}>
+            <div class="stack" style="gap: var(--th-space-hair)">
+              <div class="plan-name">{plan.name}</div>
+              {plan.note && <div class="meta">{plan.note}</div>}
+            </div>
+            <div class="plan-price">{plan.price}</div>
+          </div>
+        ))
+      }
+      <div class="meta">{pricing.footnote}</div>
+    </div>
+  </div>
+</section>

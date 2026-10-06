@@ -1,0 +1,191 @@
+.section {
+  background: var(--th-deep);
+  color: var(--th-on-deep);
+}
+
+.inner {
+  max-inline-size: var(--th-container);
+  margin-inline: auto;
+  padding-block: var(--th-space-24);
+  padding-inline: var(--th-space-gutter);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  gap: var(--th-space-16);
+  align-items: center;
+}
+
+.phoneCol {
+  display: flex;
+  justify-content: center;
+}
+
+.phone {
+  position: relative;
+  inline-size: min(100%, 320px);
+  aspect-ratio: 393 / 852;
+  border-radius: 46px;
+  overflow: hidden;
+  background: var(--th-app);
+  box-shadow: var(--th-shadow-lift);
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+  transition:
+    opacity var(--th-duration-surface) var(--th-ease-out),
+    transform var(--th-duration-surface) var(--th-ease-out);
+}
+
+.screenOn {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.screenBefore {
+  opacity: 0;
+  transform: translateX(-12px);
+}
+
+.screenAfter {
+  opacity: 0;
+  transform: translateX(12px);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--th-space-section);
+}
+
+.eyebrow {
+  color: var(--th-on-deep-2);
+}
+
+.eyebrow::before {
+  background: var(--th-terra-on-deep);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
+  font-weight: 300;
+  font-size: clamp(2.375rem, 4.6vw, 3.5rem);
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.title em {
+  font-style: italic;
+  color: var(--th-accent-on-deep);
+}
+
+.body {
+  margin: 0;
+  max-inline-size: 44ch;
+  font-size: var(--th-lede-size);
+  line-height: var(--th-lede-leading);
+  color: var(--th-on-deep-2);
+  text-wrap: pretty;
+}
+
+.steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  border-block-start: 1px solid color-mix(in srgb, var(--th-on-deep) 18%, transparent);
+}
+
+.step {
+  position: relative;
+  border-block-end: 1px solid color-mix(in srgb, var(--th-on-deep) 18%, transparent);
+}
+
+.stepButton {
+  inline-size: 100%;
+  min-block-size: var(--th-hit);
+  display: flex;
+  gap: var(--th-space-section);
+  align-items: baseline;
+  padding-block: var(--th-space-3);
+  padding-inline: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: start;
+  color: var(--th-on-deep-2);
+  font: inherit;
+  transition: color var(--th-duration-state) var(--th-ease-out);
+}
+
+.stepButton:hover,
+.stepOn {
+  color: var(--th-on-deep);
+}
+
+.stepButton:focus-visible {
+  outline: 2px solid var(--th-terra-on-deep);
+  outline-offset: 2px;
+}
+
+.stepNumber {
+  inline-size: 24px;
+  font-family: var(--th-font-mono);
+  font-weight: 500;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
+  color: var(--th-on-deep-2);
+}
+
+.stepOn .stepNumber {
+  color: var(--th-terra-on-deep);
+}
+
+.stepLabel {
+  font-size: var(--th-body-size);
+  line-height: 1.35;
+}
+
+/* Progress bar: fills over the dwell time, then advances to the next step. */
+.bar {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-end: -1px;
+  block-size: 2px;
+  inline-size: 0;
+  background: var(--th-terra-on-deep);
+  animation-name: fill;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.inner:has(.phone:hover) .bar,
+.inner:has(.steps:focus-within) .bar {
+  animation-play-state: paused;
+}
+
+@keyframes fill {
+  to {
+    inline-size: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    animation: none;
+    inline-size: 100%;
+  }
+
+  .screen {
+    transition: none;
+  }
+}

@@ -3,6 +3,7 @@ import "@fhdamd/threads/tokens";
 import "@fhdamd/threads/styles";
 import "@fhdamd/threads/base";
 import "../styles/global.css";
+import "../styles/landing.css";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 
@@ -79,6 +80,7 @@ const fontHref =
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <Header client:idle />
     <main id="main">
       <slot />

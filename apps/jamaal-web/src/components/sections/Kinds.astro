@@ -1,0 +1,30 @@
+---
+import SectionHeading from "../ui/SectionHeading.astro";
+import { density, kinds } from "../../data/content";
+---
+
+<section class="section">
+  <div class="section-inner stack" style="gap: var(--th-space-12)">
+    <div class="stack stack--tight" style="max-inline-size: 640px">
+      <SectionHeading eyebrow="Three kinds of thing" title="Each tracked the way it" accent="actually works." />
+    </div>
+    <div class="kinds">
+      {
+        kinds.map((kind) => (
+          <div class="kind">
+            <div class="th-label eyebrow">{kind.label}</div>
+            <h3 class="kind-title">{kind.title}</h3>
+            {kind.density && (
+              <div class="density" aria-hidden="true">
+                {density.map((cell) => (
+                  <span class={cell} />
+                ))}
+              </div>
+            )}
+            <p class="copy">{kind.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
