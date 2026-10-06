@@ -1,0 +1,24 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Page not found — Jamaal" noindex>
+  <section class="not-found">
+    <p class="th-label">404</p>
+    <h1 class="th-hero">Nothing here.</h1>
+    <p class="th-lede">That page doesn't exist, or it has moved.</p>
+    <p><a href="/">Back to Jamaal</a></p>
+  </section>
+</Layout>
+
+<style>
+  .not-found {
+    max-inline-size: var(--th-container);
+    margin-inline: auto;
+    padding-block: var(--th-space-24);
+    padding-inline: var(--th-space-gutter);
+    display: flex;
+    flex-direction: column;
+    gap: var(--th-space-row);
+  }
+</style>
