@@ -1,0 +1,40 @@
+---
+import { Picture } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  image: ImageMetadata;
+  alt: string;
+  /** CSS width of the frame in px, used to size and crop the optimised image. */
+  width?: number;
+  /** Width / height of the visible screen. Phones are 393/852. */
+  ratio?: [number, number];
+  /** Load straight away (above the fold); everything else is lazy. */
+  eager?: boolean;
+  /** A frame that sizes itself (min(100%, 320px)) rather than filling its parent. */
+  standalone?: boolean;
+}
+
+const { image, alt, width = 320, ratio = [393, 852], eager = false, standalone = false } = Astro.props;
+const height = Math.round((width * ratio[1]) / ratio[0]);
+---
+
+<div
+  class:list={["phone", { "phone--standalone": standalone }]}
+  style={`aspect-ratio: ${ratio[0]} / ${ratio[1]}`}
+>
+  <Picture
+    src={image}
+    alt={alt}
+    width={width}
+    height={height}
+    densities={[1, 2]}
+    formats={["avif"]}
+    fallbackFormat="webp"
+    fit="cover"
+    position="top"
+    loading={eager ? "eager" : "lazy"}
+    fetchpriority={eager ? "high" : "auto"}
+    decoding={eager ? "sync" : "async"}
+  />
+</div>

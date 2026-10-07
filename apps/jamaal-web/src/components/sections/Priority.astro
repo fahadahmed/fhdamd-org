@@ -1,0 +1,30 @@
+---
+import SectionHeading from "../ui/SectionHeading.astro";
+import { priority } from "../../data/content";
+---
+
+<section id="order" class="section">
+  <div class="section-inner split">
+    <div class="stack">
+      <SectionHeading eyebrow={priority.eyebrow} title={priority.title} accent={priority.accent} />
+      <p class="copy">{priority.body}</p>
+    </div>
+    <div class="matrix" role="group" aria-label={priority.gridLabel}>
+      <span></span>
+      {priority.columns.map((column) => <span class="th-label eyebrow">{column}</span>)}
+      {
+        priority.rows.map((row) => (
+          <>
+            <span class="matrix-axis"><span class="th-label eyebrow">{row.label}</span></span>
+            {row.cells.map((cell) => (
+              <div class:list={["matrix-cell", { "matrix-cell--strong": cell.strong }]}>
+                <span class="row-name">{cell.title}</span>
+                <span class="row-detail" style="text-align: start">{cell.detail}</span>
+              </div>
+            ))}
+          </>
+        ))
+      }
+    </div>
+  </div>
+</section>

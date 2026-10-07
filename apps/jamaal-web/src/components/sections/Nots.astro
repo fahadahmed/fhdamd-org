@@ -1,0 +1,23 @@
+---
+import SectionHeading from "../ui/SectionHeading.astro";
+import { nots } from "../../data/content";
+---
+
+<section>
+  <div class="section-inner split split--top">
+    <div class="stack stack--tight">
+      <SectionHeading eyebrow={nots.eyebrow} title={nots.title} accent={nots.accent} />
+      <p class="copy" style="max-inline-size: 44ch">{nots.body}</p>
+    </div>
+    <ul class="rows">
+      {
+        nots.items.map((item) => (
+          <li class="row">
+            <span class="row-name">{item.a}</span>
+            <span class="row-detail">{item.b}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

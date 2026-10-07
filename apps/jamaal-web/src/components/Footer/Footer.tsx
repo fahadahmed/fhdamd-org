@@ -1,22 +1,27 @@
 import { SiteFooter } from "@fhdamd/threads";
+import { COMPANY_TAGLINE, CONTACT_EMAIL, LAUNCHED } from "../../data/site";
 import { Wordmark } from "../Header/Header";
 
 export interface FooterProps {
-  year?: number;
+  /** Defaults to the site-wide flag. */
+  launched?: boolean;
 }
 
-export default function Footer({
-  year = new Date().getFullYear(),
-}: Readonly<FooterProps>) {
-  return (
-    <SiteFooter
-      brand={<Wordmark onDeep />}
-      tagline="A considered app by fhdamd"
-      links={[
-        { href: "/privacy", label: "Privacy" },
-        { href: "mailto:hello@jamaal.app", label: "Contact" },
-      ]}
-      copyright={`© ${year} · jamaal.app`}
-    />
-  );
+export default function Footer({ launched = LAUNCHED }: Readonly<FooterProps>) {
+  const links = [
+    ...(launched
+      ? [
+          { href: "/support", label: "Support" },
+          { href: "/journal", label: "Journal" },
+          { href: "/press", label: "Press kit" },
+        ]
+      : []),
+    { href: "/privacy", label: "Privacy" },
+    ...(launched ? [{ href: "/terms", label: "Terms" }] : []),
+    { href: `mailto:${CONTACT_EMAIL}`, label: "Contact" },
+  ];
+
+  // The simple SiteFooter layout renders `copyright` (a mono label) but not
+  // `tagline`, so the company line goes there.
+  return <SiteFooter brand={<Wordmark onDeep />} links={links} copyright={COMPANY_TAGLINE} />;
 }

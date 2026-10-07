@@ -1,0 +1,40 @@
+---
+import { getImage } from "astro:assets";
+import NightPlanning from "../NightPlanning/NightPlanning";
+import { nightPlanning } from "../../data/content";
+import review from "../../assets/screens/np-1-review.png";
+import carry from "../../assets/screens/np-2-carry-forward.png";
+import build from "../../assets/screens/np-3-build-tomorrow.png";
+import load from "../../assets/screens/np-4-check-the-load.png";
+import close from "../../assets/screens/np-5-close-the-day.png";
+
+const WIDTH = 320;
+const HEIGHT = Math.round((WIDTH * 852) / 393);
+const images = [review, carry, build, load, close];
+
+// The carousel is a React island, so build the optimised 1x/2x URLs here.
+const sources = await Promise.all(
+  images.map(async (image) => {
+    const options = { src: image, width: WIDTH, height: HEIGHT, fit: "cover", position: "top", format: "webp" } as const;
+    const [one, two] = await Promise.all([
+      getImage(options),
+      getImage({ ...options, width: WIDTH * 2, height: HEIGHT * 2 }),
+    ]);
+    return { src: one.src, srcSet: `${one.src} 1x, ${two.src} 2x` };
+  }),
+);
+
+const steps = nightPlanning.steps.map((step, i) => ({ ...step, ...sources[i] }));
+---
+
+<NightPlanning
+  client:visible
+  eyebrow={nightPlanning.eyebrow}
+  title={nightPlanning.title}
+  accent={nightPlanning.accent}
+  body={nightPlanning.body}
+  steps={steps}
+  dwell={nightPlanning.dwell}
+  width={WIDTH}
+  height={HEIGHT}
+/>

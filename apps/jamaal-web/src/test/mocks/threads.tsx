@@ -44,15 +44,18 @@ export const SiteNav = ({
 
 export const SiteFooter = ({
   brand,
+  tagline,
   links = [],
   copyright,
 }: {
   brand?: ReactNode;
+  tagline?: string;
   links?: NavLinkLike[];
   copyright?: string;
 }) => (
   <footer>
     {brand}
+    {tagline && <p>{tagline}</p>}
     <ul>
       {links.map((l) => (
         <li key={l.href}>
@@ -90,5 +93,29 @@ export const Hero = ({
   </section>
 );
 
-export const Button = ({ children, href }: { children: ReactNode; href?: string }) =>
-  href ? <a href={href}>{children}</a> : <button type="button">{children}</button>;
+export const Button = ({
+  children,
+  href,
+  type = "button",
+  disabled,
+  icon,
+  onClick,
+}: {
+  children: ReactNode;
+  href?: string;
+  type?: "button" | "submit";
+  disabled?: boolean;
+  icon?: ReactNode;
+  onClick?: () => void;
+}) =>
+  href ? (
+    <a href={href}>
+      {icon}
+      {children}
+    </a>
+  ) : (
+    <button type={type} disabled={disabled} onClick={onClick}>
+      {children}
+      {icon}
+    </button>
+  );

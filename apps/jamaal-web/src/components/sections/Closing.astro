@@ -1,0 +1,23 @@
+---
+import AppStoreButton from "../AppStoreButton/AppStoreButton";
+import WaitlistForm from "../WaitlistForm/WaitlistForm";
+import { closing } from "../../data/content";
+import { APP_STORE_URL, LAUNCHED } from "../../data/site";
+
+const copy = LAUNCHED ? closing.launched : closing.prelaunch;
+---
+
+<section id={LAUNCHED ? "download" : "join"} class="section">
+  <div class="section-inner closing">
+    <img class="app-icon" src="/icon.svg" alt="" width="88" height="88" />
+    <h2 class="section-title section-title--light">{copy.title} <em>{copy.accent}</em></h2>
+    <p class="lede">{copy.body}</p>
+    {
+      LAUNCHED ? (
+        <AppStoreButton href={APP_STORE_URL} />
+      ) : (
+        <WaitlistForm client:visible variant="join" source="join" submitLabel="Join the list" />
+      )
+    }
+  </div>
+</section>
