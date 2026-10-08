@@ -16,9 +16,15 @@ describe("Header", () => {
     expect(screen.getByText("Jamaal")).toHaveStyle({ color: "var(--th-ink)" });
   });
 
-  it("links the home label to the root", () => {
+  it("keeps the Arabic name at AA contrast in both themes (ink-2, not ink-3)", () => {
     render(<Header launched={false} />);
-    expect(screen.getByRole("link", { name: "Jamaal home" })).toHaveAttribute("href", "/");
+    expect(screen.getByText("جمال")).toHaveStyle({ color: "var(--th-ink-2)" });
+  });
+
+  it.each([false, true])("links the wordmark to the root, named by its visible text (launched: %s)", (launched) => {
+    render(<Header launched={launched} />);
+    // Label in Name (WCAG 2.5.3): the accessible name must contain the visible text.
+    expect(screen.getByRole("link", { name: /^Jamaal\s*جمال$/ })).toHaveAttribute("href", "/");
   });
 
   it("before launch: only a Join the list call to action, no nav links", () => {

@@ -9,10 +9,18 @@ import Wellbeing from "../components/sections/Wellbeing.astro";
 import Nots from "../components/sections/Nots.astro";
 import Pricing from "../components/sections/Pricing.astro";
 import Closing from "../components/sections/Closing.astro";
-import { LAUNCHED } from "../data/site";
+import { LAUNCHED, SITE_DESCRIPTION } from "../data/site";
+import { softwareApplicationJsonLd } from "../data/seo";
+
+const jsonLd = softwareApplicationJsonLd({
+  origin: Astro.site!.origin,
+  description: SITE_DESCRIPTION,
+  launched: LAUNCHED,
+});
 ---
 
 <Layout>
+  <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
   <Hero />
   <Kinds />
   <Anchors />

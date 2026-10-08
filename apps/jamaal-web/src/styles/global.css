@@ -1,6 +1,124 @@
 /* Jamaal site globals. Colours, type and spacing come from @fhdamd/threads
    tokens; @fhdamd/threads/base supplies the reset, body and link styles. */
 
+/* Size-matched fallbacks. The web fonts load with display=swap, and a fallback
+   of a different width makes the text reflow when they arrive: the hero
+   headline wrapped to 2 lines in Georgia and 3 in Fraunces, pushing the form
+   down (a layout shift of ~0.1). Fraunces has an optical-size axis, so its
+   width relative to Georgia changes with the rendered size. Measured in the
+   browser at the real sizes, weights and italics (Fraunces / Georgia):
+     weight 300:  0.93 at 48px, 0.89 at 64px, 0.82 at 80px   (hero, closing)
+     weight 500:  1.03 at 34-44px                              (section titles)
+   so there is one fallback family per screen size (S, M, L) and a 103% face
+   for weights 400+. Hanken Grotesk is ~100% of Arial, so Arial stands in. */
+@font-face {
+  font-family: "Fraunces Fallback S";
+  src: local("Georgia");
+  font-style: normal;
+  font-weight: 100 399;
+  size-adjust: 92%;
+}
+@font-face {
+  font-family: "Fraunces Fallback S";
+  src: local("Georgia");
+  font-style: normal;
+  font-weight: 400 900;
+  size-adjust: 103%;
+}
+@font-face {
+  font-family: "Fraunces Fallback S";
+  src: local("Georgia Italic"), local("Georgia-Italic");
+  font-style: italic;
+  font-weight: 100 399;
+  size-adjust: 92%;
+}
+@font-face {
+  font-family: "Fraunces Fallback S";
+  src: local("Georgia Italic"), local("Georgia-Italic");
+  font-style: italic;
+  font-weight: 400 900;
+  size-adjust: 103%;
+}
+@font-face {
+  font-family: "Fraunces Fallback M";
+  src: local("Georgia");
+  font-style: normal;
+  font-weight: 100 399;
+  size-adjust: 88%;
+}
+@font-face {
+  font-family: "Fraunces Fallback M";
+  src: local("Georgia");
+  font-style: normal;
+  font-weight: 400 900;
+  size-adjust: 103%;
+}
+@font-face {
+  font-family: "Fraunces Fallback M";
+  src: local("Georgia Italic"), local("Georgia-Italic");
+  font-style: italic;
+  font-weight: 100 399;
+  size-adjust: 88%;
+}
+@font-face {
+  font-family: "Fraunces Fallback M";
+  src: local("Georgia Italic"), local("Georgia-Italic");
+  font-style: italic;
+  font-weight: 400 900;
+  size-adjust: 103%;
+}
+@font-face {
+  font-family: "Fraunces Fallback L";
+  src: local("Georgia");
+  font-style: normal;
+  font-weight: 100 399;
+  size-adjust: 84%;
+}
+@font-face {
+  font-family: "Fraunces Fallback L";
+  src: local("Georgia");
+  font-style: normal;
+  font-weight: 400 900;
+  size-adjust: 103%;
+}
+@font-face {
+  font-family: "Fraunces Fallback L";
+  src: local("Georgia Italic"), local("Georgia-Italic");
+  font-style: italic;
+  font-weight: 100 399;
+  size-adjust: 84%;
+}
+@font-face {
+  font-family: "Fraunces Fallback L";
+  src: local("Georgia Italic"), local("Georgia-Italic");
+  font-style: italic;
+  font-weight: 400 900;
+  size-adjust: 103%;
+}
+
+@font-face {
+  font-family: "Hanken Fallback";
+  src: local("Arial"), local("Helvetica Neue");
+  size-adjust: 100%;
+}
+
+:root {
+  --th-font-serif: "Fraunces", "Fraunces Fallback S", Georgia, serif;
+  --th-font-sans: "Hanken Grotesk", "Hanken Fallback", system-ui, sans-serif;
+}
+
+@media (min-width: 720px) {
+  :root {
+    --th-font-serif: "Fraunces", "Fraunces Fallback M", Georgia, serif;
+  }
+}
+
+@media (min-width: 1100px) {
+  :root {
+    --th-font-serif: "Fraunces", "Fraunces Fallback L", Georgia, serif;
+  }
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
