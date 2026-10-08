@@ -36,7 +36,8 @@ export async function submitSignup(
   input: SignupInput,
   source: SignupSource,
   options: { endpoint?: string; dev?: boolean } = {
-    endpoint: import.meta.env.PUBLIC_WAITLIST_URL ?? (import.meta.env.DEV ? undefined : "/api/waitlist"),
+    // `||`, not `??`: an empty PUBLIC_WAITLIST_URL= must fall back too.
+    endpoint: import.meta.env.PUBLIC_WAITLIST_URL || (import.meta.env.DEV ? undefined : "/api/waitlist"),
     dev: import.meta.env.DEV,
   },
 ): Promise<void> {

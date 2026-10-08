@@ -29,7 +29,10 @@ describe("joinedTitle", () => {
 });
 
 describe("submitSignup", () => {
-  afterEach(() => vi.unstubAllGlobals());
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
 
   const input = { firstName: " Sam ", email: " sam@example.com " };
 
@@ -64,5 +67,33 @@ describe("submitSignup", () => {
 
   it("refuses to pretend it worked in production without an endpoint", async () => {
     await expect(submitSignup(input, "hero", { dev: false })).rejects.toThrow("Signup isn't open yet");
+  });
+
+  describe("default endpoint", () => {
+    it("pretends only in development when nothing is configured", async () => {
+      vi.stubEnv("DEV", true);
+      vi.stubEnv("PUBLIC_WAITLIST_URL", "");
+      const fetchMock = vi.fn();
+      vi.stubGlobal("fetch", fetchMock);
+      await expect(submitSignup(input, "hero")).resolves.toBeUndefined();
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it("posts to PUBLIC_WAITLIST_URL when it is set", async () => {
+      vi.stubEnv("PUBLIC_WAITLIST_URL", "https://example.test/custom");
+      const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+      vi.stubGlobal("fetch", fetchMock);
+      await submitSignup(input, "join");
+      expect(fetchMock.mock.calls[0][0]).toBe("https://example.test/custom");
+    });
+
+    it("posts to the /api/waitlist rewrite in a production build", async () => {
+      vi.stubEnv("DEV", false);
+      vi.stubEnv("PUBLIC_WAITLIST_URL", "");
+      const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+      vi.stubGlobal("fetch", fetchMock);
+      await submitSignup(input, "hero");
+      expect(fetchMock.mock.calls[0][0]).toBe("/api/waitlist");
+    });
   });
 });
