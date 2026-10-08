@@ -38,7 +38,7 @@ export function Wordmark({ onDeep = false }: Readonly<WordmarkProps>) {
         <span
           lang="ar"
           dir="rtl"
-          style={{ color: onDeep ? "var(--th-on-deep-2)" : "var(--th-ink-3)" }}
+          style={{ color: onDeep ? "var(--th-on-deep-2)" : "var(--th-ink-2)" }}
         >
           جمال
         </span>
@@ -57,7 +57,7 @@ export default function Header({ launched = LAUNCHED }: Readonly<HeaderProps>) {
     return (
       <header className={styles.bar}>
         <div className={styles.inner}>
-          <a className={styles.brand} href="/" aria-label="Jamaal home">
+          <a className={styles.brand} href="/">
             <Wordmark />
           </a>
           <Button href="/#join" variant="ghost" size="sm">
@@ -71,7 +71,7 @@ export default function Header({ launched = LAUNCHED }: Readonly<HeaderProps>) {
   return (
     <SiteNav
       brand={<Wordmark />}
-      brandLabel="Jamaal home"
+      brandLabel="Jamaal جمال"
       links={[
         { href: "/#pricing", label: "Pricing" },
         { href: "/support", label: "Support" },

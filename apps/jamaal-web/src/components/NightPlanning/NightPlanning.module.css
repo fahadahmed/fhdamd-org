@@ -146,8 +146,10 @@
   color: var(--th-on-deep-2);
 }
 
+/* on-deep, not terra: terra on deep is 4.45:1 at this size, just under AA.
+   The terra progress bar under the step carries the accent. */
 .stepOn .stepNumber {
-  color: var(--th-terra-on-deep);
+  color: var(--th-on-deep);
 }
 
 .stepLabel {

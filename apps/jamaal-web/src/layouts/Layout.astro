@@ -6,6 +6,7 @@ import "../styles/global.css";
 import "../styles/landing.css";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
+import { SITE_DESCRIPTION } from "../data/site";
 
 interface Props {
   title?: string;
@@ -16,7 +17,7 @@ interface Props {
 
 const {
   title = "Jamaal — one list, just today, beautifully ordered",
-  description = "Jamaal is a calm daily planner for iPhone, iPad and Mac. One list for today, a short plan each evening, and nothing that nags.",
+  description = SITE_DESCRIPTION,
   ogImage = new URL("/og-image.png", Astro.site).href,
   noindex = false,
 } = Astro.props;
@@ -35,6 +36,10 @@ const fontHref =
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#EFF4F0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#12303F" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="generator" content={Astro.generator} />
 
     <title>{title}</title>
@@ -48,6 +53,10 @@ const fontHref =
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:type" content="website" />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Jamaal: one list, just today, beautifully ordered." />
+    <meta property="og:locale" content="en" />
     <meta property="og:site_name" content="Jamaal" />
 
     <!-- Twitter Card -->
@@ -55,6 +64,7 @@ const fontHref =
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content="Jamaal: one list, just today, beautifully ordered." />
 
     <!-- Fonts load without blocking first paint: the print-media swap keeps the
          stylesheet off the critical path, and display=swap shows the fallback

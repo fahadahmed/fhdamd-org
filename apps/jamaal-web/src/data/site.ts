@@ -13,3 +13,7 @@ export const APP_STORE_URL = "#download";
 export const CONTACT_EMAIL = "contact@fhdamd.dev";
 
 export const COMPANY_TAGLINE = "A considered app by fhdamd";
+
+/** Default meta description, also used in the structured data on the home page. */
+export const SITE_DESCRIPTION =
+  "Jamaal is a calm daily planner for iPhone, iPad and Mac. One list for today, a short plan each evening, and nothing that nags.";
