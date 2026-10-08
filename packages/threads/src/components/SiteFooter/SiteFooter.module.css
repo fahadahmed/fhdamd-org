@@ -29,6 +29,12 @@
   gap: var(--th-space-6);
 }
 
+.brandBlock {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
 .brand {
   display: flex;
   align-items: center;

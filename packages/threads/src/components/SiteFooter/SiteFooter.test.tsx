@@ -43,6 +43,16 @@ describe("SiteFooter — rendering", () => {
     expect(screen.getByText("© 2026 Custom Corp")).toBeInTheDocument();
   });
 
+  it("renders the tagline under the brand in the simple layout", () => {
+    render(<SiteFooter brand={<span>Acme</span>} tagline="A considered app by Acme" links={links} />);
+    expect(screen.getByText("A considered app by Acme")).toBeInTheDocument();
+  });
+
+  it("renders no tagline paragraph when none is given", () => {
+    const { container } = render(<SiteFooter brand={<span>Acme</span>} links={links} />);
+    expect(container.querySelectorAll("p")).toHaveLength(0);
+  });
+
   it("merges custom className", () => {
     const { container } = render(<SiteFooter className="custom" />);
     expect(container.firstChild).toHaveClass("custom");
