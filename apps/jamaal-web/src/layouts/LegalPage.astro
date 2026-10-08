@@ -1,0 +1,46 @@
+---
+import { Prose } from "@fhdamd/threads";
+import Layout from "./Layout.astro";
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  /** Used for the page title and meta description. */
+  description: string;
+  /** "Last updated" line; omit for pages that are not dated, like Support. */
+  updated?: string;
+}
+
+const { eyebrow, title, description, updated } = Astro.props;
+---
+
+<Layout title={`${eyebrow} — Jamaal`} description={description}>
+  <section class="legal">
+    <div class="legal-inner">
+      <div class="th-label th-eyebrow eyebrow">{eyebrow}</div>
+      <h1 class="section-title legal-title">{title}</h1>
+      {updated && <p class="meta">Last updated {updated}</p>}
+      <Prose>
+        <slot />
+      </Prose>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .legal-inner {
+    max-inline-size: 760px;
+    margin-inline: auto;
+    padding-block: var(--th-space-20) var(--th-space-24);
+    padding-inline: var(--th-space-gutter);
+    display: flex;
+    flex-direction: column;
+    gap: var(--th-space-section);
+  }
+
+  .legal-title {
+    font-size: var(--th-hero-size);
+    font-weight: 300;
+    line-height: var(--th-hero-leading);
+  }
+</style>

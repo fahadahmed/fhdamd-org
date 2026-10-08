@@ -1,0 +1,57 @@
+---
+import LegalPage from "../layouts/LegalPage.astro";
+import { CONTACT_EMAIL } from "../data/site";
+import { legal } from "../data/content";
+---
+
+<LegalPage
+  eyebrow="Terms"
+  title="Plain terms for a calm app."
+  description="The terms of the Jamaal subscription and using the app."
+  updated={legal.updated}
+>
+  <h2 id="subscription">The subscription</h2>
+  <p>
+    Jamaal is free for 14 days with everything included. After that it's one simple plan: $24.99 a year or $2.99 a
+    month, in US dollars. The App Store shows the price in your local currency. One subscription covers Jamaal on
+    iPhone, iPad and Mac.
+  </p>
+  <p>
+    Payment is charged to your Apple ID. A subscription renews automatically unless you cancel at least 24 hours before
+    the end of the current period. You can manage or cancel it at any time in your Apple ID account settings. Refunds
+    are handled by Apple.
+  </p>
+
+  <h2 id="without">If you don't subscribe</h2>
+  <p>
+    Nothing is taken away. You can still tick things off, log habits, mark Anchors and run the timer. Adding, editing
+    and Night Planning need a subscription. You can always export your data.
+  </p>
+
+  <h2 id="using">Using Jamaal</h2>
+  <p>
+    Jamaal is licensed to you, not sold. Your use of the app is also governed by Apple's standard Licensed Application
+    End User License Agreement. Please don't copy, reverse engineer or resell the app.
+  </p>
+  <p>
+    Jamaal is a planning tool. Its Wellbeing reading is a plain summary of what you did in the app, not medical or
+    professional advice.
+  </p>
+
+  <h2 id="data">Your data</h2>
+  <p>
+    Your lists, habits and Anchors are yours. They are kept on your device and, if you use sync, in your own iCloud. See
+    the <a href="/privacy">privacy policy</a> for details.
+  </p>
+
+  <h2 id="changes">Changes</h2>
+  <p>
+    We may update these terms, and will change the date at the top when we do. If a change matters to your subscription,
+    we'll say so in the app or by email.
+  </p>
+
+  <h2 id="contact">Contact</h2>
+  <p>
+    Questions about these terms: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+  </p>
+</LegalPage>

@@ -19,7 +19,7 @@ describe("Footer", () => {
 
   it("after launch: the full set of legal and support links, in order", () => {
     render(<Footer launched />);
-    expect(names()).toEqual(["Support", "Journal", "Press kit", "Privacy", "Terms", "Contact"]);
+    expect(names()).toEqual(["Support", "Privacy", "Terms", "Contact"]);
     expect(screen.getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/terms");
   });
 

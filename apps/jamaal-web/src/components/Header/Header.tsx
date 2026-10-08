@@ -60,7 +60,7 @@ export default function Header({ launched = LAUNCHED }: Readonly<HeaderProps>) {
           <a className={styles.brand} href="/" aria-label="Jamaal home">
             <Wordmark />
           </a>
-          <Button href="#join" variant="ghost" size="sm">
+          <Button href="/#join" variant="ghost" size="sm">
             Join the list
           </Button>
         </div>
@@ -73,11 +73,10 @@ export default function Header({ launched = LAUNCHED }: Readonly<HeaderProps>) {
       brand={<Wordmark />}
       brandLabel="Jamaal home"
       links={[
-        { href: "#pricing", label: "Pricing" },
+        { href: "/#pricing", label: "Pricing" },
         { href: "/support", label: "Support" },
-        { href: "/journal", label: "Journal" },
       ]}
-      ctas={[{ href: "#download", label: "Download", variant: "ghost" }]}
+      ctas={[{ href: "/#download", label: "Download", variant: "ghost" }]}
     />
   );
 }

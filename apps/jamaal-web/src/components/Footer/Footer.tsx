@@ -9,13 +9,8 @@ export interface FooterProps {
 
 export default function Footer({ launched = LAUNCHED }: Readonly<FooterProps>) {
   const links = [
-    ...(launched
-      ? [
-          { href: "/support", label: "Support" },
-          { href: "/journal", label: "Journal" },
-          { href: "/press", label: "Press kit" },
-        ]
-      : []),
+    // Journal and Press kit return when those pages exist.
+    ...(launched ? [{ href: "/support", label: "Support" }] : []),
     { href: "/privacy", label: "Privacy" },
     ...(launched ? [{ href: "/terms", label: "Terms" }] : []),
     { href: `mailto:${CONTACT_EMAIL}`, label: "Contact" },
