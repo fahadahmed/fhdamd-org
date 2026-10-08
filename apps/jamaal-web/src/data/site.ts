@@ -10,6 +10,6 @@ export const LAUNCHED = false;
 /** Where "Download on the App Store" points. Replace with the real listing URL at launch. */
 export const APP_STORE_URL = "#download";
 
-export const CONTACT_EMAIL = "hello@fhdamd.dev";
+export const CONTACT_EMAIL = "contact@fhdamd.dev";
 
 export const COMPANY_TAGLINE = "A considered app by fhdamd";

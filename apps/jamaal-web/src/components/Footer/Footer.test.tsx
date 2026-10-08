@@ -14,7 +14,7 @@ describe("Footer", () => {
     render(<Footer launched={false} />);
     expect(names()).toEqual(["Privacy", "Contact"]);
     expect(screen.getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "/privacy");
-    expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute("href", "mailto:hello@fhdamd.dev");
+    expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute("href", "mailto:contact@fhdamd.dev");
   });
 
   it("after launch: the full set of legal and support links, in order", () => {

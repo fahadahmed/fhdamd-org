@@ -1,3 +1,5 @@
+import { CONTACT_EMAIL } from "./site";
+
 /** Page copy and data, kept out of the markup. Wording follows the Claude Design pages. */
 
 export const hero = {
@@ -173,7 +175,7 @@ export const faq = [
   {
     question: "Something isn't working. How do I get help?",
     answer:
-      "Email hello@fhdamd.dev with what you were doing, what you expected and what happened. Mention your device and iOS or macOS version if you can.",
+      `Email ${CONTACT_EMAIL} with what you were doing, what you expected and what happened. Mention your device and iOS or macOS version if you can.`,
   },
 ] as const;
 
