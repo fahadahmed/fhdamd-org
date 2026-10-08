@@ -1,0 +1,69 @@
+---
+import LegalPage from "../layouts/LegalPage.astro";
+import { CONTACT_EMAIL } from "../data/site";
+import { legal } from "../data/content";
+---
+
+<LegalPage
+  eyebrow="Privacy"
+  title="Your day is yours."
+  description="How Jamaal and this website handle your information."
+  updated={legal.updated}
+>
+  <h2 id="short-version">The short version</h2>
+  <p>
+    Jamaal is made by fhdamd (Fahad Ahmed) in Melbourne, Australia. The app keeps your tasks, habits and Anchors on
+    your device and, if you choose to sync, in your own iCloud. We don't receive them. This website collects only what
+    you give it when you join the early-access list.
+  </p>
+
+  <h2 id="app">The app</h2>
+  <p>
+    Jamaal has a single Today list. You create Tasks, Habits and Anchors, they appear on Today, and you plan tomorrow at
+    the right time. Everything you create, and your Wellbeing reading, is stored on your device. If you turn on sync, it
+    is stored in your own iCloud account, using Apple's services, under your Apple ID. fhdamd doesn't receive, read or
+    store it.
+  </p>
+  <p>
+    Subscriptions are sold and billed by Apple. We don't see your payment details; Apple tells us only whether a
+    subscription is active.
+  </p>
+
+  <h2 id="website">This website</h2>
+  <p>
+    The site uses no advertising or analytics cookies and no third-party trackers. It is hosted on Google Firebase
+    Hosting, which keeps standard server logs (such as IP address and the pages requested) to run and secure the service.
+  </p>
+
+  <h2 id="list">The early-access list</h2>
+  <p>If you join the list, we collect:</p>
+  <ul>
+    <li>your first name and email address, so we can write to you;</li>
+    <li>which form you used on the site, and when you joined.</li>
+  </ul>
+  <p>
+    We use them only to email you once when Jamaal is ready, and once if a TestFlight beta opens. We don't send anything
+    else, and we don't sell or share your details or use them for advertising.
+  </p>
+  <p>
+    They are stored with Google Firebase (Cloud Firestore), which processes them on our behalf. We keep them while the
+    list is open and until you ask us to remove them.
+  </p>
+
+  <h2 id="rights">Your choices</h2>
+  <p>
+    You can ask to see, correct or delete what we hold about you at any time by emailing{" "}
+    <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. We'll reply and act on it promptly.
+  </p>
+
+  <h2 id="changes">Changes</h2>
+  <p>
+    If this policy changes, we'll update this page and the date at the top. If a change affects the early-access list,
+    we'll tell the people on it.
+  </p>
+
+  <h2 id="contact">Contact</h2>
+  <p>
+    Questions about privacy: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+  </p>
+</LegalPage>

@@ -14,12 +14,12 @@ describe("Footer", () => {
     render(<Footer launched={false} />);
     expect(names()).toEqual(["Privacy", "Contact"]);
     expect(screen.getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "/privacy");
-    expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute("href", "mailto:hello@fhdamd.dev");
+    expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute("href", "mailto:contact@fhdamd.dev");
   });
 
   it("after launch: the full set of legal and support links, in order", () => {
     render(<Footer launched />);
-    expect(names()).toEqual(["Support", "Journal", "Press kit", "Privacy", "Terms", "Contact"]);
+    expect(names()).toEqual(["Support", "Privacy", "Terms", "Contact"]);
     expect(screen.getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/terms");
   });
 

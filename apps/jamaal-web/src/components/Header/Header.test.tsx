@@ -23,17 +23,17 @@ describe("Header", () => {
 
   it("before launch: only a Join the list call to action, no nav links", () => {
     render(<Header launched={false} />);
-    expect(screen.getByRole("link", { name: "Join the list" })).toHaveAttribute("href", "#join");
+    expect(screen.getByRole("link", { name: "Join the list" })).toHaveAttribute("href", "/#join");
     expect(screen.queryByRole("link", { name: "Pricing" })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Download" })).not.toBeInTheDocument();
   });
 
-  it("after launch: Pricing, Support and Journal links and a Download call to action", () => {
+  it("after launch: Pricing and Support links and a Download call to action", () => {
     render(<Header launched />);
-    expect(screen.getByRole("link", { name: "Pricing" })).toHaveAttribute("href", "#pricing");
+    expect(screen.getByRole("link", { name: "Pricing" })).toHaveAttribute("href", "/#pricing");
     expect(screen.getByRole("link", { name: "Support" })).toHaveAttribute("href", "/support");
-    expect(screen.getByRole("link", { name: "Journal" })).toHaveAttribute("href", "/journal");
-    expect(screen.getByRole("link", { name: "Download" })).toHaveAttribute("href", "#download");
+    expect(screen.queryByRole("link", { name: "Journal" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Download" })).toHaveAttribute("href", "/#download");
     expect(screen.queryByRole("link", { name: "Join the list" })).not.toBeInTheDocument();
   });
 });

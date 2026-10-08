@@ -1,0 +1,24 @@
+---
+import { Accordion } from "@fhdamd/threads";
+import LegalPage from "../layouts/LegalPage.astro";
+import { CONTACT_EMAIL } from "../data/site";
+import { faq } from "../data/content";
+---
+
+<LegalPage
+  eyebrow="Support"
+  title="We're here to help."
+  description="Answers to common questions about Jamaal, and how to reach us."
+>
+  <h2 id="questions">Common questions</h2>
+  <Accordion client:visible items={[...faq]} defaultOpenIndex={-1} />
+
+  <h2 id="contact">Still stuck?</h2>
+  <p>
+    Email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> and a person will reply. It helps to tell us what you
+    were doing, what you expected and what happened, plus your device and iOS or macOS version.
+  </p>
+  <p>
+    Read how we handle your information in the <a href="/privacy">privacy policy</a>.
+  </p>
+</LegalPage>
