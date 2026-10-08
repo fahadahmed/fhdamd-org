@@ -81,7 +81,10 @@ export function SiteFooter({
           ) : (
             /* ── Simple layout ──────────────────────────────────────────── */
             <div className={styles.simple}>
-              <div className={styles.brand}>{brand}</div>
+              <div className={styles.brandBlock}>
+                <div className={styles.brand}>{brand}</div>
+                {tagline && <p className={styles.tagline}>{tagline}</p>}
+              </div>
               {links.length > 0 && (
                 <nav aria-label="Footer navigation" className={styles.nav}>
                   <ul className={styles.linkList}>
