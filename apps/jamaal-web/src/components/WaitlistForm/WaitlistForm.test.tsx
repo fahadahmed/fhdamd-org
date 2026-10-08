@@ -35,6 +35,23 @@ describe("WaitlistForm", () => {
     expect(screen.getByText("One email when it's ready.")).toBeInTheDocument();
   });
 
+  it("includes a honeypot field that is hidden from people and assistive technology", () => {
+    const { container } = setup();
+    const trap = container.querySelector('input[name="company"]');
+    expect(trap).toHaveAttribute("aria-hidden", "true");
+    expect(trap).toHaveAttribute("tabindex", "-1");
+    expect(trap).toHaveAttribute("autocomplete", "off");
+  });
+
+  it("sends whatever a bot types into the honeypot", async () => {
+    const { container } = setup();
+    const user = await fill("Sam", "sam@example.com");
+    await user.type(container.querySelector('input[name="company"]') as HTMLElement, "Acme");
+    await user.click(screen.getByRole("button", { name: /ready/ }));
+    await waitFor(() => expect(submitSignup).toHaveBeenCalled());
+    expect(submitSignup).toHaveBeenCalledWith({ firstName: "Sam", email: "sam@example.com", company: "Acme" }, "hero");
+  });
+
   it("asks for a first name before submitting", async () => {
     setup();
     const user = await fill("", "sam@example.com");
@@ -58,7 +75,7 @@ describe("WaitlistForm", () => {
     const user = await fill("Sam", "sam@example.com");
     await user.click(screen.getByRole("button", { name: /ready/ }));
     await waitFor(() => expect(screen.getByRole("status")).toBeInTheDocument());
-    expect(submitSignup).toHaveBeenCalledWith({ firstName: "Sam", email: "sam@example.com" }, "hero");
+    expect(submitSignup).toHaveBeenCalledWith({ firstName: "Sam", email: "sam@example.com", company: "" }, "hero");
     expect(screen.getByText("Thank you, Sam. You're on the list.")).toBeInTheDocument();
     expect(screen.getByText("We'll write to sam@example.com once, when there's something to open.")).toBeInTheDocument();
   });
@@ -68,7 +85,7 @@ describe("WaitlistForm", () => {
     const user = await fill("Sam", "sam@example.com");
     await user.click(screen.getByRole("button", { name: "Join the list" }));
     await screen.findByRole("status");
-    expect(submitSignup).toHaveBeenCalledWith({ firstName: "Sam", email: "sam@example.com" }, "join");
+    expect(submitSignup).toHaveBeenCalledWith({ firstName: "Sam", email: "sam@example.com", company: "" }, "join");
     expect(screen.queryByText(/We'll write to/)).not.toBeInTheDocument();
   });
 

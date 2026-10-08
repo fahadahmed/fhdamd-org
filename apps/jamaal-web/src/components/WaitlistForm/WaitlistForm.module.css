@@ -104,3 +104,13 @@
   line-height: var(--th-body-leading);
   color: var(--th-ink-2);
 }
+
+/* Honeypot field: off-screen, not display:none, so bots still see it. */
+.trap {
+  position: absolute;
+  inset-inline-start: -9999px;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+  pointer-events: none;
+}

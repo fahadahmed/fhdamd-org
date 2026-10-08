@@ -40,8 +40,15 @@ describe("submitSignup", () => {
     expect(fetchMock).toHaveBeenCalledWith("https://example.test/waitlist", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ firstName: "Sam", email: "sam@example.com", source: "hero" }),
+      body: JSON.stringify({ firstName: "Sam", email: "sam@example.com", company: "", source: "hero" }),
     });
+  });
+
+  it("sends the honeypot value so the backend can drop bots", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal("fetch", fetchMock);
+    await submitSignup({ ...input, company: "Acme" }, "hero", { endpoint: "/api/waitlist" });
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body).company).toBe("Acme");
   });
 
   it("rejects when the endpoint answers with an error", async () => {

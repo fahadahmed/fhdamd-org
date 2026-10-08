@@ -218,13 +218,22 @@ importers:
 
   apps/jamaal-web/functions:
     dependencies:
+      firebase-admin:
+        specifier: ^13.6.0
+        version: 13.10.0
       firebase-functions:
         specifier: ^7.2.2
         version: 7.2.5(firebase-admin@13.10.0)
+      zod:
+        specifier: 3.25.76
+        version: 3.25.76
     devDependencies:
       typescript:
         specifier: ^5.7.3
         version: 5.9.2
+      vitest:
+        specifier: ^4.1.8
+        version: 4.1.8(@opentelemetry/api@1.9.1)(@types/node@26.1.1)(@vitest/coverage-istanbul@4.1.8)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(happy-dom@17.6.3)(jsdom@29.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.0)(jiti@2.6.1)(tsx@4.22.3)(yaml@2.9.0))
 
   apps/pdf-craft:
     dependencies:

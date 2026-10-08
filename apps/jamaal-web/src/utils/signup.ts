@@ -1,6 +1,8 @@
 export interface SignupInput {
   firstName: string;
   email: string;
+  /** Honeypot: a hidden field real people never fill. Sent so the backend can drop bots. */
+  company?: string;
 }
 
 export type SignupErrors = Partial<Record<keyof SignupInput, string>>;
@@ -23,17 +25,18 @@ export function joinedTitle(firstName: string): string {
 export type SignupSource = "hero" | "join";
 
 /**
- * Sends the signup to the waitlist endpoint (#388).
+ * Sends the signup to the waitlist endpoint: /api/waitlist, a Firebase Hosting
+ * rewrite to the joinWaitlist function (set PUBLIC_WAITLIST_URL to override).
  *
- * There is no endpoint yet. Without PUBLIC_WAITLIST_URL this refuses to pretend
- * it worked: it only resolves in local development, and rejects in a production
- * build so nobody is told they are on a list that does not exist.
+ * Local development has no rewrite, so without an endpoint it only pretends in
+ * dev. A production build never pretends: if the request fails the person sees
+ * an error instead of being told they are on a list that does not exist.
  */
 export async function submitSignup(
   input: SignupInput,
   source: SignupSource,
   options: { endpoint?: string; dev?: boolean } = {
-    endpoint: import.meta.env.PUBLIC_WAITLIST_URL,
+    endpoint: import.meta.env.PUBLIC_WAITLIST_URL ?? (import.meta.env.DEV ? undefined : "/api/waitlist"),
     dev: import.meta.env.DEV,
   },
 ): Promise<void> {
@@ -47,6 +50,7 @@ export async function submitSignup(
     body: JSON.stringify({
       firstName: input.firstName.trim(),
       email: input.email.trim(),
+      company: input.company ?? "",
       source,
     }),
   });

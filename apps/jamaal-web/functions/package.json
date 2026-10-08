@@ -3,21 +3,25 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "serve": "npm run build && firebase emulators:start --only functions --project demo-jamaal-web",
+    "serve": "npm run build && firebase emulators:start --only functions,firestore --project demo-jamaal-web",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "test": "vitest run"
   },
   "engines": {
     "node": "22"
   },
   "main": "lib/index.js",
   "dependencies": {
-    "firebase-functions": "^7.2.2"
+    "firebase-admin": "^13.6.0",
+    "firebase-functions": "^7.2.2",
+    "zod": "3.25.76"
   },
   "devDependencies": {
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^4.1.8"
   },
   "private": true
 }

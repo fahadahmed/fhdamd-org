@@ -15,5 +15,9 @@
   "compileOnSave": true,
   "include": [
     "src"
+  ],
+  "exclude": [
+    "src/**/*.test.ts",
+    "vitest.config.ts"
   ]
 }

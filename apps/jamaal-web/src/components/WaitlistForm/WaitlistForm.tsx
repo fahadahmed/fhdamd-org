@@ -30,6 +30,7 @@ export default function WaitlistForm({ variant, source, submitLabel, note }: Rea
   const id = useId();
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
+  const [company, setCompany] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [joined, setJoined] = useState(false);
@@ -54,7 +55,7 @@ export default function WaitlistForm({ variant, source, submitLabel, note }: Rea
     setError("");
     setSubmitting(true);
     try {
-      await submitSignup({ firstName, email }, source);
+      await submitSignup({ firstName, email, company }, source);
       setJoined(true);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
@@ -118,6 +119,17 @@ export default function WaitlistForm({ variant, source, submitLabel, note }: Rea
           autoComplete="email"
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}
+        />
+        {/* Honeypot: hidden from people and assistive tech; bots tend to fill it. */}
+        <input
+          className={styles.trap}
+          type="text"
+          name="company"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
         />
         <Button type="submit" variant="solid-terra" icon={variant === "hero" ? <ArrowIcon /> : undefined} disabled={submitting}>
           {submitLabel}
