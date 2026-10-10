@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.1.0](https://github.com/fahadahmed/fhdamd-org/compare/threads-v2.0.0...threads-v2.1.0) (2026-10-10)
+
+
+### Features
+
+* **threads:** migrate card and content components to v2 ([#430](https://github.com/fahadahmed/fhdamd-org/issues/430)) ([710d7e6](https://github.com/fahadahmed/fhdamd-org/commit/710d7e650b3377829d979d8a300f23244b6067dc))
+* **threads:** migrate card and content components to v2 tokens ([#430](https://github.com/fahadahmed/fhdamd-org/issues/430)) ([6979eb0](https://github.com/fahadahmed/fhdamd-org/commit/6979eb0dbdaa9ae4aaa6142c9693e989a24587b8))
+* **threads:** migrate data and navigation components to v2 ([#431](https://github.com/fahadahmed/fhdamd-org/issues/431)) ([ec3ebb3](https://github.com/fahadahmed/fhdamd-org/commit/ec3ebb38fb8becb78f72191b571e784cc068656e))
+* **threads:** migrate data and navigation components to v2 tokens ([#431](https://github.com/fahadahmed/fhdamd-org/issues/431)) ([f26f323](https://github.com/fahadahmed/fhdamd-org/commit/f26f3230d12b7ab1657c3011d01decc703a224a1))
+* **threads:** migrate remaining components to v2 ([#432](https://github.com/fahadahmed/fhdamd-org/issues/432)) ([63d0fe2](https://github.com/fahadahmed/fhdamd-org/commit/63d0fe2da25704ec69abb41bcdcf48aca3e1fc94))
+* **threads:** migrate remaining components to v2 tokens ([#432](https://github.com/fahadahmed/fhdamd-org/issues/432)) ([1bb12fb](https://github.com/fahadahmed/fhdamd-org/commit/1bb12fb5c570d2db4378c85b1d6ef3460096c839))
+
+
+### Bug Fixes
+
+* **threads:** keep ProjectCard pricing pills inside the card at narrow widths ([abfcdac](https://github.com/fahadahmed/fhdamd-org/commit/abfcdac80bf9a4996837d24627e8881b34da1dec))
+* **threads:** pass axe in light and dark for migrated cards; enforce a11y in their stories ([b0e1deb](https://github.com/fahadahmed/fhdamd-org/commit/b0e1deb8d066979d6fcbd2fe9d0a99bd2ce63798))
+
 ## [2.0.0](https://github.com/fahadahmed/fhdamd-org/compare/threads-v2.0.0-next.0...threads-v2.0.0) (2026-10-08)
 
 
