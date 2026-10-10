@@ -6,6 +6,7 @@ import "../styles/global.css";
 import "../styles/landing.css";
 import SiteNav from "../components/ui/SiteNav.astro";
 import SiteFooter from "../components/ui/SiteFooter.astro";
+import ConsentBanner from "../components/ui/ConsentBanner.astro";
 import { SITE_DESCRIPTION } from "../data/site";
 
 interface Props {
@@ -96,5 +97,6 @@ const fontHref =
       <slot />
     </main>
     <SiteFooter />
+    <ConsentBanner />
   </body>
 </html>
