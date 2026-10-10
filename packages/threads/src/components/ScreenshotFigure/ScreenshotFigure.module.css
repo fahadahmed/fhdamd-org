@@ -5,11 +5,11 @@
   justify-content: center;
   gap: 12px;
   aspect-ratio: 16 / 9;
-  background: var(--th-color-surface-2);
-  border: 1px dashed var(--th-color-border-strong);
-  border-radius: var(--th-radius-lg);
+  background: var(--th-sidebar);
+  border: 1px dashed var(--th-line-2);
+  border-radius: var(--th-radius-card);
   margin: var(--th-space-7) 0;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
 }
 
 .placeholder span {
@@ -24,15 +24,15 @@
 
 .image {
   width: 100%;
-  border-radius: var(--th-radius-lg);
-  border: 1px solid var(--th-color-border-default);
+  border-radius: var(--th-radius-card);
+  border: 1px solid var(--th-line);
   display: block;
 }
 
 .caption {
   font-family: var(--th-font-mono);
   font-size: 0.75rem;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   text-align: center;
   margin-block-start: 10px;
 }

@@ -1,7 +1,7 @@
 .card {
-  border: 1px dashed var(--th-color-border-strong);
-  border-radius: var(--th-radius-lg);
-  background: var(--th-color-surface-1);
+  border: 1px dashed var(--th-line-2);
+  border-radius: var(--th-radius-card);
+  background: var(--th-card);
   padding: var(--th-space-6);
   margin: var(--th-space-7) 0;
 }
@@ -13,10 +13,10 @@
   position: relative;
   z-index: 1002;
   font-family: var(--th-font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.14em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   margin-block-end: 16px;
   display: flex;
   align-items: center;
@@ -31,23 +31,23 @@
   width: 22px;
   height: 22px;
   padding: 0;
-  border: 1px solid var(--th-color-border-strong);
-  border-radius: var(--th-radius-sm);
+  border: 1px solid var(--th-line-2);
+  border-radius: var(--th-radius-field);
   background: transparent;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   cursor: pointer;
   transition:
-    background var(--th-duration-base) var(--th-ease-out),
-    color var(--th-duration-base) var(--th-ease-out);
+    background var(--th-duration-state) var(--th-ease-out),
+    color var(--th-duration-state) var(--th-ease-out);
 }
 
 .expandBtn:hover {
-  background: var(--th-color-surface-2);
-  color: var(--th-color-text-1);
+  background: var(--th-sidebar);
+  color: var(--th-ink);
 }
 
 .expandBtn:focus-visible {
-  outline: 2px solid var(--th-color-focus-ring);
+  outline: 2px solid var(--th-terra);
   outline-offset: 2px;
 }
 
@@ -63,8 +63,8 @@
   z-index: 1002;
   margin-block-end: 0;
   padding: 8px 12px;
-  border-radius: var(--th-radius-sm);
-  background: var(--th-color-surface-2);
+  border-radius: var(--th-radius-field);
+  background: var(--th-sidebar);
 }
 
 .diagram {
@@ -140,7 +140,7 @@
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: var(--th-color-surface-1);
+  background: var(--th-card);
   cursor: zoom-out;
   border: none;
   padding: 0;
@@ -159,30 +159,30 @@
   width: 40px;
   height: 40px;
   padding: 0;
-  border: 1px solid var(--th-color-border-strong);
+  border: 1px solid var(--th-line-2);
   border-radius: var(--th-radius-pill);
-  background: var(--th-color-surface-1);
-  color: var(--th-color-text-2);
+  background: var(--th-card);
+  color: var(--th-ink-2);
   cursor: pointer;
   transition:
-    background var(--th-duration-base) var(--th-ease-out),
-    color var(--th-duration-base) var(--th-ease-out);
+    background var(--th-duration-state) var(--th-ease-out),
+    color var(--th-duration-state) var(--th-ease-out);
 }
 
 .closeBtn:hover {
-  background: var(--th-color-surface-2);
-  color: var(--th-color-text-1);
+  background: var(--th-sidebar);
+  color: var(--th-ink);
 }
 
 .closeBtn:focus-visible {
-  outline: 2px solid var(--th-color-focus-ring);
+  outline: 2px solid var(--th-terra);
   outline-offset: 2px;
 }
 
 .caption {
   font-family: var(--th-font-mono);
   font-size: 0.75rem;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   text-align: center;
   margin-block-start: 14px;
 }

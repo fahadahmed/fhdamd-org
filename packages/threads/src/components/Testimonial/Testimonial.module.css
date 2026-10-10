@@ -1,17 +1,18 @@
 .card {
-  background: var(--th-color-surface-1);
-  border: 1px solid var(--th-color-border-default);
-  border-radius: var(--th-radius-lg);
+  background: var(--th-card);
+  border: 1px solid var(--th-line);
+  border-radius: var(--th-radius-card);
   padding: var(--th-space-6);
 }
 
 .quote {
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-weight: 300;
   font-style: italic;
   font-size: var(--th-text-md);
   line-height: 1.55;
-  color: var(--th-color-text-2);
+  color: var(--th-ink-2);
   margin-block-end: var(--th-space-4);
 }
 
@@ -20,10 +21,10 @@
 
 .attribution {
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
 }
 
 @media (max-width: 480px) {
@@ -37,9 +38,9 @@
   display: flex;
   gap: 16px;
   align-items: flex-start;
-  background: var(--th-color-surface-1);
-  border: 1px dashed var(--th-color-border-strong);
-  border-radius: var(--th-radius-lg);
+  background: var(--th-card);
+  border: 1px dashed var(--th-line-2);
+  border-radius: var(--th-radius-card);
   padding: var(--th-space-5);
   margin: var(--th-space-6) 0;
 }
@@ -48,26 +49,26 @@
   width: 32px;
   height: 32px;
   border-radius: 99px;
-  background: var(--th-color-surface-3);
+  background: var(--th-d1);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: var(--th-color-text-4);
+  color: var(--th-ink-3);
 }
 
 .slotTitle {
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 92, "wght" 620;
+  font-weight: 600;
   font-size: 0.8125rem;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   margin-block-end: 4px;
 }
 
 .slotDesc {
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 370;
+  font-weight: 400;
   font-size: 0.8125rem;
   line-height: 1.55;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
 }
