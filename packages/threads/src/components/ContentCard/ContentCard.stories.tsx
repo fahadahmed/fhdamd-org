@@ -33,7 +33,7 @@ export const ComingSoon: Story = {
 
 export const Grid: Story = {
   render: () => (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "14px", maxWidth: "900px" }}>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "14px", maxWidth: "900px" }}>
       <ContentCard
         badges={[{ label: "Product", variant: "terra" }]}
         title={<>Why Jamaal has no <em>subscription</em></>}

@@ -133,12 +133,14 @@
 /* ─── PRICING PILLS ───────────────────────────────────────────────────────── */
 .pricingPills {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--th-space-2);
   margin-block: var(--th-space-2) var(--th-space-3);
 }
 
 .pill {
-  flex: 1;
+  flex: 1 1 5rem;
+  min-inline-size: 0;
   background: var(--th-sidebar);
   border: 1px solid var(--th-line-subtle);
   border-radius: var(--th-radius-field);
@@ -160,7 +162,8 @@
 .pillLabel {
   font-family: var(--th-font-mono);
   font-size: var(--th-label-size);
-  letter-spacing: var(--th-label-tracking);
+  /* tighter than the label default so "CREDITS" fits three pills across a narrow card */
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--th-ink-3);
 }
