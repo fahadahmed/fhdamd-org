@@ -4,7 +4,7 @@ import { Text } from "./Text";
 const meta = {
   title: "Threads/Atoms/Text",
   component: Text,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   argTypes: {
     as:     { control: "select", options: ["p", "span", "div", "h1", "h2", "h3", "h4", "label", "strong"] },
@@ -47,6 +47,8 @@ export const SerifSpecimens: Story = {
 /* ── Mono ────────────────────────────────────────────────────────────────── */
 export const MonoSpecimens: Story = {
   name: "Mono — label & metadata",
+  // color="4" is the disabled-only token and fails contrast by design; the specimen shows it.
+  parameters: { a11y: { config: { rules: [{ id: "color-contrast", enabled: false }] } } },
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--th-space-3)" }}>
       <Text as="span" size="sm" family="mono" color="3" style={{ letterSpacing: "0.14em", textTransform: "uppercase" }}>Solution Architect at EY · Melbourne</Text>
@@ -59,6 +61,8 @@ export const MonoSpecimens: Story = {
 /* ── Color palette ───────────────────────────────────────────────────────── */
 export const Colors: Story = {
   name: "All colors",
+  // color="4" is the disabled-only token and fails contrast by design; the specimen shows it.
+  parameters: { a11y: { config: { rules: [{ id: "color-contrast", enabled: false }] } } },
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--th-space-2)" }}>
       {(["1", "2", "3", "4", "accent", "accent-text", "sage", "sage-text"] as const).map((c) => (

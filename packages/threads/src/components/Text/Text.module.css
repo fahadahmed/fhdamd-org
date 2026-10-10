@@ -21,11 +21,12 @@
 /* ─── FAMILY ─────────────────────────────────────────────────────────────── */
 .family-display {
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 400;
+  font-weight: 400;
 }
 
 .family-serif {
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-weight: 300;
 }
 
@@ -35,16 +36,17 @@
 }
 
 /* ─── COLOR ──────────────────────────────────────────────────────────────── */
-.color-1          { color: var(--th-color-text-1); }
-.color-2          { color: var(--th-color-text-2); }
-.color-3          { color: var(--th-color-text-3); }
+.color-1          { color: var(--th-ink); }
+.color-2          { color: var(--th-ink-2); }
+.color-3          { color: var(--th-ink-3); }
+/* disabled only: not for content (fails contrast by design) */
 .color-4          { color: var(--th-color-text-4); }
-.color-inverse    { color: var(--th-color-text-inverse); }
-.color-inverse-2  { color: var(--th-color-text-inverse-2); }
-.color-accent     { color: var(--th-color-accent); }
-.color-accent-text { color: var(--th-color-accent-text); }
-.color-sage       { color: var(--th-color-sage); }
-.color-sage-text  { color: var(--th-color-sage-text); }
+.color-inverse    { color: var(--th-on-deep); }
+.color-inverse-2  { color: var(--th-on-deep-2); }
+.color-accent     { color: var(--th-terra); }
+.color-accent-text { color: var(--th-terra); }
+.color-sage       { color: var(--th-accent); }
+.color-sage-text  { color: var(--th-accent); }
 
 /* ─── ALIGN ──────────────────────────────────────────────────────────────── */
 .align-start  { text-align: start; }

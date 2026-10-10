@@ -4,7 +4,7 @@ import { StatRow } from "./StatRow";
 const meta = {
   title: "Threads/Components/StatRow",
   component: StatRow,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     stats: [

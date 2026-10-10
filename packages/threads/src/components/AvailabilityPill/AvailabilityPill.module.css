@@ -3,21 +3,21 @@
   align-items: center;
   gap: var(--th-space-2);
   padding: 6px 14px 6px 7px;
-  background: var(--th-color-surface-1);
-  border: 1px solid var(--th-color-border-default);
+  background: var(--th-card);
+  border: 1px solid var(--th-line);
   border-radius: var(--th-radius-pill);
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
 }
 
 .pip {
   width: 20px;
   height: 20px;
   border-radius: var(--th-radius-pill);
-  background: var(--th-color-sage-subtle);
+  background: var(--th-d1);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -32,12 +32,12 @@
 }
 
 .dotAvailable {
-  background: var(--th-color-sage);
+  background: var(--th-accent);
   animation: pulse 2.4s ease-in-out infinite;
 }
 
 .dotBusy {
-  background: var(--th-color-text-3);
+  background: var(--th-ink-3);
 }
 
 @keyframes pulse {

@@ -5,8 +5,8 @@
 }
 
 .icon {
-  border-radius: var(--th-radius-sm);
-  background: var(--th-color-surface-2);
+  border-radius: var(--th-radius-field);
+  background: var(--th-sidebar);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,7 +14,7 @@
 }
 
 .icon svg {
-  stroke: var(--th-color-text-3);
+  stroke: var(--th-ink-3);
   fill: none;
   stroke-width: 1.8;
   stroke-linecap: round;
@@ -34,9 +34,9 @@
 
 .compactText {
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.06em;
-  color: var(--th-color-text-2);
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
+  color: var(--th-ink-2);
 }
 
 /* ─── LABELED — Contact aside card ───────────────────────────────────────── */
@@ -52,17 +52,17 @@
 
 .label {
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.06em;
-  color: var(--th-color-text-3);
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
+  color: var(--th-ink-3);
   display: block;
   margin-block-end: 2px;
 }
 
 .labeled .value {
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 400;
+  font-weight: 400;
   font-size: var(--th-text-md);
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
   display: block;
 }

@@ -4,7 +4,7 @@ import { AvailabilityPill } from "./AvailabilityPill";
 const meta = {
   title: "Threads/Atoms/AvailabilityPill",
   component: AvailabilityPill,
-  parameters: { layout: "centered" },
+  parameters: { layout: "centered", a11y: { test: "error" } },
   tags: ["autodocs"],
   argTypes: {
     available: { control: "boolean" },
@@ -38,11 +38,11 @@ export const InHeroContext: Story = {
         href="#"
         style={{
           display: "inline-flex", alignItems: "center", gap: "var(--th-space-2)",
-          background: "var(--th-color-text-1)", color: "var(--th-color-text-inverse)",
+          background: "var(--th-terra)", color: "var(--th-on-accent)",
           borderRadius: "var(--th-radius-pill)",
           padding: "var(--th-space-3) var(--th-space-5)",
           fontFamily: "var(--th-font-display)",
-          fontVariationSettings: '"wdth" 92, "wght" 560',
+          fontWeight: 600,
           fontSize: "var(--th-text-base)", textDecoration: "none",
           minBlockSize: "44px",
         }}
@@ -53,12 +53,12 @@ export const InHeroContext: Story = {
         href="#"
         style={{
           display: "inline-flex", alignItems: "center", gap: "var(--th-space-2)",
-          background: "transparent", color: "var(--th-color-text-2)",
-          border: "1.5px solid var(--th-color-border-strong)",
+          background: "transparent", color: "var(--th-ink-2)",
+          border: "1.5px solid var(--th-line-2)",
           borderRadius: "var(--th-radius-pill)",
           padding: "var(--th-space-3) var(--th-space-5)",
           fontFamily: "var(--th-font-display)",
-          fontVariationSettings: '"wdth" 92, "wght" 560',
+          fontWeight: 600,
           fontSize: "var(--th-text-base)", textDecoration: "none",
           minBlockSize: "44px",
         }}

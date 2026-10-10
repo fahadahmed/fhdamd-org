@@ -4,7 +4,7 @@ import { SkillGrid } from "./SkillGrid";
 const meta = {
   title: "Threads/Components/SkillGrid",
   component: SkillGrid,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     categories: [

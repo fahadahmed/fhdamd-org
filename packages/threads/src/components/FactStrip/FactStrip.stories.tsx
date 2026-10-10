@@ -4,7 +4,7 @@ import { FactStrip } from "./FactStrip";
 const meta = {
   title: "Threads/Components/FactStrip",
   component: FactStrip,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     facts: [

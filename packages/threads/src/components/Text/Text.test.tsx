@@ -32,21 +32,21 @@ describe("Text — rendering", () => {
     expect(container.firstChild).toHaveClass("custom");
   });
 
-  it("applies fontVariationSettings when weight/width provided", () => {
+  it("applies font-weight for the display family and ignores the deprecated width", () => {
     const { container } = render(
-      <Text family="display" weight={650} width={92}>Text</Text>
+      <Text family="display" weight={600} width={92}>Text</Text>
     );
     const el = container.firstChild as HTMLElement;
-    expect(el.style.fontVariationSettings).toContain('"wdth" 92');
-    expect(el.style.fontVariationSettings).toContain('"wght" 650');
+    expect(el.style.fontWeight).toBe("600");
+    expect(el.style.fontVariationSettings).toBe("");
   });
 
-  it("does not apply fontVariationSettings for non-display families", () => {
+  it("does not apply font-weight for non-display families", () => {
     const { container } = render(
       <Text family="serif" weight={300}>Text</Text>
     );
     const el = container.firstChild as HTMLElement;
-    expect(el.style.fontVariationSettings).toBe("");
+    expect(el.style.fontWeight).toBe("");
   });
 
   it.each(["xs", "sm", "base", "md", "lg", "xl", "2xl", "3xl", "4xl", "5xl"] as const)(

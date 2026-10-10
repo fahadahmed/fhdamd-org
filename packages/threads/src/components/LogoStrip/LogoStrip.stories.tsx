@@ -4,7 +4,7 @@ import { LogoStrip, LogoItem } from "./LogoStrip";
 const meta = {
   title: "Threads/Components/LogoStrip",
   component: LogoStrip,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: { children: null },
 } satisfies Meta<typeof LogoStrip>;

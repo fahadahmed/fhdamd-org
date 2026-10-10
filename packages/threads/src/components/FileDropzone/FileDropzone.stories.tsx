@@ -4,7 +4,7 @@ import { FileDropzone } from "./FileDropzone";
 const meta = {
   title: "Threads/Forms/FileDropzone",
   component: FileDropzone,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     label: "Upload PDF",
