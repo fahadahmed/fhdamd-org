@@ -23,7 +23,7 @@ export default defineConfig({
       reporter: ["text", "lcov"],
       // Pages, layouts and the copy in src/data are Astro pipeline code or
       // constants with nothing to unit-test.
-      include: ["src/components/**/*.{ts,tsx}", "src/utils/**/*.ts"],
+      include: ["src/components/**/*.{ts,tsx}", "src/utils/**/*.ts", "src/lib/**/*.ts"],
       exclude: ["src/**/*.test.{ts,tsx}"],
     },
   },
