@@ -9,7 +9,7 @@
   border: 1px dashed var(--th-line-2);
   border-radius: var(--th-radius-card);
   margin: var(--th-space-7) 0;
-  color: var(--th-ink-3);
+  color: var(--th-ink-2);
 }
 
 .placeholder span {

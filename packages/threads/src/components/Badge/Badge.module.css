@@ -29,7 +29,7 @@
    `terra` and an ink tint, and `error` is alert text on the soft alert fill. */
 .terra,
 .warning {
-  background: var(--th-color-accent-subtle);
+  background: color-mix(in srgb, var(--th-terra) 8%, transparent);
   color: var(--th-terra);
 }
 

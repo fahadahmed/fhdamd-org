@@ -4,7 +4,7 @@ import { Testimonial } from "./Testimonial";
 const meta = {
   title: "Threads/Components/Testimonial",
   component: Testimonial,
-  parameters: { layout: "centered" },
+  parameters: { layout: "centered", a11y: { test: "error" } },
   tags: ["autodocs"],
 } satisfies Meta<typeof Testimonial>;
 

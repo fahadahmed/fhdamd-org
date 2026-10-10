@@ -4,7 +4,7 @@ import { EssayRow } from "./EssayRow";
 const meta = {
   title: "Threads/Components/EssayRow",
   component: EssayRow,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   argTypes: {
     category: { control: "radio", options: ["design", "product", "dev"] },

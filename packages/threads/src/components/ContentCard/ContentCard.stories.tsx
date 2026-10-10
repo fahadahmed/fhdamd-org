@@ -4,7 +4,7 @@ import { ContentCard } from "./ContentCard";
 const meta = {
   title: "Threads/Components/ContentCard",
   component: ContentCard,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     badges:      [{ label: "Product", variant: "terra" }],

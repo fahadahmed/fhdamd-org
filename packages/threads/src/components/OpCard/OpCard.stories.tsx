@@ -51,7 +51,7 @@ const AiIcon = () => (
 const meta = {
   title: "Threads/Components/OpCard",
   component: OpCard,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   argTypes: {
     iconVariant: {

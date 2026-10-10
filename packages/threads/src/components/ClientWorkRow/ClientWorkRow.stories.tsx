@@ -4,7 +4,7 @@ import { ClientWorkRow } from "./ClientWorkRow";
 const meta = {
   title: "Threads/Components/ClientWorkRow",
   component: ClientWorkRow,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     client:      "Dept. of Education VIC",

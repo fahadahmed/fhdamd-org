@@ -5,7 +5,7 @@ import { Button } from "../Button/Button";
 const meta = {
   title: "Threads/Components/CaseStudySpotlight",
   component: CaseStudySpotlight,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     eyebrow:     "Custom website · Structural engineering · New Delhi",

@@ -31,8 +31,13 @@
 
 /* ─── SOON VARIANT ───────────────────────────────────────────────────────── */
 .soon {
-  opacity: 0.66;
+  opacity: 0.8;
   cursor: default;
+}
+
+/* opacity dims text; start one step darker so it stays at 4.5:1 */
+.soon .name {
+  color: var(--th-ink-2);
 }
 
 /* ─── ICON ───────────────────────────────────────────────────────────────── */
@@ -99,8 +104,8 @@
   display: inline-flex;
   align-items: center;
   gap: var(--th-space-2);
-  background: var(--th-ink);
-  color: var(--th-on-deep);
+  background: var(--th-terra);
+  color: var(--th-on-accent);
   border-radius: var(--th-radius-pill);
   padding-inline: var(--th-space-5);
   padding-block: var(--th-space-3);
@@ -155,7 +160,7 @@
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--th-ink-3);
+  color: var(--th-ink-2);
   min-block-size: 36px;
 }
 

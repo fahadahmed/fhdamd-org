@@ -165,7 +165,7 @@
   /* tighter than the label default so "CREDITS" fits three pills across a narrow card */
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--th-ink-3);
+  color: var(--th-ink-2);
 }
 
 /* ─── FOOTER ──────────────────────────────────────────────────────────────── */

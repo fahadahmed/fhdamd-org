@@ -5,7 +5,7 @@ import { MermaidDiagramCard } from "./MermaidDiagramCard";
 const meta = {
   title: "Threads/Components/MermaidDiagramCard",
   component: MermaidDiagramCard,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     label:    "Sequence diagram · Mermaid",

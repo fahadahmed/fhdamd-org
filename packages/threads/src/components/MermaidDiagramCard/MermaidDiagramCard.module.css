@@ -16,7 +16,7 @@
   font-size: var(--th-label-size);
   letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-ink-3);
+  color: var(--th-ink-2);
   margin-block-end: 16px;
   display: flex;
   align-items: center;
