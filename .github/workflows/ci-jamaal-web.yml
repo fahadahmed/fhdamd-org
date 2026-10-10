@@ -76,6 +76,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
+      # The stage (waitlist, testflight, launched) lives in Remote Config. A
+      # preview build falls back to waitlist if it cannot be read.
+      - name: Resolve site stage
+        run: node apps/jamaal-web/scripts/stage.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JAMAAL_WEB: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JAMAAL_WEB }}
+          STAGE_READ_OPTIONAL: "true"
+
       - name: Build jamaal-web
         run: pnpm --filter jamaal-web build
 
@@ -113,6 +121,13 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
+
+      # The stage (waitlist, testflight, launched) lives in Remote Config. A
+      # live build fails if it cannot be read, so it never ships a stale stage.
+      - name: Resolve site stage
+        run: node apps/jamaal-web/scripts/stage.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JAMAAL_WEB: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JAMAAL_WEB }}
 
       - name: Build jamaal-web
         run: pnpm --filter jamaal-web build
