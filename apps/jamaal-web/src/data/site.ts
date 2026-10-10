@@ -1,11 +1,14 @@
+import { STAGE } from "./stage";
+
 /**
  * Site-wide switches and constants.
  *
- * LAUNCHED flips the whole site between the pre-launch page (early access
- * signup) and the launched page (App Store button, pricing, Support/Journal
- * navigation). Launch day is a one-line change here.
+ * The stage (waitlist, testflight, launched) comes from Firebase Remote Config
+ * at build time, see stage.ts. LAUNCHED is true only once the app is on the
+ * App Store; the waitlist and testflight stages both show the pre-launch page
+ * until the redesign gives each its own variant.
  */
-export const LAUNCHED = false;
+export const LAUNCHED = STAGE === "launched";
 
 /** Where "Download on the App Store" points. Replace with the real listing URL at launch. */
 export const APP_STORE_URL = "#download";

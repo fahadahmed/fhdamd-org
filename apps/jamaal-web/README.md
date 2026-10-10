@@ -23,7 +23,11 @@ pnpm --filter jamaal-web build
 
 `src/pages/index.astro` composes the sections in `src/components/sections/` (Hero, Kinds, Anchors, Priority, NightPlanningSection, Wellbeing, Nots, Pricing, Closing). Copy and data live in `src/data/content.ts`; site-wide switches live in `src/data/site.ts`.
 
-- **`LAUNCHED`** (in `src/data/site.ts`) flips the whole site between the pre-launch page (early-access signup, "Join the list" header) and the launched page (App Store button, pricing section, Pricing / Support / Journal navigation, full footer). Launch day is a one-line change. Also set `APP_STORE_URL` to the real listing.
+- **Site stage** is one of `waitlist`, `testflight` or `launched`. It lives in **Firebase Remote Config** (parameter `site_stage`, template in `remoteconfig.template.json`) and is baked into the static site at build time as `PUBLIC_SITE_STAGE` (`src/data/stage.ts`). `LAUNCHED` in `src/data/site.ts` is true only for `launched`; until the redesign gives `testflight` its own variant it shows the pre-launch page.
+  - **CI** runs `scripts/stage.mjs` before the build. It reads the published Remote Config template with the deploy service account (needs `roles/cloudconfig.viewer`). A live (main) build **fails** if it cannot read it, so a deploy never ships a stale stage; preview builds fall back to `waitlist`.
+  - **Flip the stage:** change `site_stage` in the Firebase console (Remote Config, then Publish), then re-run the live deploy (rebuild) for the site to pick it up. Remote Config keeps version history, so a flip can be rolled back.
+  - **Locally:** set `SITE_STAGE=launched` (or `testflight`) in the shell, or `PUBLIC_SITE_STAGE` in `.env.local`, to preview another stage. With neither, you get `waitlist`.
+  - Deploy the template with `firebase deploy --only remoteconfig --project jamaal-web`. Also set `APP_STORE_URL` to the real listing for launch.
 - **Static by default.** Sections are Astro components with no client JavaScript. The only islands are the header and footer (Threads `SiteNav` / `SiteFooter`), the waitlist form and the Night Planning carousel.
 - **Screens** are cropped to what the design shows and kept in `src/assets/screens/`; Astro builds AVIF and WebP at 1x and 2x.
 - **Waitlist form:** `src/utils/signup.ts` posts to `PUBLIC_WAITLIST_URL` (the backend is #388). Without it, a production build refuses to say "you're on the list"; only local development pretends. Append `?joined` to the URL to review the confirmation state.

@@ -1,0 +1,9 @@
+{
+  "parameters": {
+    "site_stage": {
+      "defaultValue": { "value": "waitlist" },
+      "description": "Which stage jamaal.app is in: waitlist, testflight or launched. Read at build time by CI (scripts/stage.mjs) and by the signup function.",
+      "valueType": "STRING"
+    }
+  }
+}

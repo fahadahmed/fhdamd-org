@@ -17,13 +17,13 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
-    include: ["src/**/*.test.{ts,tsx}"],
+    include: ["src/**/*.test.{ts,tsx}", "scripts/**/*.test.ts"],
     coverage: {
       provider: "istanbul",
       reporter: ["text", "lcov"],
       // Pages, layouts and the copy in src/data are Astro pipeline code or
       // constants with nothing to unit-test.
-      include: ["src/components/**/*.{ts,tsx}", "src/utils/**/*.ts", "src/lib/**/*.ts"],
+      include: ["src/components/**/*.{ts,tsx}", "src/utils/**/*.ts", "src/lib/**/*.ts", "scripts/**/*.mjs"],
       exclude: ["src/**/*.test.{ts,tsx}"],
     },
   },
