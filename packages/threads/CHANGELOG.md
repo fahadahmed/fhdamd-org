@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.0](https://github.com/fahadahmed/fhdamd-org/compare/threads-v2.0.0-next.0...threads-v2.0.0) (2026-10-08)
+
+
+### Bug Fixes
+
+* **threads:** render the SiteFooter tagline in the simple layout ([#385](https://github.com/fahadahmed/fhdamd-org/issues/385)) ([8c50328](https://github.com/fahadahmed/fhdamd-org/commit/8c503285730fe6f2086677a472d684d2ea2ff9c5))
+* **threads:** render the SiteFooter tagline in the simple layout, release 2.0.0 ([#385](https://github.com/fahadahmed/fhdamd-org/issues/385)) ([cac81df](https://github.com/fahadahmed/fhdamd-org/commit/cac81df51d7fbdd7c20b5bfab5cc89c1a3894b16))
+
 ## [2.0.0-next.0](https://github.com/fahadahmed/fhdamd-org/compare/threads-v0.6.5...threads-v2.0.0-next.0) (2026-10-05)
 
 
