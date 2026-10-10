@@ -1,0 +1,160 @@
+---
+/**
+ * A screenshot in a device frame: iPhone, iPhone Duo, iPad, Mac, Apple Watch,
+ * or a bare widget. The frame is sized by its container and scales with
+ * container query units, so it needs no JavaScript or `zoom`. Images go through
+ * Astro's image pipeline (AVIF and WebP, responsive widths, explicit size).
+ */
+import { Picture } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { COMING_SOON_LABEL, DEVICE_WIDTHS, deviceAspect, type DeviceType } from "../../lib/device";
+
+interface Props {
+  type: DeviceType;
+  src: ImageMetadata;
+  /** Describes the screen for people who can't see it; never empty. */
+  alt: string;
+  /** Overrides the screen ratio (the open iPhone Duo, a wider iPad). */
+  aspect?: string;
+  /** Which part of a tall screenshot to show. */
+  position?: string;
+  /** Shows the "Coming in 1.1" badge above the device. */
+  coming?: boolean;
+  /** `sizes` for the generated image; say how wide the frame renders. */
+  sizes: string;
+  /** Eager only for an image that is in the first screen. */
+  loading?: "lazy" | "eager";
+  class?: string;
+}
+
+const { type, src, alt, aspect, position = "top", coming = false, sizes, loading = "lazy", class: className } = Astro.props;
+const ratio = deviceAspect(type, aspect);
+const widths = DEVICE_WIDTHS[type];
+---
+
+<div class:list={["device", `device-${type}`, className]} style={ratio ? `--screen-ratio: ${ratio}` : undefined}>
+  {coming && <span class="device-badge">{COMING_SOON_LABEL}</span>}
+  {
+    type === "widget" ? (
+      <Picture src={src} alt={alt} widths={widths} sizes={sizes} formats={["avif", "webp"]} loading={loading} class="device-img" />
+    ) : (
+      <div class="device-body">
+        <div class="device-screen">
+          <Picture
+            src={src}
+            alt={alt}
+            widths={widths}
+            sizes={sizes}
+            formats={["avif", "webp"]}
+            loading={loading}
+            class="device-img"
+            style={`object-position: ${position}`}
+          />
+        </div>
+      </div>
+    )
+  }
+  {type === "mac" && <div class="device-mac-base" aria-hidden="true" />}
+</div>
+
+<style>
+  /* Hardware colours do not change with the site theme, so they are literal. */
+  .device {
+    --bezel: #0b1418;
+    container-type: inline-size;
+    position: relative;
+    inline-size: 100%;
+  }
+
+  .device-body {
+    background: var(--bezel);
+    box-shadow: 0 40px 80px -40px rgb(6 32 46 / 0.55);
+  }
+
+  .device-screen {
+    overflow: hidden;
+    aspect-ratio: var(--screen-ratio);
+    position: relative;
+  }
+
+  .device-img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .device-phone .device-body {
+    padding: max(5px, 2.6cqw);
+    border-radius: 16cqw;
+  }
+  .device-phone .device-screen {
+    border-radius: calc(16cqw - max(5px, 2.6cqw));
+  }
+
+  .device-duo .device-body {
+    padding: 6px;
+    box-shadow: 0 30px 60px -30px rgb(6 32 46 / 0.5);
+    border-radius: 11cqw;
+  }
+  .device-duo .device-screen {
+    border-radius: calc(11cqw - 6px);
+  }
+
+  .device-ipad .device-body {
+    padding: 2.2cqw;
+    border-radius: 5cqw;
+  }
+  .device-ipad .device-screen {
+    border-radius: calc(5cqw - 2.2cqw);
+  }
+
+  .device-watch {
+    --bezel: #1c2226;
+  }
+  .device-watch .device-body {
+    padding: 5cqw;
+    border-radius: 28cqw;
+  }
+  .device-watch .device-screen {
+    border-radius: calc(28cqw - 5cqw);
+  }
+
+  .device-mac .device-body {
+    padding: 1.7cqw 1.7cqw 2.6cqw;
+    border-radius: 3cqw;
+    box-shadow: 0 40px 80px -40px rgb(6 32 46 / 0.5);
+  }
+  .device-mac .device-screen {
+    border-radius: 1.1cqw;
+  }
+  .device-mac-base {
+    block-size: 2.2cqw;
+    margin-inline: -5%;
+    background: linear-gradient(#d4dde1, #aebbc2);
+    border-radius: 0 0 2.2cqw 2.2cqw;
+  }
+
+  .device-widget .device-img {
+    block-size: auto;
+    border-radius: 18px;
+    box-shadow: 0 24px 50px -24px rgb(6 32 46 / 0.55);
+  }
+
+  .device-badge {
+    position: absolute;
+    inset-block-start: -16px;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    white-space: nowrap;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: var(--site-deeper);
+    color: var(--th-on-deep);
+    box-shadow: 0 0 0 1px rgb(234 243 246 / 0.2);
+    font: 500 var(--th-label-size) / 1 var(--th-font-mono);
+    letter-spacing: var(--th-label-tracking);
+    text-transform: uppercase;
+  }
+</style>
