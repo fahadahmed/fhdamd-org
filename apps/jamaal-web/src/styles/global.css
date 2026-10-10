@@ -141,3 +141,20 @@ main {
     scroll-behavior: auto;
   }
 }
+
+/* ─── Site-level tokens ─────────────────────────────────────────────────────
+   Threads has one "deep" ground (#0C4767 light, #071B27 dark). The design also
+   uses the dark one on light pages (footer, Night Planning, the "coming" badge),
+   so it is named here once instead of repeated as a hex. */
+:root {
+  --site-deeper: #071b27;
+
+  /* "A day with Jamaal" background, from the page ground to deep as the day
+     ends. Built with color-mix so dark mode follows the tokens. */
+  --day-0: var(--th-app);
+  --day-1: var(--th-app);
+  --day-2: color-mix(in srgb, var(--th-deep) 4%, var(--th-app));
+  --day-3: color-mix(in srgb, var(--th-deep) 6%, var(--th-app));
+  --day-4: color-mix(in srgb, var(--th-deep) 8%, var(--th-app));
+  --day-5: var(--th-deep);
+}
