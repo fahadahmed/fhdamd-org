@@ -1,46 +1,50 @@
 /* ─── BASE ──────────────────────────────────────────────────────────────── */
 .card {
-  background: var(--th-color-surface-1);
-  border: 1px solid var(--th-color-border-default);
-  border-radius: var(--th-radius-lg);
+  background: var(--th-card);
+  border: 1px solid var(--th-line);
+  border-radius: var(--th-radius-card);
   padding: var(--th-space-7);
   display: flex;
   flex-direction: column;
   text-decoration: none;
   color: inherit;
   transition:
-    transform var(--th-duration-base) var(--th-ease-out),
-    box-shadow var(--th-duration-base) var(--th-ease-out);
+    transform var(--th-duration-state) var(--th-ease-out),
+    box-shadow var(--th-duration-state) var(--th-ease-out);
 }
 
 /* ─── LIVE VARIANT ───────────────────────────────────────────────────────── */
 .live {
   transition:
-    transform var(--th-duration-base) var(--th-ease-out),
-    box-shadow var(--th-duration-base) var(--th-ease-out);
+    transform var(--th-duration-state) var(--th-ease-out),
+    box-shadow var(--th-duration-state) var(--th-ease-out);
 }
 
 .live:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--th-shadow-lg);
+  box-shadow: var(--th-shadow-float);
 }
 
 .live:focus-visible {
-  outline: 2px solid var(--th-color-focus-ring);
+  outline: 2px solid var(--th-terra);
   outline-offset: 3px;
 }
 
 /* ─── SOON VARIANT ───────────────────────────────────────────────────────── */
 .soon {
-  opacity: 0.66;
+  opacity: 0.8;
   cursor: default;
+}
+
+/* opacity dims text; start one step darker so it stays at 4.5:1 */
+.soon .name {
+  color: var(--th-ink-2);
 }
 
 /* ─── ICON ───────────────────────────────────────────────────────────────── */
 .icon {
   width: 52px;
   height: 52px;
-  border-radius: var(--th-radius-md);
+  border-radius: var(--th-radius-field);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -57,30 +61,30 @@
   stroke-linejoin: round;
 }
 
-.iconTerra { background: var(--th-color-accent-subtle); }
-.iconTerra svg { stroke: var(--th-color-accent-text); }
+.iconTerra { background: color-mix(in srgb, var(--th-terra) 10%, transparent); }
+.iconTerra svg { stroke: var(--th-terra); }
 
-.iconSage { background: var(--th-color-sage-subtle); }
-.iconSage svg { stroke: var(--th-color-sage-text); }
+.iconSage { background: var(--th-d1); }
+.iconSage svg { stroke: var(--th-accent); }
 
-.iconMuted { background: var(--th-color-surface-3); }
-.iconMuted svg { stroke: var(--th-color-text-3); }
+.iconMuted { background: var(--th-d1); }
+.iconMuted svg { stroke: var(--th-ink-3); }
 
 /* ─── CONTENT ────────────────────────────────────────────────────────────── */
 .name {
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 92, "wght" 680;
+  font-weight: 600;
   font-size: var(--th-text-md);
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
   margin-block-end: var(--th-space-2);
   line-height: 1.15;
 }
 
 .desc {
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 380;
+  font-weight: 400;
   font-size: var(--th-text-base);
-  color: var(--th-color-text-2);
+  color: var(--th-ink-2);
   line-height: 1.6;
   flex: 1;
   margin-block-end: var(--th-space-5);
@@ -100,24 +104,23 @@
   display: inline-flex;
   align-items: center;
   gap: var(--th-space-2);
-  background: var(--th-color-text-1);
-  color: var(--th-color-text-inverse);
+  background: var(--th-terra);
+  color: var(--th-on-accent);
   border-radius: var(--th-radius-pill);
   padding-inline: var(--th-space-5);
   padding-block: var(--th-space-3);
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 92, "wght" 580;
+  font-weight: 600;
   font-size: var(--th-text-base);
   min-block-size: 44px;
   white-space: nowrap;
   transition:
-    opacity var(--th-duration-base),
-    transform var(--th-duration-base) var(--th-ease-out);
+    opacity var(--th-duration-state),
+    transform var(--th-duration-state) var(--th-ease-out);
 }
 
 .live:hover .ctaBtn {
   opacity: 0.86;
-  transform: translateY(-1px);
 }
 
 .credits {
@@ -128,27 +131,28 @@
 
 .creditsNum {
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-weight: 300;
   font-size: var(--th-text-xl);
   letter-spacing: -0.03em;
   line-height: 1;
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
 }
 
 .creditsLabel {
   font-family: var(--th-font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.12em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
 }
 
 /* ─── COMING SOON PILL ───────────────────────────────────────────────────── */
 .soonPill {
   display: inline-flex;
   align-items: center;
-  background: var(--th-color-surface-2);
-  border: 1px solid var(--th-color-border-strong);
+  background: var(--th-sidebar);
+  border: 1px solid var(--th-line-2);
   border-radius: var(--th-radius-pill);
   padding-inline: var(--th-space-4);
   padding-block: var(--th-space-2);
@@ -156,7 +160,7 @@
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-2);
   min-block-size: 36px;
 }
 

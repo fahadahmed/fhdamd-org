@@ -1,7 +1,7 @@
 .card {
-  background: var(--th-color-surface-1);
-  border: 1px solid var(--th-color-border-default);
-  border-radius: var(--th-radius-lg);
+  background: var(--th-card);
+  border: 1px solid var(--th-line);
+  border-radius: var(--th-radius-card);
   padding: var(--th-space-5);
   display: flex;
   flex-direction: column;
@@ -9,15 +9,13 @@
   text-decoration: none;
   color: inherit;
   transition:
-    transform 0.16s var(--th-ease-out),
-    box-shadow 0.16s var(--th-ease-out),
-    border-color 0.16s;
+    box-shadow var(--th-duration-state) var(--th-ease-out),
+    border-color var(--th-duration-state) var(--th-ease-out);
 }
 
 .card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--th-shadow-md);
-  border-color: var(--th-color-border-strong);
+  box-shadow: var(--th-shadow-float);
+  border-color: var(--th-line-2);
 }
 
 .badges {
@@ -28,26 +26,27 @@
 
 .title {
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-weight: 400;
   font-size: 1.25rem;
   letter-spacing: -0.01em;
   line-height: 1.18;
   margin-block-end: var(--th-space-2);
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
   flex: 1;
 }
 
 .title em {
   font-style: italic;
-  color: var(--th-color-accent);
+  color: var(--th-terra);
 }
 
 .desc {
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 370;
+  font-weight: 400;
   font-size: 0.8125rem;
   line-height: 1.58;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   margin-block-end: var(--th-space-4);
 }
 
@@ -56,34 +55,34 @@
   align-items: center;
   justify-content: space-between;
   padding-block-start: var(--th-space-3);
-  border-block-start: 1px solid var(--th-color-border-subtle);
+  border-block-start: 1px solid var(--th-line-subtle);
 }
 
 .date {
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.08em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
 }
 
 .arr {
   width: 26px;
   height: 26px;
   border-radius: 99px;
-  border: 1px solid var(--th-color-border-strong);
-  background: var(--th-color-bg);
+  border: 1px solid var(--th-line-2);
+  background: var(--th-app);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   transition: all 0.14s;
-  color: var(--th-color-text-2);
+  color: var(--th-ink-2);
 }
 
 .card:hover .arr {
-  background: var(--th-color-text-1);
-  color: var(--th-color-text-inverse);
+  background: var(--th-ink);
+  color: var(--th-on-deep);
 }
 
 /* ─── COMING SOON — dashed, non-interactive placeholder ─────────────────── */
@@ -96,10 +95,10 @@
 .comingSoon:hover {
   transform: none;
   box-shadow: none;
-  border-color: var(--th-color-border-default);
+  border-color: var(--th-line);
 }
 
 .comingSoon .title,
 .comingSoon .date {
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
 }

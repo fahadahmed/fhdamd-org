@@ -4,7 +4,7 @@ import { EmbedCard } from "./EmbedCard";
 const meta = {
   title: "Threads/Components/EmbedCard",
   component: EmbedCard,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
 } satisfies Meta<typeof EmbedCard>;
 

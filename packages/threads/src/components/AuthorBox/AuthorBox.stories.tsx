@@ -4,7 +4,7 @@ import { AuthorBox } from "./AuthorBox";
 const meta = {
   title: "Threads/Components/AuthorBox",
   component: AuthorBox,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     initials: "FA",

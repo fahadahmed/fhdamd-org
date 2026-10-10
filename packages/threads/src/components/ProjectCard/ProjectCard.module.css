@@ -1,7 +1,7 @@
 .card {
-  background: var(--th-color-surface-1);
-  border: 1px solid var(--th-color-border-default);
-  border-radius: var(--th-radius-xl);
+  background: var(--th-card);
+  border: 1px solid var(--th-line);
+  border-radius: var(--th-radius-card);
   padding: var(--th-space-6);
   display: flex;
   flex-direction: column;
@@ -10,8 +10,8 @@
   text-decoration: none;
   color: inherit;
   transition:
-    transform var(--th-duration-base) var(--th-ease-out),
-    box-shadow var(--th-duration-base) var(--th-ease-out);
+    transform var(--th-duration-state) var(--th-ease-out),
+    box-shadow var(--th-duration-state) var(--th-ease-out);
 }
 
 /* Accent bar — top edge */
@@ -24,26 +24,25 @@
   border-radius: 3px 3px 0 0;
 }
 
-.accentTerra::after { background: var(--th-color-accent); }
-.accentSage::after  { background: var(--th-color-sage); }
-.accentInk::after   { background: var(--th-color-text-1); }
+.accentTerra::after { background: var(--th-terra); }
+.accentSage::after  { background: var(--th-accent); }
+.accentInk::after   { background: var(--th-ink); }
 
 .interactive {
   cursor: pointer;
 }
 
 .interactive:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--th-shadow-lg);
+  box-shadow: var(--th-shadow-float);
 }
 
 /* ─── EYEBROW ─────────────────────────────────────────────────────────────── */
 .eyebrow {
   font-family: var(--th-font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.14em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   margin-block-end: var(--th-space-4);
 }
 
@@ -52,7 +51,7 @@
   width: 44px;
   height: 44px;
   border-radius: 14px;
-  background: var(--th-color-accent-subtle);
+  background: color-mix(in srgb, var(--th-terra) 10%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -69,15 +68,16 @@
   width: 6px;
   height: 6px;
   border-radius: var(--th-radius-pill);
-  background: var(--th-color-accent);
+  background: var(--th-terra);
 }
 
 .jLetter {
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-style: italic;
   font-weight: 400;
   font-size: 28px;
-  color: var(--th-color-accent-text);
+  color: var(--th-terra);
   line-height: 1;
 }
 
@@ -102,29 +102,30 @@
   stroke-linejoin: round;
 }
 
-.iconSage { background: var(--th-color-sage-subtle); }
-.iconSage svg { stroke: var(--th-color-sage-text); }
+.iconSage { background: var(--th-d1); }
+.iconSage svg { stroke: var(--th-accent); }
 
-.iconInk { background: var(--th-color-surface-2); }
-.iconInk svg { stroke: var(--th-color-text-2); }
+.iconInk { background: var(--th-sidebar); }
+.iconInk svg { stroke: var(--th-ink-2); }
 
 /* ─── CONTENT ─────────────────────────────────────────────────────────────── */
 .name {
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-weight: 400;
   font-size: var(--th-text-lg);
   letter-spacing: -0.01em;
   margin-block-end: var(--th-space-2);
   line-height: 1.1;
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
 }
 
 .desc {
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 370;
+  font-weight: 400;
   font-size: 0.875rem;
   line-height: 1.6;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   flex: 1;
   margin-block-end: var(--th-space-4);
 }
@@ -132,35 +133,39 @@
 /* ─── PRICING PILLS ───────────────────────────────────────────────────────── */
 .pricingPills {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--th-space-2);
   margin-block: var(--th-space-2) var(--th-space-3);
 }
 
 .pill {
-  flex: 1;
-  background: var(--th-color-surface-2);
-  border: 1px solid var(--th-color-border-subtle);
-  border-radius: var(--th-radius-md);
+  flex: 1 1 5rem;
+  min-inline-size: 0;
+  background: var(--th-sidebar);
+  border: 1px solid var(--th-line-subtle);
+  border-radius: var(--th-radius-field);
   padding: 9px var(--th-space-2);
   text-align: center;
 }
 
 .pillPrice {
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-weight: 300;
   font-size: 1.125rem;
   letter-spacing: -0.02em;
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
   line-height: 1;
   margin-block-end: 3px;
 }
 
 .pillLabel {
   font-family: var(--th-font-mono);
-  font-size: 0.5625rem;
-  letter-spacing: 0.1em;
+  font-size: var(--th-label-size);
+  /* tighter than the label default so "CREDITS" fits three pills across a narrow card */
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-2);
 }
 
 /* ─── FOOTER ──────────────────────────────────────────────────────────────── */
@@ -171,7 +176,7 @@
   gap: var(--th-space-2);
   flex-wrap: wrap;
   padding-block-start: var(--th-space-4);
-  border-block-start: 1px solid var(--th-color-border-subtle);
+  border-block-start: 1px solid var(--th-line-subtle);
   margin-block-start: auto;
 }
 
@@ -192,21 +197,21 @@
   width: 28px;
   height: 28px;
   border-radius: var(--th-radius-pill);
-  border: 1px solid var(--th-color-border-strong);
-  background: var(--th-color-surface-1);
+  border: 1px solid var(--th-line-2);
+  background: var(--th-card);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: var(--th-color-text-2);
+  color: var(--th-ink-2);
   transition:
-    background var(--th-duration-base),
-    border-color var(--th-duration-base),
-    color var(--th-duration-base);
+    background var(--th-duration-state),
+    border-color var(--th-duration-state),
+    color var(--th-duration-state);
 }
 
 .interactive:hover .arrow {
-  background: var(--th-color-text-1);
-  border-color: var(--th-color-text-1);
-  color: var(--th-color-text-inverse);
+  background: var(--th-ink);
+  border-color: var(--th-ink);
+  color: var(--th-on-deep);
 }

@@ -4,7 +4,7 @@ import { FeaturedCard } from "./FeaturedCard";
 const meta = {
   title: "Threads/Components/FeaturedCard",
   component: FeaturedCard,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     eyebrowMeta: "July 2026 · 9 min read",

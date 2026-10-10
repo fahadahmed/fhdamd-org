@@ -19,7 +19,7 @@ const ThreadsIcon = () => (
 const meta = {
   title: "Threads/Components/ProjectCard",
   component: ProjectCard,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   argTypes: {
     accentColor: { control: "radio", options: ["terra", "sage", "ink"] },
@@ -56,7 +56,7 @@ export const PdfCraft: Story = {
   name: "PDF-Craft",
   args: {
     eyebrow:     "SaaS · Pay-per-use",
-    name:        <>PDF-<em style={{ fontStyle: "italic", color: "var(--th-color-sage-text)" }}>Craft</em></>,
+    name:        <>PDF-<em style={{ fontStyle: "italic", color: "var(--th-accent)" }}>Craft</em></>,
     description: "Pay-per-use PDF operations — merge, split, compress, encrypt, convert, sign, and AI summarisation. Credits, no subscription.",
     icon:        <PdfIcon />,
     accentColor: "sage",
@@ -109,7 +109,7 @@ export const FhdamdGrid: Story = {
         />
         <ProjectCard
           eyebrow="SaaS · Pay-per-use"
-          name={<>PDF-<em style={{ fontStyle: "italic", color: "var(--th-color-sage-text)" }}>Craft</em></>}
+          name={<>PDF-<em style={{ fontStyle: "italic", color: "var(--th-accent)" }}>Craft</em></>}
           description="Pay-per-use PDF operations — merge, split, compress, encrypt, convert, sign, and AI summarisation."
           icon={<PdfIcon />}
           accentColor="sage"

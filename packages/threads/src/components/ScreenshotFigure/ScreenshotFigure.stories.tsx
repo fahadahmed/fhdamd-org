@@ -4,7 +4,7 @@ import { ScreenshotFigure } from "./ScreenshotFigure";
 const meta = {
   title: "Threads/Components/ScreenshotFigure",
   component: ScreenshotFigure,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
 } satisfies Meta<typeof ScreenshotFigure>;
 

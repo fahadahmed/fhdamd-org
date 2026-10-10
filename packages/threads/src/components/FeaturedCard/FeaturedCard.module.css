@@ -1,8 +1,8 @@
 .card {
   display: block;
-  background: var(--th-color-surface-1);
-  border: 1px solid var(--th-color-border-default);
-  border-radius: var(--th-radius-xl);
+  background: var(--th-card);
+  border: 1px solid var(--th-line);
+  border-radius: var(--th-radius-card);
   padding: var(--th-space-8);
   position: relative;
   overflow: hidden;
@@ -12,7 +12,7 @@
 }
 
 .card:hover {
-  border-color: var(--th-color-border-strong);
+  border-color: var(--th-line-2);
 }
 
 .card::before {
@@ -21,15 +21,15 @@
   inset-block-start: 0;
   inset-inline: 0;
   block-size: 3px;
-  background: var(--th-color-accent);
+  background: var(--th-terra);
 }
 
 .eyebrow {
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.14em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   margin-block-end: 14px;
   display: flex;
   align-items: center;
@@ -38,25 +38,26 @@
 
 .title {
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-weight: 300;
   font-size: clamp(1.5rem, 3vw, 2.5rem);
   letter-spacing: -0.02em;
   line-height: 1.08;
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
   margin-block-end: 12px;
 }
 
 .title em {
   font-style: italic;
-  color: var(--th-color-accent);
+  color: var(--th-terra);
 }
 
 .desc {
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 370;
+  font-weight: 400;
   font-size: var(--th-text-md);
   line-height: 1.7;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   max-inline-size: 640px;
   margin-block-end: 20px;
 }

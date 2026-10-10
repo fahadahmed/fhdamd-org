@@ -2,33 +2,33 @@
   display: grid;
   grid-template-columns: 200px 1fr 120px;
   align-items: start;
-  border-block-end: 1px solid var(--th-color-border-subtle);
+  border-block-end: 1px solid var(--th-line-subtle);
 }
 
 .row:first-child {
-  border-block-start: 1px solid var(--th-color-border-subtle);
+  border-block-start: 1px solid var(--th-line-subtle);
 }
 
 /* ─── LEFT ────────────────────────────────────────────────────────────────── */
 .left {
   padding: var(--th-space-5) var(--th-space-6) var(--th-space-5) 0;
-  border-inline-end: 1px solid var(--th-color-border-subtle);
+  border-inline-end: 1px solid var(--th-line-subtle);
 }
 
 .client {
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 92, "wght" 680;
+  font-weight: 600;
   font-size: 0.9375rem;
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
   margin-block-end: var(--th-space-1);
 }
 
 .date {
   font-family: var(--th-font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.12em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
 }
 
 /* ─── BODY ────────────────────────────────────────────────────────────────── */
@@ -38,20 +38,21 @@
 
 .title {
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-weight: 400;
   font-size: var(--th-text-lg);
   letter-spacing: -0.01em;
   margin-block-end: var(--th-space-2);
   line-height: 1.15;
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
 }
 
 .desc {
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 370;
+  font-weight: 400;
   font-size: 0.875rem;
   line-height: 1.6;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   margin-block-end: var(--th-space-3);
 }
 
@@ -71,13 +72,13 @@
 
 .value {
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
   padding: 5px 12px;
   border-radius: var(--th-radius-pill);
-  background: var(--th-color-sage-subtle);
-  color: var(--th-color-sage-text);
+  background: var(--th-d1);
+  color: var(--th-accent);
   white-space: nowrap;
 }
 
@@ -90,7 +91,7 @@
   .left {
     padding: var(--th-space-4) 0 var(--th-space-2);
     border-inline-end: none;
-    border-block-end: 1px solid var(--th-color-border-subtle);
+    border-block-end: 1px solid var(--th-line-subtle);
   }
 
   .body {

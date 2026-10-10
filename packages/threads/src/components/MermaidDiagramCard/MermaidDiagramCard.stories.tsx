@@ -5,7 +5,7 @@ import { MermaidDiagramCard } from "./MermaidDiagramCard";
 const meta = {
   title: "Threads/Components/MermaidDiagramCard",
   component: MermaidDiagramCard,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     label:    "Sequence diagram · Mermaid",
@@ -18,7 +18,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const placeholderDiagram = (
-  <div style={{ padding: "40px 80px", border: "1px dashed var(--th-color-border-default)", color: "var(--th-color-text-3)", fontFamily: "var(--th-font-mono)", fontSize: "0.75rem" }}>
+  <div style={{ padding: "40px 80px", border: "1px dashed var(--th-line)", color: "var(--th-ink-3)", fontFamily: "var(--th-font-mono)", fontSize: "0.75rem" }}>
     [rendered mermaid SVG goes here]
   </div>
 );
@@ -60,12 +60,12 @@ export const Expanded: Story = {
 const realisticDiagram = (
   <div style={{ width: "100%" }}>
     <svg viewBox="0 0 600 300" style={{ width: "100%", height: "auto" }} xmlns="http://www.w3.org/2000/svg">
-      <rect x="20" y="110" width="160" height="70" rx="8" fill="var(--th-color-surface-2)" stroke="var(--th-color-border-strong)" strokeWidth="2" />
-      <text x="100" y="150" textAnchor="middle" fontFamily="monospace" fontSize="18" fill="var(--th-color-text-1)">Start</text>
-      <line x1="180" y1="145" x2="300" y2="145" stroke="var(--th-color-border-strong)" strokeWidth="2" />
-      <rect x="300" y="80" width="160" height="130" rx="8" fill="var(--th-color-surface-2)" stroke="var(--th-color-border-strong)" strokeWidth="2" />
-      <text x="380" y="150" textAnchor="middle" fontFamily="monospace" fontSize="18" fill="var(--th-color-text-1)">Process</text>
-      <line x1="460" y1="145" x2="560" y2="145" stroke="var(--th-color-border-strong)" strokeWidth="2" />
+      <rect x="20" y="110" width="160" height="70" rx="8" fill="var(--th-sidebar)" stroke="var(--th-line-2)" strokeWidth="2" />
+      <text x="100" y="150" textAnchor="middle" fontFamily="monospace" fontSize="18" fill="var(--th-ink)">Start</text>
+      <line x1="180" y1="145" x2="300" y2="145" stroke="var(--th-line-2)" strokeWidth="2" />
+      <rect x="300" y="80" width="160" height="130" rx="8" fill="var(--th-sidebar)" stroke="var(--th-line-2)" strokeWidth="2" />
+      <text x="380" y="150" textAnchor="middle" fontFamily="monospace" fontSize="18" fill="var(--th-ink)">Process</text>
+      <line x1="460" y1="145" x2="560" y2="145" stroke="var(--th-line-2)" strokeWidth="2" />
     </svg>
   </div>
 );

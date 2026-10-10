@@ -51,7 +51,7 @@ const AiIcon = () => (
 const meta = {
   title: "Threads/Components/OpCard",
   component: OpCard,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   argTypes: {
     iconVariant: {
@@ -153,7 +153,7 @@ export const FullGrid: Story = {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
+          gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
           gap: "14px",
         }}
       >

@@ -4,10 +4,10 @@
 
 .label {
   font-family: var(--th-font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.14em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   margin-block-end: 10px;
   display: flex;
   align-items: center;
@@ -15,10 +15,10 @@
 }
 
 .card {
-  border: 1px solid var(--th-color-border-default);
-  border-radius: var(--th-radius-lg);
+  border: 1px solid var(--th-line);
+  border-radius: var(--th-radius-card);
   overflow: hidden;
-  background: var(--th-color-surface-1);
+  background: var(--th-card);
 }
 
 /* ─── YOUTUBE ─────────────────────────────────────────────────────────────── */
@@ -55,35 +55,35 @@
   width: 40px;
   height: 40px;
   border-radius: 99px;
-  background: var(--th-color-surface-3);
+  background: var(--th-d1);
   flex-shrink: 0;
 }
 
 .tweetName {
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 92, "wght" 640;
+  font-weight: 600;
   font-size: 0.9375rem;
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
 }
 
 .tweetHandle {
   font-family: var(--th-font-mono);
   font-size: 0.75rem;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
 }
 
 .tweetText {
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 400;
+  font-weight: 400;
   font-size: 0.9375rem;
   line-height: 1.55;
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
 }
 
 .tweetFoot {
   font-family: var(--th-font-mono);
   font-size: 0.75rem;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
 }
 
 /* ─── INSTAGRAM ───────────────────────────────────────────────────────────── */
@@ -103,31 +103,31 @@
   width: 32px;
   height: 32px;
   border-radius: 99px;
-  background: linear-gradient(45deg, var(--th-color-accent), var(--th-color-sage));
+  background: linear-gradient(45deg, var(--th-terra), var(--th-accent));
   flex-shrink: 0;
 }
 
 .instaName {
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 92, "wght" 640;
+  font-weight: 600;
   font-size: 0.8125rem;
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
 }
 
 .instaMedia {
   width: 100%;
   aspect-ratio: 1 / 1;
-  background: var(--th-color-surface-3);
+  background: var(--th-d1);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
 }
 
 .instaFoot {
   padding: 14px 16px;
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 380;
+  font-weight: 400;
   font-size: 0.8125rem;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
 }
