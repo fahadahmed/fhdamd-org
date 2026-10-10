@@ -4,7 +4,7 @@ import { Progress } from "./Progress";
 const meta = {
   title: "Threads/Feedback/Progress",
   component: Progress,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   argTypes: {
     variant:   { control: "radio", options: ["sage", "terra", "warning", "error", "ink"] },

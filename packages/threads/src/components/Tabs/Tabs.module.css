@@ -5,7 +5,7 @@
 
 .tabList {
   display: flex;
-  border-block-end: 1px solid var(--th-color-border-default);
+  border-block-end: 1px solid var(--th-line);
   gap: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -17,9 +17,9 @@
 
 .tab {
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 92, "wght" 500;
+  font-weight: 600;
   font-size: var(--th-text-base);
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   background: transparent;
   border: none;
   padding: var(--th-space-3) var(--th-space-5);
@@ -29,24 +29,24 @@
   margin-block-end: -1px; /* sit on top of tabList border */
   white-space: nowrap;
   transition:
-    color var(--th-duration-base) var(--th-ease-out),
-    border-color var(--th-duration-base) var(--th-ease-out);
+    color var(--th-duration-state) var(--th-ease-out),
+    border-color var(--th-duration-state) var(--th-ease-out);
 }
 
 .tab:hover {
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
 }
 
 .tab:focus-visible {
-  outline: 2px solid var(--th-color-focus-ring);
+  outline: 2px solid var(--th-terra);
   outline-offset: -2px;
-  border-radius: var(--th-radius-xs) var(--th-radius-xs) 0 0;
+  border-radius: var(--th-radius-cell) var(--th-radius-cell) 0 0;
 }
 
 .tabActive {
-  color: var(--th-color-text-1);
-  border-block-end-color: var(--th-color-accent);
-  font-variation-settings: "wdth" 92, "wght" 600;
+  color: var(--th-ink);
+  border-block-end-color: var(--th-terra);
+  font-weight: 600;
 }
 
 .panel {

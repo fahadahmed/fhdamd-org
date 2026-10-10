@@ -43,7 +43,7 @@ const columns = [
 const meta = {
   title: "Threads/Components/DataTable",
   component: DataTable,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     columns,

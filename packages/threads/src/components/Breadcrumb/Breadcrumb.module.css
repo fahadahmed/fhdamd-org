@@ -18,27 +18,27 @@
 }
 
 .link {
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   text-decoration: none;
-  transition: color var(--th-duration-base) var(--th-ease-out);
+  transition: color var(--th-duration-state) var(--th-ease-out);
 }
 
 .link:hover {
-  color: var(--th-color-accent);
+  color: var(--th-terra);
 }
 
 .link:focus-visible {
-  outline: 2px solid var(--th-color-focus-ring);
+  outline: 2px solid var(--th-terra);
   outline-offset: 2px;
-  border-radius: var(--th-radius-xs);
+  border-radius: var(--th-radius-cell);
 }
 
 .sep {
-  color: var(--th-color-text-4);
+  color: var(--th-ink-3);
   font-size: var(--th-text-sm);
 }
 
 .current {
-  font-variation-settings: "wdth" 92, "wght" 550;
-  color: var(--th-color-text-1);
+  font-weight: 600;
+  color: var(--th-ink);
 }

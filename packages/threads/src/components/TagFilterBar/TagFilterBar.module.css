@@ -6,25 +6,25 @@
 
 .pill {
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
   padding: 8px 16px;
   border-radius: var(--th-radius-pill);
-  border: 1px solid var(--th-color-border-default);
-  background: var(--th-color-surface-1);
-  color: var(--th-color-text-3);
+  border: 1px solid var(--th-line);
+  background: var(--th-card);
+  color: var(--th-ink-3);
   cursor: pointer;
-  transition: all var(--th-duration-base) var(--th-ease-out);
+  transition: all var(--th-duration-state) var(--th-ease-out);
 }
 
 .pill:hover {
-  border-color: var(--th-color-border-strong);
-  color: var(--th-color-text-1);
+  border-color: var(--th-line-2);
+  color: var(--th-ink);
 }
 
 .pill.active {
-  background: var(--th-color-text-1);
-  border-color: var(--th-color-text-1);
-  color: var(--th-color-text-inverse);
+  background: var(--th-deep);
+  border-color: var(--th-deep);
+  color: var(--th-on-deep);
 }

@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import type { KeyboardEvent } from "react";
 import type { ReactNode } from "react";
 import styles from "./Tabs.module.css";
 
@@ -42,13 +43,36 @@ export function Tabs({
   };
 
   const activeItem = items.find((t) => t.id === activeId);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  /* WAI-ARIA tabs pattern: arrows, Home and End move focus and select (RTL-aware). */
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const keys = ["ArrowLeft", "ArrowRight", "Home", "End"];
+    if (!keys.includes(event.key) || items.length === 0) return;
+    const rtl =
+      event.currentTarget.closest("[dir]")?.getAttribute("dir") === "rtl" ||
+      getComputedStyle(event.currentTarget).direction === "rtl";
+    const current = Math.max(0, items.findIndex((t) => t.id === activeId));
+    let next = current;
+    if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = items.length - 1;
+    else {
+      const step = (event.key === "ArrowRight") !== rtl ? 1 : -1;
+      next = (current + step + items.length) % items.length;
+    }
+    event.preventDefault();
+    handleSelect(items[next].id);
+    listRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[next]?.focus();
+  };
 
   return (
     <div className={[styles.root, className].filter(Boolean).join(" ")}>
       <div
+        ref={listRef}
         role="tablist"
         aria-label={ariaLabel}
         className={styles.tabList}
+        onKeyDown={handleKeyDown}
       >
         {items.map((tab) => {
           const isActive = tab.id === activeId;
@@ -60,7 +84,7 @@ export function Tabs({
               id={`tab-${tab.id}`}
               aria-selected={isActive}
               aria-controls={`panel-${tab.id}`}
-              tabIndex={isActive ? 0 : -1}
+              tabIndex={isActive || (!activeItem && tab.id === items[0]?.id) ? 0 : -1}
               onClick={() => handleSelect(tab.id)}
               className={[styles.tab, isActive ? styles.tabActive : ""]
                 .filter(Boolean)

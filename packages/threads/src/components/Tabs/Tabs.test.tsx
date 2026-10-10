@@ -70,3 +70,47 @@ describe("Tabs — interaction", () => {
     expect(screen.getByRole("tab", { name: "Overview" })).toHaveAttribute("tabindex", "0");
   });
 });
+
+describe("Tabs — keyboard navigation", () => {
+  it("moves focus and selection with the arrow keys and wraps", async () => {
+    const user = userEvent.setup();
+    render(<Tabs items={items} />);
+    screen.getByRole("tab", { name: "Overview" }).focus();
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("tab", { name: "History" })).toHaveFocus();
+    expect(screen.getByRole("tab", { name: "History" })).toHaveAttribute("aria-selected", "true");
+    await user.keyboard("{ArrowLeft}{ArrowLeft}");
+    expect(screen.getByRole("tab", { name: "Billing" })).toHaveFocus();
+  });
+
+  it("jumps to the first and last tab with Home and End", async () => {
+    const user = userEvent.setup();
+    render(<Tabs items={items} />);
+    screen.getByRole("tab", { name: "Overview" }).focus();
+    await user.keyboard("{End}");
+    expect(screen.getByRole("tab", { name: "Billing" })).toHaveFocus();
+    await user.keyboard("{Home}");
+    expect(screen.getByRole("tab", { name: "Overview" })).toHaveFocus();
+  });
+
+  it("reverses the arrows in a right-to-left list", async () => {
+    const user = userEvent.setup();
+    render(<div dir="rtl"><Tabs items={items} /></div>);
+    screen.getByRole("tab", { name: "Overview" }).focus();
+    await user.keyboard("{ArrowLeft}");
+    expect(screen.getByRole("tab", { name: "History" })).toHaveFocus();
+  });
+
+  it("keeps one tab stop when the active id matches no tab", () => {
+    render(<Tabs items={items} activeId="missing" renderPanel={false} />);
+    expect(screen.getByRole("tab", { name: "Overview" })).toHaveAttribute("tabindex", "0");
+  });
+
+  it("ignores other keys", async () => {
+    const user = userEvent.setup();
+    render(<Tabs items={items} />);
+    screen.getByRole("tab", { name: "Overview" }).focus();
+    await user.keyboard("{ArrowDown}");
+    expect(screen.getByRole("tab", { name: "Overview" })).toHaveFocus();
+  });
+});

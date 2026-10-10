@@ -50,3 +50,12 @@ describe("Stepper", () => {
     expect(screen.getByLabelText(/Step 1.*active/i)).toBeInTheDocument();
   });
 });
+
+describe("Stepper — semantics", () => {
+  it("groups the steps, marks the active one as the current step and labels each circle as an image", () => {
+    const { container } = render(<Stepper steps={[{ label: "One" }, { label: "Two" }, { label: "Three" }]} currentStep={1} />);
+    expect(screen.getByRole("group", { name: "Progress" })).toBeInTheDocument();
+    expect(container.querySelectorAll('[aria-current="step"]')).toHaveLength(1);
+    expect(screen.getByRole("img", { name: "Step 2: Two — active" })).toBeInTheDocument();
+  });
+});

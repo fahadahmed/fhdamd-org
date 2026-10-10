@@ -2,9 +2,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Tabs } from "./Tabs";
 
 const pdfCraftTabs = [
-  { id: "overview",    label: "Overview",    content: <p style={{ color: "var(--th-color-text-2)", fontSize: "var(--th-text-base)" }}>Overview content — files, recent operations.</p> },
-  { id: "history",     label: "History",     content: <p style={{ color: "var(--th-color-text-2)", fontSize: "var(--th-text-base)" }}>Operation history — past merges, conversions, protects.</p> },
-  { id: "billing",     label: "Billing",     content: <p style={{ color: "var(--th-color-text-2)", fontSize: "var(--th-text-base)" }}>Credit balance and purchase history.</p> },
+  { id: "overview",    label: "Overview",    content: <p style={{ color: "var(--th-ink-2)", fontSize: "var(--th-text-base)" }}>Overview content — files, recent operations.</p> },
+  { id: "history",     label: "History",     content: <p style={{ color: "var(--th-ink-2)", fontSize: "var(--th-text-base)" }}>Operation history — past merges, conversions, protects.</p> },
+  { id: "billing",     label: "Billing",     content: <p style={{ color: "var(--th-ink-2)", fontSize: "var(--th-text-base)" }}>Credit balance and purchase history.</p> },
 ];
 
 const fhdamdTabs = [
@@ -17,7 +17,7 @@ const fhdamdTabs = [
 const meta = {
   title: "Threads/Navigation/Tabs",
   component: Tabs,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: { items: pdfCraftTabs, defaultActiveId: "overview" },
 } satisfies Meta<typeof Tabs>;

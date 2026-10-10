@@ -4,7 +4,7 @@ import { TagFilterBar } from "./TagFilterBar";
 const meta = {
   title: "Threads/Components/TagFilterBar",
   component: TagFilterBar,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     allLabel: "All posts",
