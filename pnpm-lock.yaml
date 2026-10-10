@@ -155,8 +155,8 @@ importers:
         specifier: ^3.7.3
         version: 3.7.3
       '@fhdamd/threads':
-        specifier: ^2.0.0-next.0
-        version: 2.0.0-next.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: ^2.1.0
+        version: 2.1.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       astro:
         specifier: ^7.1.1
         version: 7.1.1(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@26.1.1)(jiti@2.6.1)(rollup@4.60.4)(tsx@4.22.3)(yaml@2.9.0)
@@ -1829,8 +1829,8 @@ packages:
       react: ^17.0.2 || ^18.0.0 || ^19.0.0
       react-dom: ^17.0.2 || ^18.0.0 || ^19.0.0
 
-  '@fhdamd/threads@2.0.0-next.0':
-    resolution: {integrity: sha512-nm63BcJxWDvom8rCsDQfmn/YjZ1U4xqt0pRdOfN8LOc00qLd1AmRyJBtF5pDETqTCZqpisTwkGjtZvCw4kjerA==}
+  '@fhdamd/threads@2.1.0':
+    resolution: {integrity: sha512-nW3Csxqvc1iidKGURh6/AzpGR0kZPMMPM5FtLSjLF+Mm/9Qd1CEd3Z3q9llkditx61EYUf6fmqaOxdyL/JbG2g==}
     peerDependencies:
       react: ^17.0.2 || ^18.0.0 || ^19.0.0
       react-dom: ^17.0.2 || ^18.0.0 || ^19.0.0
@@ -11076,7 +11076,7 @@ snapshots:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
 
-  '@fhdamd/threads@2.0.0-next.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
+  '@fhdamd/threads@2.1.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
