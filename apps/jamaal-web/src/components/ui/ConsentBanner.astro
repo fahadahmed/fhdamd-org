@@ -1,0 +1,98 @@
+---
+/**
+ * Asks before Google Analytics runs. Accept and Decline carry equal weight, and
+ * nothing is loaded or set until Accept. Shown only when this build has a
+ * measurement ID. The logic is in lib/consentBanner.ts.
+ */
+import { ANALYTICS_AVAILABLE } from "../../lib/analytics";
+---
+
+{
+  ANALYTICS_AVAILABLE && (
+    <section id="consent-banner" class="consent" aria-labelledby="consent-title" hidden>
+      <h2 id="consent-title">Cookies on this site</h2>
+      <p>
+        We use Google Analytics to count visits to this website. It sets cookies, so it only runs if you accept. The
+        Jamaal app collects no analytics. <a href="/privacy#website">Details</a>
+      </p>
+      <div class="actions">
+        <button type="button" data-consent="decline">Decline</button>
+        <button type="button" data-consent="accept">Accept</button>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  import { getAnalytics } from "../../lib/analytics";
+  import { browserStore } from "../../lib/consent";
+  import { setupConsentBanner } from "../../lib/consentBanner";
+
+  setupConsentBanner({ doc: document, store: browserStore(), analytics: getAnalytics() });
+</script>
+
+<style>
+  /* Fixed, so showing it never moves the page (no layout shift). */
+  .consent {
+    position: fixed;
+    inset-inline: 16px;
+    inset-block-end: 16px;
+    z-index: 300;
+    max-inline-size: 640px;
+    margin-inline: auto;
+    padding: 20px;
+    border-radius: var(--th-radius-card);
+    /* --th-card is translucent in dark mode; this floats over content, so it must be opaque. */
+    background: var(--th-selected);
+    border: 1px solid var(--th-line-2);
+    box-shadow: var(--th-shadow-lift);
+    color: var(--th-ink);
+  }
+
+  .consent[hidden] {
+    display: none;
+  }
+
+  h2 {
+    margin: 0 0 6px;
+    font-family: var(--th-font-sans);
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0 0 16px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--th-ink-2);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* Equal weight on purpose: neither answer is the highlighted one. */
+  button {
+    flex: 1 1 140px;
+    min-block-size: 44px;
+    padding-inline: 20px;
+    border-radius: 999px;
+    border: 1px solid var(--th-line-2);
+    background: transparent;
+    color: var(--th-ink);
+    font: 600 15px / 1 var(--th-font-sans);
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: var(--th-sidebar);
+  }
+
+  button:focus-visible,
+  a:focus-visible {
+    outline: 2px solid var(--th-terra);
+    outline-offset: 2px;
+  }
+</style>

@@ -180,5 +180,5 @@ export const faq = [
 ] as const;
 
 export const legal = {
-  updated: "8 October 2026",
+  updated: "11 October 2026",
 } as const;
