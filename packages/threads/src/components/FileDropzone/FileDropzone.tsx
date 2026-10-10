@@ -75,19 +75,17 @@ export function FileDropzone({
   return (
     <div className={f.field}>
       {label && (
-        <span
+        <label
+          htmlFor={id}
           className={[f.label, disabled ? f["label--disabled"] : ""]
             .filter(Boolean)
             .join(" ")}
         >
           {label}
-        </span>
+        </label>
       )}
       <label
         htmlFor={id}
-        role="button"
-        tabIndex={disabled ? -1 : 0}
-        aria-disabled={disabled}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDrop}

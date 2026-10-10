@@ -6,32 +6,33 @@
 }
 
 .card {
-  background: var(--th-color-surface-1);
-  border: 1px solid var(--th-color-border-default);
-  border-radius: var(--th-radius-lg);
+  background: var(--th-card);
+  border: 1px solid var(--th-line);
+  border-radius: var(--th-radius-card);
   padding: var(--th-space-5);
   text-align: center;
 }
 
 .num {
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-weight: 300;
   font-size: 2.25rem;
   letter-spacing: -0.02em;
-  color: var(--th-color-accent);
+  color: var(--th-terra);
   line-height: 1;
 }
 
 .unit {
   font-size: 1.125rem;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   margin-inline-start: 2px;
 }
 
 .label {
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  color: var(--th-color-text-3);
+  font-size: var(--th-label-size);
+  color: var(--th-ink-3);
   margin-block-start: 8px;
   line-height: 1.4;
 }

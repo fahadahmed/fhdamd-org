@@ -13,9 +13,9 @@ export interface TextProps extends HTMLAttributes<HTMLElement> {
   family?: TextFamily;
   color?: TextColor;
   align?: TextAlign;
-  /** font-variation-settings wght axis (display family only) */
+  /** font-weight (display family only); Hanken Grotesk has a weight axis only */
   weight?: 300 | 380 | 400 | 500 | 550 | 560 | 600 | 650 | 680 | 700 | 800;
-  /** font-variation-settings wdth axis (display family only) */
+  /** @deprecated Hanken Grotesk has no width axis (Threads 2.0). Accepted for API stability and ignored; removed in 3.0. */
   width?: 75 | 80 | 85 | 90 | 92 | 95 | 100;
   italic?: boolean;
   children: ReactNode;
@@ -28,7 +28,7 @@ export function Text({
   color = "2",
   align,
   weight,
-  width,
+  width: _width,
   italic,
   className,
   style,
@@ -47,15 +47,13 @@ export function Text({
     .filter(Boolean)
     .join(" ");
 
-  const varSettings =
-    family === "display" && (weight !== undefined || width !== undefined)
-      ? `"wdth" ${width ?? 90}, "wght" ${weight ?? 400}`
-      : undefined;
+  const weightStyle =
+    family === "display" && weight !== undefined ? { fontWeight: weight } : undefined;
 
   return (
     <Tag
       className={cls}
-      style={varSettings ? { fontVariationSettings: varSettings, ...style } : style}
+      style={weightStyle ? { ...weightStyle, ...style } : style}
       {...(rest as HTMLAttributes<HTMLElement>)}
     >
       {children}

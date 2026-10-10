@@ -4,7 +4,7 @@ import { Radio } from "./Radio";
 const meta = {
   title: "Threads/Forms/Radio",
   component: Radio,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: { label: "Too much on", name: "defer" },
 } satisfies Meta<typeof Radio>;
@@ -20,7 +20,7 @@ export const Group: Story = {
   name: "Radio group",
   render: () => (
     <fieldset style={{ border: "none", padding: 0 }}>
-      <legend style={{ fontFamily: "var(--th-font-display)", fontVariationSettings: '"wdth" 92, "wght" 550', fontSize: "var(--th-text-base)", marginBottom: "var(--th-space-2)" }}>
+      <legend style={{ fontFamily: "var(--th-font-display)", fontWeight: 600, fontSize: "var(--th-text-base)", marginBottom: "var(--th-space-2)" }}>
         Deferral reason
       </legend>
       <div style={{ display: "flex", flexDirection: "column" }}>

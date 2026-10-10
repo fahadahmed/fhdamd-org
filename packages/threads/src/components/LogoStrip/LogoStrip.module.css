@@ -35,8 +35,8 @@
   align-items: center;
   justify-content: center;
   opacity: 0.55;
-  transition: opacity var(--th-duration-base);
-  color: var(--th-color-text-2);
+  transition: opacity var(--th-duration-state);
+  color: var(--th-ink-2);
 }
 
 .mark img {
@@ -56,8 +56,8 @@
 
 .label {
   font-family: var(--th-font-mono);
-  font-size: 0.5625rem;
-  letter-spacing: 0.12em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
 }

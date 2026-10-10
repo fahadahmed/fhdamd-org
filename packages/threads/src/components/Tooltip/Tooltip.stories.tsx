@@ -5,7 +5,7 @@ import { Button } from "../Button/Button";
 const meta = {
   title: "Threads/Overlays/Tooltip",
   component: Tooltip,
-  parameters: { layout: "centered" },
+  parameters: { layout: "centered", a11y: { test: "error" } },
   tags: ["autodocs"],
   argTypes: {
     position: { control: "radio", options: ["top", "bottom", "left", "right"] },

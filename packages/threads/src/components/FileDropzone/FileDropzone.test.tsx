@@ -43,34 +43,32 @@ describe("FileDropzone — rendering", () => {
     expect(container.querySelector("input[type='file']")).toBeDisabled();
   });
 
-  it("zone label has role=button", () => {
-    render(<FileDropzone />);
-    expect(screen.getByRole("button")).toBeInTheDocument();
+  it("uses the native file input as the single tab stop", () => {
+    const { container } = render(<FileDropzone label="Upload PDF" />);
+    const input = screen.getByLabelText("Upload PDF", { selector: "input" });
+    expect(input).toHaveAttribute("type", "file");
+    expect(container.querySelectorAll("[tabindex]")).toHaveLength(0);
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 
-  it("zone label has tabIndex=0 when not disabled", () => {
-    render(<FileDropzone />);
-    expect(screen.getByRole("button")).toHaveAttribute("tabindex", "0");
-  });
-
-  it("zone label has tabIndex=-1 when disabled", () => {
-    render(<FileDropzone disabled />);
-    expect(screen.getByRole("button")).toHaveAttribute("tabindex", "-1");
+  it("associates the visible label with the file input", () => {
+    render(<FileDropzone label="Upload PDF" />);
+    expect(screen.getByText("Upload PDF").tagName).toBe("LABEL");
   });
 });
 
 describe("FileDropzone — drag events", () => {
   it("adds drag-over style when dragging over", () => {
     const { container } = render(<FileDropzone />);
-    const zone = screen.getByRole("button");
+    const zone = container.querySelector("label[for]:not([class*=label])") as HTMLElement;
     fireEvent.dragOver(zone, { preventDefault: () => {} });
     // dragOver is handled — no throw
     expect(zone).toBeInTheDocument();
   });
 
   it("removes drag-over style on drag leave", () => {
-    render(<FileDropzone />);
-    const zone = screen.getByRole("button");
+    const { container } = render(<FileDropzone />);
+    const zone = container.querySelector("label[for]:not([class*=label])") as HTMLElement;
     fireEvent.dragOver(zone, { preventDefault: () => {} });
     fireEvent.dragLeave(zone);
     expect(zone).toBeInTheDocument();
@@ -78,8 +76,8 @@ describe("FileDropzone — drag events", () => {
 
   it("calls onFiles with dropped files", () => {
     const onFiles = vi.fn();
-    render(<FileDropzone onFiles={onFiles} />);
-    const zone = screen.getByRole("button");
+    const { container } = render(<FileDropzone onFiles={onFiles} />);
+    const zone = container.querySelector("label[for]:not([class*=label])") as HTMLElement;
     const file = new File(["hello"], "doc.pdf", { type: "application/pdf" });
     fireEvent.drop(zone, {
       preventDefault: () => {},
@@ -90,8 +88,8 @@ describe("FileDropzone — drag events", () => {
 
   it("does not call onFiles when disabled", () => {
     const onFiles = vi.fn();
-    render(<FileDropzone onFiles={onFiles} disabled />);
-    const zone = screen.getByRole("button");
+    const { container } = render(<FileDropzone onFiles={onFiles} disabled />);
+    const zone = container.querySelector("label[for]:not([class*=label])") as HTMLElement;
     const file = new File(["hello"], "doc.pdf", { type: "application/pdf" });
     fireEvent.drop(zone, {
       preventDefault: () => {},

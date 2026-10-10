@@ -18,7 +18,7 @@ const EmailIcon = () => (
 const meta = {
   title: "Threads/Components/IconDetailRow",
   component: IconDetailRow,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     icon:  <LocationIcon />,

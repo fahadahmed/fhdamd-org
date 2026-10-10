@@ -2,12 +2,12 @@
   position: fixed;
   inset: 0;
   z-index: 8000;
-  background: rgba(46, 44, 40, 0.45);
+  background: color-mix(in srgb, var(--th-deep) 45%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--th-space-4);
-  animation: fadeIn var(--th-duration-base) var(--th-ease-out);
+  animation: fadeIn var(--th-duration-state) var(--th-ease-out);
 }
 
 @keyframes fadeIn {
@@ -21,14 +21,14 @@
 
 /* ─── PANEL ───────────────────────────────────────────────────────────────── */
 .panel {
-  background: var(--th-color-surface-1);
-  border-radius: var(--th-radius-xl);
-  box-shadow: var(--th-shadow-lg);
+  background: var(--th-card);
+  border-radius: var(--th-radius-card);
+  box-shadow: var(--th-shadow-lift);
   display: flex;
   flex-direction: column;
   max-block-size: calc(100vh - var(--th-space-8));
   width: 100%;
-  animation: slideUp var(--th-duration-base) var(--th-ease-out);
+  animation: slideUp var(--th-duration-state) var(--th-ease-out);
   outline: none;
 }
 
@@ -57,10 +57,11 @@
 
 .title {
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-weight: 300;
   font-size: var(--th-text-xl);
   letter-spacing: -0.01em;
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
   line-height: 1.2;
 }
 
@@ -68,24 +69,24 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 1px solid var(--th-color-border-strong);
-  background: var(--th-color-surface-2);
+  border: 1px solid var(--th-line-2);
+  background: var(--th-sidebar);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  color: var(--th-color-text-3);
-  transition: all var(--th-duration-base) var(--th-ease-out);
+  color: var(--th-ink-3);
+  transition: all var(--th-duration-state) var(--th-ease-out);
 }
 
 .closeBtn:hover {
-  background: var(--th-color-surface-3);
-  color: var(--th-color-text-1);
+  background: var(--th-d1);
+  color: var(--th-ink);
 }
 
 .closeBtn:focus-visible {
-  outline: 2px solid var(--th-color-focus-ring);
+  outline: 2px solid var(--th-terra);
   outline-offset: 2px;
 }
 
@@ -93,7 +94,7 @@
 .body {
   padding: 0 var(--th-space-7) var(--th-space-6);
   font-size: var(--th-text-base);
-  color: var(--th-color-text-2);
+  color: var(--th-ink-2);
   line-height: 1.65;
   overflow-y: auto;
 }
@@ -104,5 +105,5 @@
   justify-content: flex-end;
   gap: var(--th-space-3);
   padding: var(--th-space-4) var(--th-space-7) var(--th-space-7);
-  border-block-start: 1px solid var(--th-color-border-subtle);
+  border-block-start: 1px solid var(--th-line-subtle);
 }

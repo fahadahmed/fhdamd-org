@@ -7,20 +7,20 @@
 .tip {
   position: absolute;
   z-index: 7000;
-  background: var(--th-color-surface-inverse);
-  color: var(--th-color-text-inverse);
+  background: var(--th-deep);
+  color: var(--th-on-deep);
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 400;
+  font-weight: 400;
   font-size: var(--th-text-sm);
   line-height: 1.4;
   padding: var(--th-space-2) var(--th-space-3);
-  border-radius: var(--th-radius-sm);
+  border-radius: var(--th-radius-field);
   white-space: nowrap;
   pointer-events: none;
 
   /* Hidden by default */
   opacity: 0;
-  transition: opacity var(--th-duration-base) var(--th-ease-out);
+  transition: opacity var(--th-duration-state) var(--th-ease-out);
 }
 
 /* Arrow shared */
@@ -46,7 +46,7 @@
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  border-block-start-color: var(--th-color-surface-inverse);
+  border-block-start-color: var(--th-deep);
 }
 
 .bottom {
@@ -58,7 +58,7 @@
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  border-block-end-color: var(--th-color-surface-inverse);
+  border-block-end-color: var(--th-deep);
 }
 
 .left {
@@ -70,7 +70,7 @@
   left: 100%;
   top: 50%;
   transform: translateY(-50%);
-  border-inline-start-color: var(--th-color-surface-inverse);
+  border-inline-start-color: var(--th-deep);
 }
 
 .right {
@@ -82,5 +82,5 @@
   right: 100%;
   top: 50%;
   transform: translateY(-50%);
-  border-inline-end-color: var(--th-color-surface-inverse);
+  border-inline-end-color: var(--th-deep);
 }
