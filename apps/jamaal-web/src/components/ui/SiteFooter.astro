@@ -1,0 +1,67 @@
+---
+/** The dark footer: the company line and the page links. Static markup. */
+import { CONTACT_EMAIL, FEATURES } from "../../data/site";
+import { footerLinks } from "../../lib/nav";
+
+const links = footerLinks(FEATURES, CONTACT_EMAIL);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="inner">
+    <span>Jamaal, by fhdamd · © {year}</span>
+    <nav aria-label="Footer">
+      <ul>
+        {links.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--site-deeper);
+    color: var(--th-on-deep-2);
+    padding: 32px clamp(20px, 4vw, 48px);
+  }
+
+  .inner {
+    max-inline-size: 1240px;
+    margin-inline: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    font-size: 15px;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    list-style: none;
+    /* the links carry 8px of padding for their hit area; pull the first one back to the text edge */
+    margin: 0 -8px;
+    padding: 0;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 44px;
+    padding-inline: 8px;
+    color: var(--th-on-deep-2);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--th-on-deep);
+    text-decoration: underline;
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--th-terra-on-deep);
+    outline-offset: 2px;
+  }
+</style>
