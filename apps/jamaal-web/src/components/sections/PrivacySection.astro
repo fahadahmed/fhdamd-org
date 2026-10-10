@@ -1,0 +1,20 @@
+---
+import SectionHeading from "../ui/SectionHeading.astro";
+import { privacy } from "../../data/home";
+---
+
+<section class="section" aria-labelledby="privacy-title">
+  <div class="section-inner stack">
+    <SectionHeading eyebrow={privacy.eyebrow} title={privacy.title} accent={privacy.accent} id="privacy-title" />
+    <ul class="facts">
+      {
+        privacy.items.map((item) => (
+          <li class="fact">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

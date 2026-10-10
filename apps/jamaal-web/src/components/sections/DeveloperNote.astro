@@ -1,0 +1,17 @@
+---
+import { developerNote as note } from "../../data/home";
+---
+
+<section class="section" aria-labelledby="developer-note-label">
+  <div class="section-inner note">
+    <div id="developer-note-label" class="th-label th-eyebrow eyebrow">{note.eyebrow}</div>
+    <blockquote>{note.quote} <em>{note.accent}</em></blockquote>
+    <div class="note-by">
+      <span class="note-initial" aria-hidden="true">{note.initial}</span>
+      <div>
+        <div class="note-name">{note.name}</div>
+        <div class="meta">{note.byline}</div>
+      </div>
+    </div>
+  </div>
+</section>

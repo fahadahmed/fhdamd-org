@@ -1,0 +1,394 @@
+/* Home page sections. Colours, type and spacing come from @fhdamd/threads
+   tokens; the few site tokens (--site-deeper, --day-*) are in global.css. */
+
+.sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Section grounds */
+.section--card {
+  background: var(--th-card);
+}
+
+.section--sidebar {
+  background: var(--th-sidebar);
+}
+
+/* ink-3 on the sidebar and selected grounds is under 4.5:1 in dark mode. */
+.section--sidebar .eyebrow,
+.section--sidebar .meta {
+  color: var(--th-ink-2);
+}
+
+.section--deep {
+  background: var(--th-deep);
+  color: var(--th-on-deep);
+  border-block-start: 0;
+}
+
+.section--deep .section-title,
+.section--deep .lede,
+.section--deep .meta {
+  color: var(--th-on-deep);
+}
+
+.section--deep .lede,
+.section--deep .meta {
+  color: var(--th-on-deep-2);
+}
+
+.section--deep .section-title em {
+  color: var(--th-accent-on-deep);
+}
+
+/* ── Hero ──────────────────────────────────────────────────────────────── */
+.hero {
+  max-inline-size: 1240px;
+  margin-inline: auto;
+  padding: clamp(40px, 7vw, 96px) clamp(20px, 4vw, 48px) clamp(56px, 8vw, 112px);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr));
+  gap: 48px;
+  align-items: center;
+}
+
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-inline-size: 0;
+}
+
+.hero-title {
+  margin: 0;
+  font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
+  font-weight: 500;
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  color: var(--th-ink);
+  text-wrap: balance;
+}
+
+.hero-title em,
+.section-title em {
+  font-style: italic;
+  color: var(--th-accent);
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--th-space-row);
+  max-inline-size: 520px;
+}
+
+.hero-visual {
+  display: flex;
+  justify-content: center;
+  min-inline-size: 0;
+}
+
+/* The Mac, iPhone and widget overlap on one stage that scales with its width. */
+.hero-stage {
+  position: relative;
+  inline-size: min(100%, 600px);
+  aspect-ratio: 600 / 540;
+}
+
+.hero-mac,
+.hero-phone,
+.hero-widget {
+  position: absolute;
+}
+
+.hero-mac {
+  inset-inline-start: 0;
+  inset-block-start: 5.5%;
+  inline-size: 90%;
+}
+
+.hero-phone {
+  inset-inline-start: 65.3%;
+  inset-block-start: 14%;
+  inline-size: 33.4%;
+  z-index: 2;
+}
+
+.hero-widget {
+  inset-inline-start: 4%;
+  inset-block-start: 62.5%;
+  inline-size: 53.4%;
+  z-index: 3;
+}
+
+/* ── Why: the comparison ───────────────────────────────────────────────── */
+.compare {
+  max-inline-size: 1100px;
+}
+
+.compare-head,
+.compare-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 6px 40px;
+}
+
+.compare-head {
+  padding-block-end: 12px;
+  font-family: var(--th-font-mono);
+  font-size: var(--th-label-size);
+  font-weight: 500;
+  letter-spacing: var(--th-label-tracking);
+  text-transform: uppercase;
+  color: var(--th-ink-3);
+}
+
+.compare-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.compare-row {
+  padding-block: 18px;
+  border-block-start: 1px solid var(--th-line);
+}
+
+.compare-row p {
+  margin: 0;
+  font-size: var(--th-body-size);
+  line-height: 1.5;
+  color: var(--th-ink-3);
+}
+
+.compare-row .compare-us {
+  font-weight: 600;
+  color: var(--th-ink);
+}
+
+/* On narrow screens the two columns stack, so name the column in text. */
+@media (max-width: 679px) {
+  .compare-head {
+    display: none;
+  }
+}
+
+/* ── Principles ────────────────────────────────────────────────────────── */
+.principles {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 0 40px;
+}
+
+.principle {
+  padding-block: 22px;
+  border-block-start: 1px solid var(--th-line);
+}
+
+.principle h3,
+.fact h3 {
+  margin: 0 0 8px;
+  font-size: var(--th-text-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--th-ink);
+}
+
+.principle p,
+.fact p {
+  margin: 0;
+  font-size: var(--th-body-size);
+  line-height: 1.6;
+  color: var(--th-ink-2);
+}
+
+/* ── Developer's note ──────────────────────────────────────────────────── */
+.note {
+  max-inline-size: 860px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.note blockquote {
+  margin: 0;
+  font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 2.8vw, 2.25rem);
+  line-height: 1.3;
+  color: var(--th-ink);
+  text-wrap: balance;
+}
+
+.note blockquote em {
+  font-style: italic;
+  color: var(--th-accent);
+}
+
+.note-by {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.note-initial {
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: 999px;
+  background: var(--th-deep);
+  color: var(--th-on-deep);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--th-font-serif);
+  font-size: 1.25rem;
+}
+
+.note-name {
+  font-weight: 600;
+  color: var(--th-ink);
+}
+
+/* ── Pricing ───────────────────────────────────────────────────────────── */
+.plan {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 22px 26px;
+  border-radius: var(--th-radius-card);
+  border: 1px solid var(--th-line-2);
+  background: var(--th-selected);
+}
+
+.plan--featured {
+  border-color: var(--th-ink);
+}
+
+.plan-name {
+  font-family: var(--th-font-mono);
+  font-size: var(--th-label-size);
+  font-weight: 500;
+  letter-spacing: var(--th-label-tracking);
+  text-transform: uppercase;
+  color: var(--th-ink-2);
+}
+
+.plan-price {
+  font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
+  font-weight: 500;
+  font-size: clamp(2.25rem, 4vw, 3rem);
+  line-height: 1.05;
+  color: var(--th-ink);
+}
+
+.plan-note {
+  max-inline-size: 52ch;
+}
+
+/* ── Privacy facts ─────────────────────────────────────────────────────── */
+.facts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 32px 40px;
+}
+
+/* ── FAQ: native details, one open at a time, no JavaScript ────────────── */
+.faq {
+  max-inline-size: 820px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--th-space-8);
+}
+
+.faq-list details {
+  border-block-start: 1px solid var(--th-line);
+}
+
+.faq-list details:last-child {
+  border-block-end: 1px solid var(--th-line);
+}
+
+.faq-list summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-block-size: 56px;
+  padding-block: 12px;
+  cursor: pointer;
+  list-style: none;
+  font-size: var(--th-text-lg);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--th-ink);
+}
+
+.faq-list summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-list summary svg {
+  flex: none;
+  color: var(--th-ink-3);
+  transition: transform var(--th-duration-state) var(--th-ease-out);
+}
+
+.faq-list details[open] summary svg {
+  transform: rotate(45deg);
+}
+
+.faq-list summary:focus-visible {
+  outline: 2px solid var(--th-terra);
+  outline-offset: 2px;
+}
+
+.faq-list details p {
+  margin: 0;
+  padding-block-end: 20px;
+  max-inline-size: 62ch;
+  font-size: var(--th-body-size);
+  line-height: 1.6;
+  color: var(--th-ink-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-list summary svg {
+    transition: none;
+  }
+}
+
+/* ── Join ──────────────────────────────────────────────────────────────── */
+.closing {
+  max-inline-size: 640px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--th-space-section);
+  padding-block: clamp(64px, 9vw, 128px);
+}
+
+.section-title--hero {
+  font-size: clamp(2.5rem, 6vw, 4.75rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}

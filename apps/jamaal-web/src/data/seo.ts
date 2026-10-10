@@ -1,4 +1,4 @@
-import { pricing } from "./content";
+import { pricing } from "./home";
 
 export interface SeoOptions {
   /** Absolute site origin, e.g. https://jamaal.app */
@@ -32,7 +32,7 @@ export function softwareApplicationJsonLd({ origin, description, launched }: Seo
     ...(launched && {
       offers: pricing.plans.map((plan) => ({
         "@type": "Offer",
-        name: plan.name,
+        name: plan.offerName,
         price: amount(plan.price),
         priceCurrency: "USD",
       })),

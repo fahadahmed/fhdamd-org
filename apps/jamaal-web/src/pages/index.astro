@@ -1,14 +1,14 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/sections/Hero.astro";
-import Kinds from "../components/sections/Kinds.astro";
-import Anchors from "../components/sections/Anchors.astro";
-import Priority from "../components/sections/Priority.astro";
+import Why from "../components/sections/Why.astro";
 import NightPlanningSection from "../components/sections/NightPlanningSection.astro";
-import Wellbeing from "../components/sections/Wellbeing.astro";
-import Nots from "../components/sections/Nots.astro";
+import Principles from "../components/sections/Principles.astro";
+import DeveloperNote from "../components/sections/DeveloperNote.astro";
 import Pricing from "../components/sections/Pricing.astro";
-import Closing from "../components/sections/Closing.astro";
+import PrivacySection from "../components/sections/PrivacySection.astro";
+import Faq from "../components/sections/Faq.astro";
+import Join from "../components/sections/Join.astro";
 import { LAUNCHED, SITE_DESCRIPTION } from "../data/site";
 import { softwareApplicationJsonLd } from "../data/seo";
 
@@ -22,12 +22,14 @@ const jsonLd = softwareApplicationJsonLd({
 <Layout>
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
   <Hero />
-  <Kinds />
-  <Anchors />
-  <Priority />
+  <Why />
+  <!-- The order, day story and Everywhere sections arrive with #420; the Night
+       Planning carousel stays until its stepper replaces it. -->
   <NightPlanningSection />
-  <Wellbeing />
-  <Nots />
-  {LAUNCHED && <Pricing />}
-  <Closing />
+  <Principles />
+  <DeveloperNote />
+  <Pricing />
+  <PrivacySection />
+  <Faq />
+  <Join />
 </Layout>

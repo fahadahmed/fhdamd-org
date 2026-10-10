@@ -1,0 +1,24 @@
+---
+import AppStoreButton from "../AppStoreButton/AppStoreButton";
+import WaitlistForm from "../WaitlistForm/WaitlistForm";
+import { formCopy, joinCopy } from "../../data/home";
+import { APP_STORE_URL } from "../../data/site";
+import { STAGE } from "../../data/stage";
+
+const copy = joinCopy(STAGE);
+const form = STAGE === "launched" ? null : formCopy(STAGE);
+---
+
+<section id="join" class="section section--deep">
+  <div class="section-inner closing">
+    <h2 class="section-title section-title--hero">{copy.title} <em>{copy.accent}</em></h2>
+    <p class="lede">{copy.lede}</p>
+    {
+      form ? (
+        <WaitlistForm client:visible variant="join" source="join" submitLabel={form.submitLabel} note={form.note} />
+      ) : (
+        <AppStoreButton href={APP_STORE_URL} />
+      )
+    }
+  </div>
+</section>

@@ -95,8 +95,18 @@
   line-height: var(--th-row-leading);
 }
 
+/* The centred form sits on the deep ground, where the default text colours fail. */
 .centred .joinedTitle {
-  color: var(--th-accent);
+  color: var(--th-accent-on-deep);
+}
+
+.centred .note,
+.centred .joinedBody {
+  color: var(--th-on-deep-2);
+}
+
+.centred .error {
+  color: var(--site-error-on-deep);
 }
 
 .joinedBody {

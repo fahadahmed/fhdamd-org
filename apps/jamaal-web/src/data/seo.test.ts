@@ -21,8 +21,8 @@ describe("softwareApplicationJsonLd", () => {
   it("lists the yearly and monthly prices in USD once launched", () => {
     const data = softwareApplicationJsonLd({ ...options, launched: true }) as { offers: unknown };
     expect(data.offers).toEqual([
-      { "@type": "Offer", name: "Yearly", price: "24.99", priceCurrency: "USD" },
       { "@type": "Offer", name: "Monthly", price: "2.99", priceCurrency: "USD" },
+      { "@type": "Offer", name: "Yearly", price: "24.99", priceCurrency: "USD" },
     ]);
   });
 
