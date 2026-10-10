@@ -12,22 +12,22 @@
 
 .label {
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.12em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
 }
 
 .value {
   font-family: var(--th-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.08em;
-  color: var(--th-color-text-3);
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
+  color: var(--th-ink-3);
 }
 
 .track {
   height: 8px;
-  background: var(--th-color-surface-3);
+  background: var(--th-d1);
   border-radius: var(--th-radius-pill);
   overflow: hidden;
 }
@@ -38,8 +38,8 @@
   transition: width 600ms var(--th-ease-out);
 }
 
-.sage    { background: var(--th-color-sage); }
-.terra   { background: var(--th-color-accent); }
-.warning { background: var(--th-color-warning); }
-.error   { background: var(--th-color-error); }
-.ink     { background: var(--th-color-text-1); }
+.sage    { background: var(--th-accent); }
+.terra   { background: var(--th-terra); }
+.warning { background: var(--th-terra); }
+.error   { background: var(--th-alert); }
+.ink     { background: var(--th-ink); }

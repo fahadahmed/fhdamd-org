@@ -5,7 +5,7 @@ import { ReadingProgressBar } from "./ReadingProgressBar";
 const meta = {
   title: "Threads/Components/ReadingProgressBar",
   component: ReadingProgressBar,
-  parameters: { layout: "fullscreen" },
+  parameters: { layout: "fullscreen", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: { targetRef: { current: null } },
 } satisfies Meta<typeof ReadingProgressBar>;

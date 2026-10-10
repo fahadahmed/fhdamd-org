@@ -4,7 +4,7 @@ import { Breadcrumb } from "./Breadcrumb";
 const meta = {
   title: "Threads/Navigation/Breadcrumb",
   component: Breadcrumb,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     items: [

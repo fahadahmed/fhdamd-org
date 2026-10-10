@@ -15,10 +15,10 @@
 
 .label {
   font-family: var(--th-font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.14em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   margin-block-end: 14px;
 }
 
@@ -27,7 +27,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  border-inline-start: 1px solid var(--th-color-border-default);
+  border-inline-start: 1px solid var(--th-line);
   margin: 0;
   padding: 0;
 }
@@ -35,9 +35,9 @@
 .link {
   display: block;
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 420;
+  font-weight: 400;
   font-size: 0.8125rem;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   text-decoration: none;
   padding-block: 6px;
   padding-inline-start: 16px;
@@ -49,12 +49,12 @@
 }
 
 .link:hover {
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
 }
 
 .link.active {
-  color: var(--th-color-accent);
-  border-inline-start-color: var(--th-color-accent);
+  color: var(--th-terra);
+  border-inline-start-color: var(--th-terra);
 }
 
 /* ─── MOBILE — sticky collapsed bar, expands into a dropdown ─────────────── */
@@ -70,10 +70,10 @@
     z-index: 190;
     width: 100%;
     min-width: 0;
-    background: color-mix(in srgb, var(--th-color-bg) 92%, transparent);
+    background: color-mix(in srgb, var(--th-app) 92%, transparent);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-block-end: 1px solid var(--th-color-border-default);
+    border-block-end: 1px solid var(--th-line);
     margin-block-end: var(--th-space-4);
   }
 }
@@ -89,24 +89,24 @@
   border: none;
   cursor: pointer;
   text-align: start;
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
 }
 
 .mobileLabel {
   font-family: var(--th-font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.14em;
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   flex-shrink: 0;
 }
 
 .mobileActive {
   flex: 1;
   font-family: var(--th-font-display);
-  font-variation-settings: "wdth" 90, "wght" 500;
+  font-weight: 600;
   font-size: 0.8125rem;
-  color: var(--th-color-text-1);
+  color: var(--th-ink);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -114,7 +114,7 @@
 
 .mobileMenu {
   display: none;
-  border-block-start: 1px solid var(--th-color-border-subtle);
+  border-block-start: 1px solid var(--th-line-subtle);
   padding: 8px 16px 12px;
   max-height: 60vh;
   overflow-y: auto;

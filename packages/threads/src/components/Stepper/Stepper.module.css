@@ -11,7 +11,7 @@
   inset-block-start: calc(22px + var(--th-space-2));
   inset-inline: 10%;
   block-size: 1px;
-  background: var(--th-color-border-default);
+  background: var(--th-line);
   z-index: 0;
 }
 
@@ -32,17 +32,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--th-color-border-strong);
-  background: var(--th-color-surface-1);
-  color: var(--th-color-text-3);
+  border: 1px solid var(--th-line-2);
+  background: var(--th-card);
+  color: var(--th-ink-3);
   transition:
-    background var(--th-duration-base) var(--th-ease-out),
-    border-color var(--th-duration-base) var(--th-ease-out),
-    color var(--th-duration-base) var(--th-ease-out);
+    background var(--th-duration-state) var(--th-ease-out),
+    border-color var(--th-duration-state) var(--th-ease-out),
+    color var(--th-duration-state) var(--th-ease-out);
 }
 
 .number {
   font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
   font-weight: 300;
   font-size: var(--th-text-md);
   line-height: 1;
@@ -53,26 +54,26 @@
   font-size: 0.6rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--th-color-text-3);
+  color: var(--th-ink-3);
   text-align: center;
 }
 
 /* Done */
 .done .circle {
-  background: var(--th-color-surface-3);
-  border-color: var(--th-color-border-strong);
-  color: var(--th-color-text-2);
+  background: var(--th-d1);
+  border-color: var(--th-line-2);
+  color: var(--th-ink-2);
 }
 
 /* Active */
 .active .circle {
-  background: var(--th-color-text-1);
-  border-color: var(--th-color-text-1);
-  color: var(--th-color-text-inverse);
+  background: var(--th-deep);
+  border-color: var(--th-deep);
+  color: var(--th-on-deep);
 }
 
 .active .label {
-  color: var(--th-color-text-2);
+  color: var(--th-ink-2);
 }
 
 /* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */

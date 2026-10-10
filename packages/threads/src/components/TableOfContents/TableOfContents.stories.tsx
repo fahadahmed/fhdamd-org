@@ -4,7 +4,7 @@ import { TableOfContents } from "./TableOfContents";
 const meta = {
   title: "Threads/Components/TableOfContents",
   component: TableOfContents,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     items: [

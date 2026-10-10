@@ -18,7 +18,7 @@ const onboardingSteps = [
 const meta = {
   title: "Threads/Navigation/Stepper",
   component: Stepper,
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: { test: "error" } },
   tags: ["autodocs"],
   argTypes: {
     currentStep: { control: { type: "number", min: 0, max: 4 } },

@@ -28,6 +28,7 @@ export function Stepper({ steps, currentStep, className, ...rest }: StepperProps
   return (
     <div
       className={[styles.stepper, className].filter(Boolean).join(" ")}
+      role="group"
       aria-label="Progress"
       {...rest}
     >
@@ -40,9 +41,11 @@ export function Stepper({ steps, currentStep, className, ...rest }: StepperProps
           <div
             key={i}
             className={[styles.node, styles[status]].join(" ")}
+            aria-current={status === "active" ? "step" : undefined}
           >
             <div
               className={styles.circle}
+              role="img"
               aria-label={`Step ${i + 1}: ${step.label} — ${status}`}
             >
               {status === "done" ? (

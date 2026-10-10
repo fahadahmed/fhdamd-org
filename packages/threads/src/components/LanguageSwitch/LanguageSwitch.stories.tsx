@@ -4,7 +4,7 @@ import { LanguageSwitch } from "./LanguageSwitch";
 const meta = {
   title: "Threads/Components/LanguageSwitch",
   component: LanguageSwitch,
-  parameters: { layout: "centered" },
+  parameters: { layout: "centered", a11y: { test: "error" } },
   tags: ["autodocs"],
   args: {
     languages: [
