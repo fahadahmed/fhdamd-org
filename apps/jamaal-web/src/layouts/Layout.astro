@@ -4,8 +4,8 @@ import "@fhdamd/threads/styles";
 import "@fhdamd/threads/base";
 import "../styles/global.css";
 import "../styles/landing.css";
-import Header from "../components/Header/Header";
-import Footer from "../components/Footer/Footer";
+import SiteNav from "../components/ui/SiteNav.astro";
+import SiteFooter from "../components/ui/SiteFooter.astro";
 import { SITE_DESCRIPTION } from "../data/site";
 
 interface Props {
@@ -91,10 +91,10 @@ const fontHref =
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <Header client:idle />
+    <SiteNav />
     <main id="main">
       <slot />
     </main>
-    <Footer client:visible />
+    <SiteFooter />
   </body>
 </html>
