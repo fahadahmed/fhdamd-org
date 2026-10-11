@@ -266,3 +266,106 @@ export const everywhere = {
     alt: "Live Activity on the Lock Screen",
   },
 } as const;
+
+/** One device in a chapter's picture. x, y and w are in a 600 x 640 space the stage scales. */
+export interface DayDevice {
+  type: "phone" | "duo" | "ipad" | "mac" | "watch" | "widget";
+  src: string;
+  x: number;
+  y: number;
+  w: number;
+  alt: string;
+  z?: number;
+  /** Which part of a tall screenshot to show. */
+  position?: string;
+  /** Overrides the screen ratio. */
+  aspect?: string;
+  /** Not in the app yet: shows the "Coming in 1.1" badge. */
+  coming?: boolean;
+}
+
+export interface DayChapter {
+  time: string;
+  label: string;
+  title: string;
+  body: string;
+  where: string;
+  devices: readonly DayDevice[];
+}
+
+export const STAGE_SPACE = { width: 600, height: 640 } as const;
+
+export const day = {
+  eyebrow: "A day with Jamaal",
+  title: "From the first coffee to the last light.",
+  chapters: [
+    {
+      time: "07:10",
+      label: "Morning",
+      title: "The day arrives already sorted.",
+      body: "Open Jamaal and Today is one list: what matters, what's due, and the few fixed things you can't move. A bar shows how much of your day it fills, so you know before nine whether it's too much.",
+      where: "iPhone · Today widget on the Home Screen",
+      devices: [
+        { type: "phone", src: "g-TD-01", x: 60, y: 10, w: 270, alt: "Today on iPhone" },
+        { type: "widget", src: "WG-03-today-medium", x: 250, y: 470, w: 330, z: 2, alt: "Today widget" },
+      ],
+    },
+    {
+      time: "09:40",
+      label: "Capture",
+      title: "Add it anywhere. It tells you if it fits.",
+      body: "Type it on your Mac, your iPad or your phone, and give it a rough size. If today is already full, Jamaal says so and offers tomorrow instead of squeezing it in.",
+      where: "Mac · iPhone",
+      devices: [
+        { type: "mac", src: "g-macOS", x: 0, y: 90, w: 560, alt: "Jamaal on Mac" },
+        { type: "phone", src: "g-TK-01-full", x: 380, y: 180, w: 200, z: 2, alt: "Day is full" },
+      ],
+    },
+    {
+      time: "10:00",
+      label: "Focus",
+      title: "Begin, and the rest steps back.",
+      body: "One task and one timer, counting up. There's no alarm when you pass the estimate, just a line that says so. Stand an iPhone Duo half-open on a table and it becomes a desk clock.",
+      where: "iPhone · iPhone Duo · Apple Watch and Live Activity in 1.1",
+      devices: [
+        { type: "phone", src: "g-FS-02", x: 20, y: 20, w: 260, alt: "Focus on iPhone" },
+        { type: "duo", src: "g-Duo-tabletop", x: 300, y: 30, w: 240, alt: "iPhone Duo tabletop focus" },
+        { type: "watch", src: "g-WA-04", x: 390, y: 430, w: 150, z: 3, coming: true, alt: "Focus on Apple Watch" },
+      ],
+    },
+    {
+      time: "15:00",
+      label: "Anchors",
+      title: "Some things don't move. Jamaal plans around them.",
+      body: "The school run, bin night, watering the plants, feeding the cat. Anchors have a window rather than a deadline. They sit at the top of Today, and everything else fits around them.",
+      where: "iPhone · Next Anchor widget · Apple Watch in 1.1",
+      devices: [
+        { type: "phone", src: "g-TD-01", x: 40, y: 20, w: 270, position: "50% 22%", alt: "Anchors on Today" },
+        { type: "widget", src: "WG-01-upcoming", x: 350, y: 40, w: 190, z: 2, alt: "Next Anchor widget" },
+        { type: "watch", src: "g-WA-02", x: 365, y: 320, w: 160, z: 3, coming: true, alt: "Anchors on Apple Watch" },
+      ],
+    },
+    {
+      time: "18:30",
+      label: "Habits",
+      title: "Habits measured in weeks, not streaks.",
+      body: "Water, a walk, reading before bed. Each habit fills a grid of days, so a missed Tuesday is one pale square, not a broken chain.",
+      where: "iPad · iPhone · Apple Watch in 1.1",
+      devices: [
+        { type: "ipad", src: "g-iPad-HB-02", x: 10, y: 110, w: 560, aspect: "1170 / 820", alt: "Habits on iPad" },
+        { type: "watch", src: "g-WA-03-water", x: 420, y: 400, w: 150, z: 2, coming: true, alt: "Water on Apple Watch" },
+      ],
+    },
+    {
+      time: "21:00",
+      label: "Evening",
+      title: "Five quiet minutes, and tomorrow is ready.",
+      body: "One gentle nudge in the evening. Look back at today, carry forward what's left, and shape tomorrow around what's already fixed. Then close the day.",
+      where: "iPhone · Today widget in the evening",
+      devices: [
+        { type: "phone", src: "g-NP-05", x: 40, y: 10, w: 270, alt: "Close the day" },
+        { type: "widget", src: "WG-03-evening", x: 230, y: 450, w: 350, z: 2, alt: "Plan tomorrow widget" },
+      ],
+    },
+  ],
+} as const satisfies { eyebrow: string; title: string; chapters: readonly DayChapter[] };

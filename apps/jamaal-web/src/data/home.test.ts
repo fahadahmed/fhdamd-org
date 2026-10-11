@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { STAGES } from "../../scripts/stage-parse.mjs";
 import { AFTER_TRIAL, faqItems, formCopy, heroEyebrow, joinCopy, pricing, pricingIntro } from "./home";
+import type { DayChapter } from "./home";
 
 describe("stage copy", () => {
   it("has a hero eyebrow, pricing intro and join lede for every stage", () => {
@@ -56,5 +57,35 @@ describe("faqItems", () => {
       expect(new Set(items.map((i) => i.question)).size).toBe(items.length);
       for (const item of items) expect(item.answer.length).toBeGreaterThan(20);
     }
+  });
+});
+
+describe("day story", () => {
+  it("has six chapters, with every device placed inside the 600 x 640 stage", async () => {
+    const { day, STAGE_SPACE } = await import("./home");
+    expect(day.chapters).toHaveLength(6);
+    for (const chapter of day.chapters) {
+      expect(chapter.devices.length).toBeGreaterThan(0);
+      for (const d of chapter.devices) {
+        expect(d.x).toBeGreaterThanOrEqual(0);
+        expect(d.y).toBeGreaterThanOrEqual(0);
+        expect(d.x + d.w).toBeLessThanOrEqual(STAGE_SPACE.width);
+        expect(d.alt.length).toBeGreaterThan(3);
+      }
+    }
+  });
+
+  it("only badges what is not in the app yet, and only Apple Watch", async () => {
+    const { day } = await import("./home");
+    const chapters: readonly DayChapter[] = day.chapters;
+    const coming = chapters.flatMap((c) => c.devices.filter((d) => d.coming));
+    expect(coming.length).toBeGreaterThan(0);
+    for (const d of coming) expect(d.type).toBe("watch");
+  });
+
+  it("points every screenshot at a file that exists", async () => {
+    const { day } = await import("./home");
+    const { screen } = await import("../lib/screens");
+    for (const chapter of day.chapters) for (const d of chapter.devices) expect(() => screen(d.src)).not.toThrow();
   });
 });

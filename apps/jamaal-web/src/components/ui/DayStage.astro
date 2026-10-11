@@ -1,0 +1,44 @@
+---
+/** One chapter's devices, placed in the 600 x 640 space and scaled with the stage. */
+import DeviceFrame from "./DeviceFrame.astro";
+import { STAGE_SPACE, type DayDevice } from "../../data/home";
+import { screen } from "../../lib/screens";
+
+interface Props {
+  devices: readonly DayDevice[];
+}
+
+const { devices } = Astro.props;
+const { width, height } = STAGE_SPACE;
+const pct = (value: number, of: number) => `${(value / of) * 100}%`;
+---
+
+<div class="comp">
+  {
+    devices.map((d) => (
+      <div class="comp-item" style={`left: ${pct(d.x, width)}; top: ${pct(d.y, height)}; width: ${pct(d.w, width)}; z-index: ${d.z ?? 1}`}>
+        <DeviceFrame
+          type={d.type}
+          src={screen(d.src)}
+          alt={d.alt}
+          position={d.position}
+          aspect={d.aspect}
+          coming={d.coming}
+          sizes={`(min-width: 960px) ${d.w}px, ${Math.round((d.w / width) * 100)}vw`}
+        />
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .comp {
+    position: relative;
+    inline-size: 100%;
+    aspect-ratio: 600 / 640;
+  }
+
+  .comp-item {
+    position: absolute;
+  }
+</style>
