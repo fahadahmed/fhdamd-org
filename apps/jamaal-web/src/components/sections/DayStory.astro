@@ -1,0 +1,297 @@
+---
+/**
+ * "A day with Jamaal": six chapters, from 07:10 to 21:00. From 960px up the
+ * text scrolls on the left while one sticky stage on the right cross-fades to
+ * the chapter being read, and the section's background deepens as the day ends.
+ * Below that, each chapter shows its own devices inline. Without JavaScript the
+ * inline version is used at every width.
+ */
+import DayStage from "../ui/DayStage.astro";
+import { day } from "../../data/home";
+---
+
+<section id="day" class="day" data-chapter="0">
+  <div class="day-head">
+    <div class="th-label th-eyebrow day-eyebrow">{day.eyebrow}</div>
+    <h2 class="day-title">{day.title}</h2>
+  </div>
+
+  <div class="day-grid">
+    <div class="chapters">
+      {
+        day.chapters.map((chapter, i) => (
+          <article class="chapter" data-ch={i} aria-labelledby={`day-ch-${i}`}>
+            <div class="chapter-when">
+              <span class="chapter-time">{chapter.time}</span>
+              <span class="chapter-label">{chapter.label}</span>
+            </div>
+            <h3 id={`day-ch-${i}`}>{chapter.title}</h3>
+            <p>{chapter.body}</p>
+            <div class="chapter-where"><span class="dot" aria-hidden="true"></span>{chapter.where}</div>
+            <div class="inline-stage">
+              <DayStage devices={chapter.devices} />
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="sticky-col">
+      <div class="sticky">
+        <div class="sticky-stage">
+          {
+            day.chapters.map((chapter, i) => (
+              <div class="layer" data-layer={i} data-active={i === 0 ? "" : undefined} aria-hidden={i === 0 ? "false" : "true"}>
+                <DayStage devices={chapter.devices} />
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { setupDayStory } from "../../lib/dayStory";
+
+  setupDayStory({ doc: document });
+</script>
+
+<style>
+  .day {
+    --ink: var(--th-ink);
+    --ink-2: var(--th-ink-2);
+    --accent: var(--th-accent);
+    padding: clamp(56px, 8vw, 112px) clamp(20px, 4vw, 48px) 0;
+    background-color: var(--day-0);
+    color: var(--ink);
+    transition: background-color 700ms var(--th-ease-out);
+  }
+
+  .day[data-chapter="1"] { background-color: var(--day-1); }
+  .day[data-chapter="2"] { background-color: var(--day-2); }
+  .day[data-chapter="3"] { background-color: var(--day-3); }
+  .day[data-chapter="4"] { background-color: var(--day-4); }
+
+  /* The last chapter is evening: the ground goes to deep and the ink flips to match. */
+  .day[data-chapter="5"] {
+    --ink: var(--th-on-deep);
+    --ink-2: var(--th-on-deep-2);
+    --accent: var(--th-accent-on-deep);
+    background-color: var(--day-5);
+  }
+
+  .day-head {
+    max-inline-size: 1240px;
+    margin-inline: auto;
+    padding-block-end: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .day-eyebrow {
+    color: var(--ink-2);
+    transition: color 700ms;
+  }
+
+  .day-title {
+    margin: 0;
+    max-inline-size: 18ch;
+    font-family: var(--th-font-serif);
+    font-variation-settings: var(--th-serif-axes);
+    font-weight: 500;
+    font-size: clamp(2.125rem, 4.6vw, 3.5rem);
+    line-height: 1.04;
+    color: var(--ink);
+    transition: color 700ms;
+    text-wrap: balance;
+  }
+
+  .day-grid {
+    max-inline-size: 1240px;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 48px;
+  }
+
+  .chapters {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chapter {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    padding-block: 40px;
+  }
+
+  .chapter-when {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+
+  .chapter-time {
+    font-family: var(--th-font-serif);
+    font-weight: 300;
+    font-size: 2.5rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    transition: color 700ms;
+  }
+
+  .chapter-label {
+    font-family: var(--th-font-mono);
+    font-size: var(--th-label-size);
+    font-weight: 500;
+    letter-spacing: var(--th-label-tracking);
+    text-transform: uppercase;
+    color: var(--ink-2);
+    transition: color 700ms;
+  }
+
+  .chapter h3 {
+    margin: 0;
+    max-inline-size: 20ch;
+    font-family: var(--th-font-serif);
+    font-variation-settings: var(--th-serif-axes);
+    font-weight: 500;
+    font-size: clamp(1.75rem, 3vw, 2.375rem);
+    line-height: 1.08;
+    color: var(--ink);
+    transition: color 700ms;
+    text-wrap: balance;
+  }
+
+  .chapter p {
+    margin: 0;
+    max-inline-size: 46ch;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    transition: color 700ms;
+    text-wrap: pretty;
+  }
+
+  .chapter-where {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    transition: color 700ms;
+  }
+
+  .dot {
+    inline-size: 6px;
+    block-size: 6px;
+    border-radius: 999px;
+    background: var(--accent);
+  }
+
+  .inline-stage {
+    display: flex;
+    justify-content: center;
+    padding-block-start: 20px;
+  }
+
+  .inline-stage :global(.comp) {
+    inline-size: min(100%, 600px);
+  }
+
+  .sticky-col {
+    display: none;
+  }
+
+  /* Wide screens: the stage is sticky and the chapters are tall enough to scroll through. */
+  @media (min-width: 960px) {
+    .day-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 600px);
+    }
+
+    .chapter {
+      min-block-size: 86svh;
+    }
+
+    .inline-stage {
+      display: none;
+    }
+
+    .sticky-col {
+      display: block;
+      position: relative;
+    }
+
+    .sticky {
+      position: sticky;
+      inset-block-start: 0;
+      block-size: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* As tall as the screen allows, never wider than 600px. */
+    .sticky-stage {
+      position: relative;
+      inline-size: min(100%, 600px, calc((100svh - 90px) * 600 / 640));
+      aspect-ratio: 600 / 640;
+    }
+
+    .layer {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transform: translateY(28px) scale(0.97);
+      transition:
+        opacity 600ms var(--th-ease-out),
+        transform 700ms var(--th-ease-out);
+      pointer-events: none;
+    }
+
+    .layer[data-active] {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* No JavaScript: nothing would move the sticky stage, so use the inline one everywhere. */
+  @media (scripting: none) {
+    .sticky-col {
+      display: none;
+    }
+
+    .inline-stage {
+      display: flex;
+    }
+
+    .chapter {
+      min-block-size: 0;
+    }
+
+    .day-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .day,
+    .day *,
+    .layer {
+      transition: none;
+    }
+
+    .layer,
+    .layer[data-active] {
+      transform: none;
+    }
+  }
+</style>
