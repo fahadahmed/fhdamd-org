@@ -11,6 +11,9 @@ on:
       - main
     paths:
       - apps/jamaal-web/**
+  # Run by the rebuildOnConfigChange function when Remote Config is published, so a
+  # stage flip rebuilds the static site. Also usable by hand from the Actions tab.
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -116,7 +119,7 @@ jobs:
   deploy:
     name: Build and deploy jamaal-web (live)
     needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read

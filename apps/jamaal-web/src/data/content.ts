@@ -27,6 +27,15 @@ export const faq = [
       "Subscriptions are managed by Apple. Open Settings on your iPhone or iPad, tap your name, then Subscriptions, and choose Jamaal. On a Mac, open the App Store, click your name, then Account Settings.",
   },
   {
+    question: "How do I join the TestFlight beta?",
+    answer:
+      "Add your name and email to the list on the home page. When the beta is open, Apple emails you an invite from TestFlight. Install TestFlight from the App Store, open the invite, and Jamaal installs like any other app. The beta is free.",
+  },
+  {
+    question: "How do I leave the list or have my details removed?",
+    answer: `Email ${CONTACT_EMAIL} from the address you signed up with and we'll remove it. You can also ask what we hold about you.`,
+  },
+  {
     question: "Something isn't working. How do I get help?",
     answer:
       `Email ${CONTACT_EMAIL} with what you were doing, what you expected and what happened. Mention your device and iOS or macOS version if you can.`,

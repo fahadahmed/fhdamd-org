@@ -2,10 +2,13 @@ import { initializeApp } from "firebase-admin/app";
 import { FieldValue, Timestamp, getFirestore } from "firebase-admin/firestore";
 import { getRemoteConfig } from "firebase-admin/remote-config";
 import { setGlobalOptions } from "firebase-functions";
+import { defineSecret } from "firebase-functions/params";
 import * as Sentry from "@sentry/node";
 import * as logger from "firebase-functions/logger";
 import { onRequest } from "firebase-functions/https";
+import { onConfigUpdated } from "firebase-functions/v2/remoteConfig";
 import { createErrorReporter } from "./errors";
+import { dispatchRebuild } from "./rebuild";
 import { createRateLimiter } from "./rateLimit";
 import type { CounterStore } from "./rateLimit";
 import { createSignupHandler } from "./signup";
@@ -90,5 +93,29 @@ export const signup = onRequest({ cors: false, maxInstances: 5 }, async (request
     logger.error("signup failed", { message: error instanceof Error ? error.message : "unknown" });
     await errors.capture(error);
     response.status(500).json({ error: "Something went wrong. Please try again." });
+  }
+});
+
+// A fine-grained GitHub token (this repository, Actions: read and write), stored in Secret Manager.
+const githubDispatchToken = defineSecret("GITHUB_DISPATCH_TOKEN");
+
+/**
+ * When Remote Config is published (for example `site_stage` is flipped), rebuild
+ * and redeploy the static site so the new stage reaches visitors in a couple of
+ * minutes. The signup function reads the stage itself and needs no rebuild.
+ */
+export const rebuildOnConfigChange = onConfigUpdated({ secrets: [githubDispatchToken] }, async (event) => {
+  try {
+    await dispatchRebuild({
+      token: githubDispatchToken.value(),
+      owner: "fahadahmed",
+      repo: "fhdamd-org",
+      workflow: "ci-jamaal-web.yml",
+      ref: "main",
+    });
+    logger.info("Queued a site rebuild", { remoteConfigVersion: event.data.versionNumber });
+  } catch (error) {
+    logger.error("Could not queue a site rebuild", { message: error instanceof Error ? error.message : "unknown" });
+    await errors.capture(error);
   }
 });
