@@ -1,0 +1,27 @@
+---
+import { faqItems } from "../../data/home";
+import { STAGE } from "../../data/stage";
+
+const items = faqItems(STAGE);
+---
+
+<section id="faq" class="section section--card">
+  <div class="section-inner faq">
+    <h2 class="section-title">Questions</h2>
+    <div class="faq-list">
+      {
+        items.map((item, i) => (
+          <details name="faq" open={i === 0}>
+            <summary>
+              <span>{item.question}</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </summary>
+            <p>{item.answer}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

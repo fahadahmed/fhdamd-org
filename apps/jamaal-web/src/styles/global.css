@@ -148,6 +148,8 @@ main {
    so it is named here once instead of repeated as a hex. */
 :root {
   --site-deeper: #071b27;
+  /* Form errors on the deep ground (the design's #F09A90); on light grounds errors use --th-alert. */
+  --site-error-on-deep: #f09a90;
 
   /* "A day with Jamaal" background, from the page ground to deep as the day
      ends. Built with color-mix so dark mode follows the tokens. */

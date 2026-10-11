@@ -11,7 +11,7 @@ import { STAGE } from "./stage";
 export const LAUNCHED = STAGE === "launched";
 
 /** Where "Download on the App Store" points. Replace with the real listing URL at launch. */
-export const APP_STORE_URL = "#download";
+export const APP_STORE_URL = "#join";
 
 export const CONTACT_EMAIL = "contact@fhdamd.dev";
 
