@@ -11,9 +11,12 @@ import { COMING_SOON_LABEL, DEVICE_WIDTHS, deviceAspect, type DeviceType } from 
 
 interface Props {
   type: DeviceType;
-  src: ImageMetadata;
+  /** The screenshot. Leave out when you put your own content in the default slot (for example images that cross-fade). */
+  src?: ImageMetadata;
   /** Describes the screen for people who can't see it; never empty. */
-  alt: string;
+  alt?: string;
+  /** Overrides the bezel colour (the hardware colour, not a theme colour). */
+  bezel?: string;
   /** Overrides the screen ratio (the open iPhone Duo, a wider iPad). */
   aspect?: string;
   /** Which part of a tall screenshot to show. */
@@ -21,35 +24,43 @@ interface Props {
   /** Shows the "Coming in 1.1" badge above the device. */
   coming?: boolean;
   /** `sizes` for the generated image; say how wide the frame renders. */
-  sizes: string;
+  sizes?: string;
   /** Eager only for an image that is in the first screen. */
   loading?: "lazy" | "eager";
   class?: string;
 }
 
-const { type, src, alt, aspect, position = "top", coming = false, sizes, loading = "lazy", class: className } = Astro.props;
+const { type, src, alt = "", bezel, aspect, position = "top", coming = false, sizes = "100vw", loading = "lazy", class: className } = Astro.props;
+const slotted = Astro.slots.has("default");
+if (!slotted && !src) throw new Error("DeviceFrame needs a src or slotted content");
 const ratio = deviceAspect(type, aspect);
 const widths = DEVICE_WIDTHS[type];
 ---
 
-<div class:list={["device", `device-${type}`, className]} style={ratio ? `--screen-ratio: ${ratio}` : undefined}>
+<div class:list={["device", `device-${type}`, className]} style={[ratio && `--screen-ratio: ${ratio}`, bezel && `--bezel: ${bezel}`].filter(Boolean).join("; ") || undefined}>
   {coming && <span class="device-badge">{COMING_SOON_LABEL}</span>}
   {
-    type === "widget" ? (
+    type === "widget" && src ? (
       <Picture src={src} alt={alt} widths={widths} sizes={sizes} formats={["avif", "webp"]} loading={loading} class="device-img" />
     ) : (
       <div class="device-body">
         <div class="device-screen">
-          <Picture
-            src={src}
-            alt={alt}
-            widths={widths}
-            sizes={sizes}
-            formats={["avif", "webp"]}
-            loading={loading}
-            class="device-img"
-            style={`object-position: ${position}`}
-          />
+          {slotted ? (
+            <slot />
+          ) : (
+            src && (
+              <Picture
+                src={src}
+                alt={alt}
+                widths={widths}
+                sizes={sizes}
+                formats={["avif", "webp"]}
+                loading={loading}
+                class="device-img"
+                style={`object-position: ${position}`}
+              />
+            )
+          )}
         </div>
       </div>
     )
