@@ -99,6 +99,8 @@ jobs:
         env:
           # Public GA4 measurement ID. Without it the site builds with no analytics and no cookie banner.
           PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.JAMAAL_FIREBASE_MEASUREMENT_ID }}
+          # Sentry DSN for browser errors. Without it the site builds with error reporting off.
+          PUBLIC_SENTRY_DSN: ${{ secrets.JAMAAL_SENTRY_DSN }}
 
       # Each PR gets its own channel (pr<number>-<branch>) with a preview URL
       # posted as a PR comment. Channels expire after 7 days.
@@ -147,6 +149,8 @@ jobs:
         env:
           # Public GA4 measurement ID. Without it the site builds with no analytics and no cookie banner.
           PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.JAMAAL_FIREBASE_MEASUREMENT_ID }}
+          # Sentry DSN for browser errors. Without it the site builds with error reporting off.
+          PUBLIC_SENTRY_DSN: ${{ secrets.JAMAAL_SENTRY_DSN }}
 
       - name: Deploy to Firebase Hosting (live)
         uses: FirebaseExtended/action-hosting-deploy@500ac625ca2dd40cbd15f7659af953801858032a # v0

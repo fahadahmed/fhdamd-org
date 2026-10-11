@@ -51,3 +51,12 @@ Hosted on Firebase Hosting, project `jamaal-web` (default site `jamaal-web`, htt
 - `pnpm --filter jamaal-web-functions build` compiles to `functions/lib`.
 - `firebase emulators:start --only functions --project demo-jamaal-web` (run from `apps/jamaal-web`) serves it locally at `http://127.0.0.1:5001/demo-jamaal-web/us-central1/healthCheck`.
 - **Not deployed by CI.** The hosting deploy uses `--only hosting`. Deploying functions needs the Blaze (pay-as-you-go) plan and a service account with more than Hosting Admin (Cloud Functions Admin, Service Account User and similar), so it is left for #388.
+
+## Error reporting (Sentry)
+
+Errors only: no tracing, replay, breadcrumbs or user data, and the privacy page says so when it is on.
+
+- **Site:** `src/lib/errorReporting.ts` listens for uncaught errors and unhandled rejections and downloads the Sentry SDK only when one happens (almost every visit pays nothing). Events are scrubbed of the user, cookies, headers and query string, and the page address keeps only its path. At most five reports per page view. It is **off unless the build has `PUBLIC_SENTRY_DSN`**, which CI takes from the GitHub secret `JAMAAL_SENTRY_DSN`.
+- **Functions:** `functions/src/errors.ts` reports unexpected failures in `signup` and `rebuildOnConfigChange` and flushes before the instance freezes. Events drop the request and user entirely (a signup body holds a name and email). The DSN is `SENTRY_DSN` in `functions/.env.jamaal-web`; empty means off.
+- **To switch it on:** create two Sentry projects (a browser one for the site, a Node one for the functions), turn on *Prevent storing of IP addresses* in each project's settings, add the browser DSN as the GitHub secret `JAMAAL_SENTRY_DSN`, put the Node DSN in `functions/.env.jamaal-web`, and redeploy the functions.
+- **The app itself** (Swift, in its own repository) uses the Sentry Cocoa SDK with the same rules: crashes and errors only, `sendDefaultPii = false`, and scrubbed breadcrumbs so task, habit and Anchor text never leaves the device.

@@ -2,6 +2,7 @@
 import LegalPage from "../layouts/LegalPage.astro";
 import { CONTACT_EMAIL } from "../data/site";
 import { legal } from "../data/content";
+import { ERROR_REPORTING_AVAILABLE } from "../lib/errorReporting";
 ---
 
 <LegalPage
@@ -41,6 +42,16 @@ import { legal } from "../data/content";
     We turn off Google signals and ad personalisation, we don't use this data for advertising, and we keep it for the
     shortest period Google offers. The Jamaal app collects no analytics at all.
   </p>
+  {
+    ERROR_REPORTING_AVAILABLE && (
+      <p>
+        If something on this website breaks in your browser, an error report may be sent to Sentry, our error-reporting
+        service. It contains the error message and where in the code it happened, the page address without anything after
+        a question mark, and your browser and device type. It never contains what you typed into a form, cookies or your
+        name or email address, and we ask Sentry not to store IP addresses.
+      </p>
+    )
+  }
   <p>
     The site is hosted on Google Firebase Hosting, which keeps standard server logs (such as IP address and the pages
     requested) to run and secure the service. There are no other trackers.

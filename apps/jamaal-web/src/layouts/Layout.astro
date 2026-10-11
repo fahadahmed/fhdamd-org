@@ -99,5 +99,10 @@ const fontHref =
     </main>
     <SiteFooter />
     <ConsentBanner />
+    <script>
+      import { SENTRY_DSN, installErrorReporting } from "../lib/errorReporting";
+
+      installErrorReporting({ win: window, dsn: SENTRY_DSN });
+    </script>
   </body>
 </html>

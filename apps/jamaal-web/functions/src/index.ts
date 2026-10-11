@@ -2,8 +2,10 @@ import { initializeApp } from "firebase-admin/app";
 import { FieldValue, Timestamp, getFirestore } from "firebase-admin/firestore";
 import { getRemoteConfig } from "firebase-admin/remote-config";
 import { setGlobalOptions } from "firebase-functions";
+import * as Sentry from "@sentry/node";
 import * as logger from "firebase-functions/logger";
 import { onRequest } from "firebase-functions/https";
+import { createErrorReporter } from "./errors";
 import { createRateLimiter } from "./rateLimit";
 import type { CounterStore } from "./rateLimit";
 import { createSignupHandler } from "./signup";
@@ -14,6 +16,9 @@ initializeApp();
 
 // Cost control: cap concurrent containers per function.
 setGlobalOptions({ maxInstances: 10 });
+
+// The Sentry DSN for these functions comes from .env.jamaal-web; empty switches error reporting off.
+const errors = createErrorReporter(() => process.env.SENTRY_DSN ?? "", () => Sentry);
 
 const ALREADY_EXISTS = 6; // gRPC status code
 const db = () => getFirestore();
@@ -83,6 +88,7 @@ export const signup = onRequest({ cors: false, maxInstances: 5 }, async (request
   } catch (error) {
     // Never log the address or name: log the failure only.
     logger.error("signup failed", { message: error instanceof Error ? error.message : "unknown" });
+    await errors.capture(error);
     response.status(500).json({ error: "Something went wrong. Please try again." });
   }
 });
