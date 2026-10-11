@@ -1,16 +1,29 @@
+export type Device = "iphone" | "ipad" | "mac";
+
+export const DEVICES: readonly { id: Device; label: string }[] = [
+  { id: "iphone", label: "iPhone" },
+  { id: "ipad", label: "iPad" },
+  { id: "mac", label: "Mac" },
+];
+
 export interface SignupInput {
   firstName: string;
   email: string;
+  /** What they will test on. Required in the beta. */
+  devices?: readonly Device[];
+  /** The honeypot: real people never see or fill it. */
+  company?: string;
 }
 
 export type SignupErrors = Partial<Record<keyof SignupInput, string>>;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/** Returns the first problem, in the order the form fields appear, or null. */
-export function validateSignup({ firstName, email }: SignupInput): string | null {
+/** Returns the first problem, in the order the form fields appear, or null. `needDevices` is true in the beta. */
+export function validateSignup({ firstName, email, devices }: SignupInput, needDevices = false): string | null {
   if (!firstName.trim()) return "Add your first name so we know who to write to.";
   if (!EMAIL.test(email.trim())) return "That address looks incomplete.";
+  if (needDevices && !devices?.length) return "Choose at least one device to test on.";
   return null;
 }
 
@@ -35,6 +48,17 @@ export type SignupSource = "hero" | "join";
 
 const GENERIC_ERROR = "Something went wrong. Please try again.";
 
+/** A refusal the server explained (a bad address, a rate limit), with the field it is about. */
+export class SignupError extends Error {
+  constructor(
+    message: string,
+    readonly field?: string,
+  ) {
+    super(message);
+    this.name = "SignupError";
+  }
+}
+
 /**
  * Sends the signup to /api/signup (a Hosting rewrite to the signup function).
  *
@@ -54,8 +78,11 @@ export async function submitSignup(
   },
 ): Promise<SignupOutcome> {
   if (!options.endpoint) {
-    if (options.dev) return "added";
-    throw new Error("Signup isn't open yet. Please try again soon.");
+    if (!options.dev) throw new Error("Signup isn't open yet. Please try again soon.");
+    // Local development has no backend: an address containing "already" or "fail" tries those outcomes.
+    if (/already/i.test(input.email)) return "exists";
+    if (/fail/i.test(input.email)) throw new Error(GENERIC_ERROR);
+    return input.devices?.length ? "invited" : "added";
   }
   const response = await fetch(options.endpoint, {
     method: "POST",
@@ -63,6 +90,8 @@ export async function submitSignup(
     body: JSON.stringify({
       firstName: input.firstName.trim(),
       email: input.email.trim(),
+      ...(input.devices?.length ? { devices: input.devices } : {}),
+      ...(input.company ? { company: input.company } : {}),
       source,
     }),
   });
@@ -70,7 +99,8 @@ export async function submitSignup(
   const body = await response.json().catch(() => ({}));
   if (!response.ok) {
     const showable = response.status === 400 || response.status === 429;
-    throw new Error(showable && typeof body.error === "string" ? body.error : GENERIC_ERROR);
+    if (showable && typeof body.error === "string") throw new SignupError(body.error, body.field);
+    throw new Error(GENERIC_ERROR);
   }
   return body.status === "invited" ? "invited" : "added";
 }

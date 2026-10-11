@@ -1,12 +1,13 @@
 ---
 import AppStoreButton from "../AppStoreButton/AppStoreButton";
-import WaitlistForm from "../WaitlistForm/WaitlistForm";
-import { formCopy, joinCopy } from "../../data/home";
+import SignupForm from "../SignupForm/SignupForm";
+import { joinCopy } from "../../data/home";
 import { APP_STORE_URL } from "../../data/site";
 import { STAGE } from "../../data/stage";
 
 const copy = joinCopy(STAGE);
-const form = STAGE === "launched" ? null : formCopy(STAGE);
+/** The signup form is for the two pre-launch stages; launched shows the App Store button. */
+const formStage = STAGE === "launched" ? null : STAGE;
 ---
 
 <section id="join" class="section section--deep">
@@ -14,8 +15,8 @@ const form = STAGE === "launched" ? null : formCopy(STAGE);
     <h2 class="section-title section-title--hero">{copy.title} <em>{copy.accent}</em></h2>
     <p class="lede">{copy.lede}</p>
     {
-      form ? (
-        <WaitlistForm client:visible variant="join" source="join" submitLabel={form.submitLabel} note={form.note} />
+      formStage ? (
+        <SignupForm client:visible variant="join" stage={formStage} source="join" />
       ) : (
         <AppStoreButton href={APP_STORE_URL} />
       )
