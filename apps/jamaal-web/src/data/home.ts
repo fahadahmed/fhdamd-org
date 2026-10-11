@@ -28,18 +28,29 @@ export const hero = {
 
 export interface FormCopy {
   submitLabel: string;
+  /** Shown on the button while the signup is being sent. */
+  sendingLabel: string;
   note: string;
 }
+
+/** What to do once the TestFlight invite arrives. */
+export const TESTFLIGHT_STEPS = [
+  "Install TestFlight from the App Store.",
+  "Open the invite email on your iPhone, iPad or Mac.",
+  "Tap View in TestFlight, then Install.",
+] as const;
 
 /** The signup form's button and small print for the two pre-launch stages. */
 export function formCopy(stage: Exclude<Stage, "launched">): FormCopy {
   return stage === "testflight"
     ? {
         submitLabel: "Send my TestFlight invite",
+        sendingLabel: "Sending your invite…",
         note: "Use the email you read on the device you'll test on.",
       }
     : {
         submitLabel: "Join the waitlist",
+        sendingLabel: "Adding you…",
         note: "Two emails at most: one when the beta opens, one at launch.",
       };
 }

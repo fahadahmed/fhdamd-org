@@ -1,13 +1,14 @@
 ---
 import AppStoreButton from "../AppStoreButton/AppStoreButton";
-import WaitlistForm from "../WaitlistForm/WaitlistForm";
+import SignupForm from "../SignupForm/SignupForm";
 import DeviceFrame from "../ui/DeviceFrame.astro";
-import { formCopy, hero, heroEyebrow } from "../../data/home";
+import { hero, heroEyebrow } from "../../data/home";
 import { APP_STORE_URL } from "../../data/site";
 import { STAGE } from "../../data/stage";
 import { screen } from "../../lib/screens";
 
-const form = STAGE === "launched" ? null : formCopy(STAGE);
+/** The signup form is for the two pre-launch stages; launched shows the App Store button. */
+const formStage = STAGE === "launched" ? null : STAGE;
 ---
 
 <section class="hero" id="top">
@@ -17,9 +18,9 @@ const form = STAGE === "launched" ? null : formCopy(STAGE);
     <p class="lede">{hero.lede}</p>
 
     {
-      form ? (
+      formStage ? (
         <div class="hero-actions" id="join-top">
-          <WaitlistForm client:idle variant="hero" source="hero" submitLabel={form.submitLabel} note={form.note} />
+          <SignupForm client:idle variant="hero" stage={formStage} source="hero" />
         </div>
       ) : (
         <div class="hero-actions">

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { joinedBody, joinedTitle, submitSignup, validateSignup } from "./signup";
+import { DEVICES, SignupError, joinedBody, joinedTitle, submitSignup, validateSignup } from "./signup";
 
 describe("validateSignup", () => {
   it("asks for a first name before anything else", () => {
@@ -15,6 +15,26 @@ describe("validateSignup", () => {
 
   it("accepts a name and a complete address, ignoring surrounding spaces", () => {
     expect(validateSignup({ firstName: " Sam ", email: " sam@example.com " })).toBeNull();
+  });
+});
+
+describe("validateSignup: devices", () => {
+  const ok = { firstName: "Sam", email: "sam@example.com" };
+
+  it("only asks for a device in the beta", () => {
+    expect(validateSignup(ok)).toBeNull();
+    expect(validateSignup({ ...ok, devices: [] })).toBeNull();
+    expect(validateSignup({ ...ok, devices: [] }, true)).toBe("Choose at least one device to test on.");
+    expect(validateSignup(ok, true)).toBe("Choose at least one device to test on.");
+    expect(validateSignup({ ...ok, devices: ["mac"] }, true)).toBeNull();
+  });
+
+  it("still checks the name and address first", () => {
+    expect(validateSignup({ firstName: "", email: "x", devices: [] }, true)).toContain("first name");
+  });
+
+  it("lists iPhone, iPad and Mac", () => {
+    expect(DEVICES.map((d) => d.label)).toEqual(["iPhone", "iPad", "Mac"]);
   });
 });
 
@@ -99,8 +119,37 @@ describe("submitSignup", () => {
     await expect(submitSignup(input, "join", { endpoint: "/api/signup" })).rejects.toThrow("Something went wrong");
   });
 
+  it("sends devices and the honeypot only when there are some", async () => {
+    const fetchMock = reply(200, { status: "invited" });
+    vi.stubGlobal("fetch", fetchMock);
+    await submitSignup({ ...input, devices: ["iphone", "ipad"], company: "Acme" }, "hero", { endpoint: "/api/signup" });
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
+      firstName: "Sam",
+      email: "sam@example.com",
+      devices: ["iphone", "ipad"],
+      company: "Acme",
+      source: "hero",
+    });
+  });
+
+  it("carries the field the server named", async () => {
+    vi.stubGlobal("fetch", reply(400, { error: "Choose at least one device to test on.", field: "devices" }));
+    const error = await submitSignup(input, "hero", { endpoint: "/api/signup" }).catch((e) => e);
+    expect(error).toBeInstanceOf(SignupError);
+    expect(error.field).toBe("devices");
+  });
+
   it("only resolves without an endpoint in local development", async () => {
     await expect(submitSignup(input, "hero", { dev: true })).resolves.toBe("added");
+  });
+
+  it("pretends an invite in local development when devices are chosen", async () => {
+    await expect(submitSignup({ ...input, devices: ["mac"] }, "hero", { dev: true })).resolves.toBe("invited");
+  });
+
+  it("lets local development try the other outcomes", async () => {
+    await expect(submitSignup({ ...input, email: "already@example.com" }, "hero", { dev: true })).resolves.toBe("exists");
+    await expect(submitSignup({ ...input, email: "fail@example.com" }, "hero", { dev: true })).rejects.toThrow("Something went wrong");
   });
 
   it("refuses to pretend it worked in production without an endpoint", async () => {
