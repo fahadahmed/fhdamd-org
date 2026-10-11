@@ -1,21 +1,88 @@
+import { initializeApp } from "firebase-admin/app";
+import { FieldValue, Timestamp, getFirestore } from "firebase-admin/firestore";
+import { getRemoteConfig } from "firebase-admin/remote-config";
 import { setGlobalOptions } from "firebase-functions";
+import * as logger from "firebase-functions/logger";
 import { onRequest } from "firebase-functions/https";
+import { createRateLimiter } from "./rateLimit";
+import type { CounterStore } from "./rateLimit";
+import { createSignupHandler } from "./signup";
+import type { SignupStore } from "./signup";
+import { createCachedStageSource, stageFromTemplate } from "./stage";
+
+initializeApp();
 
 // Cost control: cap concurrent containers per function.
 setGlobalOptions({ maxInstances: 10 });
 
+const ALREADY_EXISTS = 6; // gRPC status code
+const db = () => getFirestore();
+
+const store: SignupStore = {
+  async create({ firstName, email, devices, source, stage }) {
+    try {
+      await db()
+        .collection("signups")
+        .doc(email)
+        .create({ firstName, email, devices, source, stage, createdAt: FieldValue.serverTimestamp() });
+      return "created";
+    } catch (error) {
+      if ((error as { code?: number }).code === ALREADY_EXISTS) return "exists";
+      throw error;
+    }
+  },
+  async requestInvite(email) {
+    await db().collection("signups").doc(email).update({ inviteRequestedAt: FieldValue.serverTimestamp() });
+  },
+};
+
+const counters: CounterStore = {
+  async increment(id, expiresAt) {
+    const ref = db().collection("rateLimits").doc(id);
+    return db().runTransaction(async (tx) => {
+      const count = ((await tx.get(ref)).data()?.count ?? 0) + 1;
+      tx.set(ref, { count, expiresAt: Timestamp.fromDate(expiresAt) });
+      return count;
+    });
+  },
+};
+
+// The stage is the site_stage parameter in Remote Config, the same one CI reads for the build.
+const stage = createCachedStageSource(async () => stageFromTemplate(await getRemoteConfig().getTemplate()), {
+  onError: (error) =>
+    logger.warn("Could not read the site stage; using the last known one", {
+      message: error instanceof Error ? error.message : "unknown",
+    }),
+});
+
+const handle = createSignupHandler({
+  store,
+  stage,
+  limiter: createRateLimiter(counters),
+  onLimiterError: (error) =>
+    logger.warn("Rate limiter failed; letting the signup through", {
+      message: error instanceof Error ? error.message : "unknown",
+    }),
+});
+
 /**
- * Placeholder endpoint that proves the Functions setup end to end.
- * Replace with the waitlist signup function in #388.
+ * POST /api/signup (a Firebase Hosting rewrite, so the site calls it
+ * same-origin). Stores one document per email in Firestore and answers with
+ * the outcome. It does no email or Apple calls itself.
  */
-export const healthCheck = onRequest({ cors: true }, (request, response) => {
-  if (request.method !== "GET") {
-    response.set("Allow", "GET").status(405).json({ error: "Method not allowed" });
-    return;
+export const signup = onRequest({ cors: false, maxInstances: 5 }, async (request, response) => {
+  response.set("Cache-Control", "no-store");
+  try {
+    const result = await handle({
+      method: request.method,
+      origin: request.get("origin"),
+      ip: request.get("x-forwarded-for")?.split(",")[0].trim() || request.ip,
+      body: request.body,
+    });
+    response.status(result.status).json(result.body);
+  } catch (error) {
+    // Never log the address or name: log the failure only.
+    logger.error("signup failed", { message: error instanceof Error ? error.message : "unknown" });
+    response.status(500).json({ error: "Something went wrong. Please try again." });
   }
-  response.json({
-    ok: true,
-    service: "jamaal-web",
-    time: new Date().toISOString(),
-  });
 });

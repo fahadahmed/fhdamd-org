@@ -24,7 +24,7 @@ async function fill(firstName: string, email: string) {
 }
 
 describe("WaitlistForm", () => {
-  beforeEach(() => submitSignup.mockReset().mockResolvedValue(undefined));
+  beforeEach(() => submitSignup.mockReset().mockResolvedValue("added"));
   afterEach(() => window.history.replaceState({}, "", "/"));
 
   it("renders a name field, an email field and the submit label", () => {
@@ -70,6 +70,23 @@ describe("WaitlistForm", () => {
     await screen.findByRole("status");
     expect(submitSignup).toHaveBeenCalledWith({ firstName: "Sam", email: "sam@example.com" }, "join");
     expect(screen.queryByText(/We'll write to/)).not.toBeInTheDocument();
+  });
+
+  it("says so when the address is already on the list", async () => {
+    submitSignup.mockResolvedValueOnce("exists");
+    setup();
+    const user = await fill("Sam", "sam@example.com");
+    await user.click(screen.getByRole("button", { name: /ready/ }));
+    expect(await screen.findByText("Sam, you're already on the list.")).toBeInTheDocument();
+    expect(screen.getByText("No need to do anything: sam@example.com is already on our list.")).toBeInTheDocument();
+  });
+
+  it("says the invite is on its way when the server invited them", async () => {
+    submitSignup.mockResolvedValueOnce("invited");
+    setup();
+    const user = await fill("Sam", "sam@example.com");
+    await user.click(screen.getByRole("button", { name: /ready/ }));
+    expect(await screen.findByText("Thank you, Sam. Your invite is on its way.")).toBeInTheDocument();
   });
 
   it("shows the error when the signup fails and lets people try again", async () => {

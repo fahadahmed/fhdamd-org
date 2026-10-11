@@ -14,31 +14,47 @@ export function validateSignup({ firstName, email }: SignupInput): string | null
   return null;
 }
 
-/** "Thank you, Sam. You're on the list." (the name is optional once joined). */
-export function joinedTitle(firstName: string): string {
+export type SignupOutcome = "added" | "invited" | "exists";
+
+/** The confirmation line. The name is optional, and "exists" never says "thank you" for a second signup. */
+export function joinedTitle(firstName: string, outcome: SignupOutcome = "added"): string {
   const name = firstName.trim();
-  return `${name ? `Thank you, ${name}. ` : ""}You're on the list.`;
+  if (outcome === "exists") return `${name ? `${name}, you're` : "You're"} already on the list.`;
+  const line = outcome === "invited" ? "Your invite is on its way." : "You're on the list.";
+  return `${name ? `Thank you, ${name}. ` : ""}${line}`;
+}
+
+/** What sits under the confirmation line in the hero. */
+export function joinedBody(email: string, outcome: SignupOutcome): string {
+  if (outcome === "invited") return "Apple sends your invite from TestFlight, usually within a few minutes.";
+  if (outcome === "exists") return `No need to do anything: ${email.trim()} is already on our list.`;
+  return `We'll write to ${email.trim()} once, when there's something to open.`;
 }
 
 export type SignupSource = "hero" | "join";
 
+const GENERIC_ERROR = "Something went wrong. Please try again.";
+
 /**
- * Sends the signup to the waitlist endpoint (#388).
+ * Sends the signup to /api/signup (a Hosting rewrite to the signup function).
  *
- * There is no endpoint yet. Without PUBLIC_WAITLIST_URL this refuses to pretend
- * it worked: it only resolves in local development, and rejects in a production
- * build so nobody is told they are on a list that does not exist.
+ * PUBLIC_WAITLIST_URL overrides the endpoint. With none set, a production build
+ * uses /api/signup and local development pretends it worked, since there is no
+ * backend behind `astro dev`.
+ *
+ * A 409 means the address is already on the list, which is an outcome and not
+ * an error. The server's own message is shown for a bad address or a rate limit.
  */
 export async function submitSignup(
   input: SignupInput,
   source: SignupSource,
   options: { endpoint?: string; dev?: boolean } = {
-    endpoint: import.meta.env.PUBLIC_WAITLIST_URL,
+    endpoint: import.meta.env.PUBLIC_WAITLIST_URL || (import.meta.env.DEV ? undefined : "/api/signup"),
     dev: import.meta.env.DEV,
   },
-): Promise<void> {
+): Promise<SignupOutcome> {
   if (!options.endpoint) {
-    if (options.dev) return;
+    if (options.dev) return "added";
     throw new Error("Signup isn't open yet. Please try again soon.");
   }
   const response = await fetch(options.endpoint, {
@@ -50,5 +66,11 @@ export async function submitSignup(
       source,
     }),
   });
-  if (!response.ok) throw new Error("Something went wrong. Please try again.");
+  if (response.status === 409) return "exists";
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const showable = response.status === 400 || response.status === 429;
+    throw new Error(showable && typeof body.error === "string" ? body.error : GENERIC_ERROR);
+  }
+  return body.status === "invited" ? "invited" : "added";
 }
