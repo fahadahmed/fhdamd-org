@@ -369,3 +369,23 @@ export const day = {
     },
   ],
 } as const satisfies { eyebrow: string; title: string; chapters: readonly DayChapter[] };
+
+export const plan = {
+  eyebrow: "Night Planning",
+  title: "Five steps.",
+  accent: "About five minutes.",
+  body: "The part no list app does. Each evening, Jamaal walks you through today and shapes tomorrow around what's already fixed. Skip a night and nothing is lost.",
+  steps: [
+    { title: "Review today", body: "Plain counts: what got done, and how long it really took against your guess.", src: "g-NP-01" },
+    { title: "Carry forward", body: "Keep, later or drop for each thing that's left. The third push asks for a date.", src: "g-NP-02" },
+    { title: "Build tomorrow", body: "Tomorrow's fixed points and the free gaps between them. Tasks find a gap, or tell you they won't fit.", src: "g-NP-03" },
+    { title: "Check the load", body: "Choose tomorrow's energy. If it's a little much, Jamaal suggests one move, and keeping the plan is always an option.", src: "g-NP-04" },
+    { title: "Close the day", body: "Tomorrow is ready. Good night.", src: "g-NP-05" },
+  ],
+  canvas: {
+    label: "On iPad and Mac",
+    body: "All five steps on one canvas, with tomorrow drawn to scale, so you can see the gaps between the fixed things before you fill them.",
+    src: "g-NP-07-wide",
+    alt: "Night Planning on iPad, one canvas",
+  },
+} as const;

@@ -103,25 +103,3 @@
   line-height: var(--th-meta-leading);
   color: var(--th-ink-3);
 }
-
-/* ── Phone frame ───────────────────────────────────────────────────────── */
-.phone {
-  position: relative;
-  inline-size: 100%;
-  overflow: hidden;
-  border-radius: 34px;
-  background: var(--th-app);
-  box-shadow: var(--th-shadow-lift), 0 0 0 1px var(--th-line);
-}
-
-.phone--standalone {
-  inline-size: min(100%, 320px);
-}
-
-.phone img {
-  display: block;
-  inline-size: 100%;
-  block-size: 100%;
-  object-fit: cover;
-  object-position: top;
-}
