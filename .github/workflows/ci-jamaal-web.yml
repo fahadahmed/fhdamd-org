@@ -40,6 +40,11 @@ jobs:
       - name: Run tests with coverage
         run: pnpm --filter jamaal-web test:coverage
 
+      - name: Test and compile the Cloud Functions
+        run: |
+          pnpm --filter jamaal-web-functions test
+          pnpm --filter jamaal-web-functions build
+
       - name: SonarCloud scan
         uses: SonarSource/sonarcloud-github-action@383f7e52eae3ab0510c3cb0e7d9d150bbaeab838 # v3
         with:
