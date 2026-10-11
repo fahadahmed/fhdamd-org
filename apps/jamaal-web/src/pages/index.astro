@@ -2,6 +2,8 @@
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/sections/Hero.astro";
 import Why from "../components/sections/Why.astro";
+import Order from "../components/sections/Order.astro";
+import Everywhere from "../components/sections/Everywhere.astro";
 import NightPlanningSection from "../components/sections/NightPlanningSection.astro";
 import Principles from "../components/sections/Principles.astro";
 import DeveloperNote from "../components/sections/DeveloperNote.astro";
@@ -23,9 +25,11 @@ const jsonLd = softwareApplicationJsonLd({
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
   <Hero />
   <Why />
-  <!-- The order, day story and Everywhere sections arrive with #420; the Night
-       Planning carousel stays until its stepper replaces it. -->
+  <Order />
+  <!-- The day story and the Night Planning stepper arrive in the next #420 PRs;
+       the carousel stays until the stepper replaces it. -->
   <NightPlanningSection />
+  <Everywhere />
   <Principles />
   <DeveloperNote />
   <Pricing />

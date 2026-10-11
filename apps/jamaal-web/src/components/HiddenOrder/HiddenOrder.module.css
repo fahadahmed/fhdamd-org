@@ -1,0 +1,197 @@
+.button {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding-inline: 20px;
+  border-radius: 999px;
+  border: 1px solid var(--th-line-2);
+  background: transparent;
+  color: var(--th-ink);
+  font: 600 15px / 1 var(--th-font-sans);
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--th-sidebar);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--th-terra);
+  outline-offset: 2px;
+}
+
+.module {
+  position: relative;
+  block-size: 340px;
+  inline-size: 100%;
+  max-inline-size: 520px;
+  justify-self: center;
+  margin-block-end: 34px; /* room for the "Due sooner" label under the grid */
+}
+
+.grid {
+  position: absolute;
+  inset: 0 0 0 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 6px;
+  opacity: 1;
+}
+
+.grid i {
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--th-ink) 5%, transparent);
+}
+
+.grid i:nth-child(2) {
+  background: color-mix(in srgb, var(--th-accent) 10%, transparent);
+}
+
+.grid i:nth-child(3) {
+  background: color-mix(in srgb, var(--th-ink) 3%, transparent);
+}
+
+.axis {
+  position: absolute;
+  font-family: var(--th-font-mono);
+  font-size: var(--th-label-size);
+  font-weight: 500;
+  letter-spacing: var(--th-label-tracking);
+  text-transform: uppercase;
+  color: var(--th-ink-2);
+  white-space: nowrap;
+}
+
+/* Physical sizes: in a vertical writing mode, inline-size is the height. */
+.axisY {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.axisX {
+  inset-inline: 28px 0;
+  inset-block-end: -26px;
+  text-align: center;
+}
+
+.later {
+  inset-inline: 28px 0;
+  inset-block-start: 254px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+}
+
+.later i {
+  flex: 1;
+  block-size: 1px;
+  background: var(--th-line-2);
+}
+
+.chips {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  position: absolute;
+  inset-inline-start: calc(28px + (100% - 28px) * var(--gx));
+  inset-block-start: var(--gy);
+  inline-size: calc((100% - 28px) * 0.49);
+  box-sizing: border-box;
+  padding: 4px;
+}
+
+.card {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--th-selected);
+  box-shadow: var(--th-shadow-float);
+}
+
+.n {
+  inline-size: 14px;
+  flex-shrink: 0;
+  opacity: 0;
+  font: 500 var(--th-label-size) / 1 var(--th-font-mono);
+  color: var(--th-terra);
+}
+
+.title {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--th-ink);
+}
+
+.meta {
+  display: block;
+  margin-block-start: 2px;
+  font-size: 15px;
+  color: var(--th-ink-2);
+}
+
+/* The list: one column in order, the unscheduled one dimmed below the divider. */
+.sorted .grid,
+.sorted .axisY,
+.sorted .axisX {
+  opacity: 0;
+}
+
+.sorted .later,
+.sorted .n {
+  opacity: 1;
+}
+
+.sorted .chip {
+  inset-inline-start: 28px;
+  inset-block-start: var(--ly);
+  inline-size: calc(100% - 28px);
+}
+
+/* The task with no date sits below the divider, quieter but still readable. */
+.sorted .chip:last-child .card {
+  background: transparent;
+  box-shadow: none;
+  outline: 1px dashed var(--th-line-2);
+  outline-offset: -1px;
+}
+
+/* Transitions only once it has been sorted on screen, never on first paint. */
+.animate .grid,
+.animate .axis,
+.animate .n {
+  transition: opacity 500ms var(--th-ease-out);
+}
+
+.animate .chip {
+  transition:
+    inset-inline-start 700ms var(--th-ease-out),
+    inset-block-start 700ms var(--th-ease-out),
+    inline-size 700ms var(--th-ease-out),
+    opacity 500ms var(--th-ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate .grid,
+  .animate .axis,
+  .animate .n,
+  .animate .chip {
+    transition: none;
+  }
+}

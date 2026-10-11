@@ -96,7 +96,7 @@ let shared: Analytics | undefined;
 
 /** The page's one analytics instance. Browser only. */
 export function getAnalytics(): Analytics {
-  shared ??= createAnalytics(MEASUREMENT_ID, window as GtagWindow, document);
+  shared ??= createAnalytics(MEASUREMENT_ID, window as unknown as GtagWindow, document);
   return shared;
 }
 
