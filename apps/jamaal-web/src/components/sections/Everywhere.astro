@@ -1,0 +1,332 @@
+---
+/**
+ * Seven cards, one per place Jamaal lives. Mostly static; the iPhone Duo card
+ * has a Fold / Unfold toggle (the script at the bottom).
+ */
+import { Picture } from "astro:assets";
+import DeviceFrame from "../ui/DeviceFrame.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import { COMING_SOON_LABEL } from "../../lib/device";
+import { everywhere as e } from "../../data/home";
+import { screen } from "../../lib/screens";
+---
+
+<section id="everywhere" class="section">
+  <div class="section-inner stack">
+    <div class="stack stack--tight" style="max-inline-size: 780px">
+      <SectionHeading eyebrow={e.eyebrow} title={e.title} accent={e.accent} />
+      <p class="copy" style="max-inline-size: 56ch">{e.body}</p>
+    </div>
+
+    <ul class="cards">
+      <li class="card">
+        <div class="media media--end">
+          <div class="crop">
+            <Picture src={screen("g-FS-01-chip")} alt={e.iphone.alt} widths={[320, 480, 640]} sizes="220px" formats={["avif", "webp"]} loading="lazy" class="crop-img" />
+          </div>
+        </div>
+        <div class="text"><h3>{e.iphone.name}</h3><p>{e.iphone.body}</p></div>
+      </li>
+
+      <li class="card" data-duo data-open="true">
+        <div class="media">
+          <div class="duo">
+            <div class="duo-screen">
+              <Picture src={screen("g-Duo-outer")} alt={e.duo.foldedAlt} widths={[320, 480, 640]} sizes="210px" formats={["avif", "webp"]} loading="lazy" class="duo-img duo-folded" aria-hidden="true" data-folded />
+              <Picture src={screen("g-Duo-inner")} alt={e.duo.openAlt} widths={[320, 480, 640, 960]} sizes="210px" formats={["avif", "webp"]} loading="lazy" class="duo-img duo-open" data-opened />
+            </div>
+          </div>
+          <button type="button" class="fold" data-fold aria-pressed="false">{e.duo.fold}</button>
+        </div>
+        <div class="text"><h3>{e.duo.name}</h3><p>{e.duo.body}</p></div>
+      </li>
+
+      <li class="card">
+        <div class="media media--pad">
+          <div class="ipad">
+            <DeviceFrame type="ipad" src={screen("g-iPad-TD-01")} alt={e.ipad.alt} sizes="420px" />
+          </div>
+        </div>
+        <div class="text"><h3>{e.ipad.name}</h3><p>{e.ipad.body}</p></div>
+      </li>
+
+      <li class="card">
+        <div class="media media--pad">
+          <div class="mac">
+            <DeviceFrame type="mac" src={screen("g-macOS")} alt={e.mac.alt} sizes="420px" />
+          </div>
+        </div>
+        <div class="text"><h3>{e.mac.name}</h3><p>{e.mac.body}</p></div>
+      </li>
+
+      <li class="card">
+        <div class="media media--pad media--col">
+          <Picture src={screen("WG-03-today-medium")} alt={e.widgets.mediumAlt} widths={[320, 480, 640]} sizes="320px" formats={["avif", "webp"]} loading="lazy" class="widget" />
+          <div class="widget-row">
+            <Picture src={screen("WG-01-upcoming")} alt={e.widgets.upcomingAlt} widths={[160, 320]} sizes="150px" formats={["avif", "webp"]} loading="lazy" class="widget" />
+            <Picture src={screen("WG-03-today-small")} alt={e.widgets.smallAlt} widths={[160, 320]} sizes="150px" formats={["avif", "webp"]} loading="lazy" class="widget" />
+          </div>
+        </div>
+        <div class="text"><h3>{e.widgets.name}</h3><p>{e.widgets.body}</p></div>
+      </li>
+
+      <li class="card">
+        <div class="media">
+          <span class="soon">{COMING_SOON_LABEL}</span>
+          <div class="watch"><DeviceFrame type="watch" src={screen("g-WA-01")} alt={e.watch.alt} sizes="150px" /></div>
+        </div>
+        <div class="text"><h3>{e.watch.name}</h3><p>{e.watch.body}</p></div>
+      </li>
+
+      <li class="card">
+        <div class="media media--end">
+          <span class="soon">{COMING_SOON_LABEL}</span>
+          <div class="crop crop--live">
+            <Picture src={screen("FS-08-lock-screen")} alt={e.liveActivity.alt} widths={[320, 480, 640]} sizes="200px" formats={["avif", "webp"]} loading="lazy" class="crop-img" />
+          </div>
+        </div>
+        <div class="text"><h3>{e.liveActivity.name}</h3><p>{e.liveActivity.body}</p></div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<script>
+  // The Duo card: unfolding widens the frame and cross-fades to the open screen.
+  const card = document.querySelector<HTMLElement>("[data-duo]");
+  const button = card?.querySelector<HTMLButtonElement>("[data-fold]");
+  if (card && button) {
+    const folded = card.querySelector<HTMLElement>("[data-folded]");
+    const opened = card.querySelector<HTMLElement>("[data-opened]");
+    button.addEventListener("click", () => {
+      const nowOpen = card.dataset.open !== "true";
+      card.dataset.open = String(nowOpen);
+      button.textContent = nowOpen ? "Fold" : "Unfold";
+      button.setAttribute("aria-pressed", String(!nowOpen));
+      // Only the screen that is showing is exposed to screen readers.
+      folded?.setAttribute("aria-hidden", String(nowOpen));
+      opened?.setAttribute("aria-hidden", String(!nowOpen));
+    });
+  }
+</script>
+
+<style>
+  .cards {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: var(--th-radius-card);
+    background: var(--th-card);
+    border: 1px solid var(--th-line);
+  }
+
+  .media {
+    position: relative;
+    block-size: 340px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--th-sidebar);
+  }
+
+  .media--end {
+    align-items: flex-end;
+    padding-block-start: 32px;
+  }
+
+  .media--pad {
+    padding: 24px;
+    box-sizing: border-box;
+  }
+
+  .media--col {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .text {
+    padding: 22px 24px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .text h3 {
+    margin: 0;
+    font-family: var(--th-font-mono);
+    font-size: var(--th-label-size);
+    font-weight: 500;
+    letter-spacing: var(--th-label-tracking);
+    text-transform: uppercase;
+    color: var(--th-ink-2);
+  }
+
+  .text p {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--th-ink);
+  }
+
+  /* A phone cropped at the bottom edge of its card. */
+  .crop {
+    inline-size: 220px;
+    padding: 7px 7px 0;
+    border-radius: 36px 36px 0 0;
+    background: #0b1418;
+  }
+
+  .crop--live {
+    inline-size: 200px;
+  }
+
+  .crop :global(.crop-img) {
+    display: block;
+    inline-size: 100%;
+    block-size: 300px;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 30px 30px 0 0;
+  }
+
+  .ipad {
+    inline-size: 100%;
+    max-inline-size: 420px;
+  }
+
+  .mac {
+    inline-size: 100%;
+    max-inline-size: 420px;
+  }
+
+  .media :global(.widget) {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    max-inline-size: 320px;
+    border-radius: 18px;
+    box-shadow: 0 24px 50px -24px rgb(6 32 46 / 0.55);
+  }
+
+  .widget-row {
+    display: flex;
+    gap: 12px;
+    inline-size: 100%;
+    max-inline-size: 320px;
+  }
+
+  .widget-row :global(.widget) {
+    flex: 1;
+    min-inline-size: 0;
+    max-inline-size: none;
+  }
+
+  .watch {
+    inline-size: 150px;
+  }
+
+  .soon {
+    position: absolute;
+    inset-block-start: 16px;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    white-space: nowrap;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: var(--site-deeper);
+    color: var(--th-on-deep);
+    font: 500 var(--th-label-size) / 1 var(--th-font-mono);
+    letter-spacing: var(--th-label-tracking);
+    text-transform: uppercase;
+  }
+
+  /* iPhone Duo: width and ratio change as it unfolds. */
+  /* Sized so the open Duo fits the 340px media area (the design's 240px overflowed it). */
+  .duo {
+    inline-size: 210px;
+    padding: 6px;
+    border-radius: 26px;
+    background: #0b1418;
+    box-shadow: 0 30px 60px -30px rgb(6 32 46 / 0.5);
+    transition: inline-size 600ms var(--th-ease-out);
+  }
+
+  .duo-screen {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    aspect-ratio: 673 / 952;
+    transition: aspect-ratio 600ms var(--th-ease-out);
+  }
+
+  .duo-screen :global(.duo-img) {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: top;
+    transition: opacity 400ms;
+  }
+
+  .duo-folded :global(img),
+  :global(.duo-folded) {
+    opacity: 0;
+  }
+
+  [data-open="false"] .duo {
+    inline-size: 150px;
+  }
+
+  [data-open="false"] .duo-screen {
+    aspect-ratio: 476 / 673;
+  }
+
+  [data-open="false"] :global(.duo-folded) {
+    opacity: 1;
+  }
+
+  [data-open="false"] :global(.duo-open) {
+    opacity: 0;
+  }
+
+  .fold {
+    position: absolute;
+    inset-inline-end: 14px;
+    inset-block-end: 14px;
+    min-block-size: 44px;
+    padding-inline: 18px;
+    border-radius: 999px;
+    border: 1px solid var(--th-line);
+    background: var(--th-glass);
+    backdrop-filter: var(--th-glass-blur);
+    -webkit-backdrop-filter: var(--th-glass-blur);
+    color: var(--th-ink);
+    font: 600 15px / 1 var(--th-font-sans);
+    cursor: pointer;
+  }
+
+  .fold:focus-visible {
+    outline: 2px solid var(--th-terra);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .duo,
+    .duo-screen,
+    .duo-screen :global(.duo-img) {
+      transition: none;
+    }
+  }
+</style>

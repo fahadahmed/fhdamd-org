@@ -37,6 +37,11 @@ jobs:
       - name: Lint
         run: pnpm --filter jamaal-web lint
 
+      # Catches type errors in .astro, .ts and test files that eslint and the
+      # build both let through.
+      - name: Type check
+        run: pnpm --filter jamaal-web exec astro check
+
       - name: Run tests with coverage
         run: pnpm --filter jamaal-web test:coverage
 

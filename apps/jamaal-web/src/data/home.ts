@@ -212,3 +212,57 @@ export function joinCopy(stage: Stage): { title: string; accent: string; lede: s
     launched: { ...base, lede: "Try Jamaal free for 14 days on iPhone, iPad and Mac." },
   }[stage];
 }
+
+export const order = {
+  eyebrow: "The order, explained once",
+  title: "The sorting you",
+  accent: "never have to do.",
+  paragraphs: [
+    "When you add something, you tell Jamaal two things: how much it matters, and when it's due. Behind the list, it uses the oldest trick in planning to place each task on a grid of what matters and what's urgent. You never see the grid. You just get one line, in the right order.",
+    "Urgency also grows. Put something off three times and Jamaal asks for a date. Put it off five times and it asks whether it still belongs.",
+  ],
+  axes: { matters: "Matters more →", due: "Due sooner →", later: "Not today · Someday" },
+  buttons: { sort: "Sort it", grid: "Show me the grid" },
+  /** In the order Jamaal puts them. `gx`/`gy` are where each one sits on the grid, `ly` where it ends up in the list. */
+  chips: [
+    { n: "1", title: "Draft the architecture review", meta: "Matters · due today", gx: 0.51, gy: 6, ly: 0 },
+    { n: "2", title: "Renew the passport", meta: "Matters · due next month", gx: 0, gy: 6, ly: 25 },
+    { n: "3", title: "Reply to the school email", meta: "Small · due today", gx: 0.51, gy: 56, ly: 50 },
+    { n: "", title: "Sort the photo library", meta: "Small · no date", gx: 0, gy: 56, ly: 82 },
+  ],
+} as const;
+
+export const everywhere = {
+  eyebrow: "One system",
+  title: "The same list,",
+  accent: "wherever you look.",
+  body: "Mark something done on your phone and it's done on your Mac. Each device shows the list in the way that suits it, and they all share the same list underneath.",
+  iphone: { name: "iPhone", body: "The whole day in one hand, with a running session always one tap away.", alt: "iPhone with the focus chip" },
+  duo: {
+    name: "iPhone Duo",
+    body: "Folded, a phone. Opened, the list sits beside the task you're looking at. Half-open on a table, it's a focus clock.",
+    foldedAlt: "iPhone Duo folded",
+    openAlt: "iPhone Duo open",
+    fold: "Fold",
+    unfold: "Unfold",
+  },
+  ipad: { name: "iPad", body: "A sidebar, the list and the open task side by side. Anchors get their own place.", alt: "iPad with list and detail" },
+  mac: { name: "Mac", body: "A proper Mac app: ⌘N to add, menu-bar commands, and Settings where Mac apps keep them.", alt: "Jamaal on Mac" },
+  widgets: {
+    name: "Widgets",
+    body: "Today and Next Anchor on the Home Screen, the Lock Screen and the Mac desktop. In the evening, a way into tomorrow.",
+    mediumAlt: "Today widget, medium",
+    upcomingAlt: "Next Anchor widget",
+    smallAlt: "Today widget, small",
+  },
+  watch: {
+    name: "Apple Watch",
+    body: "The next thing, large, with Done under your thumb. Habits by the crown, a focus timer and quiet complications.",
+    alt: "Apple Watch, next task",
+  },
+  liveActivity: {
+    name: "Live Activity",
+    body: "A running session on the Lock Screen and in the Dynamic Island, with Pause and Finish.",
+    alt: "Live Activity on the Lock Screen",
+  },
+} as const;

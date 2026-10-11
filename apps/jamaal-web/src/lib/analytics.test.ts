@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { createAnalytics, getAnalytics, track } from "./analytics";
 
 const ID = "G-TEST123";
-type TestWindow = Window & { dataLayer?: unknown[]; gtag?: unknown; [k: string]: unknown };
+type TestWindow = Window & { dataLayer?: unknown[]; gtag?: (...args: unknown[]) => void; [k: `ga-disable-${string}`]: boolean | undefined };
 
 describe("createAnalytics", () => {
   let win: TestWindow;
