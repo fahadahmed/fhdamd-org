@@ -1,0 +1,230 @@
+---
+import { Picture } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+import { CATEGORIES, listTitle, shortMeta } from "../../lib/journal";
+import type { Post } from "../../lib/journal";
+import { loadPosts } from "../../lib/journalPosts";
+import { screen } from "../../lib/screens";
+
+const posts = await loadPosts();
+const featured = posts.find((p) => p.featured);
+const rest = posts.filter((p) => p !== featured);
+const remote = (post: Post) => Boolean(post.cover && /^https?:\/\//.test(post.cover.src));
+---
+
+<Layout title="Journal — Jamaal" description="Why Jamaal works the way it does, and how to make it fit your life.">
+  <div class="journal" data-journal>
+    <header class="head">
+      <div class="th-label th-eyebrow eyebrow">Journal</div>
+      <h1 class="section-title">Notes on <em>a calmer day.</em></h1>
+      <p class="lede">Why Jamaal works the way it does, and how to make it fit your life.</p>
+    </header>
+
+    <div class="filters" role="group" aria-label="Filter by category">
+      <button type="button" data-filter="All" aria-pressed="true">All</button>
+      {CATEGORIES.map((category) => <button type="button" data-filter={category} aria-pressed="false">{category}</button>)}
+    </div>
+
+    {
+      featured && (
+        <a class="featured" href={`/journal/${featured.slug}`} data-category={featured.category}>
+          <div class="featured-text">
+            <span class="meta-line">{shortMeta(featured)}</span>
+            <span class="featured-title">{listTitle(featured)}</span>
+            <span class="featured-excerpt">{featured.featuredExcerpt ?? featured.excerpt}</span>
+            <span class="read">Read the story →</span>
+          </div>
+          {featured.cover && (
+            <div class="featured-art" aria-hidden="true">
+              {remote(featured) ? (
+                <img src={`${featured.cover.src}?auto=format&w=640`} alt="" loading="lazy" decoding="async" />
+              ) : (
+                <Picture src={screen(featured.cover.src)} alt="" widths={[320, 480, 640]} sizes="320px" formats={["avif", "webp"]} loading="lazy" />
+              )}
+            </div>
+          )}
+        </a>
+      )
+    }
+
+    <ul class="list">
+      {
+        rest.map((post) => (
+          <li data-category={post.category}>
+            <a href={`/journal/${post.slug}`}>
+              <span class="meta-line">{shortMeta(post)}</span>
+              <span class="item-title">{listTitle(post)}</span>
+              <span class="item-excerpt">{post.excerpt}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="empty" data-empty hidden>Nothing here yet.</p>
+  </div>
+</Layout>
+
+<script>
+  import { setupJournalFilter } from "../../lib/journalFilter";
+
+  setupJournalFilter();
+</script>
+
+<style>
+  .journal {
+    max-inline-size: 1100px;
+    margin-inline: auto;
+    padding: clamp(40px, 6vw, 80px) clamp(20px, 4vw, 48px) clamp(56px, 8vw, 112px);
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .head {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-inline-size: 760px;
+  }
+
+  .head :global(.section-title) {
+    font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+    line-height: 1.02;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .filters button {
+    min-block-size: 44px;
+    padding-inline: 20px;
+    border-radius: 999px;
+    border: 1px solid var(--th-line-2);
+    background: transparent;
+    color: var(--th-ink);
+    font: 600 15px / 1 var(--th-font-sans);
+    cursor: pointer;
+  }
+
+  .filters button[aria-pressed="true"] {
+    background: var(--th-deep);
+    border-color: var(--th-deep);
+    color: var(--th-on-deep);
+  }
+
+  .filters button:focus-visible,
+  .featured:focus-visible,
+  .list a:focus-visible {
+    outline: 2px solid var(--th-terra);
+    outline-offset: 2px;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  .featured {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: 24px 48px;
+    align-items: center;
+    padding: clamp(24px, 4vw, 48px);
+    border-radius: var(--th-radius-card);
+    background: var(--th-sidebar);
+    text-decoration: none;
+    color: var(--th-ink);
+  }
+
+  .featured-text {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .meta-line {
+    font-family: var(--th-font-mono);
+    font-size: var(--th-label-size);
+    font-weight: 500;
+    letter-spacing: var(--th-label-tracking);
+    text-transform: uppercase;
+    color: var(--th-ink-2);
+  }
+
+  .featured-title {
+    font-family: var(--th-font-serif);
+    font-variation-settings: var(--th-serif-axes);
+    font-weight: 500;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.05;
+  }
+
+  .featured-excerpt {
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--th-ink-2);
+    max-inline-size: 44ch;
+  }
+
+  .read {
+    font-weight: 600;
+    color: var(--th-ink);
+  }
+
+  .featured-art {
+    justify-self: center;
+    inline-size: min(240px, 60vw);
+    max-block-size: 360px;
+    overflow: hidden;
+    border-radius: 28px 28px 0 0;
+    background: #0b1418;
+    padding: 6px 6px 0;
+  }
+
+  .featured-art :global(img) {
+    display: block;
+    inline-size: 100%;
+    block-size: 360px;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 22px 22px 0 0;
+  }
+
+  .list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--th-line);
+  }
+
+  .list a {
+    display: grid;
+    gap: 6px;
+    padding-block: 24px;
+    border-block-end: 1px solid var(--th-line);
+    text-decoration: none;
+    color: var(--th-ink);
+  }
+
+  .item-title {
+    font-family: var(--th-font-serif);
+    font-variation-settings: var(--th-serif-axes);
+    font-weight: 500;
+    font-size: 1.75rem;
+    line-height: 1.15;
+  }
+
+  .item-excerpt {
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--th-ink-2);
+    max-inline-size: 60ch;
+  }
+
+  .empty {
+    margin: 0;
+    color: var(--th-ink-2);
+  }
+</style>

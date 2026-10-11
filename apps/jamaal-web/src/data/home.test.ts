@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { STAGES } from "../../scripts/stage-parse.mjs";
-import { AFTER_TRIAL, faqItems, formCopy, heroEyebrow, joinCopy, pricing, pricingIntro } from "./home";
+import { AFTER_TRIAL, faqItems, formCopy, heroEyebrow, joinCopy, journalCta, pricing, pricingIntro } from "./home";
 import type { DayChapter } from "./home";
 
 describe("stage copy", () => {
@@ -87,5 +87,17 @@ describe("day story", () => {
     const { day } = await import("./home");
     const { screen } = await import("../lib/screens");
     for (const chapter of day.chapters) for (const d of chapter.devices) expect(() => screen(d.src)).not.toThrow();
+  });
+});
+
+describe("journalCta", () => {
+  it("has a button, title and note for every stage", () => {
+    for (const stage of STAGES) {
+      const cta = journalCta(stage);
+      expect(cta.label && cta.title && cta.shortTitle && cta.body).toBeTruthy();
+    }
+    expect(journalCta("waitlist").label).toBe("Join the waitlist");
+    expect(journalCta("testflight").label).toBe("Join the beta");
+    expect(journalCta("launched").label).toBe("Download");
   });
 });

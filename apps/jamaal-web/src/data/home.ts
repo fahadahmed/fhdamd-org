@@ -400,3 +400,12 @@ export const plan = {
     alt: "Night Planning on iPad, one canvas",
   },
 } as const;
+
+/** The call to action at the end of a Journal article. `short` is for the guide that has its own note under it. */
+export function journalCta(stage: Stage): { label: string; title: string; shortTitle: string; body: string } {
+  return {
+    waitlist: { label: "Join the waitlist", title: "Be first to try it", shortTitle: "Try it in the beta", body: "A TestFlight invite as soon as the beta opens." },
+    testflight: { label: "Join the beta", title: "The beta is open", shortTitle: "Try it in the beta", body: "Get a TestFlight invite in a few minutes." },
+    launched: { label: "Download", title: "Try it free for 14 days", shortTitle: "Try Jamaal free", body: "On iPhone, iPad and Mac." },
+  }[stage];
+}

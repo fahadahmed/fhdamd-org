@@ -1,0 +1,219 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import JournalBlocks from "../../components/journal/JournalBlocks.astro";
+import { journalCta } from "../../data/home";
+import { articleJsonLd } from "../../data/seo";
+import { STAGE } from "../../data/stage";
+import { listTitle, metaLine } from "../../lib/journal";
+import type { Post } from "../../lib/journal";
+import { loadPosts } from "../../lib/journalPosts";
+
+export async function getStaticPaths() {
+  const posts = await loadPosts();
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post, next: posts.find((p) => p.slug === post.next) } }));
+}
+
+interface Props {
+  post: Post;
+  next?: Post;
+}
+
+const { post, next } = Astro.props;
+const cta = journalCta(STAGE);
+const remoteCover = post.cover && /^https?:\/\//.test(post.cover.src) ? `${post.cover.src}?auto=format&w=1200&h=630&fit=crop` : undefined;
+const jsonLd = articleJsonLd({
+  origin: Astro.site!.origin,
+  slug: post.slug,
+  headline: listTitle(post),
+  description: post.excerpt,
+  datePublished: post.date,
+  authorName: post.author?.name ?? "Fahad Ahmed",
+  image: remoteCover,
+});
+---
+
+<Layout title={`${listTitle(post)} — Jamaal`} description={post.excerpt} ogImage={remoteCover}>
+  <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+  <article class="article">
+    <a class="back" href="/journal">← Journal</a>
+    <span class="meta-line">{metaLine(post)}</span>
+    <h1>{post.title}{post.accent && <> <em>{post.accent}</em></>}</h1>
+    <p class="lede-text">{post.lede}</p>
+    {
+      post.author && (
+        <div class="author">
+          <span class="initial" aria-hidden="true">{post.author.initial}</span>
+          <div>
+            <div class="author-name">{post.author.name}</div>
+            <div class="meta">{post.author.role}</div>
+          </div>
+        </div>
+      )
+    }
+
+    <JournalBlocks blocks={post.body} />
+
+    <div class="cta">
+      <div class="cta-text">
+        <span class="cta-title">{post.ctaNote ? cta.shortTitle : cta.title}</span>
+        <span class="cta-body">{post.ctaNote ?? cta.body}</span>
+      </div>
+      <a class="cta-button" href="/#join">{cta.label}</a>
+    </div>
+
+    {
+      next && (
+        <a class="next" href={`/journal/${next.slug}`}>
+          <span class="meta-line">Next · {next.category === "Guides" ? "Guide" : next.category}</span>
+          <span class="next-title">{listTitle(next)} →</span>
+        </a>
+      )
+    }
+  </article>
+</Layout>
+
+<style>
+  .article {
+    max-inline-size: 720px;
+    margin-inline: auto;
+    padding: clamp(40px, 6vw, 80px) clamp(20px, 4vw, 48px) clamp(56px, 8vw, 96px);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .back {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--th-ink-2);
+    text-decoration: none;
+    min-block-size: 44px;
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+  }
+
+  .meta-line {
+    font-family: var(--th-font-mono);
+    font-size: var(--th-label-size);
+    font-weight: 500;
+    letter-spacing: var(--th-label-tracking);
+    text-transform: uppercase;
+    color: var(--th-ink-2);
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--th-font-serif);
+    font-variation-settings: var(--th-serif-axes);
+    font-weight: 500;
+    font-size: clamp(2.375rem, 5vw, 3.875rem);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    color: var(--th-ink);
+    text-wrap: balance;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--th-accent);
+  }
+
+  .lede-text {
+    margin: 0;
+    font-size: 1.3125rem;
+    line-height: 1.55;
+    color: var(--th-ink-2);
+    text-wrap: pretty;
+  }
+
+  .author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .initial {
+    inline-size: 44px;
+    block-size: 44px;
+    border-radius: 999px;
+    background: var(--th-deep);
+    color: var(--th-on-deep);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--th-font-serif);
+    font-size: 1.25rem;
+  }
+
+  .author-name {
+    font-weight: 600;
+    color: var(--th-ink);
+  }
+
+  .cta {
+    margin-block-start: 24px;
+    padding: 28px;
+    border-radius: var(--th-radius-card);
+    background: var(--th-deep);
+    color: var(--th-on-deep);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .cta-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .cta-title {
+    font-size: 1.1875rem;
+    font-weight: 600;
+  }
+
+  .cta-body {
+    font-size: 1rem;
+    color: var(--th-on-deep-2);
+  }
+
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 48px;
+    padding-inline: 24px;
+    border-radius: 999px;
+    background: var(--th-terra-on-deep);
+    color: #16242e;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .cta-button:focus-visible,
+  .next:focus-visible,
+  .back:focus-visible {
+    outline: 2px solid var(--th-terra);
+    outline-offset: 2px;
+  }
+
+  .next {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-block: 24px;
+    border-block-start: 1px solid var(--th-line);
+    text-decoration: none;
+    color: var(--th-ink);
+  }
+
+  .next-title {
+    font-family: var(--th-font-serif);
+    font-weight: 500;
+    font-size: 1.625rem;
+    line-height: 1.15;
+  }
+</style>

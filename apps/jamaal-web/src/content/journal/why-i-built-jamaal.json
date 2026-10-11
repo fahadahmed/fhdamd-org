@@ -1,0 +1,82 @@
+{
+  "slug": "why-i-built-jamaal",
+  "title": "Why I built",
+  "accent": "Jamaal.",
+  "category": "Story",
+  "date": "2026-10-08",
+  "readMinutes": 6,
+  "excerpt": "Four apps, none of which knew how much day I had.",
+  "featuredExcerpt": "Four apps, none of which knew how much day I had. On the planner I kept abandoning, and the one I finally kept.",
+  "lede": "I didn't set out to make a productivity app. I set out to stop opening four of them.",
+  "featured": true,
+  "author": {
+    "name": "Fahad Ahmed",
+    "role": "Maker of Jamaal",
+    "initial": "F"
+  },
+  "cover": {
+    "src": "g-TD-01",
+    "alt": "Jamaal's Today screen"
+  },
+  "next": "salah-quran-dhikr",
+  "body": [
+    {
+      "type": "p",
+      "html": "For years my day was split across apps. Work tasks lived in one list, family things in another, the school run and the bins in a calendar, and the habits I was trying to build in a tracker that rewarded me with a streak until the day it didn't. Each app was good at its own job. None of them could answer the one question I actually had each morning: <em>what fits today?</em>"
+    },
+    {
+      "type": "p",
+      "html": "So every day started with the same quiet admin. Open four apps, gather everything into one picture in my head, work out what mattered, guess how long things would take, and then find out by mid-afternoon that the guess was wrong. Things slid to tomorrow, and then to the day after. Eventually the list stopped meaning anything."
+    },
+    {
+      "type": "h2",
+      "text": "One list, and only today"
+    },
+    {
+      "type": "p",
+      "html": "The first decision was the one everything else hangs on: a single list, for today, with everything in it. Personal, family and work, side by side. Tasks you do, habits you're growing, and the fixed things your day moves around, which Jamaal calls Anchors. No projects and no tags, and there never will be. Categories are just labels you can filter by."
+    },
+    {
+      "type": "p",
+      "html": "The second was that the app should do the sorting. You tell it how much something matters and when it's due. It weighs those the way planners have for decades and gives you a single line in a sensible order. It checks that line against how much time and energy you have, and tells you plainly when the day is full."
+    },
+    {
+      "type": "figure",
+      "items": [
+        {
+          "src": "g-TD-01",
+          "alt": "Today in Jamaal",
+          "caption": "Today: the headline, how full the day is, then everything in one order."
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "No guilt, by design"
+    },
+    {
+      "type": "p",
+      "html": "I'd noticed how much of my old setup ran on low-level guilt: red overdue badges, broken streaks, a count of everything I hadn't done. So Jamaal has none of it. Habits show up as a grid of days over weeks, so one missed day is a pale square, not a reset to zero. Running late is said in words, not flashed in red. When the app suggests something, keeping your plan is always one of the answers."
+    },
+    {
+      "type": "h2",
+      "text": "Five minutes at night"
+    },
+    {
+      "type": "p",
+      "html": "The habit that changed my days most wasn't in any app: a short look back each evening, then a rough shape for tomorrow. Jamaal turns that into five calm steps. Review today, carry forward what's left, see tomorrow's free time between its fixed points, check the load, and close the day. Most nights it takes a few minutes. Skipping a night costs nothing."
+    },
+    {
+      "type": "h2",
+      "text": "The name"
+    },
+    {
+      "type": "p",
+      "html": "Jamaal means <em>beauty</em> in Arabic. It's where the tagline comes from: one list, just today, beautifully ordered. I'm building it in the evenings and at weekends, for myself first, and now for anyone whose days feel scattered across too many places."
+    },
+    {
+      "type": "p",
+      "html": "If that sounds like you, I'd love you to try it."
+    }
+  ]
+}

@@ -62,7 +62,9 @@ describe("shipped links", () => {
       .filter((href) => href.startsWith("/") && !href.startsWith("/#"));
     expect(hrefs.length).toBeGreaterThan(0);
     for (const href of hrefs) {
-      expect(existsSync(resolve(pages, `${href.slice(1)}.astro`)), `no page for ${href}`).toBe(true);
+      const page = href.slice(1);
+      const exists = existsSync(resolve(pages, `${page}.astro`)) || existsSync(resolve(pages, page, "index.astro"));
+      expect(exists, `no page for ${href}`).toBe(true);
     }
   });
 });

@@ -1,0 +1,55 @@
+{
+  "slug": "first-night-planning",
+  "title": "Your first Night Planning,",
+  "accent": "in five minutes.",
+  "category": "How-to",
+  "date": "2026-10-10",
+  "readMinutes": 4,
+  "excerpt": "What each of the five evening steps is for, and how to move through them quickly.",
+  "lede": "Each evening, Jamaal offers to plan tomorrow with you. Here's what each of the five steps is for, and how to get through them quickly.",
+  "next": "why-i-built-jamaal",
+  "body": [
+    {
+      "type": "p",
+      "html": "You'll get one gentle nudge at the planning time you chose during setup. You can change it in Settings. Tap the nudge, or the moon in Today's toolbar, to begin."
+    },
+    {
+      "type": "steps",
+      "items": [
+        {
+          "title": "Review today",
+          "body": "Plain counts of what got done and how long it took, set against your estimates. Nothing to do here but look. It helps your guesses get better.",
+          "src": "g-NP-01"
+        },
+        {
+          "title": "Carry forward",
+          "body": "For each thing left over, choose keep, later or drop. The third time something is pushed, Jamaal asks for a date. That's usually the moment to be honest about it.",
+          "src": "g-NP-02"
+        },
+        {
+          "title": "Build tomorrow",
+          "body": "Tomorrow's fixed points, with the free gaps between them named. Add tasks and see which gap they'd fit. A task longer than any gap is flagged, so you can split it or move it.",
+          "src": "g-NP-03"
+        },
+        {
+          "title": "Check the load",
+          "body": "Choose how much energy tomorrow has: low, medium or high. If the plan runs over, Jamaal suggests one move. You can take it or keep your plan.",
+          "src": "g-NP-04"
+        },
+        {
+          "title": "Close the day",
+          "body": "Tomorrow is ready. That’s it. Good night.",
+          "src": "g-NP-05"
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "If you miss a night"
+    },
+    {
+      "type": "p",
+      "html": "Nothing breaks. In the morning, Today offers a shorter version of the same flow: build today, check the load, and go. Or just ignore it. Your list is still there, in order."
+    }
+  ]
+}

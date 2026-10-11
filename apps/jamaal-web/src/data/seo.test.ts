@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { softwareApplicationJsonLd } from "./seo";
+import { articleJsonLd, softwareApplicationJsonLd } from "./seo";
 
 const options = { origin: "https://jamaal.app", description: "A calm daily planner." };
 
@@ -28,5 +28,26 @@ describe("softwareApplicationJsonLd", () => {
 
   it("serialises to valid JSON", () => {
     expect(() => JSON.parse(JSON.stringify(softwareApplicationJsonLd({ ...options, launched: true })))).not.toThrow();
+  });
+});
+
+describe("articleJsonLd", () => {
+  const base = { origin: "https://jamaal.app", slug: "hello", headline: "Hello", description: "Short", datePublished: "2026-10-08", authorName: "Fahad Ahmed" };
+
+  it("describes the article, its author and where it lives", () => {
+    const data = articleJsonLd(base);
+    expect(data["@type"]).toBe("Article");
+    expect(data.mainEntityOfPage).toBe("https://jamaal.app/journal/hello");
+    expect(data.author).toEqual({ "@type": "Person", name: "Fahad Ahmed" });
+    expect(data.datePublished).toBe("2026-10-08");
+  });
+
+  it("uses the site image unless the article has its own", () => {
+    expect(articleJsonLd(base).image).toBe("https://jamaal.app/og-image.png");
+    expect(articleJsonLd({ ...base, image: "https://www.datocms-assets.com/x.png" }).image).toBe("https://www.datocms-assets.com/x.png");
+  });
+
+  it("serialises to valid JSON", () => {
+    expect(() => JSON.parse(JSON.stringify(articleJsonLd(base)))).not.toThrow();
   });
 });
