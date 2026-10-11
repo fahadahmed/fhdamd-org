@@ -1,8 +1,8 @@
 import { useEffect, useId, useState } from "react";
 import type { FormEvent } from "react";
 import { Button } from "@fhdamd/threads";
-import { joinedTitle, submitSignup, validateSignup } from "../../utils/signup";
-import type { SignupSource } from "../../utils/signup";
+import { joinedBody, joinedTitle, submitSignup, validateSignup } from "../../utils/signup";
+import type { SignupOutcome, SignupSource } from "../../utils/signup";
 import styles from "./WaitlistForm.module.css";
 
 export interface WaitlistFormProps {
@@ -32,7 +32,7 @@ export default function WaitlistForm({ variant, source, submitLabel, note }: Rea
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [joined, setJoined] = useState(false);
+  const [joined, setJoined] = useState<SignupOutcome | null>(null);
 
   // `?joined` shows the confirmation state, so the design can be reviewed
   // without a working backend.
@@ -40,7 +40,7 @@ export default function WaitlistForm({ variant, source, submitLabel, note }: Rea
     if (new URLSearchParams(window.location.search).has("joined")) {
       setFirstName((n) => n || "Sam");
       setEmail((e) => e || "you@example.com");
-      setJoined(true);
+      setJoined("added");
     }
   }, []);
 
@@ -54,8 +54,7 @@ export default function WaitlistForm({ variant, source, submitLabel, note }: Rea
     setError("");
     setSubmitting(true);
     try {
-      await submitSignup({ firstName, email }, source);
-      setJoined(true);
+      setJoined(await submitSignup({ firstName, email }, source));
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
     } finally {
@@ -75,9 +74,9 @@ export default function WaitlistForm({ variant, source, submitLabel, note }: Rea
             </span>
           )}
           <div className={styles.joinedText}>
-            <div className={styles.joinedTitle}>{joinedTitle(firstName)}</div>
+            <div className={styles.joinedTitle}>{joinedTitle(firstName, joined)}</div>
             {variant === "hero" && (
-              <div className={styles.joinedBody}>We'll write to {email} once, when there's something to open.</div>
+              <div className={styles.joinedBody}>{joinedBody(email, joined)}</div>
             )}
           </div>
         </div>
