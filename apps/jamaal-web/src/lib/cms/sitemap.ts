@@ -9,7 +9,7 @@ export interface SitemapEntry {
 
 const latest = (stamps: (string | undefined | null)[]): string => {
   const valid = stamps.filter((s): s is string => Boolean(s));
-  return valid.reduce((a, b) => (new Date(b) > new Date(a) ? b : a));
+  return valid.reduce((a, b) => (new Date(b) > new Date(a) ? b : a), valid[0] ?? "");
 };
 
 /**

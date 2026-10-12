@@ -1,4 +1,4 @@
-// Checks the built site's SEO: run after `astro build` as `node scripts/seo-check.mjs dist`.
+// Checks the built site's SEO: run after `astro build`, from apps/jamaal-web, as `pnpm check:seo`.
 // Exits 1 and lists every problem, so a bad title, a missing canonical or a page that drifted
 // out of the sitemap can't be deployed unnoticed.
 import { readFileSync, readdirSync, statSync } from "node:fs";
@@ -98,8 +98,8 @@ export function checkSite(pages, sitemapXml) {
 
   if (sitemapXml === undefined) problems.push("there is no sitemap.xml");
   else {
-    const listed = [...sitemapXml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]).sort();
-    const wanted = indexable.map((p) => `${ORIGIN}${p.path}`).sort();
+    const listed = [...sitemapXml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+    const wanted = indexable.map((p) => `${ORIGIN}${p.path}`);
     for (const url of wanted) if (!listed.includes(url)) problems.push(`${url} is indexable but not in sitemap.xml`);
     for (const url of listed) if (!wanted.includes(url)) problems.push(`${url} is in sitemap.xml but is not an indexable page`);
   }
@@ -114,8 +114,11 @@ function htmlFiles(dir) {
   });
 }
 
+/** Always the build output next to this script's package: the check takes no path, so it can't be pointed anywhere else. */
+const DIST = "dist";
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const dir = process.argv[2] ?? "dist";
+  const dir = DIST;
   const pages = htmlFiles(dir).map((f) => readPage(relative(dir, f), readFileSync(f, "utf8")));
   let sitemap;
   try {

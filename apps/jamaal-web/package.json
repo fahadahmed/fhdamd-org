@@ -11,7 +11,7 @@
     "format": "prettier --write .",
     "lint": "eslint .",
     "check": "astro check",
-    "check:seo": "node scripts/seo-check.mjs dist",
+    "check:seo": "node scripts/seo-check.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"

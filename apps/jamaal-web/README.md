@@ -124,7 +124,7 @@ A title that already contains the site name isn't given a second one. A page hid
 - **Canonical addresses have no trailing slash,** because Firebase Hosting serves pages without one (`trailingSlash: false`) and redirects the slash form.
 - **Structured data (schema.org JSON-LD):** `SoftwareApplication` (offers only once launched), `Organization` and `WebSite` on the home page; `Article` and `BreadcrumbList` on articles; `BreadcrumbList` on the Journal.
 - **`/sitemap.xml`** (`src/pages/sitemap.xml.ts`, one request) lists every indexable page with `lastmod`: the latest change to its own record, to the site settings (nav and footer), and for the home and support pages to the FAQ and day story. **`/journal/rss.xml`** is the Journal's feed, advertised on every Journal page.
-- **Checked on every build:** `pnpm --filter jamaal-web check:seo` (run in CI after the build, `scripts/seo-check.mjs`) fails on a page without exactly one `<h1>`, an image without `alt`, a missing or wrongly sized title or description (10 to 70 and 50 to 200 characters), a wrong canonical, missing Open Graph or Twitter tags, invalid structured data, duplicate titles or descriptions, or a sitemap that doesn't match the indexable pages.
+- **Checked on every build:** `pnpm --filter jamaal-web check:seo` (run in CI after the build, `scripts/seo-check.mjs`; it always reads `dist`) fails on a page without exactly one `<h1>`, an image without `alt`, a missing or wrongly sized title or description (10 to 70 and 50 to 200 characters), a wrong canonical, missing Open Graph or Twitter tags, invalid structured data, duplicate titles or descriptions, or a sitemap that doesn't match the indexable pages.
 
 ## Error reporting (Sentry)
 
