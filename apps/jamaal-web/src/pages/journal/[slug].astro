@@ -44,7 +44,7 @@ const jsonLd = articleJsonLd({
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
   <article class="article">
     <a class="back" href="/journal">{copy.back}</a>
-    <span class="meta-line">{metaLine(post)}</span>
+    <span class="meta-line th-label">{metaLine(post)}</span>
     <h1>{post.title}{post.accent && <> <em>{post.accent}</em></>}</h1>
     <p class="lede-text">{post.lede}</p>
     <div class="author">
@@ -68,7 +68,7 @@ const jsonLd = articleJsonLd({
     {
       next && (
         <a class="next" href={`/journal/${next.slug}`}>
-          <span class="meta-line">{copy.nextLabel} · {next.category === "Guides" ? "Guide" : next.category}</span>
+          <span class="meta-line th-label">{copy.nextLabel} · {next.category === "Guides" ? "Guide" : next.category}</span>
           <span class="next-title">{listTitle(next)} →</span>
         </a>
       )

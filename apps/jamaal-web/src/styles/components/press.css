@@ -60,11 +60,7 @@
   line-height: 1.5;
 }
 
-:where(.press) .files {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
+:where(.press) .files {  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
   gap: 24px;
 }
@@ -104,11 +100,7 @@
   font-weight: 600;
 }
 
-:where(.press) .swatches {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
+:where(.press) .swatches {  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: 16px;
 }

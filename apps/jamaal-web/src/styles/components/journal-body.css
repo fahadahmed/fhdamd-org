@@ -94,11 +94,7 @@
   color: var(--th-ink-2);
 }
 
-:where(.journal-body) .steps {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
+:where(.journal-body) .steps {  display: flex;
   flex-direction: column;
 }
 

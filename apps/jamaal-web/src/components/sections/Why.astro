@@ -16,11 +16,11 @@ const { why } = Astro.props;
       <p class="copy copy--wide">{why.body}</p>
     </div>
     <div class="compare">
-      <div class="compare-head" aria-hidden="true">
+      <div class="compare-head th-label" aria-hidden="true">
         <span>{why.columns.them}</span>
         <span>{why.columns.us}</span>
       </div>
-      <ul class="compare-rows">
+      <ul class="compare-rows list-reset">
         {
           why.rows.map((row) => (
             <li class="compare-row">

@@ -23,14 +23,14 @@ import { screen } from "../../lib/screens";
       <p class="copy copy--wide">{e.body}</p>
     </div>
 
-    <ul class="cards">
+    <ul class="cards list-reset">
       <li class="card">
         <div class="media media--end">
           <div class="crop">
             <Picture src={screen("g-FS-01-chip")} alt={e.iphone.alt} widths={[320, 480, 640]} sizes="220px" formats={["avif", "webp"]} loading="lazy" class="crop-img" />
           </div>
         </div>
-        <div class="text"><h3>{e.iphone.name}</h3><p>{e.iphone.body}</p></div>
+        <div class="text"><h3 class="th-label">{e.iphone.name}</h3><p>{e.iphone.body}</p></div>
       </li>
 
       <li class="card" data-duo data-open="true">
@@ -43,7 +43,7 @@ import { screen } from "../../lib/screens";
           </div>
           <button type="button" class="fold" data-fold data-fold-label={e.duo.fold} data-unfold-label={e.duo.unfold} aria-pressed="false">{e.duo.fold}</button>
         </div>
-        <div class="text"><h3>{e.duo.name}</h3><p>{e.duo.body}</p></div>
+        <div class="text"><h3 class="th-label">{e.duo.name}</h3><p>{e.duo.body}</p></div>
       </li>
 
       <li class="card">
@@ -52,7 +52,7 @@ import { screen } from "../../lib/screens";
             <DeviceFrame type="ipad" src={screen("g-iPad-TD-01")} alt={e.ipad.alt} sizes="420px" />
           </div>
         </div>
-        <div class="text"><h3>{e.ipad.name}</h3><p>{e.ipad.body}</p></div>
+        <div class="text"><h3 class="th-label">{e.ipad.name}</h3><p>{e.ipad.body}</p></div>
       </li>
 
       <li class="card">
@@ -61,7 +61,7 @@ import { screen } from "../../lib/screens";
             <DeviceFrame type="mac" src={screen("g-macOS")} alt={e.mac.alt} sizes="420px" />
           </div>
         </div>
-        <div class="text"><h3>{e.mac.name}</h3><p>{e.mac.body}</p></div>
+        <div class="text"><h3 class="th-label">{e.mac.name}</h3><p>{e.mac.body}</p></div>
       </li>
 
       <li class="card">
@@ -72,7 +72,7 @@ import { screen } from "../../lib/screens";
             <Picture src={screen("WG-03-today-small")} alt={e.widgets.smallAlt} widths={[160, 320]} sizes="150px" formats={["avif", "webp"]} loading="lazy" class="widget" />
           </div>
         </div>
-        <div class="text"><h3>{e.widgets.name}</h3><p>{e.widgets.body}</p></div>
+        <div class="text"><h3 class="th-label">{e.widgets.name}</h3><p>{e.widgets.body}</p></div>
       </li>
 
       <li class="card">
@@ -80,7 +80,7 @@ import { screen } from "../../lib/screens";
           <span class="soon">{e.comingLabel}</span>
           <div class="watch"><DeviceFrame type="watch" src={screen("g-WA-01")} alt={e.watch.alt} sizes="150px" /></div>
         </div>
-        <div class="text"><h3>{e.watch.name}</h3><p>{e.watch.body}</p></div>
+        <div class="text"><h3 class="th-label">{e.watch.name}</h3><p>{e.watch.body}</p></div>
       </li>
 
       <li class="card">
@@ -90,7 +90,7 @@ import { screen } from "../../lib/screens";
             <Picture src={screen("FS-08-lock-screen")} alt={e.liveActivity.alt} widths={[320, 480, 640]} sizes="200px" formats={["avif", "webp"]} loading="lazy" class="crop-img" />
           </div>
         </div>
-        <div class="text"><h3>{e.liveActivity.name}</h3><p>{e.liveActivity.body}</p></div>
+        <div class="text"><h3 class="th-label">{e.liveActivity.name}</h3><p>{e.liveActivity.body}</p></div>
       </li>
     </ul>
   </div>

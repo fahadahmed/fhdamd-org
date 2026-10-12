@@ -29,7 +29,7 @@ const { day } = Astro.props;
           <article class="chapter" data-ch={i} aria-labelledby={`day-ch-${i}`}>
             <div class="chapter-when">
               <span class="chapter-time">{chapter.time}</span>
-              <span class="chapter-label">{chapter.label}</span>
+              <span class="chapter-label th-label">{chapter.label}</span>
             </div>
             <h3 id={`day-ch-${i}`}>{chapter.title}</h3>
             <p>{chapter.body}</p>

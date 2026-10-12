@@ -15,7 +15,7 @@ const { principles } = Astro.props;
       <SectionHeading eyebrow={principles.eyebrow} title={principles.title} accent={principles.accent} />
       <p class="copy">{principles.body}</p>
     </div>
-    <ul class="principles">
+    <ul class="principles list-reset">
       {
         principles.items.map((item) => (
           <li class="principle">

@@ -87,13 +87,7 @@
   transition: color 700ms;
 }
 
-:where(.day) .chapter-label {
-  font-family: var(--th-font-mono);
-  font-size: var(--th-label-size);
-  font-weight: 500;
-  letter-spacing: var(--th-label-tracking);
-  text-transform: uppercase;
-  color: var(--ink-2);
+:where(.day) .chapter-label {  color: var(--ink-2);
   transition: color 700ms;
 }
 

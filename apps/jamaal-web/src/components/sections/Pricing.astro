@@ -19,7 +19,7 @@ const { pricing } = Astro.props;
       {
         pricing.plans.map((plan) => (
           <div class:list={["plan", { "plan--featured": plan.featured }]}>
-            <div class="plan-name">{plan.name}</div>
+            <div class="plan-name th-label">{plan.name}</div>
             <div class="plan-price">{plan.price}</div>
             <div class="meta">{plan.unit}</div>
           </div>

@@ -25,7 +25,7 @@ const cta = navCta(site.navButton, STAGE);
       <Logo />
       <span class="brand-name">Jamaal</span>
     </a>
-    <ul class="links">
+    <ul class="links list-reset">
       {links.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
     </ul>
     <a class="cta" href={cta.href}>{cta.label}</a>

@@ -34,7 +34,7 @@ const preview = (file: (typeof press.files)[number]) => (file.url.endsWith(".svg
       </dl>
 
       <h2 id="downloads">{press.downloadsHeading}</h2>
-      <ul class="files">
+      <ul class="files list-reset">
         {
           press.files.map((f) => (
             <li>
@@ -52,7 +52,7 @@ const preview = (file: (typeof press.files)[number]) => (file.url.endsWith(".svg
       </ul>
 
       <h2 id="brand">{press.brandHeading}</h2>
-      <ul class="swatches">
+      <ul class="swatches list-reset">
         {
           press.colours.map((c) => (
             <li>

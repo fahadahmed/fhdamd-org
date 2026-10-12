@@ -1,10 +1,6 @@
 /* Moved from components/sections/Everywhere.astro; every rule is under .everywhere (no added specificity). */
 
-:where(.everywhere) .cards {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
+:where(.everywhere) .cards {  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
   gap: 20px;
 }
@@ -52,11 +48,6 @@
 
 :where(.everywhere) .text h3 {
   margin: 0;
-  font-family: var(--th-font-mono);
-  font-size: var(--th-label-size);
-  font-weight: 500;
-  letter-spacing: var(--th-label-tracking);
-  text-transform: uppercase;
   color: var(--th-ink-2);
 }
 

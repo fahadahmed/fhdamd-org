@@ -20,13 +20,7 @@
   align-self: flex-start;
 }
 
-:where(.article) .meta-line {
-  font-family: var(--th-font-mono);
-  font-size: var(--th-label-size);
-  font-weight: 500;
-  letter-spacing: var(--th-label-tracking);
-  text-transform: uppercase;
-  color: var(--th-ink-2);
+:where(.article) .meta-line {  color: var(--th-ink-2);
 }
 
 :where(.article) h1 {
