@@ -9,4 +9,6 @@ interface ImportMetaEnv {
   readonly DATOCMS_API_TOKEN?: string;
   /** Optional DatoCMS environment to read from. */
   readonly DATOCMS_ENVIRONMENT?: string;
+  /** Sentry DSN for browser errors. Error reporting is off without it. */
+  readonly PUBLIC_SENTRY_DSN?: string;
 }

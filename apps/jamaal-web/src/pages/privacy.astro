@@ -2,6 +2,7 @@
 import LegalPage from "../layouts/LegalPage.astro";
 import { CONTACT_EMAIL } from "../data/site";
 import { legal } from "../data/content";
+import { ERROR_REPORTING_AVAILABLE } from "../lib/errorReporting";
 ---
 
 <LegalPage
@@ -13,8 +14,8 @@ import { legal } from "../data/content";
   <h2 id="short-version">The short version</h2>
   <p>
     Jamaal is made by fhdamd (Fahad Ahmed) in Melbourne, Australia. The app keeps your tasks, habits and Anchors on
-    your device and, if you choose to sync, in your own iCloud. We don't receive them. This website collects only what
-    you give it when you join the early-access list.
+    your device and, if you choose to sync, in your own iCloud. We don't receive them. This website collects what you
+    give it when you join the early-access list and, only if you accept, counts visits with Google Analytics.
   </p>
 
   <h2 id="app">The app</h2>
@@ -41,6 +42,16 @@ import { legal } from "../data/content";
     We turn off Google signals and ad personalisation, we don't use this data for advertising, and we keep it for the
     shortest period Google offers. The Jamaal app collects no analytics at all.
   </p>
+  {
+    ERROR_REPORTING_AVAILABLE && (
+      <p>
+        If something on this website breaks in your browser, an error report may be sent to Sentry, our error-reporting
+        service. It contains the error message and where in the code it happened, the page address without anything after
+        a question mark, and your browser and device type. It never contains what you typed into a form, cookies or your
+        name or email address, and we ask Sentry not to store IP addresses.
+      </p>
+    )
+  }
   <p>
     The site is hosted on Google Firebase Hosting, which keeps standard server logs (such as IP address and the pages
     requested) to run and secure the service. There are no other trackers.
@@ -50,15 +61,25 @@ import { legal } from "../data/content";
   <p>If you join the list, we collect:</p>
   <ul>
     <li>your first name and email address, so we can write to you;</li>
+    <li>once the TestFlight beta is open, which devices you plan to test on (iPhone, iPad or Mac);</li>
     <li>which form you used on the site, and when you joined.</li>
   </ul>
   <p>
-    We use them only to email you once when Jamaal is ready, and once if a TestFlight beta opens. We don't send anything
-    else, and we don't sell or share your details or use them for advertising.
+    We use them to email you when Jamaal is ready, when a TestFlight beta opens, and to send your beta invitation. We
+    don't send anything else, and we don't sell or share your details or use them for advertising.
   </p>
   <p>
-    They are stored with Google Firebase (Cloud Firestore), which processes them on our behalf. We keep them while the
-    list is open and until you ask us to remove them.
+    When the beta opens, we add the name and email you gave us to TestFlight through Apple's App Store Connect so Apple
+    can email you the invitation. Apple handles them under its own privacy policy. Any email we send is sent through an
+    email service provider that handles it on our behalf.
+  </p>
+  <p>
+    Your details are stored with Google Firebase (Cloud Firestore), in the United States, which processes them on our
+    behalf. We keep them while the list is open and until you ask us to remove them.
+  </p>
+  <p>
+    To stop the form being abused, the signup service counts attempts from each network address. It keeps only a one-way
+    hash of the address, never the address itself, and deletes it automatically within a day.
   </p>
 
   <h2 id="rights">Your choices</h2>

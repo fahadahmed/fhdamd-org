@@ -46,11 +46,33 @@ Hosted on Firebase Hosting, project `jamaal-web` (default site `jamaal-web`, htt
 
 ## Functions
 
-`functions/` holds the Cloud Functions codebase (`jamaal-web-functions`, Node 22). It currently has one placeholder endpoint, `healthCheck`, which proves the setup; the waitlist signup function (#388) replaces it.
+`functions/` holds the Cloud Functions codebase (`jamaal-web-functions`, Node 22, region `us-central1`, next to the `nam5` Firestore).
 
 - `pnpm --filter jamaal-web-functions build` compiles to `functions/lib`.
 - `firebase emulators:start --only functions --project demo-jamaal-web` (run from `apps/jamaal-web`) serves it locally at `http://127.0.0.1:5001/demo-jamaal-web/us-central1/healthCheck`.
-- **Not deployed by CI.** The hosting deploy uses `--only hosting`. Deploying functions needs the Blaze (pay-as-you-go) plan and a service account with more than Hosting Admin (Cloud Functions Admin, Service Account User and similar), so it is left for #388.
+
+| Function | Trigger | What it does |
+|---|---|---|
+| `signup` | `POST /api/signup` (Hosting rewrite) | Validates, rate-limits and stores `signups/{email}`; answers `added`, `invited` (beta) or 409 (#422) |
+| `rebuildOnConfigChange` | Remote Config published | Asks GitHub to run `ci-jamaal-web.yml`, which rebuilds and redeploys the static site (#425) |
+
+- `pnpm --filter jamaal-web-functions test` runs the unit tests and `build` compiles to `functions/lib`.
+- `firebase emulators:start --only functions,firestore --project demo-jamaal-web` (from `apps/jamaal-web`) serves them locally. Remote Config is not emulated, so the stage falls back to `waitlist` there.
+- **Deploying:** `deploy-jamaal-functions.yml` deploys functions, Firestore rules and indexes when anything under `functions/` or the rules and indexes files change on `main`, or by hand from the Actions tab. By hand: `firebase deploy --only functions,firestore --project jamaal-web`.
+  - The service account behind `FIREBASE_SERVICE_ACCOUNT_JAMAAL_WEB` needs, on `jamaal-web`: Cloud Functions Admin, Service Account User, Firebase Rules Admin, Cloud Datastore Index Admin, Artifact Registry Writer, Secret Manager Viewer and Cloud Build Editor, as well as Hosting Admin.
+  - A new function must be public (`allUsers` has `roles/run.invoker`) to be reachable from the website. `signup` is; `rebuildOnConfigChange` is an event function and is not.
+- **npm in Cloud Build:** the folder is uploaded on its own, so `functions/package-lock.json` and `.npmrc` (`legacy-peer-deps=true`) are needed or the build fails with `Cannot read properties of null (reading 'edgesOut')`. If dependencies change, regenerate the lock in a clean folder: copy `package.json` and `.npmrc` out, run `npm install --package-lock-only --legacy-peer-deps`, and copy `package-lock.json` back.
+
+### Flipping the stage
+
+The stage (`waitlist`, `testflight`, `launched`) is the `site_stage` parameter in Remote Config.
+
+1. Change `site_stage` in the Firebase console (Remote Config) and **Publish**. Remote Config keeps version history, so it can be rolled back the same way.
+2. `rebuildOnConfigChange` queues `ci-jamaal-web.yml` and the site is rebuilt and deployed in about two minutes. (Without the function, run that workflow by hand from the Actions tab: Run workflow, branch `main`.) The signup function reads the stage within a minute and needs no rebuild.
+3. Check: the home page shows the new hero eyebrow and form, `jamaal.app/api/signup` answers the new stage (a test signup returns `invited` in the beta), and the workflow log says `Site stage: <stage> (Remote Config)`.
+4. Don't flip to `testflight` until the invite function exists (#424): the API would say `invited` without inviting anyone.
+
+**One-time setup for the automatic rebuild:** create a fine-grained GitHub token for this repository with *Actions: read and write*, then store it as the secret the function reads: `firebase functions:secrets:set GITHUB_DISPATCH_TOKEN --project jamaal-web`, and deploy.
 
 ## The Journal (DatoCMS)
 
@@ -62,3 +84,12 @@ Hosted on Firebase Hosting, project `jamaal-web` (default site `jamaal-web`, htt
 - **Token:** create a read-only Content Delivery API token and add it as the GitHub secret `JAMAAL_DATOCMS_TOKEN` (it reaches the build as `DATOCMS_API_TOKEN`; set `DATOCMS_ENVIRONMENT` to read a sandbox). For local builds put it in `.env.local`.
 - **Editors:** invite them in DatoCMS with a role that can create, edit and publish `post` records and upload assets, but cannot change the schema. Check the plan's editor-seat limit first.
 - **Publishing rebuilds the site:** add a DatoCMS webhook on `post` publish and unpublish that POSTs `{"event_type":"datocms-publish"}` to `https://api.github.com/repos/fahadahmed/fhdamd-org/dispatches` with the headers `Authorization: Bearer <GitHub token with Actions: write>`, `Accept: application/vnd.github+json` and `Content-Type: application/json`. `ci-jamaal-web.yml` runs on that event and deploys the site in about two minutes.
+
+## Error reporting (Sentry)
+
+Errors only: no tracing, replay, breadcrumbs or user data, and the privacy page says so when it is on.
+
+- **Site:** `src/lib/errorReporting.ts` listens for uncaught errors and unhandled rejections and downloads the Sentry SDK only when one happens (almost every visit pays nothing). Events are scrubbed of the user, cookies, headers and query string, and the page address keeps only its path. At most five reports per page view. It is **off unless the build has `PUBLIC_SENTRY_DSN`**, which CI takes from the GitHub secret `JAMAAL_SENTRY_DSN`.
+- **Functions:** `functions/src/errors.ts` reports unexpected failures in `signup` and `rebuildOnConfigChange` and flushes before the instance freezes. Events drop the request and user entirely (a signup body holds a name and email). The DSN is `SENTRY_DSN` in `functions/.env.jamaal-web`; empty means off.
+- **To switch it on:** create one Sentry project (the site and the functions share it), turn on *Prevent storing of IP addresses* in its settings, add its DSN as the GitHub secret `JAMAAL_SENTRY_DSN`, put the same DSN in `functions/.env.jamaal-web`, and redeploy the functions.
+- **The app itself** (Swift, in its own repository) uses the Sentry Cocoa SDK with the same rules: crashes and errors only, `sendDefaultPii = false`, and scrubbed breadcrumbs so task, habit and Anchor text never leaves the device.

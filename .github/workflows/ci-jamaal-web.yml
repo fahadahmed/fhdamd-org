@@ -11,6 +11,9 @@ on:
       - main
     paths:
       - apps/jamaal-web/**
+  # Run by the rebuildOnConfigChange function when Remote Config is published, so a
+  # stage flip rebuilds the static site. Also usable by hand from the Actions tab.
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -101,6 +104,8 @@ jobs:
           PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.JAMAAL_FIREBASE_MEASUREMENT_ID }}
           # Read-only DatoCMS token for the Journal. Without it the site builds with the bundled articles.
           DATOCMS_API_TOKEN: ${{ secrets.JAMAAL_DATOCMS_TOKEN }}
+          # Sentry DSN for browser errors. Without it the site builds with error reporting off.
+          PUBLIC_SENTRY_DSN: ${{ secrets.JAMAAL_SENTRY_DSN }}
 
       # Each PR gets its own channel (pr<number>-<branch>) with a preview URL
       # posted as a PR comment. Channels expire after 7 days.
@@ -116,7 +121,7 @@ jobs:
   deploy:
     name: Build and deploy jamaal-web (live)
     needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -151,6 +156,8 @@ jobs:
           PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.JAMAAL_FIREBASE_MEASUREMENT_ID }}
           # Read-only DatoCMS token for the Journal. Without it the site builds with the bundled articles.
           DATOCMS_API_TOKEN: ${{ secrets.JAMAAL_DATOCMS_TOKEN }}
+          # Sentry DSN for browser errors. Without it the site builds with error reporting off.
+          PUBLIC_SENTRY_DSN: ${{ secrets.JAMAAL_SENTRY_DSN }}
 
       - name: Deploy to Firebase Hosting (live)
         uses: FirebaseExtended/action-hosting-deploy@500ac625ca2dd40cbd15f7659af953801858032a # v0
