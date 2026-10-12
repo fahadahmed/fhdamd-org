@@ -55,8 +55,10 @@ const remote = (post: Post) => Boolean(post.cover && /^https?:\/\//.test(post.co
           <li data-category={post.category}>
             <a href={`/journal/${post.slug}`}>
               <span class="meta-line">{shortMeta(post)}</span>
-              <span class="item-title">{listTitle(post)}</span>
-              <span class="item-excerpt">{post.excerpt}</span>
+              <span class="item-body">
+                <span class="item-title">{listTitle(post)}</span>
+                <span class="item-excerpt">{post.excerpt}</span>
+              </span>
             </a>
           </li>
         ))
@@ -230,24 +232,36 @@ const remote = (post: Post) => Boolean(post.cover && /^https?:\/\//.test(post.co
     margin: 0;
     padding: 0;
     list-style: none;
-    border-block-start: 1px solid var(--th-line);
   }
 
   .list a {
     display: grid;
-    gap: 6px;
-    padding-block: 24px;
-    border-block-end: 1px solid var(--th-line);
+    gap: 12px 40px;
+    padding-block: 28px;
+    border-block-start: 1px solid var(--th-line);
     text-decoration: none;
     color: var(--th-ink);
+  }
+
+  .item-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  @media (min-width: 720px) {
+    .list a {
+      grid-template-columns: 1fr 2fr;
+      align-items: baseline;
+    }
   }
 
   .item-title {
     font-family: var(--th-font-serif);
     font-variation-settings: var(--th-serif-axes);
     font-weight: 500;
-    font-size: 1.75rem;
-    line-height: 1.15;
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    line-height: 1.1;
   }
 
   .item-excerpt {
