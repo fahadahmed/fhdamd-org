@@ -1,0 +1,97 @@
+/* Moved from components/ui/SiteNav.astro; every rule is under .site-nav (no added specificity). */
+
+.site-nav {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 200;
+  padding: 12px clamp(16px, 3vw, 32px);
+}
+
+:where(.site-nav) .pill {
+  max-inline-size: 1240px;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 8px 8px 18px;
+  border-radius: 999px;
+  background: var(--th-glass);
+  backdrop-filter: var(--th-glass-blur);
+  -webkit-backdrop-filter: var(--th-glass-blur);
+  border: 1px solid var(--th-line);
+}
+
+:where(.site-nav) .brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-block-size: 44px;
+  text-decoration: none;
+  color: var(--th-ink);
+}
+
+:where(.site-nav) .brand-name {
+  font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
+  font-weight: 500;
+  font-size: 22px;
+}
+
+:where(.site-nav) .links {
+  display: none;
+  gap: 4px;
+}
+
+:where(.site-nav) .links a {
+  display: flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding-inline: 12px;
+  border-radius: 999px;
+  font-family: var(--th-font-mono);
+  font-size: var(--th-label-size);
+  font-weight: 500;
+  letter-spacing: var(--th-label-tracking);
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--th-ink);
+}
+
+:where(.site-nav) .links a:hover {
+  background: var(--th-sidebar);
+}
+
+/* The one filled colour on the page is terracotta. */
+:where(.site-nav) .cta {
+  display: flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding-inline: 20px;
+  border-radius: 999px;
+  background: var(--th-terra);
+  color: var(--th-on-accent);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--th-duration-state) var(--th-ease-out);
+}
+
+:where(.site-nav) .cta:hover {
+  background: var(--th-terra-press);
+  color: var(--th-on-accent);
+}
+
+:where(.site-nav) .brand:focus-visible,
+:where(.site-nav) .links a:focus-visible,
+:where(.site-nav) .cta:focus-visible {
+  outline: 2px solid var(--th-terra);
+  outline-offset: 2px;
+}
+
+@media (min-width: 960px) {
+  :where(.site-nav) .links {
+    display: flex;
+  }
+}

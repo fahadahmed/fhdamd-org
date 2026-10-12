@@ -1,0 +1,186 @@
+/* Moved from components/sections/NightPlanning.astro; every rule is under .night-plan (no added specificity). */
+
+.night-plan {
+  background: var(--site-deeper);
+  color: var(--th-on-deep);
+  padding: clamp(56px, 8vw, 112px) clamp(20px, 4vw, 48px);
+}
+
+:where(.night-plan) .plan-inner {
+  max-inline-size: 1240px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+:where(.night-plan) .plan-head {
+  max-inline-size: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+:where(.night-plan) .plan-eyebrow {
+  color: var(--th-on-deep-2);
+}
+
+:where(.night-plan) .plan-title {
+  margin: 0;
+  font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
+  font-weight: 500;
+  font-size: clamp(2.125rem, 4.6vw, 3.5rem);
+  line-height: 1.04;
+  color: var(--th-on-deep);
+  text-wrap: balance;
+}
+
+:where(.night-plan) .plan-title em {
+  font-style: italic;
+  color: var(--th-accent-on-deep);
+}
+
+:where(.night-plan) .plan-lede {
+  margin: 0;
+  max-inline-size: 54ch;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--th-on-deep-2);
+  text-wrap: pretty;
+}
+
+:where(.night-plan) .plan-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 48px;
+  align-items: center;
+}
+
+:where(.night-plan) .plan-phone {
+  justify-self: center;
+  inline-size: min(300px, 78vw);
+  filter: drop-shadow(0 40px 40px rgb(0 0 0 / 0.5));
+}
+
+:where(.night-plan) .plan-phone .screen {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: top;
+  opacity: 0;
+  transition: opacity 400ms var(--th-ease-out);
+}
+
+:where(.night-plan) .plan-phone .screen[data-active] {
+  opacity: 1;
+}
+
+:where(.night-plan) .steps {  display: flex;
+  flex-direction: column;
+}
+
+:where(.night-plan) .steps li {
+  border-block-start: 1px solid color-mix(in srgb, var(--th-on-deep) 14%, transparent);
+}
+
+:where(.night-plan) .steps button {
+  inline-size: 100%;
+  display: flex;
+  gap: 18px;
+  padding: 18px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color 200ms;
+}
+
+:where(.night-plan) .steps button:hover {
+  background: color-mix(in srgb, var(--th-on-deep) 5%, transparent);
+}
+
+/* The chosen step is marked by its ground and an accent number, not by dimming the others. */
+:where(.night-plan) .steps button[aria-current="step"] {
+  background: color-mix(in srgb, var(--th-on-deep) 9%, transparent);
+}
+
+:where(.night-plan) .steps button:focus-visible {
+  outline: 2px solid var(--th-terra-on-deep);
+  outline-offset: -2px;
+}
+
+:where(.night-plan) .num {
+  inline-size: 24px;
+  flex-shrink: 0;
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-size: 1.75rem;
+  line-height: 1.1;
+  color: var(--th-on-deep-2);
+}
+
+:where(.night-plan) button[aria-current="step"] .num {
+  color: var(--th-accent-on-deep);
+}
+
+:where(.night-plan) .step-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+:where(.night-plan) .step-title {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--th-on-deep);
+}
+
+:where(.night-plan) .step-body {
+  max-inline-size: 46ch;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--th-on-deep-2);
+}
+
+:where(.night-plan) .canvas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 32px 48px;
+  align-items: center;
+  padding-block-start: 48px;
+  border-block-start: 1px solid color-mix(in srgb, var(--th-on-deep) 14%, transparent);
+}
+
+:where(.night-plan) .canvas-frame {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--th-on-deep) 16%, transparent);
+  border-radius: 28px;
+}
+
+:where(.night-plan) .canvas-text {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+:where(.night-plan) .canvas-text p {
+  margin: 0;
+  max-inline-size: 40ch;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--th-on-deep);
+  text-wrap: pretty;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.night-plan) .plan-phone .screen,
+  :where(.night-plan) .steps button {
+    transition: none;
+  }
+}

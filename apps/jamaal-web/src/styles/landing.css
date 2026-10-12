@@ -89,6 +89,11 @@
   text-wrap: pretty;
 }
 
+/* A section heading and its lede sit in a narrower column than the content below. */
+.section-head {
+  max-inline-size: 780px;
+}
+
 .copy {
   margin: 0;
   max-inline-size: 46ch;
@@ -96,6 +101,10 @@
   line-height: var(--th-body-leading);
   color: var(--th-ink-2);
   text-wrap: pretty;
+}
+
+.copy--wide {
+  max-inline-size: 56ch;
 }
 
 .meta {

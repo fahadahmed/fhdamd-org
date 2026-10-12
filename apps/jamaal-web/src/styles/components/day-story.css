@@ -1,0 +1,231 @@
+/* Moved from components/sections/DayStory.astro; every rule is under .day (no added specificity). */
+
+.day {
+  --ink: var(--th-ink);
+  --ink-2: var(--th-ink-2);
+  --accent: var(--th-accent);
+  padding: clamp(56px, 8vw, 112px) clamp(20px, 4vw, 48px) 0;
+  background-color: var(--day-0);
+  color: var(--ink);
+  transition: background-color 700ms var(--th-ease-out);
+}
+
+.day[data-chapter="1"] { background-color: var(--day-1); }
+.day[data-chapter="2"] { background-color: var(--day-2); }
+.day[data-chapter="3"] { background-color: var(--day-3); }
+.day[data-chapter="4"] { background-color: var(--day-4); }
+
+/* The last chapter is evening: the ground goes to deep and the ink flips to match. */
+.day[data-chapter="5"] {
+  --ink: var(--th-on-deep);
+  --ink-2: var(--th-on-deep-2);
+  --accent: var(--th-accent-on-deep);
+  background-color: var(--day-5);
+}
+
+:where(.day) .day-head {
+  max-inline-size: 1240px;
+  margin-inline: auto;
+  padding-block-end: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+:where(.day) .day-eyebrow {
+  color: var(--ink-2);
+  transition: color 700ms;
+}
+
+:where(.day) .day-title {
+  margin: 0;
+  max-inline-size: 18ch;
+  font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
+  font-weight: 500;
+  font-size: clamp(2.125rem, 4.6vw, 3.5rem);
+  line-height: 1.04;
+  color: var(--ink);
+  transition: color 700ms;
+  text-wrap: balance;
+}
+
+:where(.day) .day-grid {
+  max-inline-size: 1240px;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 48px;
+}
+
+:where(.day) .chapters {
+  display: flex;
+  flex-direction: column;
+}
+
+:where(.day) .chapter {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  padding-block: 40px;
+}
+
+:where(.day) .chapter-when {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+:where(.day) .chapter-time {
+  font-family: var(--th-font-serif);
+  font-weight: 300;
+  font-size: 2.5rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  transition: color 700ms;
+}
+
+:where(.day) .chapter-label {  color: var(--ink-2);
+  transition: color 700ms;
+}
+
+:where(.day) .chapter h3 {
+  margin: 0;
+  max-inline-size: 20ch;
+  font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
+  font-weight: 500;
+  font-size: clamp(1.75rem, 3vw, 2.375rem);
+  line-height: 1.08;
+  color: var(--ink);
+  transition: color 700ms;
+  text-wrap: balance;
+}
+
+:where(.day) .chapter p {
+  margin: 0;
+  max-inline-size: 46ch;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  transition: color 700ms;
+  text-wrap: pretty;
+}
+
+:where(.day) .chapter-where {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  transition: color 700ms;
+}
+
+:where(.day) .dot {
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+:where(.day) .inline-stage {
+  display: flex;
+  justify-content: center;
+  padding-block-start: 20px;
+}
+
+:where(.day) .inline-stage .comp {
+  inline-size: min(100%, 600px);
+}
+
+:where(.day) .sticky-col {
+  display: none;
+}
+
+/* Wide screens: the stage is sticky and the chapters are tall enough to scroll through. */
+@media (min-width: 960px) {
+  :where(.day) .day-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 600px);
+  }
+
+  :where(.day) .chapter {
+    min-block-size: 86svh;
+  }
+
+  :where(.day) .inline-stage {
+    display: none;
+  }
+
+  :where(.day) .sticky-col {
+    display: block;
+    position: relative;
+  }
+
+  :where(.day) .sticky {
+    position: sticky;
+    inset-block-start: 0;
+    block-size: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* As tall as the screen allows, never wider than 600px. */
+  :where(.day) .sticky-stage {
+    position: relative;
+    inline-size: min(100%, 600px, calc((100svh - 90px) * 600 / 640));
+    aspect-ratio: 600 / 640;
+  }
+
+  :where(.day) .layer {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateY(28px) scale(0.97);
+    transition:
+    opacity 600ms var(--th-ease-out),
+    transform 700ms var(--th-ease-out);
+    pointer-events: none;
+  }
+
+  :where(.day) .layer[data-active] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* No JavaScript: nothing would move the sticky stage, so use the inline one everywhere. */
+@media (scripting: none) {
+  :where(.day) .sticky-col {
+    display: none;
+  }
+
+  :where(.day) .inline-stage {
+    display: flex;
+  }
+
+  :where(.day) .chapter {
+    min-block-size: 0;
+  }
+
+  :where(.day) .day-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .day,
+  .day *,
+  :where(.day) .layer {
+    transition: none;
+  }
+
+  :where(.day) .layer,
+  :where(.day) .layer[data-active] {
+    transform: none;
+  }
+}

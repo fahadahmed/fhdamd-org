@@ -1,0 +1,8 @@
+/* Small shared patterns. Reuse these before writing a rule in a component's stylesheet. */
+
+/* A list used for layout, not as bulleted text. */
+.list-reset {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

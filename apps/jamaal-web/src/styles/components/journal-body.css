@@ -1,0 +1,136 @@
+/* Moved from components/journal/JournalBlocks.astro; every rule is under .journal-body (no added specificity). */
+
+.journal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--th-ink);
+}
+
+.journal-body p,
+.journal-body li {
+  margin: 0;
+}
+
+:where(.journal-body) h2 {
+  margin: 18px 0 0;
+  font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
+  font-weight: 500;
+  font-size: 2rem;
+  line-height: 1.1;
+  color: var(--th-ink);
+}
+
+.journal-body em {
+  font-style: italic;
+}
+
+.journal-body a {
+  color: var(--th-accent);
+  text-decoration: underline;
+}
+
+:where(.journal-body) .figures {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  padding-block: 8px;
+}
+
+:where(.journal-body) .kv {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  border-block-start: 1px solid var(--th-line);
+}
+
+:where(.journal-body) .kv > div {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.4fr) 1fr;
+  gap: 16px;
+  padding-block: 14px;
+  border-block-end: 1px solid var(--th-line);
+}
+
+:where(.journal-body) .kv dt {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+:where(.journal-body) .kv dd {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--th-ink-2);
+}
+
+:where(.journal-body) blockquote {
+  margin: 0;
+  padding: 20px 24px;
+  border-radius: var(--th-radius-card);
+  background: var(--th-sidebar);
+  border-inline-start: 3px solid var(--th-terra);
+}
+
+:where(.journal-body) blockquote p {
+  font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+:where(.journal-body) blockquote cite {
+  display: block;
+  margin-block-start: 8px;
+  font-family: var(--th-font-mono);
+  font-size: var(--th-label-size);
+  font-style: normal;
+  letter-spacing: var(--th-label-tracking);
+  text-transform: uppercase;
+  color: var(--th-ink-2);
+}
+
+:where(.journal-body) .steps {  display: flex;
+  flex-direction: column;
+}
+
+:where(.journal-body) .steps li {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 20px 32px;
+  align-items: center;
+  padding-block: 24px;
+  border-block-start: 1px solid var(--th-line);
+}
+
+:where(.journal-body) .step-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+:where(.journal-body) .step-n {
+  font-family: var(--th-font-mono);
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
+  text-transform: uppercase;
+  color: var(--th-ink-2);
+}
+
+:where(.journal-body) .step-title {
+  font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
+  font-weight: 500;
+  font-size: 1.75rem;
+  line-height: 1.1;
+}
+
+:where(.journal-body) .step-body {
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--th-ink-2);
+}

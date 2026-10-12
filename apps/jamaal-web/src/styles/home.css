@@ -146,18 +146,6 @@
 
 .compare-head {
   padding-block-end: 12px;
-  font-family: var(--th-font-mono);
-  font-size: var(--th-label-size);
-  font-weight: 500;
-  letter-spacing: var(--th-label-tracking);
-  text-transform: uppercase;
-  color: var(--th-ink-3);
-}
-
-.compare-rows {
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
 .compare-row {
@@ -185,11 +173,7 @@
 }
 
 /* ── Principles ────────────────────────────────────────────────────────── */
-.principles {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
+.principles {  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
   gap: 0 40px;
 }
@@ -279,13 +263,7 @@
   border-color: var(--th-ink);
 }
 
-.plan-name {
-  font-family: var(--th-font-mono);
-  font-size: var(--th-label-size);
-  font-weight: 500;
-  letter-spacing: var(--th-label-tracking);
-  text-transform: uppercase;
-  color: var(--th-ink-2);
+.plan-name {  color: var(--th-ink-2);
 }
 
 .plan-price {
@@ -302,11 +280,7 @@
 }
 
 /* ── Privacy facts ─────────────────────────────────────────────────────── */
-.facts {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
+.facts {  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   gap: 32px 40px;
 }

@@ -1,0 +1,141 @@
+/* Moved from pages/journal/[slug].astro; every rule is under .article (no added specificity). */
+
+.article {
+  inline-size: min(720px, 100% - 2 * clamp(20px, 4vw, 48px));
+  margin-inline: auto;
+  padding-block: clamp(40px, 6vw, 80px) clamp(56px, 8vw, 96px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+:where(.article) .back {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--th-ink-2);
+  text-decoration: none;
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+}
+
+:where(.article) .meta-line {  color: var(--th-ink-2);
+}
+
+:where(.article) h1 {
+  margin: 0;
+  font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
+  font-weight: 500;
+  font-size: clamp(2.375rem, 5vw, 3.875rem);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: var(--th-ink);
+  text-wrap: balance;
+}
+
+:where(.article) h1 em {
+  font-style: italic;
+  color: var(--th-accent);
+}
+
+:where(.article) .lede-text {
+  margin: 0;
+  font-size: 1.3125rem;
+  line-height: 1.55;
+  color: var(--th-ink-2);
+  text-wrap: pretty;
+}
+
+:where(.article) .author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: 8px 16px;
+  border-block-end: 1px solid var(--th-line);
+}
+
+:where(.article) .initial {
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: 999px;
+  background: var(--th-deep);
+  color: var(--th-on-deep);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--th-font-serif);
+  font-size: 1.25rem;
+}
+
+:where(.article) .author-name {
+  font-weight: 600;
+  color: var(--th-ink);
+}
+
+:where(.article) .cta {
+  margin-block-start: 24px;
+  padding: 28px;
+  border-radius: var(--th-radius-card);
+  background: var(--th-deep);
+  color: var(--th-on-deep);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+:where(.article) .cta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+:where(.article) .cta-title {
+  font-size: 1.1875rem;
+  font-weight: 600;
+}
+
+:where(.article) .cta-body {
+  font-size: 1rem;
+  color: var(--th-on-deep-2);
+}
+
+:where(.article) .cta-button {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 48px;
+  padding-inline: 24px;
+  border-radius: 999px;
+  background: var(--th-terra-on-deep);
+  color: #16242e;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+:where(.article) .cta-button:focus-visible,
+:where(.article) .next:focus-visible,
+:where(.article) .back:focus-visible {
+  outline: 2px solid var(--th-terra);
+  outline-offset: 2px;
+}
+
+:where(.article) .next {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-block: 24px;
+  border-block-start: 1px solid var(--th-line);
+  text-decoration: none;
+  color: var(--th-ink);
+}
+
+:where(.article) .next-title {
+  font-family: var(--th-font-serif);
+  font-weight: 500;
+  font-size: 1.625rem;
+  line-height: 1.15;
+}

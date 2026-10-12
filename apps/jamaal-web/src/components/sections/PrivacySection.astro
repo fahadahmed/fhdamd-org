@@ -12,7 +12,7 @@ const { privacy } = Astro.props;
 <section class="section" aria-labelledby="privacy-title">
   <div class="section-inner stack">
     <SectionHeading eyebrow={privacy.eyebrow} title={privacy.title} accent={privacy.accent} id="privacy-title" />
-    <ul class="facts">
+    <ul class="facts list-reset">
       {
         privacy.items.map((item) => (
           <li class="fact">

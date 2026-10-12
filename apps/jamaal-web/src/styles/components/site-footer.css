@@ -1,0 +1,57 @@
+/* Moved from components/ui/SiteFooter.astro; every rule is under .site-footer (no added specificity). */
+
+.site-footer {
+  background: var(--site-deeper);
+  color: var(--th-on-deep-2);
+  padding: 32px clamp(20px, 4vw, 48px);
+}
+
+:where(.site-footer) .inner {
+  max-inline-size: 1240px;
+  margin-inline: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  font-size: 15px;
+}
+
+:where(.site-footer) ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  list-style: none;
+  /* the links carry 8px of padding for their hit area; pull the first one back to the text edge */
+  margin: 0 -8px;
+  padding: 0;
+}
+
+:where(.site-footer) a,
+:where(.site-footer) button {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding-inline: 8px;
+  color: var(--th-on-deep-2);
+  text-decoration: none;
+}
+
+:where(.site-footer) button {
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+:where(.site-footer) a:hover,
+:where(.site-footer) button:hover {
+  color: var(--th-on-deep);
+  text-decoration: underline;
+}
+
+:where(.site-footer) a:focus-visible,
+:where(.site-footer) button:focus-visible {
+  outline: 2px solid var(--th-terra-on-deep);
+  outline-offset: 2px;
+}
