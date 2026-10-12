@@ -2,6 +2,7 @@
 /** Renders an article's body. The HTML in a paragraph is the small subset (strong, em, links) that the data layer allows. */
 import PhoneFigure from "./PhoneFigure.astro";
 import type { Block } from "../../lib/journal";
+import "../../styles/components/journal-body.css";
 
 interface Props {
   blocks: readonly Block[];

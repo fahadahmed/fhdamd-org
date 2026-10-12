@@ -1,6 +1,46 @@
 /* Jamaal site globals. Colours, type and spacing come from @fhdamd/threads
    tokens; @fhdamd/threads/base supplies the reset, body and link styles. */
 
+/* Fonts, served from this site (no request to Google). Latin subsets of the variable fonts, from the
+   Fontsource packages @fontsource-variable/{fraunces,hanken-grotesk,jetbrains-mono}, all under the
+   SIL Open Font License (see src/assets/fonts/LICENSE-*.txt). Fraunces keeps its optical-size, SOFT
+   and WONK axes. Characters outside Latin fall back to the system, as they did with the Google files. */
+@font-face {
+  font-family: "Fraunces";
+  src: url("../assets/fonts/fraunces-latin-full-normal.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fraunces";
+  src: url("../assets/fonts/fraunces-latin-full-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Hanken Grotesk";
+  src: url("../assets/fonts/hanken-grotesk-latin-wght-normal.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Hanken Grotesk";
+  src: url("../assets/fonts/hanken-grotesk-latin-wght-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("../assets/fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+}
+
 /* Size-matched fallbacks. The web fonts load with display=swap, and a fallback
    of a different width makes the text reflow when they arrive: the hero
    headline wrapped to 2 lines in Georgia and 3 in Fraunces, pushing the form

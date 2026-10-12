@@ -4,9 +4,7 @@ import "@fhdamd/threads/styles";
 import "@fhdamd/threads/base";
 import "../styles/global.css";
 import "../styles/landing.css";
-import "../styles/home.css";
 import "../styles/utilities.css";
-import "../styles/components.css";
 import SiteNav from "../components/ui/SiteNav.astro";
 import SiteFooter from "../components/ui/SiteFooter.astro";
 import ConsentBanner from "../components/ui/ConsentBanner.astro";
@@ -34,10 +32,10 @@ const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
 const canonicalUrl = new URL(path, Astro.site).href;
 const imageUrl = new URL(seo.image.url, Astro.site).href;
 
-// Hanken Grotesk (interface), Fraunces with its SOFT/WONK axes (display) and
-// JetBrains Mono (labels). Fonts are not bundled in @fhdamd/threads.
-const fontHref =
-  "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,SOFT,WONK,wght@0,9..144,0..100,0..1,300..900;1,9..144,0..100,0..1,300..900&family=Hanken+Grotesk:ital,wght@0,300..700;1,300..700&family=JetBrains+Mono:wght@400;500&display=swap";
+// The two faces every page needs straight away (the display serif and the interface sans). The
+// others load when the page first uses them. The files are in src/assets/fonts; see global.css.
+import frauncesUrl from "../assets/fonts/fraunces-latin-full-normal.woff2?url";
+import hankenUrl from "../assets/fonts/hanken-grotesk-latin-wght-normal.woff2?url";
 ---
 
 <!doctype html>
@@ -81,13 +79,8 @@ const fontHref =
 
     {jsonLd.map((data) => <script type="application/ld+json" is:inline set:html={JSON.stringify(data)} />)}
 
-    <!-- Fonts load without blocking first paint: the print-media swap keeps the
-         stylesheet off the critical path, and display=swap shows the fallback
-         until the faces arrive. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href={fontHref} media="print" onload="this.media='all'" />
-    <noscript><link rel="stylesheet" href={fontHref} /></noscript>
+    <link rel="preload" href={frauncesUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={hankenUrl} as="font" type="font/woff2" crossorigin />
 
     <slot name="head" />
 

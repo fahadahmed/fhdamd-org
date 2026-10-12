@@ -1,8 +1,10 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { breadcrumbJsonLd } from "../../data/seo";
+import { cmsImage, cmsSrcset } from "../../lib/image";
 import { CATEGORIES, listTitle, shortMeta } from "../../lib/journal";
 import { loadJournal } from "../../lib/cms/pages";
+import "../../styles/components/journal-index.css";
 
 const { site, page, seo } = await loadJournal();
 const { copy, posts } = page;
@@ -35,7 +37,7 @@ const rest = posts.filter((p) => p !== featured);
           {featured.cover && (
             <div class="featured-art" aria-hidden="true">
               <div class="phone">
-                <img src={`${featured.cover.src}?auto=format&w=640`} alt="" loading="lazy" decoding="async" />
+                <img src={cmsImage(featured.cover.src, 480)} srcset={cmsSrcset(featured.cover.src, [240, 480, 720])} sizes="240px" alt="" width="240" height="320" loading="lazy" decoding="async" />
               </div>
             </div>
           )}
