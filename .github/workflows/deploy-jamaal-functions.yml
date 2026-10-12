@@ -62,5 +62,8 @@ jobs:
         run: |
           printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/jamaal-web-sa.json"
           export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/jamaal-web-sa.json"
-          firebase deploy --only functions,firestore --project jamaal-web --non-interactive
+          # --force: a non-interactive deploy refuses to turn on retries for functions that use them
+          # (queueNewSignup, syncMailingList...) and to delete a function removed from the code
+          # without it. The functions are all defined in this repo, so the code is the source of truth.
+          firebase deploy --only functions,firestore --project jamaal-web --non-interactive --force
           rm -f "$RUNNER_TEMP/jamaal-web-sa.json"
