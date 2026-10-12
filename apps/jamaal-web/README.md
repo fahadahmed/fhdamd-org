@@ -70,3 +70,12 @@ The stage (`waitlist`, `testflight`, `launched`) is the `site_stage` parameter i
 4. Don't flip to `testflight` until the invite function exists (#424): the API would say `invited` without inviting anyone.
 
 **One-time setup for the automatic rebuild:** create a fine-grained GitHub token for this repository with *Actions: read and write*, then store it as the secret the function reads: `firebase functions:secrets:set GITHUB_DISPATCH_TOKEN --project jamaal-web`, and deploy.
+
+## Error reporting (Sentry)
+
+Errors only: no tracing, replay, breadcrumbs or user data, and the privacy page says so when it is on.
+
+- **Site:** `src/lib/errorReporting.ts` listens for uncaught errors and unhandled rejections and downloads the Sentry SDK only when one happens (almost every visit pays nothing). Events are scrubbed of the user, cookies, headers and query string, and the page address keeps only its path. At most five reports per page view. It is **off unless the build has `PUBLIC_SENTRY_DSN`**, which CI takes from the GitHub secret `JAMAAL_SENTRY_DSN`.
+- **Functions:** `functions/src/errors.ts` reports unexpected failures in `signup` and `rebuildOnConfigChange` and flushes before the instance freezes. Events drop the request and user entirely (a signup body holds a name and email). The DSN is `SENTRY_DSN` in `functions/.env.jamaal-web`; empty means off.
+- **To switch it on:** create one Sentry project (the site and the functions share it), turn on *Prevent storing of IP addresses* in its settings, add its DSN as the GitHub secret `JAMAAL_SENTRY_DSN`, put the same DSN in `functions/.env.jamaal-web`, and redeploy the functions.
+- **The app itself** (Swift, in its own repository) uses the Sentry Cocoa SDK with the same rules: crashes and errors only, `sendDefaultPii = false`, and scrubbed breadcrumbs so task, habit and Anchor text never leaves the device.
