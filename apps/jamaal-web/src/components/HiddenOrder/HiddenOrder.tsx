@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
-import { order } from "../../data/home";
+import type { HomeModel } from "../../lib/cms/models";
 import styles from "./HiddenOrder.module.css";
 
 /**
@@ -9,7 +9,7 @@ import styles from "./HiddenOrder.module.css";
  * the list in the DOM is always in the right order, so screen readers get the
  * result either way. With reduced motion the list is simply shown.
  */
-export default function HiddenOrder({ children }: Readonly<{ children?: ReactNode }>) {
+export default function HiddenOrder({ order, children }: Readonly<{ order: HomeModel["order"]; children?: ReactNode }>) {
   const [sorted, setSorted] = useState(true);
   const [animate, setAnimate] = useState(false);
   const moduleRef = useRef<HTMLDivElement>(null);

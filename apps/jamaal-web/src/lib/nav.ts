@@ -21,12 +21,12 @@ export function navLinks(features: Features): NavLink[] {
   ];
 }
 
-/** The filled call to action in the nav: what it says depends on the stage. */
-export const NAV_CTA: Record<Stage, NavLink> = {
-  waitlist: { href: "/#join", label: "Join the waitlist" },
-  testflight: { href: "/#join", label: "Join the beta" },
-  launched: { href: "/#join", label: "Get Jamaal" },
-};
+/** The filled call to action in the nav always goes to the join section; its words (per stage) come from the site settings. */
+export const NAV_CTA_HREF = "/#join";
+
+export function navCta(buttons: Record<Stage, string>, stage: Stage): NavLink {
+  return { href: NAV_CTA_HREF, label: buttons[stage] };
+}
 
 export function footerLinks(features: Features, contactEmail: string): NavLink[] {
   return [

@@ -1,13 +1,17 @@
 ---
-import { faqItems } from "../../data/home";
-import { STAGE } from "../../data/stage";
+import type { HomeModel } from "../../lib/cms/models";
 
-const items = faqItems(STAGE);
+interface Props {
+  faq: HomeModel["faq"];
+}
+
+const { faq } = Astro.props;
+const items = faq.items;
 ---
 
 <section id="faq" class="section section--card">
   <div class="section-inner faq">
-    <h2 class="section-title">Questions</h2>
+    <h2 class="section-title">{faq.title}</h2>
     <div class="faq-list">
       {
         items.map((item, i) => (

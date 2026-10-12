@@ -1,6 +1,12 @@
 ---
 import SectionHeading from "../ui/SectionHeading.astro";
-import { privacy } from "../../data/home";
+import type { HomeModel } from "../../lib/cms/models";
+
+interface Props {
+  privacy: HomeModel["privacy"];
+}
+
+const { privacy } = Astro.props;
 ---
 
 <section class="section" aria-labelledby="privacy-title">

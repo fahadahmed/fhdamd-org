@@ -1,16 +1,19 @@
 ---
 import SectionHeading from "../ui/SectionHeading.astro";
-import { pricing, pricingIntro } from "../../data/home";
-import { STAGE } from "../../data/stage";
+import type { HomeModel } from "../../lib/cms/models";
 
-const intro = pricingIntro(STAGE);
+interface Props {
+  pricing: HomeModel["pricing"];
+}
+
+const { pricing } = Astro.props;
 ---
 
 <section id="pricing" class="section section--sidebar">
   <div class="section-inner split split--top">
     <div class="stack stack--tight">
-      <SectionHeading eyebrow={intro.eyebrow} title={pricing.title} accent={pricing.accent} />
-      <p class="copy">{intro.lede}</p>
+      <SectionHeading eyebrow={pricing.eyebrow} title={pricing.title} accent={pricing.accent} />
+      <p class="copy">{pricing.lede}</p>
     </div>
     <div class="stack stack--tight">
       {

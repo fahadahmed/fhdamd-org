@@ -1,55 +1,59 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import JournalBlocks from "../../components/journal/JournalBlocks.astro";
-import { journalCta } from "../../data/home";
 import { articleJsonLd } from "../../data/seo";
 import { STAGE } from "../../data/stage";
+import type { JournalPageModel, SiteModel } from "../../lib/cms/models";
+import { loadJournalArticles } from "../../lib/cms/pages";
 import { listTitle, metaLine } from "../../lib/journal";
 import type { Post } from "../../lib/journal";
-import { loadPosts } from "../../lib/journalPosts";
 
+/** One request for the site settings, the page copy and every article, shared by all the article pages. */
 export async function getStaticPaths() {
-  const posts = await loadPosts();
-  return posts.map((post) => ({ params: { slug: post.slug }, props: { post, next: posts.find((p) => p.slug === post.next) } }));
+  const { site, page } = await loadJournalArticles();
+  const { copy, posts } = page;
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { site, copy, post, next: posts.find((p) => p.slug === post.next) },
+  }));
 }
 
 interface Props {
+  site: SiteModel;
+  copy: JournalPageModel;
   post: Post;
   next?: Post;
 }
 
-const { post, next } = Astro.props;
-const cta = journalCta(STAGE);
-const remoteCover = post.cover && /^https?:\/\//.test(post.cover.src) ? `${post.cover.src}?auto=format&w=1200&h=630&fit=crop` : undefined;
+const { site, copy, post, next } = Astro.props;
+const cta = site.journalCta[STAGE];
+const author = post.author ?? copy.author;
+const remoteCover = post.cover ? `${post.cover.src}?auto=format&w=1200&h=630&fit=crop` : undefined;
 const jsonLd = articleJsonLd({
   origin: Astro.site!.origin,
   slug: post.slug,
   headline: listTitle(post),
   description: post.excerpt,
   datePublished: post.date,
-  authorName: post.author?.name ?? "Fahad Ahmed",
+  authorName: author.name,
   image: remoteCover,
 });
 ---
 
-<Layout title={`${listTitle(post)} — Jamaal`} description={post.excerpt} ogImage={remoteCover}>
+<Layout site={site} title={`${listTitle(post)} — Jamaal`} description={post.excerpt} ogImage={remoteCover}>
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
   <article class="article">
-    <a class="back" href="/journal">← Journal</a>
+    <a class="back" href="/journal">{copy.back}</a>
     <span class="meta-line">{metaLine(post)}</span>
     <h1>{post.title}{post.accent && <> <em>{post.accent}</em></>}</h1>
     <p class="lede-text">{post.lede}</p>
-    {
-      post.author && (
-        <div class="author">
-          <span class="initial" aria-hidden="true">{post.author.initial}</span>
-          <div>
-            <div class="author-name">{post.author.name}</div>
-            <div class="meta">{post.author.role}</div>
-          </div>
-        </div>
-      )
-    }
+    <div class="author">
+      <span class="initial" aria-hidden="true">{author.initial}</span>
+      <div>
+        <div class="author-name">{author.name}</div>
+        <div class="meta">{author.role}</div>
+      </div>
+    </div>
 
     <JournalBlocks blocks={post.body} />
 
@@ -64,7 +68,7 @@ const jsonLd = articleJsonLd({
     {
       next && (
         <a class="next" href={`/journal/${next.slug}`}>
-          <span class="meta-line">Next · {next.category === "Guides" ? "Guide" : next.category}</span>
+          <span class="meta-line">{copy.nextLabel} · {next.category === "Guides" ? "Guide" : next.category}</span>
           <span class="next-title">{listTitle(next)} →</span>
         </a>
       )

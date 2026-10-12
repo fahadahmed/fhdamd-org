@@ -1,11 +1,16 @@
 ---
 import AppStoreButton from "../AppStoreButton/AppStoreButton";
 import SignupForm from "../SignupForm/SignupForm";
-import { joinCopy } from "../../data/home";
-import { APP_STORE_URL } from "../../data/site";
 import { STAGE } from "../../data/stage";
+import type { HomeModel } from "../../lib/cms/models";
 
-const copy = joinCopy(STAGE);
+interface Props {
+  join: HomeModel["join"];
+  form: HomeModel["form"];
+  appStoreUrl: string;
+}
+
+const { join: copy, form, appStoreUrl } = Astro.props;
 /** The signup form is for the two pre-launch stages; launched shows the App Store button. */
 const formStage = STAGE === "launched" ? null : STAGE;
 ---
@@ -16,9 +21,9 @@ const formStage = STAGE === "launched" ? null : STAGE;
     <p class="lede">{copy.lede}</p>
     {
       formStage ? (
-        <SignupForm client:visible variant="join" stage={formStage} source="join" />
+        <SignupForm client:visible variant="join" stage={formStage} source="join" copy={form} />
       ) : (
-        <AppStoreButton href={APP_STORE_URL} />
+        <AppStoreButton href={appStoreUrl} />
       )
     }
   </div>

@@ -12,28 +12,32 @@ import Pricing from "../components/sections/Pricing.astro";
 import PrivacySection from "../components/sections/PrivacySection.astro";
 import Faq from "../components/sections/Faq.astro";
 import Join from "../components/sections/Join.astro";
-import { LAUNCHED, SITE_DESCRIPTION } from "../data/site";
+import { LAUNCHED } from "../data/site";
 import { softwareApplicationJsonLd } from "../data/seo";
+import { loadHome } from "../lib/cms/pages";
+
+const { site, page: home } = await loadHome();
 
 const jsonLd = softwareApplicationJsonLd({
   origin: Astro.site!.origin,
-  description: SITE_DESCRIPTION,
+  description: site.description,
   launched: LAUNCHED,
+  plans: home.pricing.plans,
 });
 ---
 
-<Layout>
+<Layout site={site}>
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
-  <Hero />
-  <Why />
-  <Order />
-  <DayStory />
-  <NightPlanning />
-  <Everywhere />
-  <Principles />
-  <DeveloperNote />
-  <Pricing />
-  <PrivacySection />
-  <Faq />
-  <Join />
+  <Hero hero={home.hero} form={home.form} appStoreUrl={site.appStoreUrl} />
+  <Why why={home.why} />
+  <Order order={home.order} />
+  <DayStory day={home.day} />
+  <NightPlanning plan={home.plan} />
+  <Everywhere everywhere={home.everywhere} />
+  <Principles principles={home.principles} />
+  <DeveloperNote developerNote={home.developerNote} />
+  <Pricing pricing={home.pricing} />
+  <PrivacySection privacy={home.privacy} />
+  <Faq faq={home.faq} />
+  <Join join={home.join} form={home.form} appStoreUrl={site.appStoreUrl} />
 </Layout>

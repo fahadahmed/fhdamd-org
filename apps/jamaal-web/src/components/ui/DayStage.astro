@@ -1,14 +1,15 @@
 ---
 /** One chapter's devices, placed in the 600 x 640 space and scaled with the stage. */
 import DeviceFrame from "./DeviceFrame.astro";
-import { STAGE_SPACE, type DayDevice } from "../../data/home";
+import { STAGE_SPACE, type DayDevice } from "../../data/layout";
 import { screen } from "../../lib/screens";
 
 interface Props {
   devices: readonly DayDevice[];
+  comingLabel: string;
 }
 
-const { devices } = Astro.props;
+const { devices, comingLabel } = Astro.props;
 const { width, height } = STAGE_SPACE;
 const pct = (value: number, of: number) => `${(value / of) * 100}%`;
 ---
@@ -24,6 +25,7 @@ const pct = (value: number, of: number) => `${(value / of) * 100}%`;
           position={d.position}
           aspect={d.aspect}
           coming={d.coming}
+          comingLabel={comingLabel}
           sizes={`(min-width: 960px) ${d.w}px, ${Math.round((d.w / width) * 100)}vw`}
         />
       </div>

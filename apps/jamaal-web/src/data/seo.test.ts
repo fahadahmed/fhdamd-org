@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { articleJsonLd, softwareApplicationJsonLd } from "./seo";
 
-const options = { origin: "https://jamaal.app", description: "A calm daily planner." };
+const plans = [
+  { offerName: "Monthly", price: "$2.99" },
+  { offerName: "Yearly", price: "$24.99" },
+];
+const options = { origin: "https://jamaal.app", description: "A calm daily planner.", plans };
 
 describe("softwareApplicationJsonLd", () => {
   it("describes the app for iPhone, iPad and Mac", () => {

@@ -1,45 +1,14 @@
 import type { Block, Category, Post } from "./journal";
 import { CATEGORIES } from "./journal";
+import type { RawPost } from "./cms/types";
 
 /**
- * Reads the Journal from DatoCMS (the Content Delivery API, GraphQL) and turns
- * its Structured Text into the site's own blocks. See the README for the model
- * to create in DatoCMS.
+ * Turns what DatoCMS returns for the Journal, and Structured Text in general,
+ * into the site's own blocks. The requests live in cms/queries.ts and
+ * cms/client.ts. See the README for the models to create in DatoCMS.
  */
 
-const ENDPOINT = "https://graphql.datocms.com/";
-
-export const POSTS_QUERY = `
-  query JournalPosts {
-    allPosts(orderBy: date_DESC, first: 100) {
-      slug
-      title
-      accent
-      category
-      date
-      readMinutes
-      excerpt
-      featuredExcerpt
-      lede
-      featured
-      ctaNote
-      next { slug }
-      cover { url alt }
-      body {
-        value
-        blocks {
-          __typename
-          ... on FigureRecord { id image { url alt } caption }
-          ... on PullQuoteRecord { id text cite }
-          ... on DetailRowRecord { id label value }
-          ... on StepRecord { id title body image { url alt } }
-        }
-      }
-    }
-  }
-`;
-
-interface Dast {
+export interface Dast {
   type: string;
   children?: Dast[];
   value?: string;
@@ -84,7 +53,7 @@ export function inlineHtml(nodes: Dast[] = []): string {
     .join("");
 }
 
-const plainText = (nodes: Dast[] = []): string =>
+export const plainText = (nodes: Dast[] = []): string =>
   nodes.map((n) => (n.type === "span" ? (n.value ?? "") : plainText(n.children))).join("");
 
 /** Turns a DatoCMS Structured Text document and its blocks into the site's blocks. */
@@ -137,24 +106,7 @@ export function structuredTextToBlocks(value: { document?: Dast } | null | undef
   return out;
 }
 
-interface DatoPost {
-  slug: string;
-  title: string;
-  accent?: string | null;
-  category: string;
-  date: string;
-  readMinutes: number;
-  excerpt: string;
-  featuredExcerpt?: string | null;
-  lede: string;
-  featured?: boolean | null;
-  ctaNote?: string | null;
-  next?: { slug: string } | null;
-  cover?: DatoImage | null;
-  body?: { value: { document?: Dast }; blocks?: DatoBlock[] } | null;
-}
-
-export function toPost(record: DatoPost): Post {
+export function toPost(record: RawPost): Post {
   const category = (CATEGORIES as readonly string[]).includes(record.category) ? (record.category as Category) : "Story";
   return {
     slug: record.slug,
@@ -170,23 +122,6 @@ export function toPost(record: DatoPost): Post {
     ctaNote: record.ctaNote || undefined,
     next: record.next?.slug,
     cover: record.cover ? { src: record.cover.url, alt: record.cover.alt ?? "" } : undefined,
-    body: structuredTextToBlocks(record.body?.value, record.body?.blocks),
+    body: structuredTextToBlocks(record.body?.value as { document?: Dast } | undefined, record.body?.blocks),
   };
-}
-
-/** Fetches the published posts. Throws on any failure, so a build never ships an empty Journal by accident. */
-export async function fetchPosts(token: string, environment?: string, fetchFn: typeof fetch = fetch): Promise<Post[]> {
-  const response = await fetchFn(ENDPOINT, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      ...(environment ? { "X-Environment": environment } : {}),
-    },
-    body: JSON.stringify({ query: POSTS_QUERY }),
-  });
-  if (!response.ok) throw new Error(`DatoCMS request failed: ${response.status}`);
-  const payload = (await response.json()) as { data?: { allPosts?: DatoPost[] }; errors?: unknown[] };
-  if (payload.errors?.length) throw new Error(`DatoCMS returned errors: ${JSON.stringify(payload.errors)}`);
-  return (payload.data?.allPosts ?? []).map(toPost);
 }

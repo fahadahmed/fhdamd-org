@@ -6,7 +6,13 @@
  */
 import { Picture } from "astro:assets";
 import DeviceFrame from "../ui/DeviceFrame.astro";
-import { plan } from "../../data/home";
+import type { HomeModel } from "../../lib/cms/models";
+
+interface Props {
+  plan: HomeModel["plan"];
+}
+
+const { plan } = Astro.props;
 import { screen } from "../../lib/screens";
 ---
 

@@ -6,6 +6,7 @@ Marketing and waitlist site for [Jamaal](https://jamaal.app): an Astro static si
 
 ```sh
 pnpm install
+# put DATOCMS_API_TOKEN=<read-only Content Delivery token> in apps/jamaal-web/.env.local (see "Content (DatoCMS)")
 pnpm --filter jamaal-web dev      # http://localhost:4321
 pnpm --filter jamaal-web test
 pnpm --filter jamaal-web build
@@ -74,16 +75,30 @@ The stage (`waitlist`, `testflight`, `launched`) is the `site_stage` parameter i
 
 **One-time setup for the automatic rebuild:** create a fine-grained GitHub token for this repository with *Actions: read and write*, then store it as the secret the function reads: `firebase functions:secrets:set GITHUB_DISPATCH_TOKEN --project jamaal-web`, and deploy.
 
-## The Journal (DatoCMS)
+## Content (DatoCMS)
 
-`/journal` and `/journal/<slug>` are built at deploy time from **DatoCMS**, so posts can be written and published without a developer. Without a token the site builds with the three articles bundled in `src/content/journal/*.json` (the same shape), so a fork or a local build still has a Journal.
+Every word on the site comes from **DatoCMS** and is fetched at build time, so it can be edited and published without a developer. Nothing is bundled as a fallback: a build without a token, or against an unreachable or incomplete DatoCMS, **fails** rather than deploying a page with a hole in it.
 
-- **Code:** `src/lib/datocms.ts` fetches the posts (Content Delivery API, GraphQL) and turns Structured Text into the site's own blocks (paragraphs, headings, lists, quotes, figures, detail rows, steps); `src/lib/journalPosts.ts` chooses the source and **fails the build** if DatoCMS can't be reached or a post is missing a field, so an outage can never deploy an empty Journal. Links in posts are limited to `http(s):`, `mailto:` and site-relative paths.
-- **Model to create in DatoCMS** (API key `post`): `title` (single-line text, required), `accent` (single-line text, the part of the title set in italics), `slug` (slug from the title, required), `category` (single-line text with an enum validator: Story, Guides, How-to), `date` (date), `read_minutes` (integer), `excerpt` (single-line text), `featured_excerpt` (single-line text), `lede` (multi-paragraph text), `featured` (boolean; only one post should be featured), `cta_note` (single-line text, optional), `next` (link to another post), `cover` (single asset), and `body` (**Structured Text** with these allowed blocks and nodes: headings level 2, paragraphs with bold, italic and links, lists, block quotes, and the blocks below).
-  - Blocks (API keys): `figure` (`image` asset, `caption` text), `pull_quote` (`text`, `cite`), `detail_row` (`label`, `value`) and `step` (`title`, `body`, `image` asset). Consecutive blocks of the same kind are grouped.
-- **Token:** create a read-only Content Delivery API token and add it as the GitHub secret `JAMAAL_DATOCMS_TOKEN` (it reaches the build as `DATOCMS_API_TOKEN`; set `DATOCMS_ENVIRONMENT` to read a sandbox). For local builds put it in `.env.local`.
-- **Editors:** invite them in DatoCMS with a role that can create, edit and publish `post` records and upload assets, but cannot change the schema. Check the plan's editor-seat limit first.
-- **Publishing rebuilds the site:** add a DatoCMS webhook on `post` publish and unpublish that POSTs `{"event_type":"datocms-publish"}` to `https://api.github.com/repos/fahadahmed/fhdamd-org/dispatches` with the headers `Authorization: Bearer <GitHub token with Actions: write>`, `Accept: application/vnd.github+json` and `Content-Type: application/json`. `ci-jamaal-web.yml` runs on that event and deploys the site in about two minutes.
+**How a page gets its content**
+
+- `src/lib/cms/client.ts` is the one client: `fetchCms(query, variables)` posts to the Content Delivery API (GraphQL) with the token, a timeout and retries on network errors, 429 and 5xx, and throws on any HTTP or GraphQL error. Published content only; there are no draft previews.
+- `src/lib/cms/queries.ts` has **one query per page**, each fetching everything that page shows plus the site settings (the nav, the footer and the contact address) in a single request: `HOME_QUERY`, `JOURNAL_QUERY`, `POSTS_QUERY` (every article, fetched once for all the article pages), `CONTENT_PAGE_QUERY` (privacy, terms, support), `PRESS_QUERY` and `SITE_QUERY` (the 404 page).
+- `src/lib/cms/pages.ts` has one loader per page (`loadHome()`, `loadJournal()`, ...). Each returns the site settings and the page, with the build's stage (waitlist, testflight, launched) already applied, so the pages and components only render.
+- `src/lib/cms/mappers.ts` checks the response (`strict()` names every empty field in the error) and reshapes it into the models in `models.ts`. `types.ts` has the raw response types and `fixtures.ts` complete responses for tests.
+- Structured Text (the legal pages and articles) becomes the site's blocks in `src/lib/datocms.ts` and `mappers.ts`. Links are limited to `http(s):`, `mailto:` and site-relative paths. Headings on the legal pages get anchor ids from their text ("This website" is `#this-website`).
+
+**What stays in the code** is how the page is drawn, not what it says: `src/data/layout.ts` (which screenshot and where each device sits on the day story, the example tasks' grid positions, the Night Planning screens), the stage (`src/data/stage.ts`) and the feature flags (`src/data/site.ts`). These line up by position with DatoCMS records, and the build fails if the counts don't match. The Cookie banner and the signup form's labels and error messages are interface text in the code.
+
+**Models in DatoCMS** (API keys): singletons `site_config`, `home_page`, `journal_page`, `press_page`; `content_page` (one per `page_key`: privacy, terms, support) with a Structured Text `body`; `post` (the Journal); `faq_item` and `day_chapter` (sortable). Repeating groups are blocks in Modular Content fields (`comparison_row`, `order_chip`, `device_card`, `plan_step`, `titled_text`, `price_plan`, `press_fact`, `brand_colour`, `press_file`) and in Structured Text (`figure`, `pull_quote`, `detail_row`, `step`, `conditional_note`, `faq_list`). Stage-specific copy has a field per stage (for example `hero_eyebrow_waitlist`, `hero_eyebrow_testflight`, `hero_eyebrow_launched`). Each FAQ question says in which stages it appears on the home page and whether it is also listed on the support page.
+
+**Token and environment**
+
+- Create a read-only Content Delivery API token (no Content Management access, no drafts) and add it as the GitHub secret `JAMAAL_DATOCMS_TOKEN`. It reaches the build as `DATOCMS_API_TOKEN`; set `DATOCMS_ENVIRONMENT` to read a sandbox.
+- Locally, put it in `apps/jamaal-web/.env.local`: `DATOCMS_API_TOKEN=...`. Without it `pnpm dev` and `pnpm build` stop with a message saying so. Pull requests from forks have no secrets, so their builds fail by design.
+
+**Editors** are invited in DatoCMS with a role that can create, edit and publish records and upload assets, but cannot change the schema. Check the plan's editor-seat limit first. Publishing a `post` in DatoCMS needs its `next` link to point at a published article, so publish a circular set together.
+
+**Publishing rebuilds the site:** a DatoCMS webhook on publish and unpublish (all models) POSTs `{"event_type":"datocms-publish"}` to `https://api.github.com/repos/fahadahmed/fhdamd-org/dispatches` with the headers `Authorization: Bearer <fine-grained GitHub token with Actions: read and write>`, `Accept: application/vnd.github+json` and `Content-Type: application/json`. `ci-jamaal-web.yml` runs on that event and deploys the site in about two minutes.
 
 ## Error reporting (Sentry)
 

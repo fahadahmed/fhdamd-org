@@ -1,5 +1,11 @@
 ---
-import { developerNote as note } from "../../data/home";
+import type { HomeModel } from "../../lib/cms/models";
+
+interface Props {
+  developerNote: HomeModel["developerNote"];
+}
+
+const { developerNote: note } = Astro.props;
 ---
 
 <section class="section" aria-labelledby="developer-note-label">

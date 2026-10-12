@@ -1,8 +1,8 @@
 import { useEffect, useId, useState } from "react";
 import type { FormEvent } from "react";
 import { Button } from "@fhdamd/threads";
-import { TESTFLIGHT_STEPS, formCopy } from "../../data/home";
 import { track } from "../../lib/analytics";
+import type { FormCopy } from "../../lib/cms/models";
 import { DEVICES, SignupError, joinedBody, joinedTitle, submitSignup, validateSignup } from "../../utils/signup";
 import type { Device, SignupOutcome, SignupSource } from "../../utils/signup";
 import styles from "./SignupForm.module.css";
@@ -13,6 +13,8 @@ export interface SignupFormProps {
   /** The beta also asks which devices they will test on. */
   stage: "waitlist" | "testflight";
   source: SignupSource;
+  /** The button and small print for this stage, from DatoCMS. */
+  copy: FormCopy;
 }
 
 const ArrowIcon = () => (
@@ -35,10 +37,9 @@ function previewOutcome(): SignupOutcome | null {
   return value === "invited" || value === "exists" ? value : "added";
 }
 
-export default function SignupForm({ variant, stage, source }: Readonly<SignupFormProps>) {
+export default function SignupForm({ variant, stage, source, copy }: Readonly<SignupFormProps>) {
   const id = useId();
   const beta = stage === "testflight";
-  const copy = formCopy(stage);
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [devices, setDevices] = useState<Device[]>(["iphone"]);
@@ -106,7 +107,7 @@ export default function SignupForm({ variant, stage, source }: Readonly<SignupFo
             <div className={styles.joinedBody}>{joinedBody(email, done)}</div>
             {done === "invited" && (
               <ol className={styles.steps}>
-                {TESTFLIGHT_STEPS.map((step) => (
+                {copy.steps.map((step) => (
                   <li key={step}>{step}</li>
                 ))}
               </ol>

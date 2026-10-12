@@ -6,8 +6,13 @@
 import { Picture } from "astro:assets";
 import DeviceFrame from "../ui/DeviceFrame.astro";
 import SectionHeading from "../ui/SectionHeading.astro";
-import { COMING_SOON_LABEL } from "../../lib/device";
-import { everywhere as e } from "../../data/home";
+import type { HomeModel } from "../../lib/cms/models";
+
+interface Props {
+  everywhere: HomeModel["everywhere"];
+}
+
+const { everywhere: e } = Astro.props;
 import { screen } from "../../lib/screens";
 ---
 
@@ -36,7 +41,7 @@ import { screen } from "../../lib/screens";
               <Picture src={screen("g-Duo-inner")} alt={e.duo.openAlt} widths={[320, 480, 640, 960]} sizes="210px" formats={["avif", "webp"]} loading="lazy" class="duo-img duo-open" data-opened />
             </div>
           </div>
-          <button type="button" class="fold" data-fold aria-pressed="false">{e.duo.fold}</button>
+          <button type="button" class="fold" data-fold data-fold-label={e.duo.fold} data-unfold-label={e.duo.unfold} aria-pressed="false">{e.duo.fold}</button>
         </div>
         <div class="text"><h3>{e.duo.name}</h3><p>{e.duo.body}</p></div>
       </li>
@@ -72,7 +77,7 @@ import { screen } from "../../lib/screens";
 
       <li class="card">
         <div class="media">
-          <span class="soon">{COMING_SOON_LABEL}</span>
+          <span class="soon">{e.comingLabel}</span>
           <div class="watch"><DeviceFrame type="watch" src={screen("g-WA-01")} alt={e.watch.alt} sizes="150px" /></div>
         </div>
         <div class="text"><h3>{e.watch.name}</h3><p>{e.watch.body}</p></div>
@@ -80,7 +85,7 @@ import { screen } from "../../lib/screens";
 
       <li class="card">
         <div class="media media--end">
-          <span class="soon">{COMING_SOON_LABEL}</span>
+          <span class="soon">{e.comingLabel}</span>
           <div class="crop crop--live">
             <Picture src={screen("FS-08-lock-screen")} alt={e.liveActivity.alt} widths={[320, 480, 640]} sizes="200px" formats={["avif", "webp"]} loading="lazy" class="crop-img" />
           </div>
@@ -101,7 +106,7 @@ import { screen } from "../../lib/screens";
     button.addEventListener("click", () => {
       const nowOpen = card.dataset.open !== "true";
       card.dataset.open = String(nowOpen);
-      button.textContent = nowOpen ? "Fold" : "Unfold";
+      button.textContent = (nowOpen ? button.dataset.foldLabel : button.dataset.unfoldLabel) ?? "";
       button.setAttribute("aria-pressed", String(!nowOpen));
       // Only the screen that is showing is exposed to screen readers.
       folded?.setAttribute("aria-hidden", String(nowOpen));

@@ -1,7 +1,7 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { order } from "../../data/home";
+import { orderFixture as order } from "../../test/fixtures";
 import HiddenOrder from "./HiddenOrder";
 
 type Callback = (entries: Partial<IntersectionObserverEntry>[]) => void;
@@ -28,7 +28,7 @@ function setup({ reduced = false, observer = true } = {}) {
     );
   }
   return render(
-    <HiddenOrder>
+    <HiddenOrder order={order}>
       <h2>The sorting you never have to do.</h2>
     </HiddenOrder>,
   );

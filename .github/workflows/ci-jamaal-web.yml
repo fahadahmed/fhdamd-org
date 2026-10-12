@@ -102,7 +102,7 @@ jobs:
         env:
           # Public GA4 measurement ID. Without it the site builds with no analytics and no cookie banner.
           PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.JAMAAL_FIREBASE_MEASUREMENT_ID }}
-          # Read-only DatoCMS token for the Journal. Without it the site builds with the bundled articles.
+          # Read-only DatoCMS token: all of the site's content comes from DatoCMS, so a build without it fails.
           DATOCMS_API_TOKEN: ${{ secrets.JAMAAL_DATOCMS_TOKEN }}
           # Sentry DSN for browser errors. Without it the site builds with error reporting off.
           PUBLIC_SENTRY_DSN: ${{ secrets.JAMAAL_SENTRY_DSN }}
@@ -154,7 +154,7 @@ jobs:
         env:
           # Public GA4 measurement ID. Without it the site builds with no analytics and no cookie banner.
           PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.JAMAAL_FIREBASE_MEASUREMENT_ID }}
-          # Read-only DatoCMS token for the Journal. Without it the site builds with the bundled articles.
+          # Read-only DatoCMS token: all of the site's content comes from DatoCMS, so a build without it fails.
           DATOCMS_API_TOKEN: ${{ secrets.JAMAAL_DATOCMS_TOKEN }}
           # Sentry DSN for browser errors. Without it the site builds with error reporting off.
           PUBLIC_SENTRY_DSN: ${{ secrets.JAMAAL_SENTRY_DSN }}

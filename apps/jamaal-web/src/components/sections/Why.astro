@@ -1,6 +1,12 @@
 ---
 import SectionHeading from "../ui/SectionHeading.astro";
-import { why } from "../../data/home";
+import type { HomeModel } from "../../lib/cms/models";
+
+interface Props {
+  why: HomeModel["why"];
+}
+
+const { why } = Astro.props;
 ---
 
 <section id="why" class="section section--card">
