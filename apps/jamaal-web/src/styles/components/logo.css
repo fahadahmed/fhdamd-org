@@ -1,0 +1,12 @@
+/* Moved from components/ui/Logo.astro. */
+
+.logo {
+  flex: none;
+  inline-size: var(--size);
+  block-size: var(--size);
+  border-radius: 999px;
+  background: var(--th-deep);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,15 @@
+/* Moved from components/ui/DayStage.astro. */
+
+.comp {
+  position: relative;
+  inline-size: 100%;
+  aspect-ratio: 600 / 640;
+}
+
+.comp-item {
+  position: absolute;
+  inset-inline-start: var(--x);
+  inset-block-start: var(--y);
+  inline-size: var(--w);
+  z-index: var(--z, 1);
+}

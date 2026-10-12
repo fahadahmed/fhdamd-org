@@ -1,0 +1,220 @@
+/* Moved from components/sections/Everywhere.astro; every rule is under .everywhere (no added specificity). */
+
+:where(.everywhere) .cards {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 20px;
+}
+
+:where(.everywhere) .card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--th-radius-card);
+  background: var(--th-card);
+  border: 1px solid var(--th-line);
+}
+
+:where(.everywhere) .media {
+  position: relative;
+  block-size: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--th-sidebar);
+}
+
+:where(.everywhere) .media--end {
+  align-items: flex-end;
+  padding-block-start: 32px;
+}
+
+:where(.everywhere) .media--pad {
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+:where(.everywhere) .media--col {
+  flex-direction: column;
+  gap: 12px;
+}
+
+:where(.everywhere) .text {
+  padding: 22px 24px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+:where(.everywhere) .text h3 {
+  margin: 0;
+  font-family: var(--th-font-mono);
+  font-size: var(--th-label-size);
+  font-weight: 500;
+  letter-spacing: var(--th-label-tracking);
+  text-transform: uppercase;
+  color: var(--th-ink-2);
+}
+
+:where(.everywhere) .text p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--th-ink);
+}
+
+/* A phone cropped at the bottom edge of its card. */
+:where(.everywhere) .crop {
+  inline-size: 220px;
+  padding: 7px 7px 0;
+  border-radius: 36px 36px 0 0;
+  background: #0b1418;
+}
+
+:where(.everywhere) .crop--live {
+  inline-size: 200px;
+}
+
+:where(.everywhere) .crop .crop-img {
+  display: block;
+  inline-size: 100%;
+  block-size: 300px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 30px 30px 0 0;
+}
+
+:where(.everywhere) .ipad {
+  inline-size: 100%;
+  max-inline-size: 420px;
+}
+
+:where(.everywhere) .mac {
+  inline-size: 100%;
+  max-inline-size: 420px;
+}
+
+:where(.everywhere) .media .widget {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  max-inline-size: 320px;
+  border-radius: 18px;
+  box-shadow: 0 24px 50px -24px rgb(6 32 46 / 0.55);
+}
+
+:where(.everywhere) .widget-row {
+  display: flex;
+  gap: 12px;
+  inline-size: 100%;
+  max-inline-size: 320px;
+}
+
+:where(.everywhere) .widget-row .widget {
+  flex: 1;
+  min-inline-size: 0;
+  max-inline-size: none;
+}
+
+:where(.everywhere) .watch {
+  inline-size: 150px;
+}
+
+:where(.everywhere) .soon {
+  position: absolute;
+  inset-block-start: 16px;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  white-space: nowrap;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--site-deeper);
+  color: var(--th-on-deep);
+  font: 500 var(--th-label-size) / 1 var(--th-font-mono);
+  letter-spacing: var(--th-label-tracking);
+  text-transform: uppercase;
+}
+
+/* iPhone Duo: width and ratio change as it unfolds. */
+/* Sized so the open Duo fits the 340px media area (the design's 240px overflowed it). */
+:where(.everywhere) .duo {
+  inline-size: 210px;
+  padding: 6px;
+  border-radius: 26px;
+  background: #0b1418;
+  box-shadow: 0 30px 60px -30px rgb(6 32 46 / 0.5);
+  transition: inline-size 600ms var(--th-ease-out);
+}
+
+:where(.everywhere) .duo-screen {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  aspect-ratio: 673 / 952;
+  transition: aspect-ratio 600ms var(--th-ease-out);
+}
+
+:where(.everywhere) .duo-screen .duo-img {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: opacity 400ms;
+}
+
+:where(.everywhere) .duo-folded img,
+:where(.everywhere) .duo-folded {
+  opacity: 0;
+}
+
+:where(.everywhere) [data-open="false"] .duo {
+  inline-size: 150px;
+}
+
+:where(.everywhere) [data-open="false"] .duo-screen {
+  aspect-ratio: 476 / 673;
+}
+
+:where(.everywhere) [data-open="false"] .duo-folded {
+  opacity: 1;
+}
+
+:where(.everywhere) [data-open="false"] .duo-open {
+  opacity: 0;
+}
+
+:where(.everywhere) .fold {
+  position: absolute;
+  inset-inline-end: 14px;
+  inset-block-end: 14px;
+  min-block-size: 44px;
+  padding-inline: 18px;
+  border-radius: 999px;
+  border: 1px solid var(--th-line);
+  background: var(--th-glass);
+  backdrop-filter: var(--th-glass-blur);
+  -webkit-backdrop-filter: var(--th-glass-blur);
+  color: var(--th-ink);
+  font: 600 15px / 1 var(--th-font-sans);
+  cursor: pointer;
+}
+
+:where(.everywhere) .fold:focus-visible {
+  outline: 2px solid var(--th-terra);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.everywhere) .duo,
+  :where(.everywhere) .duo-screen,
+  :where(.everywhere) .duo-screen .duo-img {
+    transition: none;
+  }
+}

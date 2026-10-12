@@ -1,6 +1,7 @@
 ---
 /** A phone screenshot with its caption: an image uploaded to DatoCMS. */
 import DeviceFrame from "../ui/DeviceFrame.astro";
+import { cssVars } from "../../lib/cssVars";
 import type { FigureItem } from "../../lib/journal";
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
 const { item, width = 300 } = Astro.props;
 ---
 
-<figure class="phone-figure" style={`--w: ${width}px`}>
+<figure class="phone-figure" style={cssVars({ w: `${width}px` })}>
   <div class="phone">
     <DeviceFrame type="phone">
       <img src={`${item.src}${item.src.includes("?") ? "&" : "?"}auto=format&w=${width * 2}`} alt={item.alt} width={width} loading="lazy" decoding="async" />
@@ -20,31 +21,3 @@ const { item, width = 300 } = Astro.props;
   </div>
   {item.caption && <figcaption>{item.caption}</figcaption>}
 </figure>
-
-<style>
-  .phone-figure {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .phone {
-    inline-size: min(var(--w), 80vw);
-  }
-
-  .phone :global(img) {
-    display: block;
-    inline-size: 100%;
-    block-size: 100%;
-    object-fit: cover;
-    object-position: top;
-  }
-
-  figcaption {
-    font-size: 15px;
-    color: var(--th-ink-2);
-    text-align: center;
-  }
-</style>

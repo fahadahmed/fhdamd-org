@@ -1,0 +1,27 @@
+/* Moved from components/journal/PhoneFigure.astro; every rule is under .phone-figure (no added specificity). */
+
+.phone-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+:where(.phone-figure) .phone {
+  inline-size: min(var(--w), 80vw);
+}
+
+:where(.phone-figure) .phone img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+:where(.phone-figure) figcaption {
+  font-size: 15px;
+  color: var(--th-ink-2);
+  text-align: center;
+}

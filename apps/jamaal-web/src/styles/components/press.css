@@ -1,0 +1,134 @@
+/* Moved from pages/press.astro; every rule is under .press (no added specificity). */
+
+:where(.press) .press-inner {
+  max-inline-size: 960px;
+  margin-inline: auto;
+  padding-block: var(--th-space-20) var(--th-space-24);
+  padding-inline: var(--th-space-gutter);
+  display: flex;
+  flex-direction: column;
+  gap: var(--th-space-section);
+}
+
+:where(.press) .press-title {
+  font-size: var(--th-hero-size);
+  font-weight: 300;
+  line-height: var(--th-hero-leading);
+}
+
+:where(.press) .status {
+  margin: 0;
+  font-weight: 600;
+  color: var(--th-ink);
+}
+
+:where(.press) h2 {
+  margin: var(--th-space-8) 0 0;
+  font-family: var(--th-font-serif);
+  font-variation-settings: var(--th-serif-axes);
+  font-weight: 500;
+  font-size: var(--th-text-2xl);
+  color: var(--th-ink);
+}
+
+:where(.press) .fact-list {
+  margin: 0;
+  display: grid;
+  gap: 0;
+  border-block-start: 1px solid var(--th-line);
+}
+
+:where(.press) .fact-list div {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.3fr) 1fr;
+  gap: 16px;
+  padding-block: 14px;
+  border-block-end: 1px solid var(--th-line);
+}
+
+:where(.press) .fact-list dt {
+  font-family: var(--th-font-mono);
+  font-size: var(--th-label-size);
+  letter-spacing: var(--th-label-tracking);
+  text-transform: uppercase;
+  color: var(--th-ink-2);
+}
+
+:where(.press) .fact-list dd {
+  margin: 0;
+  color: var(--th-ink);
+  line-height: 1.5;
+}
+
+:where(.press) .files {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: 24px;
+}
+
+:where(.press) .thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  block-size: 240px;
+  padding: 12px;
+  border-radius: var(--th-radius-card);
+  border: 1px solid var(--th-line);
+  background: var(--th-sidebar);
+  overflow: hidden;
+}
+
+:where(.press) .thumb img {
+  max-inline-size: 100%;
+  max-block-size: 100%;
+  inline-size: auto;
+  block-size: auto;
+  object-fit: contain;
+}
+
+:where(.press) .meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-block-start: 10px;
+  font-size: 15px;
+}
+
+:where(.press) .meta-row a {
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
+}
+
+:where(.press) .swatches {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 16px;
+}
+
+:where(.press) .swatches li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+:where(.press) .swatch {
+  flex: none;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--th-radius-field);
+  border: 1px solid var(--th-line-2);
+  background: var(--swatch);
+}
+
+:where(.press) code {
+  font-family: var(--th-font-mono);
+  font-size: 0.875rem;
+}
