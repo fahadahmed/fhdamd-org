@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { RateLimiter } from "./rateLimit";
-import { createSignupHandler, isAllowedOrigin } from "./signup";
+import { createSignupHandler, isAllowedOrigin, mergeInvite } from "./signup";
 import type { SignupStore } from "./signup";
 import type { Stage } from "./stage";
 
@@ -90,7 +90,32 @@ describe("createSignupHandler: testflight", () => {
   it("asks for the invite to be sent again on a repeat address, and still answers 409", async () => {
     const { handle, store } = setup({ stage: "testflight", exists: true });
     expect(await handle(post(valid))).toEqual({ status: 409, body: { status: "exists" } });
-    expect(store.requestInvite).toHaveBeenCalledWith("sam@example.com");
+    expect(store.requestInvite).toHaveBeenCalledWith("sam@example.com", { firstName: valid.firstName, devices: valid.devices });
+  });
+
+  it("passes on the devices and name they gave this time, so the invite knows what to invite them for", async () => {
+    const { handle, store } = setup({ stage: "testflight", exists: true });
+    await handle(post({ ...valid, firstName: "Sam", devices: ["mac", "iphone"] }));
+    expect(store.requestInvite).toHaveBeenCalledWith("sam@example.com", { firstName: "Sam", devices: ["mac", "iphone"] });
+  });
+});
+
+describe("mergeInvite", () => {
+  it("adds the new devices to the old, in a fixed order and without duplicates", () => {
+    expect(mergeInvite({ firstName: "Sam", devices: ["mac"] }, { firstName: "Sam", devices: ["iphone", "mac"] })).toEqual({
+      firstName: "Sam",
+      devices: ["iphone", "mac"],
+    });
+  });
+
+  it("keeps the name they first gave, and fills it in when it was blank", () => {
+    expect(mergeInvite({ firstName: "Samira", devices: [] }, { firstName: "Sam", devices: ["ipad"] }).firstName).toBe("Samira");
+    expect(mergeInvite({ firstName: "  ", devices: [] }, { firstName: "Sam", devices: ["ipad"] }).firstName).toBe("Sam");
+    expect(mergeInvite({}, { firstName: "Sam", devices: ["ipad"] })).toEqual({ firstName: "Sam", devices: ["ipad"] });
+  });
+
+  it("ignores anything unexpected in the old record", () => {
+    expect(mergeInvite({ firstName: 7, devices: "iphone" }, { firstName: "", devices: ["mac"] })).toEqual({ firstName: "", devices: ["mac"] });
   });
 });
 
