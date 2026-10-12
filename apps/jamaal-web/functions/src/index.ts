@@ -17,8 +17,9 @@ import { createCachedStageSource, stageFromTemplate } from "./stage";
 
 initializeApp();
 
-// Cost control: cap concurrent containers per function.
-setGlobalOptions({ maxInstances: 10 });
+// Cost control: cap concurrent containers per function. Every function runs in us-central1, next to Firestore;
+// without this the Remote Config trigger defaults to us-east1.
+setGlobalOptions({ maxInstances: 10, region: "us-central1" });
 
 // The Sentry DSN for these functions comes from .env.jamaal-web; empty switches error reporting off.
 const errors = createErrorReporter(() => process.env.SENTRY_DSN ?? "", () => Sentry);
