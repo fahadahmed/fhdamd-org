@@ -34,6 +34,16 @@ pnpm --filter jamaal-web build
 - **Waitlist form:** `src/utils/signup.ts` posts to `PUBLIC_WAITLIST_URL` (the backend is #388). Without it, a production build refuses to say "you're on the list"; only local development pretends. Append `?joined` to the URL to review the confirmation state.
 - **Links that need pages:** `/privacy` and the Contact mailto exist in the footer now; after launch it also links `/support`, `/journal`, `/press` and `/terms`. Those pages are #389; the legal ones must exist before any email is collected.
 
+## Styles
+
+No `.astro` file defines styles: everything is in `src/styles/`, and a test (`src/styles/styles.test.ts`) fails on a `<style>` block or a plain inline `style` attribute.
+
+- **Tokens and roles** come from `@fhdamd/threads` (`/tokens`, `/styles`, `/base`). Prefer its role classes (`th-label`, `th-meta`, `th-lede`, `th-body`, `th-hero`, `th-eyebrow`) and its components before writing a rule.
+- `global.css` (fonts, site tokens), `landing.css` (layout: `.section`, `.section-inner`, `.split`, `.stack`, `.lede`, `.copy`, `.meta`) and `home.css` (home page sections) are the shared layers. `utilities.css` holds small patterns such as `.list-reset`; add to it when a pattern appears a second time.
+- **One stylesheet per component or page** in `src/styles/components/`, all imported by `components.css`. Every rule is under the component's root class with `:where(.root)`, which keeps the zero specificity Astro's old scoped styles had and stops a generic name like `.card` leaking into another component. A new component adds a file there, with its root class in the markup, and one `@import`.
+- **Data-driven values** (a device's position, a swatch colour) are CSS custom properties set with `cssVars()` from `src/lib/cssVars.ts`, and the stylesheet reads them with `var(--x)`.
+- **Checking a restyle:** build before and after, then compare full-page screenshots of every page at 390, 768 and 1280px in light and dark. A change that should be invisible must leave every image identical.
+
 ## Hosting and deploys
 
 Hosted on Firebase Hosting, project `jamaal-web` (default site `jamaal-web`, https://jamaal-web.web.app). Config is in `firebase.json` and `.firebaserc`.
