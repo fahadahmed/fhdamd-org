@@ -74,9 +74,9 @@ const jsonLd = articleJsonLd({
 
 <style>
   .article {
-    max-inline-size: 720px;
+    inline-size: min(720px, 100% - 2 * clamp(20px, 4vw, 48px));
     margin-inline: auto;
-    padding: clamp(40px, 6vw, 80px) clamp(20px, 4vw, 48px) clamp(56px, 8vw, 96px);
+    padding-block: clamp(40px, 6vw, 80px) clamp(56px, 8vw, 96px);
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -131,6 +131,8 @@ const jsonLd = articleJsonLd({
     display: flex;
     align-items: center;
     gap: 12px;
+    padding-block: 8px 16px;
+    border-block-end: 1px solid var(--th-line);
   }
 
   .initial {

@@ -10,7 +10,7 @@ interface Props {
   width?: number;
 }
 
-const { item, width = 220 } = Astro.props;
+const { item, width = 300 } = Astro.props;
 const remote = /^https?:\/\//.test(item.src);
 ---
 
@@ -39,7 +39,7 @@ const remote = /^https?:\/\//.test(item.src);
   }
 
   .phone {
-    inline-size: min(var(--w), 64vw);
+    inline-size: min(var(--w), 80vw);
   }
 
   .phone :global(img) {
