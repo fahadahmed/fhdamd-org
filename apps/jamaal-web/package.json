@@ -11,13 +11,13 @@
     "format": "prettier --write .",
     "lint": "eslint .",
     "check": "astro check",
+    "check:seo": "node scripts/seo-check.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.1",
-    "@astrojs/sitemap": "^3.7.3",
     "@fhdamd/threads": "^2.1.0",
     "@sentry/browser": "^11.6.0",
     "astro": "^7.1.1",

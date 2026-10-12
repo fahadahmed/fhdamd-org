@@ -121,6 +121,7 @@ export function toPost(record: RawPost): Post {
     featured: record.featured || undefined,
     ctaNote: record.ctaNote || undefined,
     next: record.next?.slug,
+    seo: record.seo ?? undefined,
     cover: record.cover ? { src: record.cover.url, alt: record.cover.alt ?? "" } : undefined,
     body: structuredTextToBlocks(record.body?.value as { document?: Dast } | undefined, record.body?.blocks),
   };

@@ -1,10 +1,11 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import JournalBlocks from "../../components/journal/JournalBlocks.astro";
-import { articleJsonLd } from "../../data/seo";
+import { articleJsonLd, breadcrumbJsonLd } from "../../data/seo";
 import { STAGE } from "../../data/stage";
 import type { JournalPageModel, SiteModel } from "../../lib/cms/models";
 import { loadJournalArticles } from "../../lib/cms/pages";
+import { articleSeo } from "../../lib/cms/seo";
 import { listTitle, metaLine } from "../../lib/journal";
 import type { Post } from "../../lib/journal";
 
@@ -28,20 +29,27 @@ interface Props {
 const { site, copy, post, next } = Astro.props;
 const cta = site.journalCta[STAGE];
 const author = post.author ?? copy.author;
-const remoteCover = post.cover ? `${post.cover.src}?auto=format&w=1200&h=630&fit=crop` : undefined;
-const jsonLd = articleJsonLd({
-  origin: Astro.site!.origin,
-  slug: post.slug,
-  headline: listTitle(post),
-  description: post.excerpt,
-  datePublished: post.date,
-  authorName: author.name,
-  image: remoteCover,
-});
+const origin = Astro.site!.origin;
+const seo = articleSeo(post, site);
+const jsonLd = [
+  articleJsonLd({
+    origin,
+    slug: post.slug,
+    headline: listTitle(post),
+    description: seo.description,
+    datePublished: post.date,
+    authorName: author.name,
+    image: new URL(seo.image.url, origin).href,
+  }),
+  breadcrumbJsonLd(origin, [
+    { name: site.name, path: "/" },
+    { name: copy.eyebrow, path: "/journal" },
+    { name: listTitle(post), path: `/journal/${post.slug}` },
+  ]),
+];
 ---
 
-<Layout site={site} title={`${listTitle(post)} — Jamaal`} description={post.excerpt} ogImage={remoteCover}>
-  <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+<Layout site={site} seo={seo} type="article" article={{ publishedTime: post.date, section: post.category }} feed jsonLd={jsonLd}>
   <article class="article">
     <a class="back" href="/journal">{copy.back}</a>
     <span class="meta-line th-label">{metaLine(post)}</span>

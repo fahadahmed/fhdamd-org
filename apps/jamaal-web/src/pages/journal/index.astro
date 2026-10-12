@@ -1,15 +1,16 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import { breadcrumbJsonLd } from "../../data/seo";
 import { CATEGORIES, listTitle, shortMeta } from "../../lib/journal";
 import { loadJournal } from "../../lib/cms/pages";
 
-const { site, page } = await loadJournal();
+const { site, page, seo } = await loadJournal();
 const { copy, posts } = page;
 const featured = posts.find((p) => p.featured);
 const rest = posts.filter((p) => p !== featured);
 ---
 
-<Layout site={site} title={`${copy.eyebrow} — Jamaal`} description={copy.lede}>
+<Layout site={site} seo={seo} feed jsonLd={[breadcrumbJsonLd(Astro.site!.origin, [{ name: site.name, path: "/" }, { name: copy.eyebrow, path: "/journal" }])]}>
   <div class="journal" data-journal>
     <header class="head">
       <div class="th-label th-eyebrow eyebrow">{copy.eyebrow}</div>

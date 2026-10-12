@@ -43,6 +43,47 @@ describe("page loaders", () => {
     expect(page.hero.title).toBe("[heroTitle]");
   });
 
+  it("works out what each page puts in its head, from its own settings first", async () => {
+    const home = rawHome();
+    home.homePage!.seo = { title: "Custom home title", noIndex: true };
+    fetchCms.mockResolvedValueOnce(home);
+    const loaded = await pages.loadHome();
+    expect(loaded.seo).toMatchObject({ title: "Custom home title", description: "[siteDescription]", noindex: true });
+
+    fetchCms.mockResolvedValueOnce(rawContent());
+    expect((await pages.loadContentPage("privacy")).seo).toMatchObject({ title: "Privacy — [siteName]", description: "How we handle your information." });
+
+    fetchCms.mockResolvedValueOnce(rawPress());
+    expect((await pages.loadPress()).seo.title).toBe("Press kit — [siteName]");
+
+    fetchCms.mockResolvedValueOnce(rawJournal());
+    expect((await pages.loadJournal()).seo).toMatchObject({ title: "Journal — [siteName]", description: "Why Jamaal works the way it does." });
+
+    fetchCms.mockResolvedValueOnce(rawJournal());
+    expect((await pages.loadJournalArticles()).seo.title).toBe("Journal — [siteName]");
+  });
+
+  it("keeps the not-found page out of search", async () => {
+    fetchCms.mockResolvedValueOnce({ siteConfig: rawSite() });
+    const { site } = await pages.loadSite();
+    expect(pages.notFoundSeo(site)).toMatchObject({ title: "Page not found — [siteName]", noindex: true });
+  });
+
+  it("lists the pages for the sitemap in one request", async () => {
+    fetchCms.mockResolvedValueOnce({
+      siteConfig: { _updatedAt: "2026-10-01T00:00:00Z" },
+      homePage: { _updatedAt: "2026-10-02T00:00:00Z", seo: null },
+      journalPage: null,
+      pressPage: null,
+      allContentPages: [],
+      allPosts: [],
+      allFaqItems: [],
+      allDayChapters: [],
+    });
+    expect(await pages.loadSitemap()).toEqual([{ path: "/", lastmod: "2026-10-02T00:00:00Z" }]);
+    expect(fetchCms.mock.calls.at(-1)?.[0]).toBe(queries.SITEMAP_QUERY);
+  });
+
   it("shows the error-reporting note when it is on in the build", async () => {
     fetchCms.mockResolvedValueOnce(rawContent());
     const { page } = await pages.loadContentPage("privacy");

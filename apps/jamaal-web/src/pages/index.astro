@@ -13,21 +13,25 @@ import PrivacySection from "../components/sections/PrivacySection.astro";
 import Faq from "../components/sections/Faq.astro";
 import Join from "../components/sections/Join.astro";
 import { LAUNCHED } from "../data/site";
-import { softwareApplicationJsonLd } from "../data/seo";
+import { organizationJsonLd, softwareApplicationJsonLd, websiteJsonLd } from "../data/seo";
 import { loadHome } from "../lib/cms/pages";
 
-const { site, page: home } = await loadHome();
+const { site, page: home, seo } = await loadHome();
 
-const jsonLd = softwareApplicationJsonLd({
-  origin: Astro.site!.origin,
-  description: site.description,
-  launched: LAUNCHED,
-  plans: home.pricing.plans,
-});
+const origin = Astro.site!.origin;
+const jsonLd = [
+  softwareApplicationJsonLd({
+    origin,
+    description: seo.description,
+    launched: LAUNCHED,
+    plans: home.pricing.plans,
+  }),
+  organizationJsonLd({ origin, name: site.name }),
+  websiteJsonLd({ origin, name: site.name, description: seo.description }),
+];
 ---
 
-<Layout site={site}>
-  <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+<Layout site={site} seo={seo} jsonLd={jsonLd}>
   <Hero hero={home.hero} form={home.form} appStoreUrl={site.appStoreUrl} />
   <Why why={home.why} />
   <Order order={home.order} />

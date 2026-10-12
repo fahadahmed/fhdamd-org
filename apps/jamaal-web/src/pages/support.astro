@@ -2,7 +2,7 @@
 import LegalPage from "../layouts/LegalPage.astro";
 import { loadContentPage } from "../lib/cms/pages";
 
-const { site, page } = await loadContentPage("support");
+const { site, page, seo } = await loadContentPage("support");
 ---
 
-<LegalPage site={site} page={page} />
+<LegalPage site={site} page={page} seo={seo} />

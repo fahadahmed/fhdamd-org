@@ -1,18 +1,19 @@
 ---
 import { Accordion, Prose } from "@fhdamd/threads";
 import Layout from "./Layout.astro";
-import type { ContentPageModel, SiteModel } from "../lib/cms/models";
+import type { ContentPageModel, SeoModel, SiteModel } from "../lib/cms/models";
 
 interface Props {
   site: SiteModel;
   /** A page from DatoCMS: privacy, terms or support. */
   page: ContentPageModel;
+  seo: SeoModel;
 }
 
-const { site, page } = Astro.props;
+const { site, page, seo } = Astro.props;
 ---
 
-<Layout site={site} title={`${page.eyebrow} — Jamaal`} description={page.description}>
+<Layout site={site} seo={seo}>
   <section class="legal">
     <div class="legal-inner">
       <div class="th-label th-eyebrow eyebrow">{page.eyebrow}</div>

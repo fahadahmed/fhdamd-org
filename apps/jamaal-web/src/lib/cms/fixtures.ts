@@ -5,11 +5,11 @@ import type { RawContent, RawHome, RawJournal, RawPress, RawSiteConfig } from ".
 const fill = (keys: string[], overrides: Record<string, string> = {}): Record<string, string> =>
   Object.fromEntries(keys.map((key) => [key, overrides[key] ?? `[${key}]`]));
 
-const SITE_KEYS = ['contactEmail', 'footerLine', 'siteDescription', 'navButtonWaitlist', 'navButtonTestflight', 'navButtonLaunched', 'appStoreUrl', 'ctaLabelWaitlist', 'ctaLabelTestflight', 'ctaLabelLaunched', 'ctaTitleTestflight', 'ctaShortTitleLaunched', 'ctaTitleWaitlist', 'ctaShortTitleEarly', 'ctaTitleLaunched', 'ctaBodyWaitlist', 'ctaBodyTestflight', 'ctaBodyLaunched'];
+const SITE_KEYS = ['contactEmail', 'footerLine', 'siteDescription', 'navButtonWaitlist', 'navButtonTestflight', 'navButtonLaunched', 'appStoreUrl', 'ctaLabelWaitlist', 'ctaLabelTestflight', 'ctaLabelLaunched', 'ctaTitleTestflight', 'ctaShortTitleLaunched', 'ctaTitleWaitlist', 'ctaShortTitleEarly', 'ctaTitleLaunched', 'ctaBodyWaitlist', 'ctaBodyTestflight', 'ctaBodyLaunched', 'siteName', 'shareImageAlt'];
 
 const HOME_KEYS = ['heroEyebrowWaitlist', 'heroEyebrowTestflight', 'heroEyebrowLaunched', 'heroTitle', 'heroTitleLineTwo', 'heroAccent', 'heroLede', 'heroTrialNote', 'heroAltPhone', 'heroAltMac', 'heroAltWidget', 'formWaitlistSending', 'formWaitlistSubmit', 'formWaitlistNote', 'formTestflightSending', 'formTestflightSubmit', 'formTestflightNote', 'formTestflightSteps', 'whyEyebrow', 'whyTitle', 'whyAccent', 'whyBody', 'whyColumnThem', 'whyColumnUs', 'orderEyebrow', 'orderTitle', 'orderAccent', 'orderParagraphs', 'orderButtonGrid', 'orderButtonSort', 'orderAxisMatters', 'orderAxisDue', 'orderAxisLater', 'everywhereEyebrow', 'everywhereTitle', 'everywhereAccent', 'everywhereBody', 'everywhereFold', 'everywhereUnfold', 'comingLabel', 'dayEyebrow', 'dayTitle', 'planEyebrow', 'planTitle', 'planAccent', 'planBody', 'canvasLabel', 'canvasBody', 'canvasAlt', 'principlesEyebrow', 'principlesTitle', 'principlesAccent', 'principlesBody', 'devEyebrow', 'devQuote', 'devAccent', 'devInitial', 'devName', 'devByline', 'pricingEyebrowEarly', 'pricingLedeEarly', 'pricingEyebrowLaunched', 'pricingLedeLaunched', 'pricingTitle', 'pricingAccent', 'pricingAfterTrial', 'pricingCurrency', 'privacyEyebrow', 'privacyTitle', 'privacyAccent', 'faqTitle', 'joinTitle', 'joinAccent', 'joinLedeWaitlist', 'joinLedeTestflight', 'joinLedeLaunched'];
 
-export const rawSite = (overrides: Record<string, string> = {}) => fill(SITE_KEYS, overrides) as unknown as RawSiteConfig;
+export const rawSite = (overrides: Partial<RawSiteConfig> = {}) => ({ ...fill(SITE_KEYS), shareImage: null, ...overrides }) as unknown as RawSiteConfig;
 
 export const rawHome = (): RawHome => ({
   siteConfig: rawSite(),
@@ -18,6 +18,7 @@ export const rawHome = (): RawHome => ({
       orderParagraphs: "First paragraph.\n\nSecond paragraph.",
       formTestflightSteps: "Install TestFlight.\nOpen the invite.\nTap Install.",
     }) as unknown as NonNullable<RawHome["homePage"]>),
+    seo: null,
     whyRows: [{ them: "A list app", us: "Jamaal" }],
     orderChips: [1, 2, 3, 4].map((n) => ({ title: `Task ${n}`, detail: `Detail ${n}` })),
     everywhereCards: ["iphone", "duo", "ipad", "mac", "widgets", "watch", "live_activity"].map((device) => ({
@@ -48,6 +49,7 @@ export const rawHome = (): RawHome => ({
 export const rawJournal = (): RawJournal => ({
   siteConfig: rawSite(),
   journalPage: {
+    seo: null,
     eyebrow: "Journal",
     accent: "a calmer day.",
     title: "Notes on",
@@ -73,6 +75,7 @@ const span = (value: string) => ({ type: "span", value });
 export const rawContent = (): RawContent => ({
   siteConfig: rawSite(),
   contentPage: {
+    seo: null,
     pageKey: "privacy",
     eyebrow: "Privacy",
     title: "Your day is yours.",
@@ -103,6 +106,7 @@ export const rawContent = (): RawContent => ({
 export const rawPress = (): RawPress => ({
   siteConfig: rawSite(),
   pressPage: {
+    seo: null,
     eyebrow: "Press kit",
     title: "Writing about Jamaal?",
     intro: "Everything below is free to use.",

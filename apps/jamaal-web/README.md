@@ -111,6 +111,21 @@ Every word on the site comes from **DatoCMS** and is fetched at build time, so i
 
 **Publishing rebuilds the site:** a DatoCMS webhook on Record publish and unpublish starts the CI workflow directly: `POST https://api.github.com/repos/fahadahmed/fhdamd-org/actions/workflows/ci-jamaal-web.yml/dispatches` with the custom payload `{"ref":"main"}` and the headers `Authorization: Bearer <fine-grained GitHub token with Actions: read and write>`, `Accept: application/vnd.github+json`, `Content-Type: application/json` and `X-GitHub-Api-Version: 2022-11-28`. It is the same call `rebuildOnConfigChange` makes, so one token with that permission serves both. The site is live about two minutes later. If a publish does nothing, open the webhook's call log in DatoCMS: 403 means the token lacks *Actions: read and write* on this repository, 404 a wrong URL, and 422 a missing payload.
 
+## Search and sharing (SEO)
+
+What a page puts in its `<head>` is built in `src/lib/cms/seo.ts` from three layers, the first that has a value winning:
+
+1. **The page's own "Search and sharing" field in DatoCMS** (on the home, Journal, Press and legal pages and on every article): title, description, share image, "hide from search" and the card style.
+2. **The page itself:** "Press kit — Jamaal" built from its title, its intro as the description, and for an article its excerpt and its cover on a brand-blue 1200×630 frame (`fit=fill` through DatoCMS's image service, so a tall phone screenshot isn't cropped to nothing).
+3. **The site settings:** the site name, the default description, and an optional default share image (otherwise the one built into `public/og-image.png`).
+
+A title that already contains the site name isn't given a second one. A page hidden from search gets `noindex` and no canonical link and is left out of the sitemap.
+
+- **Canonical addresses have no trailing slash,** because Firebase Hosting serves pages without one (`trailingSlash: false`) and redirects the slash form.
+- **Structured data (schema.org JSON-LD):** `SoftwareApplication` (offers only once launched), `Organization` and `WebSite` on the home page; `Article` and `BreadcrumbList` on articles; `BreadcrumbList` on the Journal.
+- **`/sitemap.xml`** (`src/pages/sitemap.xml.ts`, one request) lists every indexable page with `lastmod`: the latest change to its own record, to the site settings (nav and footer), and for the home and support pages to the FAQ and day story. **`/journal/rss.xml`** is the Journal's feed, advertised on every Journal page.
+- **Checked on every build:** `pnpm --filter jamaal-web check:seo` (run in CI after the build, `scripts/seo-check.mjs`; it always reads `dist`) fails on a page without exactly one `<h1>`, an image without `alt`, a missing or wrongly sized title or description (10 to 70 and 50 to 200 characters), a wrong canonical, missing Open Graph or Twitter tags, invalid structured data, duplicate titles or descriptions, or a sitemap that doesn't match the indexable pages.
+
 ## Error reporting (Sentry)
 
 Errors only: no tracing, replay, breadcrumbs or user data, and the privacy page says so when it is on.

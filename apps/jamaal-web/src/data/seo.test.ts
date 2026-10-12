@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { articleJsonLd, softwareApplicationJsonLd } from "./seo";
+import { articleJsonLd, breadcrumbJsonLd, organizationJsonLd, softwareApplicationJsonLd, websiteJsonLd } from "./seo";
 
 const plans = [
   { offerName: "Monthly", price: "$2.99" },
@@ -53,5 +53,33 @@ describe("articleJsonLd", () => {
 
   it("serialises to valid JSON", () => {
     expect(() => JSON.parse(JSON.stringify(articleJsonLd(base)))).not.toThrow();
+  });
+});
+
+describe("organizationJsonLd and websiteJsonLd", () => {
+  it("names the organisation, its logo and the company behind it", () => {
+    const data = organizationJsonLd({ origin: "https://jamaal.app", name: "Jamaal" });
+    expect(data).toMatchObject({ "@type": "Organization", name: "Jamaal", url: "https://jamaal.app/", logo: "https://jamaal.app/apple-touch-icon.png" });
+    expect(data.parentOrganization.name).toBe("fhdamd");
+  });
+
+  it("describes the website", () => {
+    expect(websiteJsonLd({ origin: "https://jamaal.app", name: "Jamaal", description: "A planner." })).toMatchObject({ "@type": "WebSite", url: "https://jamaal.app/", inLanguage: "en", description: "A planner." });
+  });
+});
+
+describe("breadcrumbJsonLd", () => {
+  it("numbers each step and gives its full address", () => {
+    const data = breadcrumbJsonLd("https://jamaal.app", [
+      { name: "Jamaal", path: "/" },
+      { name: "Journal", path: "/journal" },
+      { name: "An article", path: "/journal/an-article" },
+    ]);
+    expect(data["@type"]).toBe("BreadcrumbList");
+    expect(data.itemListElement.map((i) => [i.position, i.item])).toEqual([
+      [1, "https://jamaal.app/"],
+      [2, "https://jamaal.app/journal"],
+      [3, "https://jamaal.app/journal/an-article"],
+    ]);
   });
 });

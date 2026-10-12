@@ -10,7 +10,28 @@ export interface JournalCta {
   body: string;
 }
 
+export interface ShareImage {
+  /** An absolute DatoCMS URL, or a path on this site for the built-in image. */
+  url: string;
+  width: number | null;
+  height: number | null;
+  alt: string;
+}
+
+/** What a page puts in its <head>, after the page, the site settings and the defaults have been combined. */
+export interface SeoModel {
+  title: string;
+  description: string;
+  image: ShareImage;
+  twitterCard: "summary" | "summary_large_image";
+  noindex: boolean;
+}
+
 export interface SiteModel {
+  /** For example "Jamaal": the end of a page title. */
+  name: string;
+  /** The default share image from the site settings, if one is set, and its description. */
+  share: { image: ShareImage | null; alt: string };
   contactEmail: string;
   footerLine: string;
   description: string;
