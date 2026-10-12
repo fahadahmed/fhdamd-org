@@ -43,8 +43,28 @@ export interface SignupEntry {
 /** One document per address (`signups/{email}`), so a repeat signup never overwrites. */
 export interface SignupStore {
   create(entry: SignupEntry): Promise<"created" | "exists">;
-  /** The address signed up before. In the beta, record that the invite should be sent again. */
-  requestInvite(email: string): Promise<void>;
+  /** The address signed up before. In the beta, record that the invite should be sent, keeping the devices and name they gave now. */
+  requestInvite(email: string, details: InviteDetails): Promise<void>;
+}
+
+/** What someone already on the list tells us when they join the beta. */
+export interface InviteDetails {
+  firstName: string;
+  devices: Signup["devices"];
+}
+
+/**
+ * What to store when an address that is already on the list joins the beta: the
+ * devices they have now chosen are added to any they gave before (in a fixed
+ * order, no duplicates), and the name is filled in only if it was blank.
+ */
+export function mergeInvite(
+  existing: { firstName?: unknown; devices?: unknown },
+  incoming: InviteDetails,
+): InviteDetails {
+  const before = Array.isArray(existing.devices) ? existing.devices : [];
+  const firstName = typeof existing.firstName === "string" && existing.firstName.trim() ? existing.firstName : incoming.firstName;
+  return { firstName, devices: DEVICES.filter((device) => before.includes(device) || incoming.devices.includes(device)) };
 }
 
 export interface SignupRequest {
@@ -113,7 +133,7 @@ export function createSignupHandler({ store, stage, limiter, onLimiterError }: S
 
     const outcome = await store.create({ firstName, email, devices, source, stage: current });
     if (outcome === "exists") {
-      if (current === "testflight") await store.requestInvite(email);
+      if (current === "testflight") await store.requestInvite(email, { firstName, devices });
       return { status: 409, body: { status: "exists" } };
     }
     return { status: 200, body: { status } };

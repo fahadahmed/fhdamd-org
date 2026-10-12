@@ -11,7 +11,7 @@ import { createErrorReporter } from "./errors";
 import { dispatchRebuild } from "./rebuild";
 import { createRateLimiter } from "./rateLimit";
 import type { CounterStore } from "./rateLimit";
-import { createSignupHandler } from "./signup";
+import { createSignupHandler, mergeInvite } from "./signup";
 import type { SignupStore } from "./signup";
 import { createCachedStageSource, stageFromTemplate } from "./stage";
 
@@ -40,8 +40,13 @@ const store: SignupStore = {
       throw error;
     }
   },
-  async requestInvite(email) {
-    await db().collection("signups").doc(email).update({ inviteRequestedAt: FieldValue.serverTimestamp() });
+  async requestInvite(email, details) {
+    const ref = db().collection("signups").doc(email);
+    // One transaction, so two quick submissions can't overwrite each other's devices.
+    await db().runTransaction(async (tx) => {
+      const current = (await tx.get(ref)).data() ?? {};
+      tx.update(ref, { ...mergeInvite(current, details), inviteRequestedAt: FieldValue.serverTimestamp() });
+    });
   },
 };
 

@@ -57,6 +57,7 @@ Hosted on Firebase Hosting, project `jamaal-web` (default site `jamaal-web`, htt
 | `signup` | `POST /api/signup` (Hosting rewrite) | Validates, rate-limits and stores `signups/{email}`; answers `added`, `invited` (beta) or 409 (#422) |
 | `rebuildOnConfigChange` | Remote Config published | Asks GitHub to run `ci-jamaal-web.yml`, which rebuilds and redeploys the static site (#425) |
 
+- **The list** is the Firestore collection `signups`, one document per email address (the document id), whichever form it came from: `firstName`, `email`, `devices` (`iphone`, `ipad`, `mac`), `source` (`hero` or `join`), `stage` the form was on (`waitlist`, `testflight`, `launched`) and `createdAt`. To email everyone, read the whole collection. When an address already on the list joins the beta, the function adds the devices they chose now to `devices`, fills `firstName` if it was blank and sets `inviteRequestedAt`; `createdAt`, `stage` and `source` stay as first recorded.
 - `pnpm --filter jamaal-web-functions test` runs the unit tests and `build` compiles to `functions/lib`.
 - `firebase emulators:start --only functions,firestore --project demo-jamaal-web` (from `apps/jamaal-web`) serves them locally. Remote Config is not emulated, so the stage falls back to `waitlist` there.
 - **Deploying:** `deploy-jamaal-functions.yml` deploys functions, Firestore rules and indexes when anything under `functions/` or the rules and indexes files change on `main`, or by hand from the Actions tab. By hand: `firebase deploy --only functions,firestore --project jamaal-web`.
