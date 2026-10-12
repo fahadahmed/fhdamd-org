@@ -48,6 +48,9 @@ Hosted on Firebase Hosting, project `jamaal-web` (default site `jamaal-web`, htt
 
 `functions/` holds the Cloud Functions codebase (`jamaal-web-functions`, Node 22, region `us-central1`, next to the `nam5` Firestore).
 
+- `pnpm --filter jamaal-web-functions build` compiles to `functions/lib`.
+- `firebase emulators:start --only functions --project demo-jamaal-web` (run from `apps/jamaal-web`) serves it locally at `http://127.0.0.1:5001/demo-jamaal-web/us-central1/healthCheck`.
+
 | Function | Trigger | What it does |
 |---|---|---|
 | `signup` | `POST /api/signup` (Hosting rewrite) | Validates, rate-limits and stores `signups/{email}`; answers `added`, `invited` (beta) or 409 (#422) |
@@ -70,6 +73,17 @@ The stage (`waitlist`, `testflight`, `launched`) is the `site_stage` parameter i
 4. Don't flip to `testflight` until the invite function exists (#424): the API would say `invited` without inviting anyone.
 
 **One-time setup for the automatic rebuild:** create a fine-grained GitHub token for this repository with *Actions: read and write*, then store it as the secret the function reads: `firebase functions:secrets:set GITHUB_DISPATCH_TOKEN --project jamaal-web`, and deploy.
+
+## The Journal (DatoCMS)
+
+`/journal` and `/journal/<slug>` are built at deploy time from **DatoCMS**, so posts can be written and published without a developer. Without a token the site builds with the three articles bundled in `src/content/journal/*.json` (the same shape), so a fork or a local build still has a Journal.
+
+- **Code:** `src/lib/datocms.ts` fetches the posts (Content Delivery API, GraphQL) and turns Structured Text into the site's own blocks (paragraphs, headings, lists, quotes, figures, detail rows, steps); `src/lib/journalPosts.ts` chooses the source and **fails the build** if DatoCMS can't be reached or a post is missing a field, so an outage can never deploy an empty Journal. Links in posts are limited to `http(s):`, `mailto:` and site-relative paths.
+- **Model to create in DatoCMS** (API key `post`): `title` (single-line text, required), `accent` (single-line text, the part of the title set in italics), `slug` (slug from the title, required), `category` (single-line text with an enum validator: Story, Guides, How-to), `date` (date), `read_minutes` (integer), `excerpt` (single-line text), `featured_excerpt` (single-line text), `lede` (multi-paragraph text), `featured` (boolean; only one post should be featured), `cta_note` (single-line text, optional), `next` (link to another post), `cover` (single asset), and `body` (**Structured Text** with these allowed blocks and nodes: headings level 2, paragraphs with bold, italic and links, lists, block quotes, and the blocks below).
+  - Blocks (API keys): `figure` (`image` asset, `caption` text), `pull_quote` (`text`, `cite`), `detail_row` (`label`, `value`) and `step` (`title`, `body`, `image` asset). Consecutive blocks of the same kind are grouped.
+- **Token:** create a read-only Content Delivery API token and add it as the GitHub secret `JAMAAL_DATOCMS_TOKEN` (it reaches the build as `DATOCMS_API_TOKEN`; set `DATOCMS_ENVIRONMENT` to read a sandbox). For local builds put it in `.env.local`.
+- **Editors:** invite them in DatoCMS with a role that can create, edit and publish `post` records and upload assets, but cannot change the schema. Check the plan's editor-seat limit first.
+- **Publishing rebuilds the site:** add a DatoCMS webhook on `post` publish and unpublish that POSTs `{"event_type":"datocms-publish"}` to `https://api.github.com/repos/fahadahmed/fhdamd-org/dispatches` with the headers `Authorization: Bearer <GitHub token with Actions: write>`, `Accept: application/vnd.github+json` and `Content-Type: application/json`. `ci-jamaal-web.yml` runs on that event and deploys the site in about two minutes.
 
 ## Error reporting (Sentry)
 

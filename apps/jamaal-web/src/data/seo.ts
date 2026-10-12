@@ -39,3 +39,30 @@ export function softwareApplicationJsonLd({ origin, description, launched }: Seo
     }),
   };
 }
+
+interface ArticleOptions {
+  origin: string;
+  slug: string;
+  headline: string;
+  description: string;
+  /** ISO date. */
+  datePublished: string;
+  authorName: string;
+  /** Absolute image URL, if the article has its own. */
+  image?: string;
+}
+
+/** Article structured data for a Journal post. */
+export function articleJsonLd({ origin, slug, headline, description, datePublished, authorName, image }: ArticleOptions) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline,
+    description,
+    datePublished,
+    mainEntityOfPage: `${origin}/journal/${slug}`,
+    image: image ?? `${origin}/og-image.png`,
+    author: { "@type": "Person", name: authorName },
+    publisher: { "@type": "Organization", name: "fhdamd", url: "https://fhdamd.dev" },
+  };
+}

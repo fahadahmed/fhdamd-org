@@ -25,4 +25,4 @@ export const SITE_DESCRIPTION =
  * Pages that are linked from the nav and footer only once they exist. Flip each
  * to true in the PR that adds the page (Journal: #426, Press kit: #427).
  */
-export const FEATURES = { journal: false, pressKit: true } as const;
+export const FEATURES = { journal: true, pressKit: true } as const;
