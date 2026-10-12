@@ -99,7 +99,7 @@ Every word on the site comes from **DatoCMS** and is fetched at build time, so i
 
 **Editors** are invited in DatoCMS with a role that can create, edit and publish records and upload assets, but cannot change the schema. Check the plan's editor-seat limit first. Publishing a `post` in DatoCMS needs its `next` link to point at a published article, so publish a circular set together.
 
-**Publishing rebuilds the site:** a DatoCMS webhook on publish and unpublish (all models) POSTs `{"event_type":"datocms-publish"}` to `https://api.github.com/repos/fahadahmed/fhdamd-org/dispatches` with the headers `Authorization: Bearer <fine-grained GitHub token with Actions: read and write>`, `Accept: application/vnd.github+json` and `Content-Type: application/json`. `ci-jamaal-web.yml` runs on that event and deploys the site in about two minutes.
+**Publishing rebuilds the site:** a DatoCMS webhook on Record publish and unpublish starts the CI workflow directly: `POST https://api.github.com/repos/fahadahmed/fhdamd-org/actions/workflows/ci-jamaal-web.yml/dispatches` with the custom payload `{"ref":"main"}` and the headers `Authorization: Bearer <fine-grained GitHub token with Actions: read and write>`, `Accept: application/vnd.github+json`, `Content-Type: application/json` and `X-GitHub-Api-Version: 2022-11-28`. It is the same call `rebuildOnConfigChange` makes, so one token with that permission serves both. The site is live about two minutes later. If a publish does nothing, open the webhook's call log in DatoCMS: 403 means the token lacks *Actions: read and write* on this repository, 404 a wrong URL, and 422 a missing payload.
 
 ## Error reporting (Sentry)
 
