@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEVICE_TYPES, DEVICE_WIDTHS, deviceAspect } from "./device";
+import { DEVICE_TYPES, heightAt, DEVICE_WIDTHS, deviceAspect } from "./device";
 
 describe("deviceAspect", () => {
   it("gives every framed device a default screen ratio", () => {
@@ -25,5 +25,12 @@ describe("DEVICE_WIDTHS", () => {
       expect(widths.length).toBeGreaterThan(1);
       expect([...widths].sort((a, b) => a - b)).toEqual(widths);
     }
+  });
+});
+
+describe("heightAt", () => {
+  it("scales a screen ratio to a width", () => {
+    expect(heightAt("393 / 852", 300)).toBe(650);
+    expect(heightAt("1200/630", 600)).toBe(315);
   });
 });

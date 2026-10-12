@@ -30,10 +30,15 @@ describe("styles live in src/styles", () => {
     expect(offenders).toEqual([]);
   });
 
-  it("imports every component stylesheet from components.css", () => {
-    const index = readFileSync(join(src, "styles/components.css"), "utf8");
-    const imported = [...index.matchAll(/@import "\.\/components\/([^"]+)";/g)].map((m) => m[1]).sort();
-    const present = readdirSync(join(src, "styles/components")).filter((f) => f.endsWith(".css")).sort();
-    expect(imported).toEqual(present);
+  it("imports every component stylesheet from the component or page that uses it, so a page only ships what it renders", () => {
+    const source = astroFiles.map((f) => readFileSync(f, "utf8")).join("\n");
+    const unused = readdirSync(join(src, "styles/components"))
+      .filter((f) => f.endsWith(".css") && !source.includes(`styles/components/${f}"`))
+      .sort();
+    expect(unused).toEqual([]);
+  });
+
+  it("keeps the home page's stylesheet out of the layout", () => {
+    expect(readFileSync(join(src, "layouts/Layout.astro"), "utf8")).not.toMatch(/styles\/(home|components)\.css/);
   });
 });

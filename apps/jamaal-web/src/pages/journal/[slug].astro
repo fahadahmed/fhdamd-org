@@ -8,6 +8,7 @@ import { loadJournalArticles } from "../../lib/cms/pages";
 import { articleSeo } from "../../lib/cms/seo";
 import { listTitle, metaLine } from "../../lib/journal";
 import type { Post } from "../../lib/journal";
+import "../../styles/components/journal-article.css";
 
 /** One request for the site settings, the page copy and every article, shared by all the article pages. */
 export async function getStaticPaths() {

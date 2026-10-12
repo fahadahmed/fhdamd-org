@@ -2,12 +2,14 @@
 import Layout from "../layouts/Layout.astro";
 import { loadPress } from "../lib/cms/pages";
 import { cssVars } from "../lib/cssVars";
+import { cmsImage, cmsSrcset } from "../lib/image";
+import "../styles/components/press.css";
 
 const { site, page: press, seo } = await loadPress();
 
-/** DatoCMS serves assets through imgix: `dl` makes the browser download the file under its own name, and `w` sizes the preview. */
+/** DatoCMS serves assets through imgix: `dl` makes the browser download the file under its own name. */
 const download = (file: (typeof press.files)[number]) => `${file.url}?dl=${encodeURIComponent(file.filename)}`;
-const preview = (file: (typeof press.files)[number]) => (file.url.endsWith(".svg") ? file.url : `${file.url}?auto=format&w=480`);
+const isSvg = (file: (typeof press.files)[number]) => file.url.endsWith(".svg");
 ---
 
 <Layout site={site} seo={seo}>
@@ -39,7 +41,7 @@ const preview = (file: (typeof press.files)[number]) => (file.url.endsWith(".svg
           press.files.map((f) => (
             <li>
               <a class="thumb" href={download(f)}>
-                {f.isImage && <img src={preview(f)} alt={f.alt} width={f.width ?? undefined} height={f.height ?? undefined} loading="lazy" decoding="async" />}
+                {f.isImage && <img src={isSvg(f) ? f.url : cmsImage(f.url, 480)} srcset={isSvg(f) ? undefined : cmsSrcset(f.url, [240, 480, 720])} sizes="300px" alt={f.alt} width={f.width ?? undefined} height={f.height ?? undefined} loading="lazy" decoding="async" />}
               </a>
               <div class="meta-row">
                 <strong>{f.label}</strong>

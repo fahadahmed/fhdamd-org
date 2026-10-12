@@ -18,6 +18,12 @@ const DEFAULT_ASPECT: Record<DeviceType, string | null> = {
   widget: null,
 };
 
+/** The height that goes with a width at an aspect ratio written "393 / 852". */
+export function heightAt(aspect: string, width: number): number {
+  const [w, h] = aspect.split("/").map((n) => Number(n.trim()));
+  return Math.round((width * h) / w);
+}
+
 export function deviceAspect(type: DeviceType, override?: string): string | null {
   return override ?? DEFAULT_ASPECT[type];
 }

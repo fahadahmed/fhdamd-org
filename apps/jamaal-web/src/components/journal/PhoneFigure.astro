@@ -1,8 +1,11 @@
 ---
 /** A phone screenshot with its caption: an image uploaded to DatoCMS. */
 import DeviceFrame from "../ui/DeviceFrame.astro";
+import { deviceAspect, heightAt } from "../../lib/device";
 import { cssVars } from "../../lib/cssVars";
+import { cmsImage, cmsSrcset } from "../../lib/image";
 import type { FigureItem } from "../../lib/journal";
+import "../../styles/components/phone-figure.css";
 
 interface Props {
   item: Pick<FigureItem, "src" | "alt"> & { caption?: string };
@@ -11,12 +14,14 @@ interface Props {
 }
 
 const { item, width = 300 } = Astro.props;
+// The picture fills the phone's screen, so its box has the screen's shape: say so, and the page doesn't move as it loads.
+const height = heightAt(deviceAspect("phone")!, width);
 ---
 
 <figure class="phone-figure" style={cssVars({ w: `${width}px` })}>
   <div class="phone">
     <DeviceFrame type="phone">
-      <img src={`${item.src}${item.src.includes("?") ? "&" : "?"}auto=format&w=${width * 2}`} alt={item.alt} width={width} loading="lazy" decoding="async" />
+      <img src={cmsImage(item.src, width * 2)} srcset={cmsSrcset(item.src, [width, width * 2, width * 3])} sizes={`min(${width}px, 80vw)`} alt={item.alt} width={width} height={height} loading="lazy" decoding="async" />
     </DeviceFrame>
   </div>
   {item.caption && <figcaption>{item.caption}</figcaption>}
