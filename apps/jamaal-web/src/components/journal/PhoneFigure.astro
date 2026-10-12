@@ -1,8 +1,7 @@
 ---
-/** A phone screenshot with its caption. A bundled screenshot or an image uploaded to DatoCMS. */
+/** A phone screenshot with its caption: an image uploaded to DatoCMS. */
 import DeviceFrame from "../ui/DeviceFrame.astro";
 import type { FigureItem } from "../../lib/journal";
-import { screen } from "../../lib/screens";
 
 interface Props {
   item: Pick<FigureItem, "src" | "alt"> & { caption?: string };
@@ -11,20 +10,13 @@ interface Props {
 }
 
 const { item, width = 300 } = Astro.props;
-const remote = /^https?:\/\//.test(item.src);
 ---
 
 <figure class="phone-figure" style={`--w: ${width}px`}>
   <div class="phone">
-    {
-      remote ? (
-        <DeviceFrame type="phone">
-          <img src={`${item.src}${item.src.includes("?") ? "&" : "?"}auto=format&w=${width * 2}`} alt={item.alt} width={width} loading="lazy" decoding="async" />
-        </DeviceFrame>
-      ) : (
-        <DeviceFrame type="phone" src={screen(item.src)} alt={item.alt} sizes={`${width}px`} />
-      )
-    }
+    <DeviceFrame type="phone">
+      <img src={`${item.src}${item.src.includes("?") ? "&" : "?"}auto=format&w=${width * 2}`} alt={item.alt} width={width} loading="lazy" decoding="async" />
+    </DeviceFrame>
   </div>
   {item.caption && <figcaption>{item.caption}</figcaption>}
 </figure>

@@ -32,4 +32,3 @@ export const DEVICE_WIDTHS: Record<DeviceType, number[]> = {
   widget: [320, 480, 640, 1092],
 };
 
-export const COMING_SOON_LABEL = "Coming in 1.1";

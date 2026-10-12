@@ -7,7 +7,13 @@
  * inline version is used at every width.
  */
 import DayStage from "../ui/DayStage.astro";
-import { day } from "../../data/home";
+import type { HomeModel } from "../../lib/cms/models";
+
+interface Props {
+  day: HomeModel["day"];
+}
+
+const { day } = Astro.props;
 ---
 
 <section id="day" class="day" data-chapter="0">
@@ -29,7 +35,7 @@ import { day } from "../../data/home";
             <p>{chapter.body}</p>
             <div class="chapter-where"><span class="dot" aria-hidden="true"></span>{chapter.where}</div>
             <div class="inline-stage">
-              <DayStage devices={chapter.devices} />
+              <DayStage devices={chapter.devices} comingLabel={day.comingLabel} />
             </div>
           </article>
         ))
@@ -42,7 +48,7 @@ import { day } from "../../data/home";
           {
             day.chapters.map((chapter, i) => (
               <div class="layer" data-layer={i} data-active={i === 0 ? "" : undefined} aria-hidden={i === 0 ? "false" : "true"}>
-                <DayStage devices={chapter.devices} />
+                <DayStage devices={chapter.devices} comingLabel={day.comingLabel} />
               </div>
             ))
           }

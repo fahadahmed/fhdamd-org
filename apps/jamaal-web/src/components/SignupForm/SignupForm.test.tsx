@@ -2,6 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SignupError } from "../../utils/signup";
+import { testflightForm, waitlistForm } from "../../test/fixtures";
 import SignupForm from "./SignupForm";
 
 const submitSignup = vi.fn();
@@ -14,7 +15,8 @@ vi.mock("../../utils/signup", async (importOriginal) => ({
 vi.mock("../../lib/analytics", () => ({ track: (event: unknown) => track(event) }));
 
 function setup(props: Partial<React.ComponentProps<typeof SignupForm>> = {}) {
-  return render(<SignupForm variant="hero" stage="waitlist" source="hero" {...props} />);
+  const stage = props.stage ?? "waitlist";
+  return render(<SignupForm variant="hero" stage={stage} source="hero" copy={stage === "testflight" ? testflightForm : waitlistForm} {...props} />);
 }
 
 async function fill(firstName: string, email: string) {

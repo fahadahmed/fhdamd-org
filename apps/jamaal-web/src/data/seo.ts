@@ -1,10 +1,10 @@
-import { pricing } from "./home";
-
 export interface SeoOptions {
   /** Absolute site origin, e.g. https://jamaal.app */
   origin: string;
   description: string;
   launched: boolean;
+  /** The plans on sale, from the pricing in DatoCMS. */
+  plans: readonly { offerName: string; price: string }[];
 }
 
 /** Plain monetary amount from a display price like "$24.99". */
@@ -17,7 +17,7 @@ function amount(price: string): string {
  * once the app is on sale: before launch there is nothing to buy, and listing
  * prices early would promise something that isn't available.
  */
-export function softwareApplicationJsonLd({ origin, description, launched }: SeoOptions) {
+export function softwareApplicationJsonLd({ origin, description, launched, plans }: SeoOptions) {
   return {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -30,7 +30,7 @@ export function softwareApplicationJsonLd({ origin, description, launched }: Seo
     operatingSystem: "iOS, iPadOS, macOS",
     publisher: { "@type": "Organization", name: "fhdamd", url: "https://fhdamd.dev" },
     ...(launched && {
-      offers: pricing.plans.map((plan) => ({
+      offers: plans.map((plan) => ({
         "@type": "Offer",
         name: plan.offerName,
         price: amount(plan.price),

@@ -1,12 +1,18 @@
 ---
 import HiddenOrder from "../HiddenOrder/HiddenOrder";
 import SectionHeading from "../ui/SectionHeading.astro";
-import { order } from "../../data/home";
+import type { HomeModel } from "../../lib/cms/models";
+
+interface Props {
+  order: HomeModel["order"];
+}
+
+const { order } = Astro.props;
 ---
 
 <section id="order" class="section">
   <div class="section-inner split">
-    <HiddenOrder client:idle>
+    <HiddenOrder client:idle order={order}>
       <SectionHeading eyebrow={order.eyebrow} title={order.title} accent={order.accent} />
       {order.paragraphs.map((text) => <p class="copy">{text}</p>)}
     </HiddenOrder>

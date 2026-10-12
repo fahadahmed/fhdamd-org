@@ -7,10 +7,16 @@
 import Logo from "./Logo.astro";
 import { FEATURES } from "../../data/site";
 import { STAGE } from "../../data/stage";
-import { NAV_CTA, navLinks } from "../../lib/nav";
+import type { SiteModel } from "../../lib/cms/models";
+import { navCta, navLinks } from "../../lib/nav";
 
+interface Props {
+  site: SiteModel;
+}
+
+const { site } = Astro.props;
 const links = navLinks(FEATURES);
-const cta = NAV_CTA[STAGE];
+const cta = navCta(site.navButton, STAGE);
 ---
 
 <header class="site-nav">

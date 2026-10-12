@@ -2,10 +2,17 @@
 import AppStoreButton from "../AppStoreButton/AppStoreButton";
 import SignupForm from "../SignupForm/SignupForm";
 import DeviceFrame from "../ui/DeviceFrame.astro";
-import { hero, heroEyebrow } from "../../data/home";
-import { APP_STORE_URL } from "../../data/site";
 import { STAGE } from "../../data/stage";
+import type { HomeModel } from "../../lib/cms/models";
 import { screen } from "../../lib/screens";
+
+interface Props {
+  hero: HomeModel["hero"];
+  form: HomeModel["form"];
+  appStoreUrl: string;
+}
+
+const { hero, form, appStoreUrl } = Astro.props;
 
 /** The signup form is for the two pre-launch stages; launched shows the App Store button. */
 const formStage = STAGE === "launched" ? null : STAGE;
@@ -13,18 +20,18 @@ const formStage = STAGE === "launched" ? null : STAGE;
 
 <section class="hero" id="top">
   <div class="hero-copy">
-    <div class="th-label th-eyebrow eyebrow">{heroEyebrow(STAGE)}</div>
+    <div class="th-label th-eyebrow eyebrow">{hero.eyebrow}</div>
     <h1 class="hero-title">{hero.title}<br />{hero.titleLine2}<br /><em>{hero.accent}</em></h1>
     <p class="lede">{hero.lede}</p>
 
     {
       formStage ? (
         <div class="hero-actions" id="join-top">
-          <SignupForm client:idle variant="hero" stage={formStage} source="hero" />
+          <SignupForm client:idle variant="hero" stage={formStage} source="hero" copy={form} />
         </div>
       ) : (
         <div class="hero-actions">
-          <AppStoreButton href={APP_STORE_URL} />
+          <AppStoreButton href={appStoreUrl} />
           <div class="meta">{hero.trialNote}</div>
         </div>
       )
@@ -34,13 +41,13 @@ const formStage = STAGE === "launched" ? null : STAGE;
   <div class="hero-visual">
     <div class="hero-stage">
       <div class="hero-mac">
-        <DeviceFrame type="mac" src={screen("g-macOS")} alt="Jamaal's Today view on a Mac" sizes="(min-width: 960px) 540px, 90vw" loading="eager" />
+        <DeviceFrame type="mac" src={screen("g-macOS")} alt={hero.alt.mac} sizes="(min-width: 960px) 540px, 90vw" loading="eager" />
       </div>
       <div class="hero-phone">
-        <DeviceFrame type="phone" src={screen("g-TD-01")} alt="Today on iPhone" sizes="(min-width: 960px) 200px, 34vw" loading="eager" />
+        <DeviceFrame type="phone" src={screen("g-TD-01")} alt={hero.alt.phone} sizes="(min-width: 960px) 200px, 34vw" loading="eager" />
       </div>
       <div class="hero-widget">
-        <DeviceFrame type="widget" src={screen("WG-03-today-medium")} alt="The Today widget on the Home Screen" sizes="(min-width: 960px) 320px, 54vw" />
+        <DeviceFrame type="widget" src={screen("WG-03-today-medium")} alt={hero.alt.widget} sizes="(min-width: 960px) 320px, 54vw" />
       </div>
     </div>
   </div>

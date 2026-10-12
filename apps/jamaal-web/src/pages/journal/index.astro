@@ -1,27 +1,24 @@
 ---
-import { Picture } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
 import { CATEGORIES, listTitle, shortMeta } from "../../lib/journal";
-import type { Post } from "../../lib/journal";
-import { loadPosts } from "../../lib/journalPosts";
-import { screen } from "../../lib/screens";
+import { loadJournal } from "../../lib/cms/pages";
 
-const posts = await loadPosts();
+const { site, page } = await loadJournal();
+const { copy, posts } = page;
 const featured = posts.find((p) => p.featured);
 const rest = posts.filter((p) => p !== featured);
-const remote = (post: Post) => Boolean(post.cover && /^https?:\/\//.test(post.cover.src));
 ---
 
-<Layout title="Journal — Jamaal" description="Why Jamaal works the way it does, and how to make it fit your life.">
+<Layout site={site} title={`${copy.eyebrow} — Jamaal`} description={copy.lede}>
   <div class="journal" data-journal>
     <header class="head">
-      <div class="th-label th-eyebrow eyebrow">Journal</div>
-      <h1 class="section-title">Notes on <em>a calmer day.</em></h1>
-      <p class="lede">Why Jamaal works the way it does, and how to make it fit your life.</p>
+      <div class="th-label th-eyebrow eyebrow">{copy.eyebrow}</div>
+      <h1 class="section-title">{copy.title} <em>{copy.accent}</em></h1>
+      <p class="lede">{copy.lede}</p>
     </header>
 
     <div class="filters" role="group" aria-label="Filter by category">
-      <button type="button" data-filter="All" aria-pressed="true">All</button>
+      <button type="button" data-filter="All" aria-pressed="true">{copy.filterAll}</button>
       {CATEGORIES.map((category) => <button type="button" data-filter={category} aria-pressed="false">{category}</button>)}
     </div>
 
@@ -32,16 +29,12 @@ const remote = (post: Post) => Boolean(post.cover && /^https?:\/\//.test(post.co
             <span class="meta-line">{featured.category === "Guides" ? "Guide" : featured.category} · {featured.readMinutes} min read</span>
             <span class="featured-title">{featured.title} <em>{featured.accent}</em></span>
             <span class="featured-excerpt">{featured.featuredExcerpt ?? featured.excerpt}</span>
-            <span class="read">Read the story →</span>
+            <span class="read">{copy.readStory}</span>
           </div>
           {featured.cover && (
             <div class="featured-art" aria-hidden="true">
               <div class="phone">
-                {remote(featured) ? (
-                  <img src={`${featured.cover.src}?auto=format&w=640`} alt="" loading="lazy" decoding="async" />
-                ) : (
-                  <Picture src={screen(featured.cover.src)} alt="" widths={[320, 480, 640]} sizes="240px" formats={["avif", "webp"]} loading="lazy" />
-                )}
+                <img src={`${featured.cover.src}?auto=format&w=640`} alt="" loading="lazy" decoding="async" />
               </div>
             </div>
           )}
@@ -64,7 +57,7 @@ const remote = (post: Post) => Boolean(post.cover && /^https?:\/\//.test(post.co
         ))
       }
     </ul>
-    <p class="empty" data-empty hidden>Nothing here yet.</p>
+    <p class="empty" data-empty hidden>{copy.empty}</p>
   </div>
 </Layout>
 
@@ -191,7 +184,8 @@ const remote = (post: Post) => Boolean(post.cover && /^https?:\/\//.test(post.co
   .read {
     font-size: 15px;
     font-weight: 600;
-    color: var(--th-terra-on-deep);
+    /* The design's terracotta on this blue is 4.45:1; a touch lighter clears the 4.5:1 minimum. */
+    color: color-mix(in srgb, var(--th-terra-on-deep) 90%, white);
   }
 
   .featured-art {

@@ -7,7 +7,7 @@
  */
 import { Picture } from "astro:assets";
 import type { ImageMetadata } from "astro";
-import { COMING_SOON_LABEL, DEVICE_WIDTHS, deviceAspect, type DeviceType } from "../../lib/device";
+import { DEVICE_WIDTHS, deviceAspect, type DeviceType } from "../../lib/device";
 
 interface Props {
   type: DeviceType;
@@ -21,8 +21,10 @@ interface Props {
   aspect?: string;
   /** Which part of a tall screenshot to show. */
   position?: string;
-  /** Shows the "Coming in 1.1" badge above the device. */
+  /** Shows the badge above the device (a feature that is not in the app yet). */
   coming?: boolean;
+  /** The badge's words, from DatoCMS. Required when `coming` is set. */
+  comingLabel?: string;
   /** `sizes` for the generated image; say how wide the frame renders. */
   sizes?: string;
   /** Eager only for an image that is in the first screen. */
@@ -30,7 +32,7 @@ interface Props {
   class?: string;
 }
 
-const { type, src, alt = "", bezel, aspect, position = "top", coming = false, sizes = "100vw", loading = "lazy", class: className } = Astro.props;
+const { type, src, alt = "", bezel, aspect, position = "top", coming = false, comingLabel = "", sizes = "100vw", loading = "lazy", class: className } = Astro.props;
 const slotted = Astro.slots.has("default");
 if (!slotted && !src) throw new Error("DeviceFrame needs a src or slotted content");
 const ratio = deviceAspect(type, aspect);
@@ -38,7 +40,7 @@ const widths = DEVICE_WIDTHS[type];
 ---
 
 <div class:list={["device", `device-${type}`, className]} style={[ratio && `--screen-ratio: ${ratio}`, bezel && `--bezel: ${bezel}`].filter(Boolean).join("; ") || undefined}>
-  {coming && <span class="device-badge">{COMING_SOON_LABEL}</span>}
+  {coming && <span class="device-badge">{comingLabel}</span>}
   {
     type === "widget" && src ? (
       <Picture src={src} alt={alt} widths={widths} sizes={sizes} formats={["avif", "webp"]} loading={loading} class="device-img" />

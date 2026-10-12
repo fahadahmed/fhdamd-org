@@ -1,27 +1,40 @@
 ---
-import { Prose } from "@fhdamd/threads";
+import { Accordion, Prose } from "@fhdamd/threads";
 import Layout from "./Layout.astro";
+import type { ContentPageModel, SiteModel } from "../lib/cms/models";
 
 interface Props {
-  eyebrow: string;
-  title: string;
-  /** Used for the page title and meta description. */
-  description: string;
-  /** "Last updated" line; omit for pages that are not dated, like Support. */
-  updated?: string;
+  site: SiteModel;
+  /** A page from DatoCMS: privacy, terms or support. */
+  page: ContentPageModel;
 }
 
-const { eyebrow, title, description, updated } = Astro.props;
+const { site, page } = Astro.props;
 ---
 
-<Layout title={`${eyebrow} — Jamaal`} description={description}>
+<Layout site={site} title={`${page.eyebrow} — Jamaal`} description={page.description}>
   <section class="legal">
     <div class="legal-inner">
-      <div class="th-label th-eyebrow eyebrow">{eyebrow}</div>
-      <h1 class="section-title legal-title">{title}</h1>
-      {updated && <p class="meta">Last updated {updated}</p>}
+      <div class="th-label th-eyebrow eyebrow">{page.eyebrow}</div>
+      <h1 class="section-title legal-title">{page.title}</h1>
+      {page.updated && <p class="meta">Last updated {page.updated}</p>}
       <Prose>
-        <slot />
+        {
+          page.blocks.map((block) => {
+            if (block.type === "h2") return <h2 id={block.id}>{block.text}</h2>;
+            if (block.type === "p") return <p set:html={block.html} />;
+            if (block.type === "note") return <p>{block.text}</p>;
+            if (block.type === "faq") return <Accordion client:visible items={block.items} defaultOpenIndex={-1} />;
+            const List = block.ordered ? "ol" : "ul";
+            return (
+              <List>
+                {block.items.map((item) => (
+                  <li set:html={item} />
+                ))}
+              </List>
+            );
+          })
+        }
       </Prose>
     </div>
   </section>

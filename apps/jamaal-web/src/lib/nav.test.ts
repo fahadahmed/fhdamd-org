@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { STAGES } from "../../scripts/stage-parse.mjs";
 import { FEATURES } from "../data/site";
-import { NAV_CTA, footerLinks, navLinks } from "./nav";
+import { footerLinks, navCta, navLinks } from "./nav";
 
 const pages = resolve(__dirname, "../pages");
 const off = { journal: false, pressKit: false };
@@ -25,13 +25,12 @@ describe("navLinks", () => {
   });
 });
 
-describe("NAV_CTA", () => {
-  it("has a label for every stage, all pointing at the join section", () => {
-    expect(Object.keys(NAV_CTA).sort()).toEqual([...STAGES].sort());
-    expect(NAV_CTA.waitlist.label).toBe("Join the waitlist");
-    expect(NAV_CTA.testflight.label).toBe("Join the beta");
-    expect(NAV_CTA.launched.label).toBe("Get Jamaal");
-    for (const cta of Object.values(NAV_CTA)) expect(cta.href).toBe("/#join");
+describe("navCta", () => {
+  const buttons = { waitlist: "Join the waitlist", testflight: "Join the beta", launched: "Get Jamaal" };
+
+  it("takes its label from the site settings for the stage, and always goes to the join section", () => {
+    expect(Object.keys(buttons).sort()).toEqual([...STAGES].sort());
+    for (const stage of STAGES) expect(navCta(buttons, stage)).toEqual({ href: "/#join", label: buttons[stage] });
   });
 });
 

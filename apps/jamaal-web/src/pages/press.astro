@@ -1,28 +1,29 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { CONTACT_EMAIL } from "../data/site";
-import { STAGE } from "../data/stage";
-import { boilerplate, brand, facts, files, statusLine } from "../data/press";
+import { loadPress } from "../lib/cms/pages";
+
+const { site, page: press } = await loadPress();
+
+/** DatoCMS serves assets through imgix: `dl` makes the browser download the file under its own name, and `w` sizes the preview. */
+const download = (file: (typeof press.files)[number]) => `${file.url}?dl=${encodeURIComponent(file.filename)}`;
+const preview = (file: (typeof press.files)[number]) => (file.url.endsWith(".svg") ? file.url : `${file.url}?auto=format&w=480`);
 ---
 
-<Layout
-  title="Press kit — Jamaal"
-  description="Facts, a short description, the app icon and screenshots for writing about Jamaal."
->
+<Layout site={site} title={`${press.eyebrow} — Jamaal`} description={`${press.intro}`}>
   <section class="press">
     <div class="press-inner">
-      <div class="th-label th-eyebrow eyebrow">Press kit</div>
-      <h1 class="section-title press-title">Writing about Jamaal?</h1>
-      <p class="lede">{boilerplate.short} Everything below is free to use when you write about it.</p>
-      <p class="status">{statusLine(STAGE)}</p>
+      <div class="th-label th-eyebrow eyebrow">{press.eyebrow}</div>
+      <h1 class="section-title press-title">{press.title}</h1>
+      <p class="lede">{press.intro}</p>
+      <p class="status">{press.status}</p>
 
-      <h2 id="about">About Jamaal</h2>
-      {boilerplate.long.map((paragraph) => <p class="copy">{paragraph}</p>)}
+      <h2 id="about">{press.aboutHeading}</h2>
+      {press.about.map((paragraph) => <p class="copy">{paragraph}</p>)}
 
-      <h2 id="facts">At a glance</h2>
+      <h2 id="facts">{press.factsHeading}</h2>
       <dl class="fact-list">
         {
-          facts.map((fact) => (
+          press.facts.map((fact) => (
             <div>
               <dt>{fact.label}</dt>
               <dd>{fact.value}</dd>
@@ -31,28 +32,28 @@ import { boilerplate, brand, facts, files, statusLine } from "../data/press";
         }
       </dl>
 
-      <h2 id="downloads">Icon and screenshots</h2>
+      <h2 id="downloads">{press.downloadsHeading}</h2>
       <ul class="files">
         {
-          files.map((f) => (
+          press.files.map((f) => (
             <li>
-              <a class="thumb" href={`/press/${f.file}`} download>
-                <img src={`/press/${f.file}`} alt={f.alt} width={f.width} height={f.height} loading="lazy" decoding="async" />
+              <a class="thumb" href={download(f)}>
+                {f.isImage && <img src={preview(f)} alt={f.alt} width={f.width ?? undefined} height={f.height ?? undefined} loading="lazy" decoding="async" />}
               </a>
               <div class="meta-row">
                 <strong>{f.label}</strong>
                 <span class="meta">{f.note}</span>
-                <a href={`/press/${f.file}`} download>Download</a>
+                <a href={download(f)}>Download</a>
               </div>
             </li>
           ))
         }
       </ul>
 
-      <h2 id="brand">Colour and type</h2>
+      <h2 id="brand">{press.brandHeading}</h2>
       <ul class="swatches">
         {
-          brand.colours.map((c) => (
+          press.colours.map((c) => (
             <li>
               <span class="swatch" style={`background:${c.hex}`} aria-hidden="true"></span>
               <span><strong>{c.name}</strong> <code>{c.hex}</code><br /><span class="meta">{c.use}</span></span>
@@ -60,11 +61,11 @@ import { boilerplate, brand, facts, files, statusLine } from "../data/press";
           ))
         }
       </ul>
-      <p class="copy">{brand.fonts}</p>
+      <p class="copy">{press.fonts}</p>
 
-      <h2 id="contact">Contact</h2>
+      <h2 id="contact">{press.contactHeading}</h2>
       <p class="copy">
-        Questions, interviews or a different image size: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+        {press.contactText} <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
       </p>
     </div>
   </section>

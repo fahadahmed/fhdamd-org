@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { COMING_SOON_LABEL, DEVICE_TYPES, DEVICE_WIDTHS, deviceAspect } from "./device";
+import { DEVICE_TYPES, DEVICE_WIDTHS, deviceAspect } from "./device";
 
 describe("deviceAspect", () => {
   it("gives every framed device a default screen ratio", () => {
@@ -26,8 +26,4 @@ describe("DEVICE_WIDTHS", () => {
       expect([...widths].sort((a, b) => a - b)).toEqual(widths);
     }
   });
-});
-
-it("labels the 1.1 badge", () => {
-  expect(COMING_SOON_LABEL).toBe("Coming in 1.1");
 });

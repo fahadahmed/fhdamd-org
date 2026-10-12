@@ -1,6 +1,12 @@
 ---
 import SectionHeading from "../ui/SectionHeading.astro";
-import { principles } from "../../data/home";
+import type { HomeModel } from "../../lib/cms/models";
+
+interface Props {
+  principles: HomeModel["principles"];
+}
+
+const { principles } = Astro.props;
 ---
 
 <section id="principles" class="section section--card">

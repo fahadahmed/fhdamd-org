@@ -1,54 +1,22 @@
-import { existsSync, readdirSync } from "node:fs";
-import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import seedWhy from "../content/journal/why-i-built-jamaal.json";
-import seedSalah from "../content/journal/salah-quran-dhikr.json";
-import seedNp from "../content/journal/first-night-planning.json";
 import { isPost, listTitle, metaLine, monthYear, postTitle, shortMeta, sortPosts } from "./journal";
 import type { Post } from "./journal";
-import { screen } from "./screens";
 
-const seeds = [seedWhy, seedSalah, seedNp] as unknown as Post[];
-
-describe("bundled articles", () => {
-  it("are all valid posts, one per file", () => {
-    const files = readdirSync(resolve(__dirname, "../content/journal")).filter((f) => f.endsWith(".json"));
-    expect(files).toHaveLength(seeds.length);
-    for (const post of seeds) expect(isPost(post), post.slug).toBe(true);
-  });
-
-  it("have unique slugs that match their file names, and a next article that exists", () => {
-    const slugs = seeds.map((p) => p.slug);
-    expect(new Set(slugs).size).toBe(slugs.length);
-    for (const post of seeds) {
-      expect(existsSync(resolve(__dirname, `../content/journal/${post.slug}.json`))).toBe(true);
-      if (post.next) expect(slugs).toContain(post.next);
-    }
-  });
-
-  it("point every figure and step at a screenshot that exists, with alt text", () => {
-    for (const post of seeds) {
-      if (post.cover) expect(() => screen(post.cover!.src)).not.toThrow();
-      for (const block of post.body) {
-        if (block.type === "figure") {
-          for (const item of block.items) {
-            expect(() => screen(item.src), item.src).not.toThrow();
-            expect(item.alt.length).toBeGreaterThan(5);
-          }
-        }
-        if (block.type === "steps") for (const step of block.items) expect(() => screen(step.src), step.src).not.toThrow();
-      }
-    }
-  });
-
-  it("keep the Salah guide out of the home page copy: only the journal carries religious content", () => {
-    expect(seedSalah.category).toBe("Guides");
-    expect(seeds.filter((p) => p.featured)).toHaveLength(1);
-  });
-});
+const whyPost: Post = {
+  slug: "why-i-built-jamaal",
+  title: "Why I built",
+  accent: "Jamaal.",
+  category: "Story",
+  date: "2026-10-08",
+  readMinutes: 6,
+  excerpt: "Four apps, none of which knew how much day I had.",
+  lede: "I didn't set out to make a productivity app.",
+  featured: true,
+  body: [{ type: "p", html: "Hello" }],
+};
 
 describe("helpers", () => {
-  const post = { ...(seedWhy as unknown as Post) };
+  const post = { ...whyPost };
 
   it("builds titles and meta lines", () => {
     expect(postTitle(post)).toBe("Why I built Jamaal.");

@@ -8,9 +8,11 @@ import "../styles/home.css";
 import SiteNav from "../components/ui/SiteNav.astro";
 import SiteFooter from "../components/ui/SiteFooter.astro";
 import ConsentBanner from "../components/ui/ConsentBanner.astro";
-import { SITE_DESCRIPTION } from "../data/site";
+import type { SiteModel } from "../lib/cms/models";
 
 interface Props {
+  /** The site settings from DatoCMS: the nav, the footer and the default description. */
+  site: SiteModel;
   title?: string;
   description?: string;
   ogImage?: string;
@@ -18,8 +20,9 @@ interface Props {
 }
 
 const {
+  site,
   title = "Jamaal — one list, just today, beautifully ordered",
-  description = SITE_DESCRIPTION,
+  description = site.description,
   ogImage = new URL("/og-image.png", Astro.site).href,
   noindex = false,
 } = Astro.props;
@@ -93,11 +96,11 @@ const fontHref =
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <SiteNav />
+    <SiteNav site={site} />
     <main id="main">
       <slot />
     </main>
-    <SiteFooter />
+    <SiteFooter site={site} />
     <ConsentBanner />
     <script>
       import { SENTRY_DSN, installErrorReporting } from "../lib/errorReporting";

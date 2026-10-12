@@ -1,8 +1,7 @@
 /**
- * The Journal's data. Posts come from DatoCMS when DATOCMS_API_TOKEN is set (so
- * the owner, and later family, can write and publish without a developer), and
- * from the three articles in src/content/journal otherwise. The same Post shape
- * is rendered either way.
+ * The Journal's data. Posts come from DatoCMS (see lib/cms), so the owner, and
+ * later family, can write and publish without a developer. This file holds the
+ * shape they are turned into and the helpers the pages use.
  */
 
 export const CATEGORIES = ["Story", "Guides", "How-to"] as const;
