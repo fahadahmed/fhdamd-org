@@ -29,18 +29,20 @@ const remote = (post: Post) => Boolean(post.cover && /^https?:\/\//.test(post.co
       featured && (
         <a class="featured" href={`/journal/${featured.slug}`} data-category={featured.category}>
           <div class="featured-text">
-            <span class="meta-line">{shortMeta(featured)}</span>
-            <span class="featured-title">{listTitle(featured)}</span>
+            <span class="meta-line">{featured.category === "Guides" ? "Guide" : featured.category} · {featured.readMinutes} min read</span>
+            <span class="featured-title">{featured.title} <em>{featured.accent}</em></span>
             <span class="featured-excerpt">{featured.featuredExcerpt ?? featured.excerpt}</span>
             <span class="read">Read the story →</span>
           </div>
           {featured.cover && (
             <div class="featured-art" aria-hidden="true">
-              {remote(featured) ? (
-                <img src={`${featured.cover.src}?auto=format&w=640`} alt="" loading="lazy" decoding="async" />
-              ) : (
-                <Picture src={screen(featured.cover.src)} alt="" widths={[320, 480, 640]} sizes="320px" formats={["avif", "webp"]} loading="lazy" />
-              )}
+              <div class="phone">
+                {remote(featured) ? (
+                  <img src={`${featured.cover.src}?auto=format&w=640`} alt="" loading="lazy" decoding="async" />
+                ) : (
+                  <Picture src={screen(featured.cover.src)} alt="" widths={[320, 480, 640]} sizes="240px" formats={["avif", "webp"]} loading="lazy" />
+                )}
+              </div>
             </div>
           )}
         </a>
@@ -72,24 +74,25 @@ const remote = (post: Post) => Boolean(post.cover && /^https?:\/\//.test(post.co
 
 <style>
   .journal {
-    max-inline-size: 1100px;
+    inline-size: min(1100px, 100% - 2 * clamp(20px, 4vw, 48px));
     margin-inline: auto;
-    padding: clamp(40px, 6vw, 80px) clamp(20px, 4vw, 48px) clamp(56px, 8vw, 112px);
+    padding-block: clamp(40px, 6vw, 80px) clamp(56px, 8vw, 112px);
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 48px;
   }
 
   .head {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    max-inline-size: 760px;
+    max-inline-size: 720px;
   }
 
   .head :global(.section-title) {
-    font-size: clamp(2.5rem, 5.5vw, 4.5rem);
-    line-height: 1.02;
+    font-size: clamp(2.75rem, 6vw, 5rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
   }
 
   .filters {
@@ -100,12 +103,14 @@ const remote = (post: Post) => Boolean(post.cover && /^https?:\/\//.test(post.co
 
   .filters button {
     min-block-size: 44px;
-    padding-inline: 20px;
+    padding-inline: 18px;
     border-radius: 999px;
     border: 1px solid var(--th-line-2);
     background: transparent;
     color: var(--th-ink);
-    font: 600 15px / 1 var(--th-font-sans);
+    font: 500 12px / 1 var(--th-font-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     cursor: pointer;
   }
 
@@ -128,20 +133,30 @@ const remote = (post: Post) => Boolean(post.cover && /^https?:\/\//.test(post.co
 
   .featured {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
-    gap: 24px 48px;
-    align-items: center;
-    padding: clamp(24px, 4vw, 48px);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+    overflow: hidden;
     border-radius: var(--th-radius-card);
-    background: var(--th-sidebar);
+    background: var(--th-deep);
     text-decoration: none;
-    color: var(--th-ink);
+    color: var(--th-on-deep);
+  }
+
+  .featured:focus-visible {
+    outline-color: var(--th-terra-on-deep);
   }
 
   .featured-text {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    justify-content: flex-end;
+    gap: 16px;
+    min-block-size: 320px;
+    padding: clamp(28px, 4vw, 48px);
+  }
+
+  .featured .meta-line,
+  .featured-excerpt {
+    color: color-mix(in srgb, var(--th-on-deep) 78%, var(--th-deep));
   }
 
   .meta-line {
@@ -150,7 +165,7 @@ const remote = (post: Post) => Boolean(post.cover && /^https?:\/\//.test(post.co
     font-weight: 500;
     letter-spacing: var(--th-label-tracking);
     text-transform: uppercase;
-    color: var(--th-ink-2);
+    color: var(--th-ink-3);
   }
 
   .featured-title {
@@ -158,38 +173,57 @@ const remote = (post: Post) => Boolean(post.cover && /^https?:\/\//.test(post.co
     font-variation-settings: var(--th-serif-axes);
     font-weight: 500;
     font-size: clamp(2rem, 4vw, 3rem);
-    line-height: 1.05;
+    line-height: 1.04;
+  }
+
+  .featured-title em {
+    color: var(--th-accent-on-deep);
   }
 
   .featured-excerpt {
-    font-size: 18px;
-    line-height: 1.55;
-    color: var(--th-ink-2);
+    font-size: 17px;
+    line-height: 1.6;
     max-inline-size: 44ch;
   }
 
   .read {
+    font-size: 15px;
     font-weight: 600;
-    color: var(--th-ink);
+    color: var(--th-terra-on-deep);
   }
 
   .featured-art {
-    justify-self: center;
-    inline-size: min(240px, 60vw);
-    max-block-size: 360px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    min-block-size: 320px;
+    padding-block-start: 40px;
     overflow: hidden;
-    border-radius: 28px 28px 0 0;
-    background: #0b1418;
-    padding: 6px 6px 0;
+    background: #071b27;
   }
 
-  .featured-art :global(img) {
+  .phone {
+    inline-size: 240px;
+    block-size: 320px;
+    box-sizing: border-box;
+    padding: 7px 7px 0;
+    border-radius: 36px 36px 0 0;
+    background: #000;
+    overflow: hidden;
+  }
+
+  .phone :global(picture) {
+    display: block;
+    block-size: 100%;
+  }
+
+  .phone :global(img) {
     display: block;
     inline-size: 100%;
-    block-size: 360px;
+    block-size: 100%;
     object-fit: cover;
     object-position: top;
-    border-radius: 22px 22px 0 0;
+    border-radius: 30px 30px 0 0;
   }
 
   .list {
