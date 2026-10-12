@@ -1,11 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { loadSite } from "../lib/cms/pages";
+import { loadSite, notFoundSeo } from "../lib/cms/pages";
 
 const { site } = await loadSite();
 ---
 
-<Layout site={site} title="Page not found — Jamaal" noindex>
+<Layout site={site} seo={notFoundSeo(site)}>
   <section class="not-found">
     <p class="th-label">404</p>
     <h1 class="th-hero">Nothing here.</h1>

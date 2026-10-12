@@ -22,9 +22,29 @@ export interface RawSiteConfig {
   ctaBodyWaitlist: string | null;
   ctaBodyTestflight: string | null;
   ctaBodyLaunched: string | null;
+  siteName: string | null;
+  shareImageAlt: string | null;
+  shareImage: RawShareImage | null;
+}
+
+export interface RawShareImage {
+  url: string;
+  width: number | null;
+  height: number | null;
+  alt: string | null;
+}
+
+/** The "Search and sharing" field on a page. Everything in it is optional. */
+export interface RawSeo {
+  title?: string | null;
+  description?: string | null;
+  twitterCard?: string | null;
+  noIndex?: boolean | null;
+  image?: RawShareImage | null;
 }
 
 export interface RawHomePage {
+  seo: RawSeo | null;
   heroEyebrowWaitlist: string | null;
   heroEyebrowTestflight: string | null;
   heroEyebrowLaunched: string | null;
@@ -135,6 +155,7 @@ export interface RawHome {
 }
 
 export interface RawJournalPage {
+  seo: RawSeo | null;
   eyebrow: string | null;
   accent: string | null;
   title: string | null;
@@ -168,6 +189,7 @@ export interface RawPost {
   ctaNote?: string | null;
   next?: { slug: string } | null;
   cover?: RawImage | null;
+  seo?: RawSeo | null;
   body?: { value: unknown; blocks?: ({ __typename: string; id: string } & Record<string, unknown>)[] } | null;
 }
 
@@ -178,6 +200,7 @@ export interface RawJournal {
 }
 
 export interface RawContentPage {
+  seo: RawSeo | null;
   pageKey: string | null;
   eyebrow: string | null;
   title: string | null;
@@ -195,6 +218,7 @@ export interface RawContent {
 export interface RawPress {
   siteConfig: RawSiteConfig | null;
   pressPage: {
+    seo: RawSeo | null;
     eyebrow: string | null;
     title: string | null;
     intro: string | null;
@@ -217,4 +241,23 @@ export interface RawPress {
 
 export interface RawSite {
   siteConfig: RawSiteConfig | null;
+}
+
+interface Stamped {
+  _updatedAt: string;
+}
+
+interface Hideable extends Stamped {
+  seo: { noIndex: boolean | null } | null;
+}
+
+export interface RawSitemap {
+  siteConfig: Stamped | null;
+  homePage: Hideable | null;
+  journalPage: Hideable | null;
+  pressPage: Hideable | null;
+  allContentPages: (Hideable & { pageKey: string })[];
+  allPosts: (Hideable & { slug: string })[];
+  allFaqItems: Stamped[];
+  allDayChapters: Stamped[];
 }

@@ -4,6 +4,8 @@
  * shape they are turned into and the helpers the pages use.
  */
 
+import type { RawSeo } from "./cms/types";
+
 export const CATEGORIES = ["Story", "Guides", "How-to"] as const;
 export type Category = (typeof CATEGORIES)[number];
 
@@ -24,6 +26,8 @@ export type Block =
   | { type: "steps"; items: { title: string; body: string; src: string; alt?: string }[] };
 
 export interface Post {
+  /** What the editor wrote under "Search and sharing" in DatoCMS, if anything. */
+  seo?: RawSeo;
   slug: string;
   /** The title up to the part that is set in italics. */
   title: string;

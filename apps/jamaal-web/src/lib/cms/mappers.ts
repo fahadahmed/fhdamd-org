@@ -11,6 +11,7 @@ import type {
   SiteModel,
   TitledText,
 } from "./models";
+import { SHARE_SIZE, shareImageUrl } from "./seo";
 import type { RawContent, RawFaqItem, RawHome, RawJournalPage, RawPress, RawSiteConfig } from "./types";
 
 /** Thrown when DatoCMS is missing something the site needs. It fails the build rather than ship a page with a hole in it. */
@@ -61,8 +62,13 @@ export const slugify = (text: string): string =>
     .replace(/^-+|-+$/g, "");
 
 export function toSite(raw: RawSiteConfig | null): SiteModel {
-  const s = strict(raw, "site settings");
+  const s = strict(raw, "site settings", ["shareImage"] as const);
   return {
+    name: s.siteName,
+    share: {
+      image: s.shareImage ? { url: shareImageUrl(s.shareImage.url, "crop"), width: SHARE_SIZE.width, height: SHARE_SIZE.height, alt: s.shareImage.alt?.trim() || s.shareImageAlt } : null,
+      alt: s.shareImageAlt,
+    },
     contactEmail: s.contactEmail,
     footerLine: s.footerLine,
     description: s.siteDescription,
@@ -105,7 +111,7 @@ function deviceCards(cards: DeviceCards) {
 }
 
 export function toHome(raw: RawHome, stage: Stage): HomeModel {
-  const h = strict(raw.homePage, "home page");
+  const h = strict(raw.homePage, "home page", ["seo"] as const);
   const card = deviceCards(h.everywhereCards);
 
   const chapters = raw.allDayChapters.map((c) => strict(c, "day chapter"));
@@ -235,7 +241,7 @@ export function toHome(raw: RawHome, stage: Stage): HomeModel {
 }
 
 export function toJournalPage(raw: RawJournalPage | null): JournalPageModel {
-  const j = strict(raw, "journal page");
+  const j = strict(raw, "journal page", ["seo"] as const);
   return { eyebrow: j.eyebrow, title: j.title, accent: j.accent, lede: j.lede, readStory: j.readStory, back: j.back, empty: j.empty, filterAll: j.filterAll, nextLabel: j.nextLabel, author: { name: j.authorName, role: j.authorRole, initial: j.authorInitial } };
 }
 
@@ -291,7 +297,7 @@ export function toContentPage(raw: RawContent, flags: PageFlags): ContentPageMod
 }
 
 export function toPress(raw: RawPress, stage: Stage): PressModel {
-  const p = strict(raw.pressPage, "press page");
+  const p = strict(raw.pressPage, "press page", ["seo"] as const);
   return {
     eyebrow: p.eyebrow,
     title: p.title,

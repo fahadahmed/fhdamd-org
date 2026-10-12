@@ -5,6 +5,11 @@
  * because every page has the nav, the footer and the contact address.
  */
 
+/** The "Search and sharing" field. Empty on any page that has not set one. */
+const SEO_FIELDS = `
+  seo { title description twitterCard noIndex image { url width height alt } }
+`;
+
 const SITE_FIELDS = `
   siteConfig {
     contactEmail
@@ -25,6 +30,9 @@ const SITE_FIELDS = `
     ctaBodyWaitlist
     ctaBodyTestflight
     ctaBodyLaunched
+    siteName
+    shareImageAlt
+    shareImage { url width height alt }
   }
 `;
 
@@ -41,6 +49,7 @@ export const HOME_QUERY = `
   query HomePage {
     ${SITE_FIELDS}
     homePage {
+      ${SEO_FIELDS}
       heroEyebrowWaitlist
       heroEyebrowTestflight
       heroEyebrowLaunched
@@ -138,6 +147,7 @@ export const HOME_QUERY = `
 
 const JOURNAL_PAGE_FIELDS = `
   journalPage {
+    ${SEO_FIELDS}
     eyebrow
     accent
     title
@@ -167,6 +177,7 @@ const POST_FIELDS = `
   ctaNote
   next { slug }
   cover { url alt }
+  ${SEO_FIELDS}
 `;
 
 /** The Journal index: the list needs no article bodies. */
@@ -206,6 +217,7 @@ export const CONTENT_PAGE_QUERY = `
   query ContentPage($key: String!) {
     ${SITE_FIELDS}
     contentPage(filter: { pageKey: { eq: $key } }) {
+      ${SEO_FIELDS}
       pageKey
       eyebrow
       title
@@ -228,6 +240,7 @@ export const PRESS_QUERY = `
   query PressPage {
     ${SITE_FIELDS}
     pressPage {
+      ${SEO_FIELDS}
       eyebrow
       title
       intro
@@ -253,5 +266,19 @@ export const PRESS_QUERY = `
 export const SITE_QUERY = `
   query Site {
     ${SITE_FIELDS}
+  }
+`;
+
+/** Just enough of every page to list it in the sitemap: where it is, when anything it shows last changed, and whether it is hidden from search. */
+export const SITEMAP_QUERY = `
+  query Sitemap {
+    siteConfig { _updatedAt }
+    homePage { _updatedAt seo { noIndex } }
+    journalPage { _updatedAt seo { noIndex } }
+    pressPage { _updatedAt seo { noIndex } }
+    allContentPages { pageKey _updatedAt seo { noIndex } }
+    allPosts(orderBy: date_DESC, first: 100) { slug _updatedAt seo { noIndex } }
+    allFaqItems(first: 100) { _updatedAt }
+    allDayChapters(first: 20) { _updatedAt }
   }
 `;

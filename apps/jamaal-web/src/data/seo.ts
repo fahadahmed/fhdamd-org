@@ -66,3 +66,33 @@ export function articleJsonLd({ origin, slug, headline, description, datePublish
     publisher: { "@type": "Organization", name: "fhdamd", url: "https://fhdamd.dev" },
   };
 }
+
+/** The organisation behind the site, for search engines' knowledge panels. */
+export function organizationJsonLd({ origin, name }: { origin: string; name: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name,
+    url: `${origin}/`,
+    logo: `${origin}/apple-touch-icon.png`,
+    parentOrganization: { "@type": "Organization", name: "fhdamd", url: "https://fhdamd.dev" },
+  };
+}
+
+export function websiteJsonLd({ origin, name, description }: { origin: string; name: string; description: string }) {
+  return { "@context": "https://schema.org", "@type": "WebSite", name, url: `${origin}/`, description, inLanguage: "en" };
+}
+
+/** The trail to a page: [{ name: "Home", path: "/" }, { name: "Journal", path: "/journal" }]. The last item is the page itself. */
+export function breadcrumbJsonLd(origin: string, trail: readonly { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: trail.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: new URL(item.path, origin).href,
+    })),
+  };
+}

@@ -3,14 +3,14 @@ import Layout from "../layouts/Layout.astro";
 import { loadPress } from "../lib/cms/pages";
 import { cssVars } from "../lib/cssVars";
 
-const { site, page: press } = await loadPress();
+const { site, page: press, seo } = await loadPress();
 
 /** DatoCMS serves assets through imgix: `dl` makes the browser download the file under its own name, and `w` sizes the preview. */
 const download = (file: (typeof press.files)[number]) => `${file.url}?dl=${encodeURIComponent(file.filename)}`;
 const preview = (file: (typeof press.files)[number]) => (file.url.endsWith(".svg") ? file.url : `${file.url}?auto=format&w=480`);
 ---
 
-<Layout site={site} title={`${press.eyebrow} — Jamaal`} description={`${press.intro}`}>
+<Layout site={site} seo={seo}>
   <section class="press">
     <div class="press-inner">
       <div class="th-label th-eyebrow eyebrow">{press.eyebrow}</div>

@@ -10,26 +10,29 @@ import "../styles/components.css";
 import SiteNav from "../components/ui/SiteNav.astro";
 import SiteFooter from "../components/ui/SiteFooter.astro";
 import ConsentBanner from "../components/ui/ConsentBanner.astro";
-import type { SiteModel } from "../lib/cms/models";
+import type { SeoModel, SiteModel } from "../lib/cms/models";
 
 interface Props {
-  /** The site settings from DatoCMS: the nav, the footer and the default description. */
+  /** The site settings from DatoCMS: the nav, the footer, the name and the default description. */
   site: SiteModel;
-  title?: string;
-  description?: string;
-  ogImage?: string;
-  noindex?: boolean;
+  /** What this page puts in its <head>: see lib/cms/seo.ts. */
+  seo: SeoModel;
+  /** `article` for a Journal post. */
+  type?: "website" | "article";
+  /** For an article: when it was published and its category. */
+  article?: { publishedTime: string; section: string };
+  /** Structured data for the page (schema.org), one script each. */
+  jsonLd?: readonly object[];
+  /** Advertise the Journal's RSS feed to readers and browsers. */
+  feed?: boolean;
 }
 
-const {
-  site,
-  title = "Jamaal — one list, just today, beautifully ordered",
-  description = site.description,
-  ogImage = new URL("/og-image.png", Astro.site).href,
-  noindex = false,
-} = Astro.props;
+const { site, seo, type = "website", article, jsonLd = [], feed = false } = Astro.props;
 
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+// Firebase Hosting serves pages without a trailing slash (and redirects the slash form), so that is the canonical address.
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const canonicalUrl = new URL(path, Astro.site).href;
+const imageUrl = new URL(seo.image.url, Astro.site).href;
 
 // Hanken Grotesk (interface), Fraunces with its SOFT/WONK axes (display) and
 // JetBrains Mono (labels). Fonts are not bundled in @fhdamd/threads.
@@ -49,29 +52,34 @@ const fontHref =
     <meta name="color-scheme" content="light dark" />
     <meta name="generator" content={Astro.generator} />
 
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalUrl} />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <title>{seo.title}</title>
+    <meta name="description" content={seo.description} />
+    {!seo.noindex && <link rel="canonical" href={canonicalUrl} />}
+    <meta name="robots" content={seo.noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large"} />
+    {feed && <link rel="alternate" type="application/rss+xml" title={`${site.name} Journal`} href="/journal/rss.xml" />}
 
     <!-- Open Graph -->
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:title" content={seo.title} />
+    <meta property="og:description" content={seo.description} />
     <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content={ogImage} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Jamaal: one list, just today, beautifully ordered." />
+    <meta property="og:type" content={type} />
+    <meta property="og:image" content={imageUrl} />
+    {seo.image.width && <meta property="og:image:width" content={String(seo.image.width)} />}
+    {seo.image.height && <meta property="og:image:height" content={String(seo.image.height)} />}
+    <meta property="og:image:alt" content={seo.image.alt} />
     <meta property="og:locale" content="en" />
-    <meta property="og:site_name" content="Jamaal" />
+    <meta property="og:site_name" content={site.name} />
+    {article && <meta property="article:published_time" content={article.publishedTime} />}
+    {article && <meta property="article:section" content={article.section} />}
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:image:alt" content="Jamaal: one list, just today, beautifully ordered." />
+    <meta name="twitter:card" content={seo.twitterCard} />
+    <meta name="twitter:title" content={seo.title} />
+    <meta name="twitter:description" content={seo.description} />
+    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content={seo.image.alt} />
+
+    {jsonLd.map((data) => <script type="application/ld+json" is:inline set:html={JSON.stringify(data)} />)}
 
     <!-- Fonts load without blocking first paint: the print-media swap keeps the
          stylesheet off the critical path, and display=swap shows the fallback
