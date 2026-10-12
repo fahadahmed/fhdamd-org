@@ -1,3 +1,4 @@
+import { PubSub } from "@google-cloud/pubsub";
 import { initializeApp } from "firebase-admin/app";
 import { FieldValue, Timestamp, getFirestore } from "firebase-admin/firestore";
 import { getRemoteConfig } from "firebase-admin/remote-config";
@@ -6,9 +7,17 @@ import { defineSecret } from "firebase-functions/params";
 import * as Sentry from "@sentry/node";
 import * as logger from "firebase-functions/logger";
 import { onRequest } from "firebase-functions/https";
+import { onDocumentCreated, onDocumentDeleted } from "firebase-functions/v2/firestore";
+import { onMessagePublished } from "firebase-functions/v2/pubsub";
 import { onConfigUpdated } from "firebase-functions/v2/remoteConfig";
+import { onSchedule } from "firebase-functions/v2/scheduler";
+import { Resend } from "resend";
 import { createErrorReporter } from "./errors";
+import { createMailingList, messageSchema, needsSync } from "./mailingList";
+import type { MailingListMessage, SignupRecord } from "./mailingList";
 import { dispatchRebuild } from "./rebuild";
+import { createResendContacts } from "./resendContacts";
+import { createWebhookHandler } from "./resendWebhook";
 import { createRateLimiter } from "./rateLimit";
 import type { CounterStore } from "./rateLimit";
 import { createSignupHandler, mergeInvite } from "./signup";
@@ -123,5 +132,112 @@ export const rebuildOnConfigChange = onConfigUpdated({ secrets: [githubDispatchT
   } catch (error) {
     logger.error("Could not queue a site rebuild", { message: error instanceof Error ? error.message : "unknown" });
     await errors.capture(error);
+  }
+});
+
+// ─── The mailing list: Firestore signups kept in step with Resend ───────────────────────────────
+
+// Set in functions/.env.jamaal-web. The Resend API key and the webhook signing secret are in Secret Manager.
+const resendApiKey = defineSecret("RESEND_API_KEY");
+const resendWebhookSecret = defineSecret("RESEND_WEBHOOK_SECRET");
+
+const MAILING_LIST_TOPIC = "mailing-list";
+const NOT_FOUND = 5; // gRPC status code
+
+let pubsub: PubSub | undefined;
+const publish = (message: MailingListMessage) => (pubsub ??= new PubSub()).topic(MAILING_LIST_TOPIC).publishMessage({ json: message });
+
+const signups = () => db().collection("signups");
+
+/** Updates a signup that may have been deleted since: a missing one is not an error. */
+async function updateSignup(email: string, data: Record<string, unknown>): Promise<void> {
+  try {
+    await signups().doc(email).update(data);
+  } catch (error) {
+    if ((error as { code?: number }).code !== NOT_FOUND) throw error;
+  }
+}
+
+/** A new signup is queued for Resend. Failing to queue is retried, and the daily check would catch it anyway. */
+export const queueNewSignup = onDocumentCreated({ document: "signups/{email}", retry: true }, async (event) => {
+  await publish({ type: "add", email: event.params.email });
+});
+
+/** A removed signup (someone asked to be deleted) is removed from Resend as well. */
+export const queueRemovedSignup = onDocumentDeleted({ document: "signups/{email}", retry: true }, async (event) => {
+  await publish({ type: "remove", email: event.params.email });
+});
+
+/**
+ * Works through the queue one message at a time, slowly enough for Resend's rate limit. A failure is
+ * thrown, so Pub/Sub retries it with backoff; after six hours it is recorded and reported instead.
+ */
+export const syncMailingList = onMessagePublished(
+  { topic: MAILING_LIST_TOPIC, secrets: [resendApiKey], retry: true, maxInstances: 1, concurrency: 1 },
+  async (event) => {
+    const parsed = messageSchema.safeParse(event.data.message.json);
+    if (!parsed.success) {
+      logger.warn("Ignoring a malformed mailing-list message");
+      return;
+    }
+    const audienceId = process.env.RESEND_AUDIENCE_ID;
+    if (!audienceId) {
+      // Not set up yet. The daily check queues everyone again once it is.
+      logger.warn("RESEND_AUDIENCE_ID is not set; the mailing list is off");
+      return;
+    }
+
+    const sync = createMailingList({
+      signups: {
+        get: async (email) => {
+          const snapshot = await signups().doc(email).get();
+          return snapshot.exists ? (snapshot.data() as SignupRecord) : null;
+        },
+        markSynced: (email, contactId) => updateSignup(email, { mailingListSyncedAt: FieldValue.serverTimestamp(), resendContactId: contactId }),
+        recordFailure: async ({ email, type, message, queuedAt }) => {
+          await db().collection("mailingListFailures").add({ email, type, message, queuedAt, failedAt: FieldValue.serverTimestamp() });
+          if (type === "add") await updateSignup(email, { mailingListFailedAt: FieldValue.serverTimestamp() });
+        },
+      },
+      contacts: createResendContacts(new Resend(resendApiKey.value()), { audienceId }),
+      report: (error) => errors.capture(error),
+      now: () => new Date(),
+    });
+    const outcome = await sync(parsed.data, new Date(event.data.message.publishTime));
+    logger.info("Mailing list message handled", { type: parsed.data.type, outcome });
+  },
+);
+
+/**
+ * Every day, queues anyone who is not in Resend yet: the people who were already on the list when this was
+ * added, and anything that failed. Anyone given up on (`mailingListFailedAt`) or unsubscribed is left alone.
+ */
+export const reconcileMailingList = onSchedule({ schedule: "every day 03:00", timeZone: "Australia/Melbourne", timeoutSeconds: 300 }, async () => {
+  const snapshot = await signups().select("mailingListSyncedAt", "unsubscribedAt", "mailingListFailedAt").get();
+  const emails = snapshot.docs.filter((doc) => needsSync(doc.data() as SignupRecord)).map((doc) => doc.id);
+  for (let i = 0; i < emails.length; i += 100) {
+    await Promise.all(emails.slice(i, i + 100).map((email) => publish({ type: "add", email })));
+  }
+  logger.info("Queued signups for the mailing list", { checked: snapshot.size, queued: emails.length });
+});
+
+const handleResendWebhook = createWebhookHandler({
+  verify: (body, headers) => new Resend(resendApiKey.value()).webhooks.verify({ payload: body, headers, webhookSecret: resendWebhookSecret.value() }) as ReturnType<Parameters<typeof createWebhookHandler>[0]["verify"]>,
+  setUnsubscribed: (email, unsubscribed) => updateSignup(email, { unsubscribedAt: unsubscribed ? FieldValue.serverTimestamp() : FieldValue.delete() }),
+});
+
+/** Resend calls this when a contact changes, so an unsubscribe is recorded here too. Signed; anything else is refused. */
+export const resendWebhook = onRequest({ secrets: [resendApiKey, resendWebhookSecret], cors: false, maxInstances: 2 }, async (request, response) => {
+  try {
+    const result = await handleResendWebhook({
+      method: request.method,
+      rawBody: request.rawBody.toString("utf8"),
+      headers: { id: request.get("svix-id"), timestamp: request.get("svix-timestamp"), signature: request.get("svix-signature") },
+    });
+    response.status(result.status).send(result.body);
+  } catch (error) {
+    logger.error("Resend webhook failed", { message: error instanceof Error ? error.message : "unknown" });
+    await errors.capture(error);
+    response.status(500).send("error");
   }
 });

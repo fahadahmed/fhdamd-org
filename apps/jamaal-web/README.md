@@ -68,8 +68,26 @@ Hosted on Firebase Hosting, project `jamaal-web` (default site `jamaal-web`, htt
 |---|---|---|
 | `signup` | `POST /api/signup` (Hosting rewrite) | Validates, rate-limits and stores `signups/{email}`; answers `added`, `invited` (beta) or 409 (#422) |
 | `rebuildOnConfigChange` | Remote Config published | Asks GitHub to run `ci-jamaal-web.yml`, which rebuilds and redeploys the static site (#425) |
+| `queueNewSignup`, `queueRemovedSignup` | A `signups/{email}` document created or deleted | Publish `{ type: add \| remove, email }` to the `mailing-list` Pub/Sub topic (#423) |
+| `syncMailingList` | A message on `mailing-list` | Adds the person to the Resend audience (or removes them), one message at a time, paced for Resend's rate limit; retried by Pub/Sub; after 6 hours it is recorded in `mailingListFailures` and sent to Sentry (#423) |
+| `reconcileMailingList` | Daily at 03:00 Melbourne | Queues every signup that is not in Resend yet, so existing signups are backfilled and failures heal (#423) |
+| `resendWebhook` | Resend calls it (signed) | Records an unsubscribe as `unsubscribedAt` on the signup (#423) |
 
 - **The list** is the Firestore collection `signups`, one document per email address (the document id), whichever form it came from: `firstName`, `email`, `devices` (`iphone`, `ipad`, `mac`), `source` (`hero` or `join`), `stage` the form was on (`waitlist`, `testflight`, `launched`) and `createdAt`. To email everyone, read the whole collection. When an address already on the list joins the beta, the function adds the devices they chose now to `devices`, fills `firstName` if it was blank and sets `inviteRequestedAt`; `createdAt`, `stage` and `source` stay as first recorded.
+### The mailing list (Resend)
+
+Signups are copied to a Resend audience so the launch email can be sent to everyone from Resend, with its unsubscribe link, as `support@jamaal.app`. Adding a contact sends nothing; the only email of our own is the launch announcement (the beta invite is Apple's TestFlight email).
+
+- **Flow:** a new `signups` document queues `add`, the worker adds the contact (never changing the unsubscribed state of someone already there) and writes `mailingListSyncedAt` and `resendContactId` on the signup. Deleting a signup (a removal request) removes the contact. An unsubscribe in Resend comes back through the webhook as `unsubscribedAt`, and the person is never added again.
+- **Failures:** the worker throws so Pub/Sub retries with backoff. After 6 hours a message is written to the `mailingListFailures` collection, `mailingListFailedAt` is set on the signup, Sentry is told, and the message is acknowledged. The daily check leaves those signups alone; clear `mailingListFailedAt` to try again. (This stands in for a Pub/Sub dead-letter policy, which would sit on a subscription Eventarc manages and could be reset by a deploy.)
+- **Backfill:** nothing to run. `reconcileMailingList` queues everyone who is not in Resend, daily, and a one-off run from the Cloud Scheduler console does it straight away.
+- **One-time setup, in this order:**
+  1. In Resend: add the domain `jamaal.app` and create the DNS records it shows (DKIM and the `send` records; leave the iCloud SPF record as it is), add a `_dmarc` TXT record (`v=DMARC1; p=none; rua=mailto:support@jamaal.app`), create an audience (Resend may call it a segment) and an API key.
+  2. `firebase functions:secrets:set RESEND_API_KEY --project jamaal-web`, and `firebase functions:secrets:set RESEND_WEBHOOK_SECRET --project jamaal-web` with any placeholder for now (the real value only exists after step 4).
+  3. Put the audience id in `functions/.env.jamaal-web` as `RESEND_AUDIENCE_ID`, then deploy the functions.
+  4. In Resend, add a webhook for `contact.updated` pointing at the deployed `resendWebhook` URL, copy its signing secret, and run `firebase functions:secrets:set RESEND_WEBHOOK_SECRET` again; redeploy the functions.
+- **Resend's rate limit** (about 2 requests a second) is respected by running one worker and one call at a time; a backfill of a few thousand takes under an hour.
+
 - `pnpm --filter jamaal-web-functions test` runs the unit tests and `build` compiles to `functions/lib`.
 - `firebase emulators:start --only functions,firestore --project demo-jamaal-web` (from `apps/jamaal-web`) serves them locally. Remote Config is not emulated, so the stage falls back to `waitlist` there.
 - **Deploying:** `deploy-jamaal-functions.yml` deploys functions, Firestore rules and indexes when anything under `functions/` or the rules and indexes files change on `main`, or by hand from the Actions tab. By hand: `firebase deploy --only functions,firestore --project jamaal-web`.
