@@ -129,6 +129,15 @@ Every word on the site comes from **DatoCMS** and is fetched at build time, so i
 
 **Editors** are invited in DatoCMS with a role that can create, edit and publish records and upload assets, but cannot change the schema. Check the plan's editor-seat limit first. Publishing a `post` in DatoCMS needs its `next` link to point at a published article, so publish a circular set together.
 
+**Adding an article** (a `post` record; new ones start as drafts):
+
+- **Fields:** `title` and `accent` (the italic last words, so "Habits," + "without the streaks."), `slug`, `category` (Story, Guides or How-to), `date` (a full date, not a month), `read_minutes`, `excerpt` (one sentence for the list and the share preview), `lede` and `body`. Optional: `featured` (only one post), `cta_note`, `cover` and `seo`.
+- **Lede:** the opening line under the title. Put the article's first paragraph there and not again in the body, which starts at its first heading.
+- **Body** is Structured Text: headings (all shown as `h2`), paragraphs, bold and italic, bulleted and numbered lists, and links limited to `http(s):`, `mailto:` and site-relative paths such as `/journal/first-night-planning`. The `figure`, `pull_quote`, `detail_row` and `step` blocks are for pictures, quotes, label and value rows, and numbered steps with a screen.
+- **Next article:** link every article to another. A set that links in a circle must be published together.
+- **Search limits:** the build fails a page whose title is outside 10 to 70 characters or whose description (the excerpt) is outside 50 to 200.
+- **Bringing in Markdown:** a script using `parse` from `datocms-structured-text-dastdown` turns Markdown into the `body` value (`##` headings, lists, `**bold**`, `[text](/path)`), run through the DatoCMS MCP server or the Content Management API.
+
 **Publishing rebuilds the site:** a DatoCMS webhook on Record publish and unpublish starts the CI workflow directly: `POST https://api.github.com/repos/fahadahmed/fhdamd-org/actions/workflows/ci-jamaal-web.yml/dispatches` with the custom payload `{"ref":"main"}` and the headers `Authorization: Bearer <fine-grained GitHub token with Actions: read and write>`, `Accept: application/vnd.github+json`, `Content-Type: application/json` and `X-GitHub-Api-Version: 2022-11-28`. It is the same call `rebuildOnConfigChange` makes, so one token with that permission serves both. The site is live about two minutes later. If a publish does nothing, open the webhook's call log in DatoCMS: 403 means the token lacks *Actions: read and write* on this repository, 404 a wrong URL, and 422 a missing payload.
 
 ## Search and sharing (SEO)
