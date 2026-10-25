@@ -76,7 +76,7 @@ Hosted on Firebase Hosting, project `jamaal-web` (default site `jamaal-web`, htt
 - **The list** is the Firestore collection `signups`, one document per email address (the document id), whichever form it came from: `firstName`, `email`, `devices` (`iphone`, `ipad`, `mac`), `source` (`hero` or `join`), `stage` the form was on (`waitlist`, `testflight`, `launched`) and `createdAt`. To email everyone, read the whole collection. When an address already on the list joins the beta, the function adds the devices they chose now to `devices`, fills `firstName` if it was blank and sets `inviteRequestedAt`; `createdAt`, `stage` and `source` stay as first recorded.
 ### The mailing list (Resend)
 
-Signups are copied to a Resend audience so the launch email can be sent to everyone from Resend, with its unsubscribe link, as `support@jamaal.app`. Adding a contact sends nothing; the only email of our own is the launch announcement (the beta invite is Apple's TestFlight email).
+Signups are copied to a Resend audience so the launch email can be sent to everyone from Resend, with its unsubscribe link, as `support@jamaal.app`. Adding a contact sends nothing; our own emails are the beta invite (below) and the launch announcement. Apple sends no email: the beta uses the TestFlight public link.
 
 - **Flow:** a new `signups` document queues `add`, the worker adds the contact (never changing the unsubscribed state of someone already there) and writes `mailingListSyncedAt` and `resendContactId` on the signup. Deleting a signup (a removal request) removes the contact. An unsubscribe in Resend comes back through the webhook as `unsubscribedAt`, and the person is never added again.
 - **Failures:** the worker throws so Pub/Sub retries with backoff. After 6 hours a message is written to the `mailingListFailures` collection, `mailingListFailedAt` is set on the signup, Sentry is told, and the message is acknowledged. The daily check leaves those signups alone; clear `mailingListFailedAt` to try again. (This stands in for a Pub/Sub dead-letter policy, which would sit on a subscription Eventarc manages and could be reset by a deploy.)
@@ -95,6 +95,21 @@ Signups are copied to a Resend audience so the launch email can be sent to every
   - A new function must be public (`allUsers` has `roles/run.invoker`) to be reachable from the website. `signup` is; `rebuildOnConfigChange` is an event function and is not.
 - **npm in Cloud Build:** the folder is uploaded on its own, so `functions/package-lock.json` and `.npmrc` (`legacy-peer-deps=true`) are needed or the build fails with `Cannot read properties of null (reading 'edgesOut')`. If dependencies change, regenerate the lock in a clean folder: copy `package.json` and `.npmrc` out, run `npm install --package-lock-only --legacy-peer-deps`, and copy `package-lock.json` back.
 
+### The beta invite email
+
+In the `testflight` stage a signup is emailed the TestFlight **public link** (no Apple invitation is involved). `sendBetaInvite` runs on every write to a `signups` document and sends the email (`src/betaInviteEmail.ts`, the owner's design, plus a plain-text version) through the Resend API when `needsInvite` says so:
+
+- the signup was made in the `testflight` stage, or an address already on the list asked to join (`inviteRequestedAt`), and has no `inviteSentAt`;
+- they have not unsubscribed (`unsubscribedAt`) and were not given up on (`inviteFailedAt`);
+- a repeat request after the first send sends it again, but at most once an hour per address, so the form can't be used to flood an inbox.
+
+Each send uses a Resend idempotency key (`beta-invite/<email>/<request>`), so a retry or a second trigger can't send twice. A failure is retried for six hours, then written to `betaInviteFailures`, `inviteFailedAt` is set and Sentry is told; clear `inviteFailedAt` to try again. The person is also added to the Resend audience by the mailing-list sync, with their first name.
+
+- **Config** (`functions/.env.jamaal-web`): `TESTFLIGHT_PUBLIC_URL` (the public link; empty switches the invite off), and optionally `BETA_INVITE_FROM` (default `Jamaal <support@jamaal.app>`) and `SITE_URL` (default `https://jamaal.app`). It uses the existing `RESEND_API_KEY` secret, and the `jamaal.app` sending domain must be verified in Resend.
+- **The email's images and links:** the logo is `public/email/jamaal-icon.png`, and every article link in it must be a published Journal slug (a test checks this against the list in `betaInviteSender.test.ts`: update it when the email's links change).
+- **Unsubscribe:** this email's link is `mailto:support@jamaal.app?subject=Unsubscribe`, answered by hand. The launch announcement is a Resend Broadcast and has Resend's own unsubscribe.
+- **Test it** with your own address: set the stage to `testflight` (or use the emulator), sign up on the site, and check the email arrives once, the button opens TestFlight, and a second signup within the hour does not send another.
+
 ### Flipping the stage
 
 The stage (`waitlist`, `testflight`, `launched`) is the `site_stage` parameter in Remote Config.
@@ -102,7 +117,7 @@ The stage (`waitlist`, `testflight`, `launched`) is the `site_stage` parameter i
 1. Change `site_stage` in the Firebase console (Remote Config) and **Publish**. Remote Config keeps version history, so it can be rolled back the same way.
 2. `rebuildOnConfigChange` queues `ci-jamaal-web.yml` and the site is rebuilt and deployed in about two minutes. (Without the function, run that workflow by hand from the Actions tab: Run workflow, branch `main`.) The signup function reads the stage within a minute and needs no rebuild.
 3. Check: the home page shows the new hero eyebrow and form, `jamaal.app/api/signup` answers the new stage (a test signup returns `invited` in the beta), and the workflow log says `Site stage: <stage> (Remote Config)`.
-4. Don't flip to `testflight` until the invite function exists (#424): the API would say `invited` without inviting anyone.
+4. Before flipping to `testflight`, deploy the functions with `TESTFLIGHT_PUBLIC_URL` set (see "The beta invite email"): without it the API says `invited` and nobody is emailed.
 
 **One-time setup for the automatic rebuild:** create a fine-grained GitHub token for this repository with *Actions: read and write*, then store it as the secret the function reads: `firebase functions:secrets:set GITHUB_DISPATCH_TOKEN --project jamaal-web`, and deploy.
 

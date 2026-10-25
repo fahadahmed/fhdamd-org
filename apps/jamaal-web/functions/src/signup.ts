@@ -96,7 +96,7 @@ export interface SignupDeps {
 /**
  * The signup logic, free of the Functions runtime so it can be tested.
  * Waitlist and launched signups are `added`; in the beta they are `invited`
- * (the invite itself is sent by a separate function). A repeat address is a 409
+ * (`sendBetaInvite` emails the link when it sees the stored signup). A repeat address is a 409
  * and, in the beta, asks for the invite to be sent again.
  */
 export function createSignupHandler({ store, stage, limiter, onLimiterError }: SignupDeps) {

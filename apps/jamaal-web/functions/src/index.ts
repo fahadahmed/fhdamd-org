@@ -7,11 +7,14 @@ import { defineSecret } from "firebase-functions/params";
 import * as Sentry from "@sentry/node";
 import * as logger from "firebase-functions/logger";
 import { onRequest } from "firebase-functions/https";
-import { onDocumentCreated, onDocumentDeleted } from "firebase-functions/v2/firestore";
+import { onDocumentCreated, onDocumentDeleted, onDocumentWritten } from "firebase-functions/v2/firestore";
 import { onMessagePublished } from "firebase-functions/v2/pubsub";
 import { onConfigUpdated } from "firebase-functions/v2/remoteConfig";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { Resend } from "resend";
+import { createBetaInvite } from "./betaInvite";
+import type { InviteRecord } from "./betaInvite";
+import { createInviteSender } from "./betaInviteSender";
 import { createErrorReporter } from "./errors";
 import { createMailingList, messageSchema, needsSync } from "./mailingList";
 import type { MailingListMessage, SignupRecord } from "./mailingList";
@@ -219,6 +222,51 @@ export const reconcileMailingList = onSchedule({ schedule: "every day 03:00", ti
     await Promise.all(emails.slice(i, i + 100).map((email) => publish({ type: "add", email })));
   }
   logger.info("Queued signups for the mailing list", { checked: snapshot.size, queued: emails.length });
+});
+
+// ─── The beta invite: the TestFlight public link, emailed to someone who signed up for the beta ──
+
+/**
+ * Sends the invite email when a signup is made in the `testflight` stage, or when someone already on the list
+ * asks to join it. It is off until TESTFLIGHT_PUBLIC_URL is set in functions/.env.jamaal-web. Retried for six hours,
+ * then recorded in `betaInviteFailures` and reported. Every write to the signup comes through here, so the
+ * checks in `needsInvite` (and Resend's idempotency key) are what stop a second send.
+ */
+export const sendBetaInvite = onDocumentWritten({ document: "signups/{email}", secrets: [resendApiKey], retry: true, maxInstances: 2 }, async (event) => {
+  const record = event.data?.after.data() as InviteRecord | undefined;
+  if (!record) return; // deleted
+  const testflightUrl = process.env.TESTFLIGHT_PUBLIC_URL;
+  if (!testflightUrl) {
+    logger.warn("TESTFLIGHT_PUBLIC_URL is not set; beta invites are off");
+    return;
+  }
+  const siteUrl = process.env.SITE_URL ?? "https://jamaal.app";
+  const sender = createInviteSender(new Resend(resendApiKey.value()), {
+    from: process.env.BETA_INVITE_FROM ?? "Jamaal <support@jamaal.app>",
+    replyTo: "support@jamaal.app",
+    testflightUrl,
+    siteUrl,
+    unsubscribeUrl: "mailto:support@jamaal.app?subject=Unsubscribe",
+  });
+
+  const handle = createBetaInvite({
+    signups: {
+      get: async (email) => {
+        const snapshot = await signups().doc(email).get();
+        return snapshot.exists ? (snapshot.data() as InviteRecord) : null;
+      },
+      markSent: (email) => updateSignup(email, { inviteSentAt: FieldValue.serverTimestamp() }),
+      recordFailure: async ({ email, message, queuedAt }) => {
+        await db().collection("betaInviteFailures").add({ email, message, queuedAt, failedAt: FieldValue.serverTimestamp() });
+        await updateSignup(email, { inviteFailedAt: FieldValue.serverTimestamp() });
+      },
+    },
+    send: sender,
+    report: (error) => errors.capture(error),
+    now: () => new Date(),
+  });
+  const outcome = await handle(event.params.email, new Date(event.time));
+  if (outcome !== "skipped") logger.info("Beta invite handled", { outcome });
 });
 
 const handleResendWebhook = createWebhookHandler({
