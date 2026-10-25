@@ -12,26 +12,15 @@ export interface BetaInviteEmailInput {
   unsubscribeUrl: string;
 }
 
-export const BETA_INVITE_SUBJECT = 'Your Jamaal beta link';
+export const BETA_INVITE_SUBJECT = "Your Jamaal beta link";
 
-export const BETA_INVITE_INTRO =
-  'Thanks for signing up. The Jamaal beta is open on iPhone, iPad and Mac, and this is your link to install it.';
+export const BETA_INVITE_INTRO = "Thanks for signing up. The Jamaal beta is open on iPhone, iPad and Mac, and this is your link to install it.";
 
-const esc = (value: string): string =>
-  value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+const esc = (value: string): string => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-const greetingFor = (firstName: string): string => firstName.trim() || 'there';
+const greetingFor = (firstName: string): string => firstName.trim() || "there";
 
-export function betaInviteHtml({
-  firstName,
-  testflightUrl,
-  siteUrl,
-  unsubscribeUrl,
-}: BetaInviteEmailInput): string {
+export function betaInviteHtml({ firstName, testflightUrl, siteUrl, unsubscribeUrl }: BetaInviteEmailInput): string {
   const greeting = greetingFor(firstName);
   return `<!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -147,13 +136,8 @@ export function betaInviteHtml({
 `;
 }
 
-export function betaInviteText({
-  firstName,
-  testflightUrl,
-  siteUrl,
-  unsubscribeUrl,
-}: BetaInviteEmailInput): string {
-  const utm = 'utm_source=email&utm_medium=beta_invite&utm_campaign=beta';
+export function betaInviteText({ firstName, testflightUrl, siteUrl, unsubscribeUrl }: BetaInviteEmailInput): string {
+  const utm = "utm_source=email&utm_medium=beta_invite&utm_campaign=beta";
   return `Hi ${greetingFor(firstName)},
 
 ${BETA_INVITE_INTRO}

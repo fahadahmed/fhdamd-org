@@ -1,12 +1,8 @@
-import type { Resend } from 'resend';
-import {
-  BETA_INVITE_SUBJECT,
-  betaInviteHtml,
-  betaInviteText,
-} from './betaInviteEmail';
+import type { Resend } from "resend";
+import { BETA_INVITE_SUBJECT, betaInviteHtml, betaInviteText } from "./betaInviteEmail";
 
 /** What sending needs from Resend: the emails API only. A smaller type than the whole SDK, so tests can fake it. */
-export type ResendEmails = Pick<Resend, 'emails'>;
+export type ResendEmails = Pick<Resend, "emails">;
 
 export interface InviteSenderOptions {
   /** The sender, for example `Jamaal <support@jamaal.app>`. */
@@ -21,19 +17,8 @@ export interface InviteSenderOptions {
 }
 
 /** Sends the invite through Resend. An error from Resend is thrown, so the caller retries. */
-export function createInviteSender(
-  resend: ResendEmails,
-  options: InviteSenderOptions,
-) {
-  return async function send({
-    email,
-    firstName,
-    idempotencyKey,
-  }: {
-    email: string;
-    firstName: string;
-    idempotencyKey: string;
-  }): Promise<void> {
+export function createInviteSender(resend: ResendEmails, options: InviteSenderOptions) {
+  return async function send({ email, firstName, idempotencyKey }: { email: string; firstName: string; idempotencyKey: string }): Promise<void> {
     const content = {
       firstName,
       testflightUrl: options.testflightUrl,
@@ -51,9 +36,6 @@ export function createInviteSender(
       },
       { idempotencyKey },
     );
-    if (error)
-      throw new Error(
-        `Resend could not send the beta invite: ${error.message}`,
-      );
+    if (error) throw new Error(`Resend could not send the beta invite: ${error.message}`);
   };
 }
